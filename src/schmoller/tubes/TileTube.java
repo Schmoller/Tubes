@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 
-public class TileTube extends TileEntity
+public class TileTube extends TileEntity implements ITube
 {
 	private LinkedList<TubeItem> mItemsInTransit = new LinkedList<TubeItem>();
 
@@ -18,7 +18,8 @@ public class TileTube extends TileEntity
 	
 	private int mConnections = -1;
 	
-	public void addItem(ItemStack item, int fromDir)
+	@Override
+	public boolean addItem(ItemStack item, int fromDir)
 	{
 		TubeItem tItem = new TubeItem(item);
 		tItem.direction = fromDir;
@@ -28,11 +29,27 @@ public class TileTube extends TileEntity
 			mItemsInTransit.add(tItem);
 		else
 			ModTubes.packetManager.sendPacketForBlock(new ModPacketAddItem(xCoord, yCoord, zCoord, tItem), worldObj);
+		
+		return true;
 	}
 	
-	public void addItem(TubeItem item)
+	@Override
+	public boolean addItem(TubeItem item)
 	{
 		mItemsInTransit.add(item);
+		return true;
+	}
+	
+	@Override
+	public boolean canAddItem( TubeItem item )
+	{
+		return true;
+	}
+	
+	@Override
+	public boolean canPathThrough()
+	{
+		return true;
 	}
 	
 	public int getConnections()
@@ -41,6 +58,12 @@ public class TileTube extends TileEntity
 			return mConnections = TubeHelper.getConnectivity(worldObj, xCoord, yCoord, zCoord);
 		
 		//return mConnections;
+	}
+	
+	@Override
+	public int getConnectableMask()
+	{
+		return 63;
 	}
 	
 	private int getNextDirection(TubeItem item)
@@ -137,17 +160,19 @@ public class TileTube extends TileEntity
 		
 		TileEntity ent = worldObj.getBlockTileEntity(xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ);
 		
-		if(ent instanceof TileTube)
+		if(ent instanceof ITubeConnectable)
 		{
 			item.progress -= 1;
 			item.updated = false;
-			((TileTube)ent).addItem(item);
 			
-			return true;
+			if(((ITubeConnectable)ent).addItem(item))
+				return true;
 		}
-		else if(worldObj.isRemote)
+		
+		if(worldObj.isRemote)
 			return true;
-		else if(ent != null && InventoryHelper.canAcceptItem(item.item, worldObj, ent.xCoord, ent.yCoord, ent.zCoord, item.direction))
+		
+		if(ent != null && InventoryHelper.canAcceptItem(item.item, worldObj, ent.xCoord, ent.yCoord, ent.zCoord, item.direction))
 		{
 			InventoryHelper.insertItem(item.item, worldObj, ent.xCoord, ent.yCoord, ent.zCoord, item.direction);
 			
@@ -162,4 +187,17 @@ public class TileTube extends TileEntity
 	{
 		mConnections = -1;
 	}
+	
+	@Override
+	public int getRouteWeight()
+	{
+		return 1;
+	}
+
+	@Override
+	public boolean isBlocked()
+	{
+		return false;
+	}
+	
 }

@@ -12,24 +12,16 @@ import net.minecraftforge.common.ForgeDirection;
 
 public class TubeHelper
 {
-	public static boolean isTube(IBlockAccess world, int x, int y, int z)
-	{
-		return (world.getBlockTileEntity(x, y, z) instanceof TileTube);
-	}
-	
 	public static boolean isTubeConnectable(IBlockAccess world, int x, int y, int z, int side)
 	{
-		if(isTube(world, x, y, z))
-			return true;
-		
 		TileEntity ent = world.getBlockTileEntity(x, y, z);
 		if(ent == null)
 			return false;
-		
-		if(ent instanceof ISidedInventory)
-		{
+
+		if(ent instanceof ITubeConnectable)
+			return (((ITubeConnectable)ent).getConnectableMask() & (1 << side)) != 0;
+		else if(ent instanceof ISidedInventory)
 			return ((ISidedInventory)ent).getAccessibleSlotsFromSide(side).length != 0;
-		}
 		else if (ent instanceof IInventory)
 			return true;
 		
@@ -44,10 +36,16 @@ public class TubeHelper
 	public static int getConnectivity(IBlockAccess world, int x, int y, int z)
 	{
 		int map = 0;
-		for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
+		ITubeConnectable tube = CommonHelper.getTileEntity(world, x, y, z, ITubeConnectable.class);
+		
+		if(tube == null)
+			return 0;
+		
+		int mask = tube.getConnectableMask();
+		for(int side = 0; side < 6; ++side)
 		{
-			if(isTubeConnectable(world, x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ, dir.ordinal()))
-				map |= (1 << dir.ordinal());
+			if((mask & (1 << side)) != 0 && isTubeConnectable(world, x + ForgeDirection.getOrientation(side).offsetX, y + ForgeDirection.getOrientation(side).offsetY, z + ForgeDirection.getOrientation(side).offsetZ, side ^ 1))
+				map |= 1 << side;
 		}
 		
 		return map;
@@ -70,10 +68,15 @@ public class TubeHelper
 			{
 				ForgeDirection dir = ForgeDirection.getOrientation(i); 
 				PathLocation loc = new PathLocation(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ, 1, i, i);
-				toSearch.add(loc);
+				
 				TileEntity ent = CommonHelper.getTileEntity(world, loc.position);
-				if(ent instanceof TileTube)
-					searchedLocations.add(loc.position);
+				if(!(ent instanceof ITubeConnectable) || ((ITubeConnectable)ent).canAddItem(item))
+				{
+					toSearch.add(loc);
+
+					if(ent instanceof ITubeConnectable)
+						searchedLocations.add(loc.position);
+				}
 			}
 		}
 		
@@ -83,12 +86,12 @@ public class TubeHelper
 			
 			TileEntity ent = CommonHelper.getTileEntity(world, pos.position);
 			
-			if(!(ent instanceof TileTube))
+			if(!(ent instanceof ITubeConnectable))
 			{
 				if(InventoryHelper.canAcceptItem(item.item, world, pos.position, pos.dir))
 					return pos.initialDir;
 			}
-			else
+			else if(((ITubeConnectable)ent).canPathThrough())
 			{
 				conns = getConnectivity(world, pos.position);
 				
@@ -100,11 +103,18 @@ public class TubeHelper
 						
 						if(!searchedLocations.contains(loc.position))
 						{
-							toSearch.add(loc);
-							
 							ent = CommonHelper.getTileEntity(world, loc.position);
-							if(ent instanceof TileTube)
-								searchedLocations.add(loc.position);
+							
+							if(!(ent instanceof ITubeConnectable) || ((ITubeConnectable)ent).canAddItem(item))
+							{
+								toSearch.add(loc);
+
+								if(ent instanceof ITubeConnectable)
+								{
+									loc.dist += ((ITubeConnectable)ent).getRouteWeight()-1;
+									searchedLocations.add(loc.position);
+								}
+							}
 						}
 					}
 				}
@@ -118,7 +128,7 @@ public class TubeHelper
 	{
 		public final ChunkPosition position;
 		
-		public final int dist;
+		public int dist;
 		public final int dir;
 		public final int initialDir;
 		
