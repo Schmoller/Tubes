@@ -7,6 +7,11 @@ import java.util.List;
 import schmoller.tubes.network.packets.ModPacketAddItem;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.INetworkManager;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 
@@ -200,4 +205,69 @@ public class TileTube extends TileEntity implements ITube
 		return false;
 	}
 	
+	@Override
+	public void writeToNBT( NBTTagCompound root )
+	{
+		super.writeToNBT(root);
+		
+		NBTTagList list = new NBTTagList();
+		for(TubeItem item : mItemsInTransit)
+		{
+			NBTTagCompound tag = new NBTTagCompound();
+			item.writeToNBT(tag);
+			list.appendTag(tag);
+		}
+		
+		root.setTag("items", list);
+	}
+	
+	@Override
+	public void readFromNBT( NBTTagCompound root )
+	{
+		super.readFromNBT(root);
+		
+		mConnections = -1;
+		mItemsInTransit.clear();
+		
+		NBTTagList list = root.getTagList("items");
+		
+		for(int i = 0; i < list.tagCount(); ++i)
+		{
+			NBTTagCompound tag = (NBTTagCompound)list.tagAt(i);
+			
+			mItemsInTransit.add(TubeItem.readFromNBT(tag));
+		}
+	}
+	
+	@Override
+	public Packet getDescriptionPacket()
+	{
+		NBTTagCompound root = new NBTTagCompound();
+		NBTTagList list = new NBTTagList();
+		for(TubeItem item : mItemsInTransit)
+		{
+			NBTTagCompound tag = new NBTTagCompound();
+			item.writeToNBT(tag);
+			list.appendTag(tag);
+		}
+		
+		root.setTag("L", list);
+		
+		return new Packet132TileEntityData(xCoord, yCoord, zCoord, 0, root);
+	}
+	
+	@Override
+	public void onDataPacket( INetworkManager net, Packet132TileEntityData packet )
+	{
+		mItemsInTransit.clear();
+		
+		NBTTagList list = packet.customParam1.getTagList("L");
+		
+		for(int i = 0; i < list.tagCount(); ++i)
+		{
+			NBTTagCompound tag = (NBTTagCompound)list.tagAt(i);
+			
+			mItemsInTransit.add(TubeItem.readFromNBT(tag));
+		}
+	}
 }

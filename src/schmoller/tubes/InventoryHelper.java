@@ -21,8 +21,7 @@ public class InventoryHelper
 		{
 			ISidedInventory inv = (ISidedInventory)ent;
 			
-			int[] slots = inv.getAccessibleSlotsFromSide(side ^ 1);
-			for(int slot : slots)
+			for(int slot = 0; slot < inv.getSizeInventory(); ++slot)
 			{
 				if(inv.canInsertItem(slot, item, side ^ 1))
 				{
@@ -92,9 +91,7 @@ public class InventoryHelper
 		if(ent instanceof ISidedInventory)
 		{
 			ISidedInventory inv = (ISidedInventory)ent;
-			int[] slots = inv.getAccessibleSlotsFromSide(side ^ 1);
-			
-			for(int slot : slots)
+			for(int slot = 0; slot < inv.getSizeInventory(); ++slot)
 			{
 				if(item.stackSize == 0)
 					break;
