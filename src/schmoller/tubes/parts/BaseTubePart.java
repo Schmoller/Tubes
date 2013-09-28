@@ -5,12 +5,15 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Icon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.common.ForgeDirection;
+import schmoller.tubes.BlockTube;
 import schmoller.tubes.ITube;
 import schmoller.tubes.ITubeConnectable;
 import schmoller.tubes.InventoryHelper;
@@ -26,7 +29,9 @@ import codechicken.core.vec.Cuboid6;
 import codechicken.core.vec.Vector3;
 import codechicken.microblock.HollowMicroblock;
 import codechicken.microblock.Microblock;
+import codechicken.multipart.IconHitEffects;
 import codechicken.multipart.JCuboidPart;
+import codechicken.multipart.JIconHitEffects;
 import codechicken.multipart.JNormalOcclusion;
 import codechicken.multipart.NormalOcclusionTest;
 import codechicken.multipart.TFacePart;
@@ -36,7 +41,7 @@ import codechicken.multipart.scalatraits.TSlottedTile;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
+public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion, JIconHitEffects
 {
 	private LinkedList<TubeItem> mItemsInTransit = new LinkedList<TubeItem>();
 
@@ -371,5 +376,33 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 	public void renderStatic(Vector3 pos, LazyLightMatrix olm, int pass) 
 	{
 		RenderTubePart.instance().renderStatic(this);
+	}
+
+	@Override
+	@SideOnly( Side.CLIENT )
+	public void addHitEffects( MovingObjectPosition hit, EffectRenderer effectRenderer )
+	{
+		IconHitEffects.addHitEffects(this, hit, effectRenderer);
+	}
+	
+	@Override
+	@SideOnly( Side.CLIENT )
+	public void addDestroyEffects( EffectRenderer effectRenderer )
+	{
+		IconHitEffects.addDestroyEffects(this, effectRenderer);
+	}
+	
+	@Override
+	@SideOnly( Side.CLIENT )
+	public Icon getBreakingIcon( Object subPart, int side )
+	{
+		return getBrokenIcon(side);
+	}
+	
+	@Override
+	@SideOnly( Side.CLIENT )
+	public Icon getBrokenIcon( int side )
+	{
+		return BlockTube.center;
 	}
 }
