@@ -9,6 +9,7 @@ public class CommonProxy implements IModPacketHandler
 {
 	public void initialize()
 	{
+		
 	}
 
 	@Override

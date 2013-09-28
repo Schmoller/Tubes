@@ -3,6 +3,9 @@ package schmoller.tubes;
 import java.util.HashSet;
 import java.util.PriorityQueue;
 
+import codechicken.multipart.TMultiPart;
+import codechicken.multipart.TileMultipart;
+
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.tileentity.TileEntity;
@@ -12,14 +15,35 @@ import net.minecraftforge.common.ForgeDirection;
 
 public class TubeHelper
 {
+	public static ITubeConnectable getTubeConnectable(IBlockAccess world, int x, int y, int z)
+	{
+		return getTubeConnectable(world.getBlockTileEntity(x, y, z));
+	}
+	public static ITubeConnectable getTubeConnectable(TileEntity entity)
+	{
+		if(entity instanceof TileMultipart)
+		{
+			for(TMultiPart part : ((TileMultipart)entity).jPartList())
+			{
+				if(part instanceof ITubeConnectable)
+					return ((ITubeConnectable)part);
+			}
+		}
+		else if(entity instanceof ITubeConnectable)
+			return ((ITubeConnectable)entity);
+		
+		return null;
+	}
+	
 	public static boolean isTubeConnectable(IBlockAccess world, int x, int y, int z, int side)
 	{
 		TileEntity ent = world.getBlockTileEntity(x, y, z);
 		if(ent == null)
 			return false;
 
-		if(ent instanceof ITubeConnectable)
-			return (((ITubeConnectable)ent).getConnectableMask() & (1 << side)) != 0;
+		ITubeConnectable con = getTubeConnectable(ent);
+		if(con != null)
+			return (con.getConnectableMask() & (1 << side)) != 0;
 		else if(ent instanceof ISidedInventory)
 			return ((ISidedInventory)ent).getAccessibleSlotsFromSide(side).length != 0;
 		else if (ent instanceof IInventory)
@@ -36,7 +60,7 @@ public class TubeHelper
 	public static int getConnectivity(IBlockAccess world, int x, int y, int z)
 	{
 		int map = 0;
-		ITubeConnectable tube = CommonHelper.getTileEntity(world, x, y, z, ITubeConnectable.class);
+		ITubeConnectable tube = getTubeConnectable(world, x, y, z);
 		
 		if(tube == null)
 			return 0;
@@ -70,11 +94,12 @@ public class TubeHelper
 				PathLocation loc = new PathLocation(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ, 1, i, i);
 				
 				TileEntity ent = CommonHelper.getTileEntity(world, loc.position);
-				if(!(ent instanceof ITubeConnectable) || ((ITubeConnectable)ent).canAddItem(item))
+				ITubeConnectable con = getTubeConnectable(ent);
+				if(con == null || con.canAddItem(item))
 				{
 					toSearch.add(loc);
 
-					if(ent instanceof ITubeConnectable)
+					if(con != null && con.canPathThrough())
 						searchedLocations.add(loc.position);
 				}
 			}
@@ -85,13 +110,14 @@ public class TubeHelper
 			PathLocation pos = toSearch.poll();
 			
 			TileEntity ent = CommonHelper.getTileEntity(world, pos.position);
+			ITubeConnectable con = getTubeConnectable(ent);
 			
-			if(!(ent instanceof ITubeConnectable))
+			if(con == null)
 			{
 				if(InventoryHelper.canAcceptItem(item.item, world, pos.position, pos.dir))
 					return pos.initialDir;
 			}
-			else if(((ITubeConnectable)ent).canPathThrough())
+			else if(con.canPathThrough())
 			{
 				conns = getConnectivity(world, pos.position);
 				
@@ -104,14 +130,15 @@ public class TubeHelper
 						if(!searchedLocations.contains(loc.position))
 						{
 							ent = CommonHelper.getTileEntity(world, loc.position);
+							con = getTubeConnectable(ent);
 							
-							if(!(ent instanceof ITubeConnectable) || ((ITubeConnectable)ent).canAddItem(item))
+							if(con == null || con.canAddItem(item))
 							{
 								toSearch.add(loc);
 
-								if(ent instanceof ITubeConnectable)
+								if(con != null && con.canPathThrough())
 								{
-									loc.dist += ((ITubeConnectable)ent).getRouteWeight()-1;
+									loc.dist += con.getRouteWeight()-1;
 									searchedLocations.add(loc.position);
 								}
 							}
@@ -119,6 +146,8 @@ public class TubeHelper
 					}
 				}
 			}
+			else
+				return pos.initialDir;
 		}
 		
 		return -1;

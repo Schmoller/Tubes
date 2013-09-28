@@ -2,9 +2,17 @@ package schmoller.tubes;
 
 import java.util.logging.Logger;
 
+import codechicken.multipart.MultiPartRegistry.IPartFactory;
+import codechicken.multipart.MultiPartRegistry;
+import codechicken.multipart.MultipartRenderer;
+import codechicken.multipart.TMultiPart;
+
 import schmoller.tubes.network.PacketManager;
 import schmoller.tubes.network.packets.ModPacketAddItem;
+import schmoller.tubes.parts.BaseTubePart;
+import schmoller.tubes.parts.ItemTubeBase;
 
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -23,7 +31,7 @@ import cpw.mods.fml.common.Mod.Instance;
 
 @Mod(name="Tubes", version="1.0.0", modid = "Tubes", dependencies="required-after:Forge")
 @NetworkMod(clientSideRequired=true, serverSideRequired=true)
-public class ModTubes
+public class ModTubes implements IPartFactory
 {
 	@Instance("Tubes")
     public static ModTubes instance;
@@ -37,6 +45,9 @@ public class ModTubes
 	public static Logger logger = Logger.getLogger("Tubes");
 	
 	private int mTubeBlockId;
+	public int itemTubeId;
+	
+	public static ItemStack itemTube;
 	
 	@PreInit
 	public void preInit(FMLPreInitializationEvent event)
@@ -44,8 +55,10 @@ public class ModTubes
 		// TODO: Load configurations etc.
 		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
 		mTubeBlockId = config.getBlock("TubeBlock", 2000).getInt();
+		itemTubeId = config.getItem("Tube", 5000).getInt();
 	}
 	
+	@SuppressWarnings( "unchecked" )
 	@Init
 	public void init(FMLInitializationEvent event)
 	{
@@ -59,6 +72,11 @@ public class ModTubes
 		BlockTube tube = new BlockTube(mTubeBlockId);
 		GameRegistry.registerBlock(tube, "tubes:tube");
 		GameRegistry.registerTileEntity(TileTube.class, "Tubes:Tube");
+		
+		ItemTubeBase tubeItem = new ItemTubeBase(itemTubeId);
+		GameRegistry.registerItem(tubeItem, "tubes:items:tube");
+		
+		MultiPartRegistry.registerParts(this, new String[] {"schmoller_tube"});
 	}
 	
 	@PostInit
@@ -66,5 +84,14 @@ public class ModTubes
 	{
 		// TODO: Mod compatability
 		
+	}
+
+	@Override
+	public TMultiPart createPart( String id, boolean client )
+	{
+		if(id.equals("schmoller_tube"))
+			return new BaseTubePart();
+
+		return null;
 	}
 }

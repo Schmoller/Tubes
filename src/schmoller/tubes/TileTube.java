@@ -164,13 +164,13 @@ public class TileTube extends TileEntity implements ITube
 		ForgeDirection dir = ForgeDirection.getOrientation(item.direction);
 		
 		TileEntity ent = worldObj.getBlockTileEntity(xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ);
-		
-		if(ent instanceof ITubeConnectable)
+		ITubeConnectable con = TubeHelper.getTubeConnectable(ent);
+		if(con != null)
 		{
 			item.progress -= 1;
 			item.updated = false;
 			
-			if(((ITubeConnectable)ent).addItem(item))
+			if(con.addItem(item))
 				return true;
 		}
 		
