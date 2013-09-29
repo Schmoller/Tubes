@@ -11,9 +11,13 @@ import schmoller.tubes.network.PacketManager;
 import schmoller.tubes.network.packets.ModPacketAddItem;
 import schmoller.tubes.parts.BaseTubePart;
 import schmoller.tubes.parts.ItemTubeBase;
+import schmoller.tubes.parts.RestrictionTubePart;
 
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeSubscribe;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -44,7 +48,6 @@ public class ModTubes implements IPartFactory
 	
 	public static Logger logger = Logger.getLogger("Tubes");
 	
-	private int mTubeBlockId;
 	public int itemTubeId;
 	
 	public static ItemStack itemTube;
@@ -54,8 +57,9 @@ public class ModTubes implements IPartFactory
 	{
 		// TODO: Load configurations etc.
 		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
-		mTubeBlockId = config.getBlock("TubeBlock", 2000).getInt();
 		itemTubeId = config.getItem("Tube", 5000).getInt();
+		
+		MinecraftForge.EVENT_BUS.register(this);
 	}
 	
 	@SuppressWarnings( "unchecked" )
@@ -69,14 +73,10 @@ public class ModTubes implements IPartFactory
 		
 		packetManager.registerHandler(proxy);
 		
-		BlockTube tube = new BlockTube(mTubeBlockId);
-		GameRegistry.registerBlock(tube, "tubes:tube");
-		GameRegistry.registerTileEntity(TileTube.class, "Tubes:Tube");
-		
 		ItemTubeBase tubeItem = new ItemTubeBase(itemTubeId);
 		GameRegistry.registerItem(tubeItem, "tubes:items:tube");
 		
-		MultiPartRegistry.registerParts(this, new String[] {"schmoller_tube"});
+		MultiPartRegistry.registerParts(this, new String[] {"schmoller_tube", "schmoller_restriction_tube"});
 	}
 	
 	@PostInit
@@ -91,7 +91,21 @@ public class ModTubes implements IPartFactory
 	{
 		if(id.equals("schmoller_tube"))
 			return new BaseTubePart();
+		else if(id.equals("schmoller_restriction_tube"))
+			return new RestrictionTubePart();
 
 		return null;
+	}
+	
+	@ForgeSubscribe
+	public void registerIcons(TextureStitchEvent.Pre event)
+	{
+		if(event.map.textureType == 0)
+		{
+			BaseTubePart.center = event.map.registerIcon("Tubes:tube-center");
+			BaseTubePart.straight = event.map.registerIcon("Tubes:tube");
+			RestrictionTubePart.center = event.map.registerIcon("Tubes:tube-restriction-center");
+			RestrictionTubePart.straight = event.map.registerIcon("Tubes:tube-restriction");
+		}
 	}
 }

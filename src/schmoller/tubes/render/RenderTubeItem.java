@@ -2,13 +2,11 @@ package schmoller.tubes.render;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import schmoller.tubes.AdvRender;
-import schmoller.tubes.BlockTube;
+import schmoller.tubes.parts.BaseTubePart;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderEngine;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
-import net.minecraftforge.client.MinecraftForgeClient;
 
 public class RenderTubeItem implements IItemRenderer
 {
@@ -42,7 +40,7 @@ public class RenderTubeItem implements IItemRenderer
 		FMLClientHandler.instance().getClient().renderGlobal.renderEngine.bindTexture("/terrain.png");
 		tes.startDrawingQuads();
 		
-		mRender.setIcon(BlockTube.center);
+		mRender.setIcon(BaseTubePart.center);
 		mRender.drawBox(63, 0.25f, 0.25f, 0.25f, 0.75f, 0.75f, 0.75f);
 		mRender.drawBox(63, 0.75f, 0.75f, 0.75f, 0.25f, 0.25f, 0.25f);
 		

@@ -17,8 +17,6 @@ public class ClientProxy extends CommonProxy
 	public void initialize()
 	{
 		super.initialize();
-		ClientRegistry.bindTileEntitySpecialRenderer(TileTube.class, new TileTubeRenderer());
-		RenderingRegistry.registerBlockHandler(new RenderTube());
 		MinecraftForgeClient.registerItemRenderer(ModTubes.instance.itemTubeId + 256, new RenderTubeItem());
 		
 	}

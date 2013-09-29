@@ -1,13 +1,12 @@
 package schmoller.tubes.render;
 
 import codechicken.core.vec.Vector3;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.util.Icon;
 import net.minecraftforge.common.ForgeDirection;
 import schmoller.tubes.AdvRender;
-import schmoller.tubes.BlockTube;
 import schmoller.tubes.TubeItem;
 import schmoller.tubes.parts.BaseTubePart;
 
@@ -16,6 +15,9 @@ public class RenderTubePart
 	private AdvRender mRender = new AdvRender();
 	private EntityItem mDummy = new EntityItem(null);
 	private RenderItem mRenderer = new RenderItem();
+	
+	private Icon mCenterIcon;
+	private Icon mStraightIcon;
 	
 	private static RenderTubePart inst;
 	
@@ -31,6 +33,12 @@ public class RenderTubePart
 	{
 		mRenderer.setRenderManager(RenderManager.instance);
 		mDummy.hoverStart = 0;
+	}
+	
+	public void setIcons(Icon center, Icon straight)
+	{
+		mCenterIcon = center;
+		mStraightIcon = straight;
 	}
 	
 	public void renderStatic(BaseTubePart part)
@@ -58,43 +66,33 @@ public class RenderTubePart
 	
 	private void renderStraight(int connections)
 	{
-		mRender.setIcon(BlockTube.straight);
+		mRender.setIcon(mStraightIcon);
 		
 		if(connections == 3)
 		{
 			mRender.drawBox(60, 0.25f, 0.0f, 0.25f, 0.75f, 1.0f, 0.75f);
-			//mRender.drawBox(60, 0.75f, 1.0f, 0.75f, 0.25f, 0.0f, 0.25f);
 		}
 		else if(connections == 12)
 		{
 			mRender.setTextureRotation(0, 0, 1, 1, 1, 1);
 			mRender.drawBox(51, 0.25f, 0.25f, 0.0f, 0.75f, 0.75f, 1.0f);
-			//mRender.drawBox(51, 0.75f, 0.75f, 1.0f, 0.25f, 0.25f, 0.0f);
 		}
 		else
 		{
 			mRender.setTextureRotation(1);
 			mRender.drawBox(15, 0.0f, 0.25f, 0.25f, 1.0f, 0.75f, 0.75f);
-			//mRender.drawBox(15, 1.0f, 0.75f, 0.75f, 0.0f, 0.25f, 0.25f);
 		}
 	}
 	
 	private void renderCore(int connections)
 	{
-		mRender.setIcon(BlockTube.center);
+		mRender.setIcon(mCenterIcon);
 		mRender.drawBox((~connections) & 63, 0.25f, 0.25f, 0.25f, 0.75f, 0.75f, 0.75f);
-
-		int invCon = (~connections) & 63;;
-		invCon = (invCon & 0xF) | (invCon & 0x20) >> 1 | (invCon & 0x10) << 1;
-		invCon = (invCon & 0x33) | (invCon & 0x8) >> 1 | (invCon & 0x4) << 1;
-		invCon = (invCon & 0x3C) | (invCon & 0x2) >> 1 | (invCon & 0x1) << 1;
-		
-		//mRender.drawBox(invCon, 0.75f, 0.75f, 0.75f, 0.25f, 0.25f, 0.25f);
 	}
 	
 	private void renderConnections(int connections)
 	{
-		mRender.setIcon(BlockTube.straight);
+		mRender.setIcon(mStraightIcon);
 		
 		for(int i = 0; i < 6; ++i)
 		{

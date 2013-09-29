@@ -13,7 +13,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.common.ForgeDirection;
-import schmoller.tubes.BlockTube;
 import schmoller.tubes.ITube;
 import schmoller.tubes.ITubeConnectable;
 import schmoller.tubes.InventoryHelper;
@@ -28,7 +27,6 @@ import codechicken.core.lighting.LazyLightMatrix;
 import codechicken.core.vec.Cuboid6;
 import codechicken.core.vec.Vector3;
 import codechicken.microblock.HollowMicroblock;
-import codechicken.microblock.Microblock;
 import codechicken.multipart.IconHitEffects;
 import codechicken.multipart.JCuboidPart;
 import codechicken.multipart.JIconHitEffects;
@@ -36,16 +34,20 @@ import codechicken.multipart.JNormalOcclusion;
 import codechicken.multipart.NormalOcclusionTest;
 import codechicken.multipart.TFacePart;
 import codechicken.multipart.TMultiPart;
+import codechicken.multipart.TSlottedPart;
 import codechicken.multipart.TileMultipart;
 import codechicken.multipart.scalatraits.TSlottedTile;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion, JIconHitEffects
+public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion, JIconHitEffects, TSlottedPart
 {
 	private LinkedList<TubeItem> mItemsInTransit = new LinkedList<TubeItem>();
 
 	public static int transitTime = 1000;
+	
+	public static Icon center;
+	public static Icon straight;
 	
 	@Override
 	public String getType()
@@ -368,6 +370,7 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 	@SideOnly( Side.CLIENT )
 	public void renderDynamic( Vector3 pos, float frame, int pass )
 	{
+		setRenderIcons(RenderTubePart.instance());
 		RenderTubePart.instance().renderDynamic(this, pos);
 	}
 	
@@ -375,7 +378,13 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 	@SideOnly( Side.CLIENT )
 	public void renderStatic(Vector3 pos, LazyLightMatrix olm, int pass) 
 	{
+		setRenderIcons(RenderTubePart.instance());
 		RenderTubePart.instance().renderStatic(this);
+	}
+	
+	protected void setRenderIcons(RenderTubePart render)
+	{
+		render.setIcons(center, straight);
 	}
 
 	@Override
@@ -403,6 +412,14 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 	@SideOnly( Side.CLIENT )
 	public Icon getBrokenIcon( int side )
 	{
-		return BlockTube.center;
+		return center;
 	}
+
+	@Override
+	public int getSlotMask()
+	{
+		return 1 << 6;
+	}
+	
+	
 }
