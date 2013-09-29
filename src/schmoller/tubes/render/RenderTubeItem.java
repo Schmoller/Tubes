@@ -2,7 +2,8 @@ package schmoller.tubes.render;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import schmoller.tubes.AdvRender;
-import schmoller.tubes.parts.BaseTubePart;
+import schmoller.tubes.ModTubes;
+import schmoller.tubes.TubeRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
@@ -40,7 +41,7 @@ public class RenderTubeItem implements IItemRenderer
 		FMLClientHandler.instance().getClient().renderGlobal.renderEngine.bindTexture("/terrain.png");
 		tes.startDrawingQuads();
 		
-		mRender.setIcon(BaseTubePart.center);
+		mRender.setIcon(TubeRegistry.instance().getDefinition(ModTubes.itemTube.getTubeType(item)).getCenterIcon());
 		mRender.drawBox(63, 0.25f, 0.25f, 0.25f, 0.75f, 0.75f, 0.75f);
 		mRender.drawBox(63, 0.75f, 0.75f, 0.75f, 0.25f, 0.25f, 0.25f);
 		

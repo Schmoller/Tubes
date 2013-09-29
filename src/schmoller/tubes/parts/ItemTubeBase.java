@@ -2,9 +2,12 @@ package schmoller.tubes.parts;
 
 import java.util.List;
 
+import schmoller.tubes.TubeRegistry;
+
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import codechicken.core.vec.BlockCoord;
 import codechicken.core.vec.Vector3;
@@ -22,27 +25,51 @@ public class ItemTubeBase extends JItemMultiPart
 		super(id);
 		setHasSubtypes(true);
 		setCreativeTab(CreativeTabs.tabTransport);
-		
-		setUnlocalizedName("item.transport.tube");
 	}
 
 	
 	@Override
 	public TMultiPart newPart( ItemStack item, EntityPlayer player, World world, BlockCoord pos, int side, Vector3 hit )
 	{
-		if(item.getItemDamage() == 1)
-			return MultiPartRegistry.createPart("schmoller_restriction_tube", false);
-		else
-			return MultiPartRegistry.createPart("schmoller_tube", false);
+		return MultiPartRegistry.createPart("tubes_" + getTubeType(item), false);
 	}
 	
-	@SuppressWarnings( "unchecked" )
+	@Override
+	public String getUnlocalizedName( ItemStack stack )
+	{
+		return "tubes." + getTubeType(stack);
+	}
+	
+	public ItemStack createForType(String tubeType)
+	{
+		ItemStack item = new ItemStack(this);
+		
+		NBTTagCompound tag = new NBTTagCompound();
+		tag.setString("tube", tubeType);
+		item.setTagCompound(tag);
+		
+		return item;
+	}
+	
+	public String getTubeType(ItemStack item)
+	{
+		if(item.hasTagCompound())
+		{
+			String type = item.getTagCompound().getString("tube");
+			if(!type.isEmpty())
+				return type;
+		}
+		
+		return "basic";
+	}
+	
+	@SuppressWarnings( { "unchecked", "rawtypes" } )
 	@Override
 	@SideOnly( Side.CLIENT )
 	public void getSubItems( int id, CreativeTabs tab, List items )
 	{
-		items.add(new ItemStack(id, 0, 1));
-		items.add(new ItemStack(id, 1, 1));
+		for(String type : TubeRegistry.instance().getTypeNames())
+			items.add(createForType(type));
 	}
 
 	

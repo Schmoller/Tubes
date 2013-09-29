@@ -19,6 +19,9 @@ import schmoller.tubes.InventoryHelper;
 import schmoller.tubes.ModTubes;
 import schmoller.tubes.TubeHelper;
 import schmoller.tubes.TubeItem;
+import schmoller.tubes.TubeRegistry;
+import schmoller.tubes.definitions.TubeDefinition;
+import schmoller.tubes.logic.TubeLogic;
 import schmoller.tubes.network.packets.ModPacketAddItem;
 import schmoller.tubes.render.RenderTubePart;
 import codechicken.core.data.MCDataInput;
@@ -45,14 +48,26 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 	private LinkedList<TubeItem> mItemsInTransit = new LinkedList<TubeItem>();
 
 	public static int transitTime = 1000;
+	private TubeLogic mLogic;
+	private TubeDefinition mDef;
+	private String mType;
 	
-	public static Icon center;
-	public static Icon straight;
+	public BaseTubePart()
+	{
+		
+	}
+	
+	public BaseTubePart(String type)
+	{
+		mDef = TubeRegistry.instance().getDefinition(type);
+		mLogic = mDef.getTubeLogic(this);
+		mType = type;
+	}
 	
 	@Override
 	public String getType()
 	{
-		return "schmoller_tube";
+		return "tubes_" + mType;
 	}
 
 	@Override
@@ -78,18 +93,24 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 	@Override
 	public ItemStack pickItem( MovingObjectPosition hit )
 	{
-		// TODO Auto-generated method stub
-		return super.pickItem(hit);
+		return ModTubes.itemTube.createForType(mType);
 	}
 	
 	@Override
 	public Iterable<ItemStack> getDrops()
 	{
-		ArrayList<ItemStack> stacks = new ArrayList<>(mItemsInTransit.size());
+		ArrayList<ItemStack> stacks = new ArrayList<ItemStack>(mItemsInTransit.size());
 		for(TubeItem item : mItemsInTransit)
 			stacks.add(item.item);
 		
+		stacks.add(ModTubes.itemTube.createForType(mType));
+		
 		return stacks;
+	}
+	
+	public TubeLogic getLogic()
+	{
+		return mLogic;
 	}
 	
 	@Override
@@ -99,7 +120,9 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 		tItem.direction = fromDir;
 		tItem.progress = 0;
 		
-		if(!world().isRemote)
+		mLogic.onItemEnter(tItem);
+		
+		if(!world().isRemote) // TODO: The heck?
 			mItemsInTransit.add(tItem);
 		else
 			ModTubes.packetManager.sendPacketForBlock(new ModPacketAddItem(x(), y(), z(), tItem), world());
@@ -110,6 +133,7 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 	@Override
 	public boolean addItem(TubeItem item)
 	{
+		mLogic.onItemEnter(item);
 		mItemsInTransit.add(item);
 		return true;
 	}
@@ -117,13 +141,13 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 	@Override
 	public boolean canAddItem( TubeItem item )
 	{
-		return true;
+		return mLogic.canItemEnter(item, item.direction^1);
 	}
 	
 	@Override
 	public boolean canPathThrough()
 	{
-		return true;
+		return mLogic.canPathThrough();
 	}
 	
 	public int getConnections()
@@ -134,7 +158,7 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 	@Override
 	public int getConnectableMask()
 	{
-		int con = 63;
+		int con = mLogic.getConnectableMask();
 		
 		if (tile() instanceof TSlottedTile)
 		{
@@ -172,7 +196,12 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 				return -1;
 			
 			if(count > 1)
-				dir = TubeHelper.findNextDirection(world(), x(), y(), z(), item);
+			{
+				if(mLogic.hasCustomRouting())
+					dir = mLogic.onDetermineDestination(item);
+				else
+					dir = TubeHelper.findNextDirection(world(), x(), y(), z(), item);
+			}
 			
 			if(dir == -1)
 				dir = item.direction ^ 1;
@@ -370,7 +399,7 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 	@SideOnly( Side.CLIENT )
 	public void renderDynamic( Vector3 pos, float frame, int pass )
 	{
-		setRenderIcons(RenderTubePart.instance());
+		RenderTubePart.instance().setIcons(mDef.getCenterIcon(), mDef.getStraightIcon());
 		RenderTubePart.instance().renderDynamic(this, pos);
 	}
 	
@@ -378,15 +407,10 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 	@SideOnly( Side.CLIENT )
 	public void renderStatic(Vector3 pos, LazyLightMatrix olm, int pass) 
 	{
-		setRenderIcons(RenderTubePart.instance());
+		RenderTubePart.instance().setIcons(mDef.getCenterIcon(), mDef.getStraightIcon());
 		RenderTubePart.instance().renderStatic(this);
 	}
 	
-	protected void setRenderIcons(RenderTubePart render)
-	{
-		render.setIcons(center, straight);
-	}
-
 	@Override
 	@SideOnly( Side.CLIENT )
 	public void addHitEffects( MovingObjectPosition hit, EffectRenderer effectRenderer )
@@ -412,7 +436,7 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 	@SideOnly( Side.CLIENT )
 	public Icon getBrokenIcon( int side )
 	{
-		return center;
+		return mDef.getCenterIcon();
 	}
 
 	@Override
