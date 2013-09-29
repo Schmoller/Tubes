@@ -1,7 +1,9 @@
 package schmoller.tubes;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.PriorityQueue;
+import java.util.Random;
 
 import codechicken.multipart.TMultiPart;
 import codechicken.multipart.TileMultipart;
@@ -35,7 +37,7 @@ public class TubeHelper
 		return null;
 	}
 	
-	public static boolean isTubeConnectable(IBlockAccess world, int x, int y, int z, int side)
+	public static boolean isTubeConnectable(ITubeConnectable other, IBlockAccess world, int x, int y, int z, int side)
 	{
 		TileEntity ent = world.getBlockTileEntity(x, y, z);
 		if(ent == null)
@@ -43,11 +45,37 @@ public class TubeHelper
 
 		ITubeConnectable con = getTubeConnectable(ent);
 		if(con != null)
-			return (con.getConnectableMask() & (1 << side)) != 0;
-		else if(ent instanceof ISidedInventory)
-			return ((ISidedInventory)ent).getAccessibleSlotsFromSide(side).length != 0;
-		else if (ent instanceof IInventory)
+		{
+			if((con.getConnectableMask() & (1 << side)) == 0)
+				return false;
+				
+			if(other instanceof ITube)
+			{
+				if(!((ITube)other).getLogic().canConnectTo(con))
+					return false;
+				
+				if(con instanceof ITube)
+				{
+					if(!((ITube)con).getLogic().canConnectTo(other))
+						return false;
+				}
+			}
+			
 			return true;
+		}
+		else
+		{
+			if(other instanceof ITube)
+			{
+				if(!((ITube)other).getLogic().canConnectToInventories())
+					return false;
+			}
+			
+			if(ent instanceof ISidedInventory)
+				return ((ISidedInventory)ent).getAccessibleSlotsFromSide(side).length != 0;
+			else if (ent instanceof IInventory)
+				return true;
+		}
 		
 		return false;
 	}
@@ -68,7 +96,7 @@ public class TubeHelper
 		int mask = tube.getConnectableMask();
 		for(int side = 0; side < 6; ++side)
 		{
-			if((mask & (1 << side)) != 0 && isTubeConnectable(world, x + ForgeDirection.getOrientation(side).offsetX, y + ForgeDirection.getOrientation(side).offsetY, z + ForgeDirection.getOrientation(side).offsetZ, side ^ 1))
+			if((mask & (1 << side)) != 0 && isTubeConnectable(tube, world, x + ForgeDirection.getOrientation(side).offsetX, y + ForgeDirection.getOrientation(side).offsetY, z + ForgeDirection.getOrientation(side).offsetZ, side ^ 1))
 				map |= 1 << side;
 		}
 		
@@ -83,6 +111,9 @@ public class TubeHelper
 	{
 		HashSet<ChunkPosition> searchedLocations = new HashSet<ChunkPosition>();
 		PriorityQueue<PathLocation> toSearch = new PriorityQueue<PathLocation>();
+		
+		ArrayList<PathLocation> paths = new ArrayList<PathLocation>();
+		int shortestPath = Integer.MAX_VALUE;
 		
 		int conns = getConnectivity(world, x, y, z);
 		searchedLocations.add(new ChunkPosition(x, y, z));
@@ -109,13 +140,19 @@ public class TubeHelper
 		{
 			PathLocation pos = toSearch.poll();
 			
+			if(pos.dist > shortestPath)
+				break;
+			
 			TileEntity ent = CommonHelper.getTileEntity(world, pos.position);
 			ITubeConnectable con = getTubeConnectable(ent);
 			
 			if(con == null)
 			{
 				if(InventoryHelper.canAcceptItem(item.item, world, pos.position, pos.dir))
-					return pos.initialDir;
+				{
+					shortestPath = pos.dist;
+					paths.add(pos);
+				}
 			}
 			else if(con.canPathThrough())
 			{
@@ -147,10 +184,17 @@ public class TubeHelper
 				}
 			}
 			else
-				return pos.initialDir;
+			{
+				shortestPath = pos.dist;
+				paths.add(pos);
+			}
+				
 		}
 		
-		return -1;
+		if(paths.isEmpty())
+			return -1;
+		
+		return paths.get(new Random().nextInt(paths.size())).initialDir;
 	}
 	
 	private static class PathLocation implements Comparable<PathLocation>

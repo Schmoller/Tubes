@@ -116,16 +116,27 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 	@Override
 	public boolean addItem(ItemStack item, int fromDir)
 	{
+		assert(fromDir >= -1 && fromDir < 6);
+		
 		TubeItem tItem = new TubeItem(item);
-		tItem.direction = fromDir;
-		tItem.progress = 0;
+		if(fromDir == -1)
+		{
+			tItem.direction = 6;
+			tItem.progress = 0.5f;
+		}
+		else
+		{
+			tItem.direction = fromDir;
+			tItem.progress = 0;
+		}
 		
 		mLogic.onItemEnter(tItem);
 		
-		if(!world().isRemote) // TODO: The heck?
+		if(!world().isRemote)
+		{
 			mItemsInTransit.add(tItem);
-		else
 			ModTubes.packetManager.sendPacketForBlock(new ModPacketAddItem(x(), y(), z(), tItem), world());
+		}
 		
 		return true;
 	}
@@ -133,6 +144,7 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 	@Override
 	public boolean addItem(TubeItem item)
 	{
+		assert(item.direction >= 0 && item.direction <= 6);
 		mLogic.onItemEnter(item);
 		mItemsInTransit.add(item);
 		return true;
@@ -141,7 +153,7 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 	@Override
 	public boolean canAddItem( TubeItem item )
 	{
-		return mLogic.canItemEnter(item, item.direction^1);
+		return mLogic.canItemEnter(item, (item.direction == 6 ? 6 : item.direction^1));
 	}
 	
 	@Override
@@ -150,6 +162,7 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 		return mLogic.canPathThrough();
 	}
 	
+	@Override
 	public int getConnections()
 	{
 		return TubeHelper.getConnectivity(world(), x(), y(), z());
@@ -252,6 +265,20 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 		while(it.hasNext())
 		{
 			TubeItem item = it.next();
+			
+			if(item.direction == 6) // It needs a path right away
+			{
+				item.direction = getNextDirection(item);
+				if(item.direction == -1)
+				{
+					it.remove();
+					continue;
+				}
+			}
+			
+			if(item.direction > 6)
+				it.remove();
+			
 			item.progress += 0.1;
 			
 			if(!item.updated && item.progress >= 0.5)
@@ -291,6 +318,9 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 	
 	private boolean transferToNext(TubeItem item)
 	{
+		if(item.direction == 6)
+			return false;
+		
 		ForgeDirection dir = ForgeDirection.getOrientation(item.direction);
 		
 		TileEntity ent = world().getBlockTileEntity(x() + dir.offsetX, y() + dir.offsetY, z() + dir.offsetZ);
@@ -300,8 +330,7 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 			item.progress -= 1;
 			item.updated = false;
 			
-			if(con.addItem(item))
-				return true;
+			return con.addItem(item);
 		}
 		
 		if(world().isRemote)
@@ -322,7 +351,7 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 	@Override
 	public int getRouteWeight()
 	{
-		return 1;
+		return getLogic().getRouteWeight();
 	}
 
 	@Override

@@ -2,11 +2,15 @@ package schmoller.tubes;
 
 import java.util.logging.Logger;
 
+import codechicken.multipart.MultipartGenerator;
+
+import schmoller.tubes.definitions.ExtractionTube;
 import schmoller.tubes.definitions.NormalTube;
 import schmoller.tubes.definitions.RestrictionTube;
 import schmoller.tubes.network.PacketManager;
 import schmoller.tubes.network.packets.ModPacketAddItem;
 import schmoller.tubes.parts.ItemTubeBase;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
@@ -62,14 +66,18 @@ public class ModTubes
 		packetManager.initialize("tubes");
 		PacketManager.registerHandler(proxy);
 		PacketManager.registerPacket(ModPacketAddItem.class);
-		
+		 
 		proxy.initialize();
+		
+		MultipartGenerator.registerPassThroughInterface(ISidedInventory.class.getName(), true, true);
 		
 		TubeRegistry.registerTube(new NormalTube(), "basic");
 		TubeRegistry.registerTube(new RestrictionTube(), "restriction");
+		TubeRegistry.registerTube(new ExtractionTube(), "extraction");
 		
 		LanguageRegistry.instance().addStringLocalization("tubes.basic.name", "Tube");
 		LanguageRegistry.instance().addStringLocalization("tubes.restriction.name", "Restriction Tube");
+		LanguageRegistry.instance().addStringLocalization("tubes.extraction.name", "Extraction Tube");
 		
 		itemTube = new ItemTubeBase(itemTubeId);
 		GameRegistry.registerItem(itemTube, "tubes:items:tube");
