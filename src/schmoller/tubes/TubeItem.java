@@ -8,6 +8,9 @@ import net.minecraftforge.common.ForgeDirection;
 
 public class TubeItem
 {
+	public static final int NORMAL = 0;
+	public static final int NO_PATH = 1;
+	
 	public TubeItem(ItemStack item)
 	{
 		this.item = item;
@@ -17,17 +20,19 @@ public class TubeItem
 	public int direction = 0;
 	public float progress = 0;
 	public boolean updated = false;
+	public int state = NORMAL;
 	
 	@Override
 	public String toString()
 	{
-		return item.toString() + " " + ForgeDirection.getOrientation(direction).name() + " U:" + updated + " P:" + progress;
+		return item.toString() + " " + ForgeDirection.getOrientation(direction).name() + " U:" + updated + " P:" + progress + " S:" + state;
 	}
 	
 	public void writeToNBT(NBTTagCompound tag)
 	{
 		tag.setInteger("D", direction | (updated ? 128 : 0));
 		tag.setFloat("P", progress);
+		tag.setInteger("S", state);
 		item.writeToNBT(tag);
 	}
 	
@@ -36,6 +41,7 @@ public class TubeItem
 		output.writeByte(direction | (updated ? 128 : 0));
 		output.writeFloat(progress);
 		output.writeItemStack(item);
+		output.writeByte(state);
 	}
 	
 	public static TubeItem read(MCDataInput input)
@@ -49,6 +55,7 @@ public class TubeItem
 		item.direction = direction;
 		item.updated = updated;
 		item.progress = progress;
+		item.state = input.readByte();
 		
 		return item;
 	}
@@ -62,6 +69,7 @@ public class TubeItem
 		tItem.direction -= (tItem.direction & 128);
 		
 		tItem.progress = tag.getFloat("P");
+		tItem.state = tag.getInteger("S");
 		
 		return tItem;
 	}

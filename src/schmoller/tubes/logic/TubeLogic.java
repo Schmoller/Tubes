@@ -58,4 +58,10 @@ public abstract class TubeLogic
 	 * @return The direction (0-5) to go. NO_DESTINATION Should be returned if no destination is found
 	 */
 	public int onDetermineDestination(TubeItem item) { return NO_DESTINATION; }
+	
+	/**
+	 * Gets what class of tube this is. This is used to determine what tubes can connect to what tubes.
+	 * It can be any number you want
+	 */
+	public int getConnectionClass() { return 0; }
 }

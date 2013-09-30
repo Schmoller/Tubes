@@ -1,6 +1,7 @@
 package schmoller.tubes.logic;
 
 import schmoller.tubes.ITube;
+import schmoller.tubes.ITubeConnectable;
 import schmoller.tubes.TubeItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
@@ -124,5 +125,17 @@ public class ExtractionTubeLogic extends TubeLogic implements ISidedInventory
 	public boolean canConnectToInventories()
 	{
 		return false;
+	}
+	
+	@Override
+	public boolean canConnectTo( ITubeConnectable con )
+	{
+		return con.getConnectionClass() == 0;
+	}
+	
+	@Override
+	public int getConnectionClass()
+	{
+		return 20;
 	}
 }

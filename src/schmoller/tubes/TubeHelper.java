@@ -17,6 +17,7 @@ import net.minecraftforge.common.ForgeDirection;
 
 public class TubeHelper
 {
+	public static final Random rand = new Random();
 	public static ITubeConnectable getTubeConnectable(IBlockAccess world, int x, int y, int z)
 	{
 		return getTubeConnectable(world.getBlockTileEntity(x, y, z));
@@ -194,7 +195,7 @@ public class TubeHelper
 		if(paths.isEmpty())
 			return -1;
 		
-		return paths.get(new Random().nextInt(paths.size())).initialDir;
+		return paths.get(rand.nextInt(paths.size())).initialDir;
 	}
 	
 	private static class PathLocation implements Comparable<PathLocation>

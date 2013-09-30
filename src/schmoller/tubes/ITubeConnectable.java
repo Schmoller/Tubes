@@ -18,4 +18,6 @@ public interface ITubeConnectable
 	public boolean canPathThrough();
 	
 	public int getRouteWeight();
+	
+	public int getConnectionClass();
 }
