@@ -48,9 +48,17 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 	private LinkedList<TubeItem> mItemsInTransit = new LinkedList<TubeItem>();
 
 	public static int transitTime = 1000;
+	public static int blockedWaitTime = 10;
+	
 	private TubeLogic mLogic;
 	private TubeDefinition mDef;
 	private String mType;
+	
+	private boolean mIsBlocked = false;
+	private float[] mBlockedProgress = null;
+	
+	private static final int NO_ROUTE = -1;
+	private static final int ROUTE_TERM = -2;
 	
 	public BaseTubePart()
 	{
@@ -118,6 +126,7 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 	{
 		assert(fromDir >= -1 && fromDir < 6);
 		
+		
 		TubeItem tItem = new TubeItem(item);
 		if(fromDir == -1)
 		{
@@ -130,12 +139,17 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 			tItem.progress = 0;
 		}
 		
+		if(!canAddItem(tItem))
+			return false;
+		
 		mLogic.onItemEnter(tItem);
 		
 		if(!world().isRemote)
 		{
 			mItemsInTransit.add(tItem);
-			ModTubes.packetManager.sendPacketForBlock(new ModPacketAddItem(x(), y(), z(), tItem), world());
+			
+			if(tItem.direction != 6)
+				addToClient(tItem);
 		}
 		
 		return true;
@@ -144,7 +158,8 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 	@Override
 	public boolean addItem(TubeItem item)
 	{
-		assert(item.direction >= 0 && item.direction <= 6);
+		assert(item.direction >= -1 && item.direction <= 6);
+		
 		mLogic.onItemEnter(item);
 		mItemsInTransit.add(item);
 		return true;
@@ -153,6 +168,11 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 	@Override
 	public boolean canAddItem( TubeItem item )
 	{
+		if(mIsBlocked && mBlockedProgress != null && item.direction != 6)
+		{
+			if(mBlockedProgress[item.direction] < 0.1)
+				return false;
+		}
 		return mLogic.canItemEnter(item, (item.direction == 6 ? 6 : item.direction^1));
 	}
 	
@@ -166,6 +186,19 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 	public int getConnections()
 	{
 		return TubeHelper.getConnectivity(world(), x(), y(), z());
+	}
+	
+	private int getNumConnections()
+	{
+		int count = 0;
+		int con = getConnections();
+		for(int i = 0; i < 6; ++i)
+		{
+			if((con & (1 << i)) != 0)
+				++count;
+		}
+		
+		return count;
 	}
 	
 	@Override
@@ -185,10 +218,13 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 		return con;
 	}
 	
+	private boolean mDidRoute = false;
 	private int getNextDirection(TubeItem item)
 	{
 		int count = 0;
-		int dir = -1;
+		int dir = NO_ROUTE;
+		
+		mDidRoute = false;
 		
 		int conns = getConnections();
 		
@@ -206,7 +242,7 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 		if(count > 1)
 		{
 			if(world().isRemote)
-				return -1;
+				return ROUTE_TERM;
 			
 			if(count > 1)
 			{
@@ -214,21 +250,10 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 					dir = mLogic.onDetermineDestination(item);
 				else
 					dir = TubeHelper.findNextDirection(world(), x(), y(), z(), item);
+				
+				mDidRoute = true;
 			}
-			
-			if(dir == -1)
-				dir = item.direction ^ 1;
-			
-			int l = item.direction;
-			item.direction = dir;
-			item.updated = true;
-			ModTubes.packetManager.sendPacketForBlock(new ModPacketAddItem(x(), y(), z(), item), world());
-			item.updated = false;
-			item.direction = l;
 		}
-		else if(dir == -1)
-			dir = item.direction ^ 1;
-			
 		
 		return dir;
 	}
@@ -257,6 +282,75 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 	{
 		return true;
 	}
+	
+	private void setBlocked(boolean blocked)
+	{
+		if(blocked == mIsBlocked)
+			return;
+		
+		if(blocked)
+		{
+			mIsBlocked = true;
+			scheduleTick(blockedWaitTime);
+		}
+		else
+		{
+			mIsBlocked = false;
+			mBlockedProgress = null;
+		}
+		
+		if(!world().isRemote)
+			tile().getWriteStream(this).writeByte(1).writeBoolean(mIsBlocked);
+	}
+	
+	@Override
+	public void scheduledTick()
+	{
+		if(!mIsBlocked)
+			return;
+		
+		// See if the item is unstuck now
+		for(TubeItem item : mItemsInTransit)
+		{
+			if(!item.updated && item.progress >= 0.5)
+			{
+				int lastDir = item.direction;
+				item.direction = getNextDirection(item);
+				if(item.direction == NO_ROUTE)
+				{
+					item.direction = lastDir;
+				}
+				else
+				{
+					setBlocked(false);
+					item.updated = true;
+					addToClient(item);
+				}
+			}
+			
+			if(item.progress + 0.1 >= 1)
+			{
+				if(transferToNext(item))
+				{
+					mItemsInTransit.remove(item);
+					setBlocked(false);
+					return;
+				}
+			}
+		}
+		
+		if(mIsBlocked)
+			scheduleTick(blockedWaitTime);
+	}
+	
+	private void addToClient(TubeItem item)
+	{
+		if(world().isRemote)
+			return;
+		
+		item.write(tile().getWriteStream(this).writeByte(0));
+	}
+	
 	@Override
 	public void update()
 	{
@@ -268,36 +362,89 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 			
 			if(item.direction == 6) // It needs a path right away
 			{
+				if(mIsBlocked)
+					continue;
+				
 				item.direction = getNextDirection(item);
-				if(item.direction == -1)
+				if(item.direction == NO_ROUTE)
+				{
+					item.direction = 6;
+					
+					setBlocked(true);
+					addToClient(item);
+					break;
+				}
+				else if(item.direction == ROUTE_TERM)
 				{
 					it.remove();
 					continue;
 				}
+				// Tell the client that the item got a direction
+				else if(!world().isRemote)
+					addToClient(item);
 			}
 			
-			if(item.direction > 6)
-				it.remove();
+			if(mIsBlocked && mBlockedProgress != null)
+			{
+				if(item.progress > mBlockedProgress[item.direction] - 0.1)
+				{
+					if(item.progress <= mBlockedProgress[item.direction])
+						mBlockedProgress[item.direction] -= 0.1;
+					
+					continue;
+				}
+			}
 			
 			item.progress += 0.1;
 			
 			if(!item.updated && item.progress >= 0.5)
 			{
+				if(mIsBlocked && mBlockedProgress == null)
+				{
+					item.progress -= 0.1;
+					mBlockedProgress = new float[] {item.progress, item.progress, item.progress, item.progress, item.progress, item.progress};
+					continue;
+				}
+				
 				// Find new direction to go
+				int lastDir = item.direction;
 				item.direction = getNextDirection(item);
-				if(item.direction == -1)
+				item.updated = true;
+				if(item.direction == NO_ROUTE)
+				{
+					if(getNumConnections() == 1)
+						item.direction = lastDir ^ 1;
+					else
+					{
+						item.direction = lastDir;
+						item.updated = false;
+						setBlocked(true);
+						addToClient(item); // Client will have deleted it
+					}
+					break;
+				}
+				else if(item.direction == ROUTE_TERM)
 				{
 					it.remove();
 					continue;
 				}
+				// Synch the new direction to client
+				else if(!world().isRemote && mDidRoute)
+					addToClient(item);
 				
-				item.updated = true;
+				
 			}
 			
 			if(item.progress >= 1)
 			{
 				if(transferToNext(item))
 					it.remove();
+				else if (mIsBlocked)
+				{
+					item.progress -= 0.1;
+					mBlockedProgress = new float[] {item.progress, item.progress, item.progress, item.progress, item.progress, item.progress};
+					continue;
+				}
 				else
 				{
 					item.progress -= 1;
@@ -305,11 +452,12 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 					item.direction ^= 1;
 					
 					if(!world().isRemote)
-						ModTubes.packetManager.sendPacketForBlock(new ModPacketAddItem(x(), y(), z(), item), world());
+						addToClient(item);
 				}
 			}
 		}
 	}
+	
 	
 	public List<TubeItem> getItems()
 	{
@@ -327,6 +475,15 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 		ITubeConnectable con = TubeHelper.getTubeConnectable(ent);
 		if(con != null)
 		{
+			if(con instanceof ITube)
+			{
+				if(((ITube)con).isBlocked() && !con.canAddItem(item))
+				{
+					setBlocked(true);
+					return false;
+				}
+			}
+			
 			item.progress -= 1;
 			item.updated = false;
 			
@@ -357,7 +514,7 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 	@Override
 	public boolean isBlocked()
 	{
-		return false;
+		return mIsBlocked;
 	}
 	
 	@Override
@@ -385,7 +542,7 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 		{
 			NBTTagCompound tag = (NBTTagCompound)list.tagAt(i);
 			
-			mItemsInTransit.add(TubeItem.readFromNBT(tag));
+			//mItemsInTransit.add(TubeItem.readFromNBT(tag));
 		}
 	}
 	
@@ -394,11 +551,7 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 	{
 		packet.writeShort(mItemsInTransit.size());
 		for(TubeItem item : mItemsInTransit)
-		{
-			packet.writeByte(item.direction | (item.updated ? 128 : 0));
-			packet.writeFloat(item.progress);
-			packet.writeItemStack(item.item);
-		}
+			item.write(packet);
 	}
 	
 	@Override
@@ -409,20 +562,23 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 		mItemsInTransit.clear();
 		
 		for(int i = 0; i < count; ++i)
-		{
-			int direction = packet.readByte() & 0xFF;
-			boolean updated = (direction & 128) != 0;
-			direction -= (direction & 128);
-			
-			float progress = packet.readFloat();
-			TubeItem item = new TubeItem(packet.readItemStack());
-			item.direction = direction;
-			item.updated = updated;
-			item.progress = progress;
-			mItemsInTransit.add(item);
-		}
+			mItemsInTransit.add(TubeItem.read(packet));
 	}
 	
+	@Override
+	public void read( MCDataInput packet )
+	{
+		int id = packet.readByte();
+		switch(id)
+		{
+		case 0:
+			mItemsInTransit.add(TubeItem.read(packet));
+			break;
+		case 1:
+			mIsBlocked = packet.readBoolean();
+			break;
+		}
+	}
 	
 	@Override
 	@SideOnly( Side.CLIENT )

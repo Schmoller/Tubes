@@ -1,5 +1,7 @@
 package schmoller.tubes;
 
+import codechicken.core.data.MCDataInput;
+import codechicken.core.data.MCDataOutput;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.ForgeDirection;
@@ -29,6 +31,27 @@ public class TubeItem
 		item.writeToNBT(tag);
 	}
 	
+	public void write(MCDataOutput output)
+	{
+		output.writeByte(direction | (updated ? 128 : 0));
+		output.writeFloat(progress);
+		output.writeItemStack(item);
+	}
+	
+	public static TubeItem read(MCDataInput input)
+	{
+		int direction = input.readByte() & 0xFF;
+		boolean updated = (direction & 128) != 0;
+		direction -= (direction & 128);
+		
+		float progress = input.readFloat();
+		TubeItem item = new TubeItem(input.readItemStack());
+		item.direction = direction;
+		item.updated = updated;
+		item.progress = progress;
+		
+		return item;
+	}
 	public static TubeItem readFromNBT(NBTTagCompound tag)
 	{
 		ItemStack item = ItemStack.loadItemStackFromNBT(tag);
