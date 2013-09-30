@@ -10,9 +10,12 @@ import codechicken.multipart.MultiPartRegistry;
 import codechicken.multipart.TMultiPart;
 import codechicken.multipart.MultiPartRegistry.IPartFactory;
 import cpw.mods.fml.common.FMLLog;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IconRegister;
 import schmoller.tubes.definitions.TubeDefinition;
 import schmoller.tubes.parts.BaseTubePart;
+import schmoller.tubes.render.ITubeRender;
 
 public class TubeRegistry implements IPartFactory
 {
@@ -20,6 +23,7 @@ public class TubeRegistry implements IPartFactory
 	
 	private boolean mCanAdd = true;
 	private HashMap<String, TubeDefinition> mRegisteredTubes = new HashMap<String, TubeDefinition>();
+	private HashMap<TubeDefinition, ITubeRender> mRenderers = new HashMap<TubeDefinition, ITubeRender>();
 	
 	public static TubeRegistry instance()
 	{
@@ -34,6 +38,16 @@ public class TubeRegistry implements IPartFactory
 		assert(instance().mCanAdd);
 		
 		instance().mRegisteredTubes.put(name, tube);
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public static void registerRenderer(String typeName, ITubeRender render)
+	{
+		assert(instance().mCanAdd);
+		assert(instance().mRegisteredTubes.containsKey(typeName));
+		assert(render != null);
+		
+		instance().mRenderers.put(instance().mRegisteredTubes.get(typeName), render);
 	}
 	
 	public void registerIcons(IconRegister register)
@@ -62,7 +76,20 @@ public class TubeRegistry implements IPartFactory
 	
 	public TubeDefinition getDefinition(String name)
 	{
-		return mRegisteredTubes.get(name);
+		TubeDefinition def = mRegisteredTubes.get(name);
+		if(def != null)
+			return def;
+		
+		return mRegisteredTubes.get("basic");
+	}
+	
+	public ITubeRender getRender(TubeDefinition def)
+	{
+		ITubeRender render = mRenderers.get(def);
+		if(render != null)
+			return render;
+		
+		return mRenderers.values().iterator().next();
 	}
 	
 	private HashMap<String, Constructor<? extends BaseTubePart>> mCachedConstructors = new HashMap<String, Constructor<? extends BaseTubePart>>();

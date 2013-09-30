@@ -7,11 +7,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 
-public class ExtractionTubeLogic extends TubeLogic implements ISidedInventory
+public class InjectionTubeLogic extends TubeLogic implements ISidedInventory
 {
 	private ITube mTube;
 	
-	public ExtractionTubeLogic(ITube tube)
+	public InjectionTubeLogic(ITube tube)
 	{
 		mTube = tube;
 	}

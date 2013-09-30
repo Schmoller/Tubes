@@ -22,7 +22,7 @@ import schmoller.tubes.TubeItem;
 import schmoller.tubes.TubeRegistry;
 import schmoller.tubes.definitions.TubeDefinition;
 import schmoller.tubes.logic.TubeLogic;
-import schmoller.tubes.render.RenderTubePart;
+import schmoller.tubes.render.RenderHelper;
 import codechicken.core.data.MCDataInput;
 import codechicken.core.data.MCDataOutput;
 import codechicken.core.lighting.LazyLightMatrix;
@@ -496,16 +496,14 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 	@SideOnly( Side.CLIENT )
 	public void renderDynamic( Vector3 pos, float frame, int pass )
 	{
-		RenderTubePart.instance().setIcons(mDef.getCenterIcon(), mDef.getStraightIcon());
-		RenderTubePart.instance().renderDynamic(this, pos);
+		RenderHelper.renderDynamic(this, mDef, pos);
 	}
 	
 	@Override
 	@SideOnly( Side.CLIENT )
 	public void renderStatic(Vector3 pos, LazyLightMatrix olm, int pass) 
 	{
-		RenderTubePart.instance().setIcons(mDef.getCenterIcon(), mDef.getStraightIcon());
-		RenderTubePart.instance().renderStatic(this);
+		RenderHelper.renderStatic(this, mDef);
 	}
 	
 	@Override

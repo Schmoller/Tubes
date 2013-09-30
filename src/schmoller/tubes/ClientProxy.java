@@ -5,10 +5,9 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import schmoller.tubes.network.ModBlockPacket;
 import schmoller.tubes.network.ModPacket;
 import schmoller.tubes.network.packets.ModPacketAddItem;
+import schmoller.tubes.render.NormalTubeRender;
 import schmoller.tubes.render.RenderTubeItem;
 import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.client.registry.ClientRegistry;
-import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.network.Player;
 
 public class ClientProxy extends CommonProxy
@@ -17,8 +16,17 @@ public class ClientProxy extends CommonProxy
 	public void initialize()
 	{
 		super.initialize();
+		registerRenderers();
+	}
+	
+	private void registerRenderers()
+	{
 		MinecraftForgeClient.registerItemRenderer(ModTubes.instance.itemTubeId + 256, new RenderTubeItem());
 		
+		NormalTubeRender normal = new NormalTubeRender();
+		TubeRegistry.registerRenderer("basic",normal);
+		TubeRegistry.registerRenderer("restriction",normal);
+		TubeRegistry.registerRenderer("injection",normal);
 	}
 	
 	@Override
