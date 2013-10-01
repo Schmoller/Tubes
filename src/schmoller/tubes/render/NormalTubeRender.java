@@ -6,13 +6,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import schmoller.tubes.AdvRender;
 import schmoller.tubes.ITube;
-import schmoller.tubes.ModTubes;
-import schmoller.tubes.TubeRegistry;
 import schmoller.tubes.definitions.TubeDefinition;
 
 public class NormalTubeRender implements ITubeRender
 {
-	private AdvRender mRender = new AdvRender();
+	protected AdvRender mRender = new AdvRender();
 	
 	@Override
 	public boolean renderDynamic( TubeDefinition type, ITube tube, World world, int x, int y, int z )
@@ -45,7 +43,7 @@ public class NormalTubeRender implements ITubeRender
 		}
 	}
 	
-	private void renderStraight(int connections, TubeDefinition def)
+	protected void renderStraight(int connections, TubeDefinition def)
 	{
 		mRender.setIcon(def.getStraightIcon());
 		
@@ -65,13 +63,13 @@ public class NormalTubeRender implements ITubeRender
 		}
 	}
 	
-	private void renderCore(int connections, TubeDefinition def)
+	protected void renderCore(int connections, TubeDefinition def)
 	{
 		mRender.setIcon(def.getCenterIcon());
 		mRender.drawBox((~connections) & 63, 0.25f, 0.25f, 0.25f, 0.75f, 0.75f, 0.75f);
 	}
 	
-	private void renderConnections(int connections, TubeDefinition def)
+	protected void renderConnections(int connections, TubeDefinition def)
 	{
 		mRender.setIcon(def.getStraightIcon());
 		

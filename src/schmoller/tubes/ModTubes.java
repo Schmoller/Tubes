@@ -51,6 +51,8 @@ public class ModTubes
 	
 	public static ItemTubeBase itemTube;
 	
+	public static final int GUI_INJECTION_TUBE = 0;
+	
 	@PreInit
 	public void preInit(FMLPreInitializationEvent event)
 	{

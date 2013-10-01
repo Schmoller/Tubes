@@ -129,6 +129,8 @@ public class TubeHelper
 				ITubeConnectable con = getTubeConnectable(ent);
 				if(con == null || con.canAddItem(item))
 				{
+					loc.dist += con.getRouteWeight() - 1;
+					
 					toSearch.add(loc);
 
 					if(con != null && con.canPathThrough())

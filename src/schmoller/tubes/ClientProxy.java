@@ -1,10 +1,15 @@
 package schmoller.tubes;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
+import schmoller.tubes.gui.InjectionTubeGui;
 import schmoller.tubes.network.ModBlockPacket;
 import schmoller.tubes.network.ModPacket;
 import schmoller.tubes.network.packets.ModPacketAddItem;
+import schmoller.tubes.parts.InventoryTubePart;
+import schmoller.tubes.render.InjectionTubeRender;
 import schmoller.tubes.render.NormalTubeRender;
 import schmoller.tubes.render.RenderTubeItem;
 import cpw.mods.fml.client.FMLClientHandler;
@@ -26,7 +31,7 @@ public class ClientProxy extends CommonProxy
 		NormalTubeRender normal = new NormalTubeRender();
 		TubeRegistry.registerRenderer("basic",normal);
 		TubeRegistry.registerRenderer("restriction",normal);
-		TubeRegistry.registerRenderer("injection",normal);
+		TubeRegistry.registerRenderer("injection",new InjectionTubeRender());
 	}
 	
 	@Override
@@ -44,5 +49,17 @@ public class ClientProxy extends CommonProxy
 			}
 		}
 		return false;
+	}
+	
+	@Override
+	public Object getClientGuiElement( int ID, EntityPlayer player, World world, int x, int y, int z )
+	{
+		switch(ID)
+		{
+		case ModTubes.GUI_INJECTION_TUBE:
+			return new InjectionTubeGui(CommonHelper.getMultiPart(world, x, y, z, InventoryTubePart.class), player);
+		}
+		
+		return null;
 	}
 }

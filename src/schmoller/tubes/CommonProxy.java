@@ -1,22 +1,30 @@
 
 package schmoller.tubes;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.world.World;
 import codechicken.multipart.MultipartGenerator;
+import cpw.mods.fml.common.network.IGuiHandler;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import schmoller.tubes.definitions.InjectionTube;
 import schmoller.tubes.definitions.NormalTube;
 import schmoller.tubes.definitions.RestrictionTube;
+import schmoller.tubes.gui.InjectionTubeContainer;
 import schmoller.tubes.network.IModPacketHandler;
 import schmoller.tubes.network.ModPacket;
+import schmoller.tubes.parts.InventoryTubePart;
 
-public class CommonProxy implements IModPacketHandler
+public class CommonProxy implements IModPacketHandler, IGuiHandler
 {
 	public void initialize()
 	{
 		registerTubes();
 		registerText();
+		
+		NetworkRegistry.instance().registerGuiHandler(ModTubes.instance, this);
 	}
 	
 	private void registerTubes()
@@ -39,5 +47,20 @@ public class CommonProxy implements IModPacketHandler
 	public boolean onPacketArrive( ModPacket packet, Player sender )
 	{
 		return false;
+	}
+	
+	@Override
+	public Object getClientGuiElement( int ID, EntityPlayer player, World world, int x, int y, int z ) { return null; }
+	
+	@Override
+	public Object getServerGuiElement( int ID, EntityPlayer player, World world, int x, int y, int z )
+	{
+		switch(ID)
+		{
+		case ModTubes.GUI_INJECTION_TUBE:
+			return new InjectionTubeContainer(CommonHelper.getMultiPart(world, x, y, z, InventoryTubePart.class), player);
+		}
+		
+		return null;
 	}
 }

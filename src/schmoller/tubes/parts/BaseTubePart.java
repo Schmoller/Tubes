@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import net.minecraft.client.particle.EffectRenderer;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -77,7 +78,7 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 	@Override
 	public Cuboid6 getBounds()
 	{
-		return new Cuboid6(0.25, 0.25, 0.25, 0.75, 0.75, 0.75);
+		return mDef.getSize();
 	}
 
 	@Override
@@ -540,5 +541,10 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 		return 1 << 6;
 	}
 	
+	@Override
+	public boolean activate( EntityPlayer player, MovingObjectPosition part, ItemStack item )
+	{
+		return mLogic.onActivate(player);
+	}
 	
 }

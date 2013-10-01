@@ -2,6 +2,7 @@ package schmoller.tubes.logic;
 
 import schmoller.tubes.ITube;
 import schmoller.tubes.ITubeConnectable;
+import schmoller.tubes.ModTubes;
 import schmoller.tubes.TubeItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
@@ -70,9 +71,9 @@ public class InjectionTubeLogic extends TubeLogic implements ISidedInventory
 	}
 
 	@Override
-	public boolean isUseableByPlayer( EntityPlayer entityplayer )
+	public boolean isUseableByPlayer( EntityPlayer player )
 	{
-		return false;
+		return (player.getDistanceSq(mTube.x(), mTube.y(), mTube.z()) <= 25);
 	}
 
 	@Override
@@ -137,5 +138,12 @@ public class InjectionTubeLogic extends TubeLogic implements ISidedInventory
 	public int getConnectionClass()
 	{
 		return 20;
+	}
+	
+	@Override
+	public boolean onActivate( EntityPlayer player )
+	{
+		player.openGui(ModTubes.instance, ModTubes.GUI_INJECTION_TUBE, mTube.world(), mTube.x(), mTube.y(), mTube.z());
+		return true;
 	}
 }

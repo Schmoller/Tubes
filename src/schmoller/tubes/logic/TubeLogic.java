@@ -1,5 +1,6 @@
 package schmoller.tubes.logic;
 
+import net.minecraft.entity.player.EntityPlayer;
 import schmoller.tubes.ITubeConnectable;
 import schmoller.tubes.TubeItem;
 
@@ -64,4 +65,9 @@ public abstract class TubeLogic
 	 * It can be any number you want
 	 */
 	public int getConnectionClass() { return 0; }
+	
+	/**
+	 * Called when the player activates the tube
+	 */
+	public boolean onActivate(EntityPlayer player) { return false; }
 }

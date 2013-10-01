@@ -1,5 +1,7 @@
 package schmoller.tubes;
 
+import codechicken.multipart.TMultiPart;
+import codechicken.multipart.TileMultipart;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.IBlockAccess;
@@ -22,6 +24,21 @@ public class CommonHelper
 		TileEntity tile = world.getBlockTileEntity(x, y, z);
 		if(tileClass.isInstance(tile))
 			return (T)tile;
+		
+		return null;
+	}
+	
+	@SuppressWarnings( "unchecked" )
+	public static <T> T getMultiPart(IBlockAccess world, int x, int y, int z, Class<? extends T> partClass)
+	{
+		TileMultipart tile = getTileEntity(world, x, y, z, TileMultipart.class);
+		
+		if(tile == null)
+			return null;
+		
+		TMultiPart part = tile.partMap(6);
+		if(partClass.isInstance(part))
+			return (T)part;
 		
 		return null;
 	}
