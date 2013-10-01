@@ -9,6 +9,7 @@ import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.LanguageRegistry;
+import schmoller.tubes.definitions.EjectionTube;
 import schmoller.tubes.definitions.InjectionTube;
 import schmoller.tubes.definitions.NormalTube;
 import schmoller.tubes.definitions.RestrictionTube;
@@ -34,6 +35,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 		TubeRegistry.registerTube(new NormalTube(), "basic");
 		TubeRegistry.registerTube(new RestrictionTube(), "restriction");
 		TubeRegistry.registerTube(new InjectionTube(), "injection");
+		TubeRegistry.registerTube(new EjectionTube(), "ejection");
 	}
 	
 	private void registerText()
@@ -41,6 +43,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 		LanguageRegistry.instance().addStringLocalization("tubes.basic.name", "Tube");
 		LanguageRegistry.instance().addStringLocalization("tubes.restriction.name", "Restriction Tube");
 		LanguageRegistry.instance().addStringLocalization("tubes.injection.name", "Injection Tube");
+		LanguageRegistry.instance().addStringLocalization("tubes.ejection.name", "Ejection Tube");
 	}
 
 	@Override

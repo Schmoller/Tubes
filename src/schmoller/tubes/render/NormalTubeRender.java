@@ -125,6 +125,7 @@ public class NormalTubeRender implements ITubeRender
 		FMLClientHandler.instance().getClient().renderGlobal.renderEngine.bindTexture("/terrain.png");
 		tes.startDrawingQuads();
 		
+		mRender.translate(-0.5f, -0.5f, -0.5f);
 		mRender.setIcon(type.getCenterIcon());
 		mRender.drawBox(63, 0.25f, 0.25f, 0.25f, 0.75f, 0.75f, 0.75f);
 		mRender.drawBox(63, 0.75f, 0.75f, 0.75f, 0.25f, 0.25f, 0.25f);

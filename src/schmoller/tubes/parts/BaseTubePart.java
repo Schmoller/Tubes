@@ -57,11 +57,6 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 	private static final int NO_ROUTE = -1;
 	private static final int ROUTE_TERM = -2;
 	
-	public BaseTubePart()
-	{
-		
-	}
-	
 	public BaseTubePart(String type)
 	{
 		mDef = TubeRegistry.instance().getDefinition(type);
@@ -221,6 +216,15 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 		
 		mDidRoute = false;
 		
+		if(mLogic.hasCustomRouting())
+		{
+			if(world().isRemote)
+				return ROUTE_TERM;
+			
+			mDidRoute = true;
+			return mLogic.onDetermineDestination(item);
+		}
+		
 		int conns = getConnections();
 		
 		conns -= (conns & (1 << (item.direction ^ 1)));
@@ -241,10 +245,7 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 			
 			if(count > 1)
 			{
-				if(mLogic.hasCustomRouting())
-					dir = mLogic.onDetermineDestination(item);
-				else
-					dir = TubeHelper.findNextDirection(world(), x(), y(), z(), item);
+				dir = TubeHelper.findNextDirection(world(), x(), y(), z(), item);
 				
 				mDidRoute = true;
 			}

@@ -2,6 +2,7 @@ package schmoller.tubes.parts;
 
 import java.util.List;
 
+import schmoller.tubes.IDirectionalTube;
 import schmoller.tubes.TubeRegistry;
 
 import net.minecraft.creativetab.CreativeTabs;
@@ -31,7 +32,17 @@ public class ItemTubeBase extends JItemMultiPart
 	@Override
 	public TMultiPart newPart( ItemStack item, EntityPlayer player, World world, BlockCoord pos, int side, Vector3 hit )
 	{
-		return MultiPartRegistry.createPart("tubes_" + getTubeType(item), false);
+		TMultiPart part = MultiPartRegistry.createPart("tubes_" + getTubeType(item), false);
+		
+		if(part instanceof IDirectionalTube)
+		{
+			int face = (player.isSneaking() ? side : side ^ 1);
+			
+			if(((IDirectionalTube)part).canFaceDirection(face))
+				((IDirectionalTube)part).setFacing(face);
+		}
+		
+		return part;
 	}
 	
 	@Override
