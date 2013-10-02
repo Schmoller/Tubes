@@ -5,6 +5,7 @@ import java.util.List;
 import schmoller.tubes.IDirectionalTube;
 import schmoller.tubes.TubeRegistry;
 
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -28,6 +29,12 @@ public class ItemTubeBase extends JItemMultiPart
 		setCreativeTab(CreativeTabs.tabTransport);
 	}
 
+	@Override
+	@SideOnly( Side.CLIENT )
+	public void registerIcons( IconRegister register )
+	{
+		itemIcon = register.registerIcon("missing");
+	}
 	
 	@Override
 	public TMultiPart newPart( ItemStack item, EntityPlayer player, World world, BlockCoord pos, int side, Vector3 hit )

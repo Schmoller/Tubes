@@ -1,6 +1,9 @@
 package schmoller.tubes.logic;
 
+import codechicken.core.data.MCDataInput;
+import codechicken.core.data.MCDataOutput;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import schmoller.tubes.ITubeConnectable;
 import schmoller.tubes.TubeItem;
 
@@ -70,4 +73,10 @@ public abstract class TubeLogic
 	 * Called when the player activates the tube
 	 */
 	public boolean onActivate(EntityPlayer player) { return false; }
+	
+	public void onSave(NBTTagCompound root) {}
+	public void onLoad(NBTTagCompound root) {}
+	
+	public void writeDesc(MCDataOutput output) {}
+	public void readDesc(MCDataInput input) {}
 }

@@ -10,12 +10,17 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import schmoller.tubes.definitions.EjectionTube;
+import schmoller.tubes.definitions.FilterTube;
 import schmoller.tubes.definitions.InjectionTube;
 import schmoller.tubes.definitions.NormalTube;
 import schmoller.tubes.definitions.RestrictionTube;
+import schmoller.tubes.gui.FilterTubeContainer;
 import schmoller.tubes.gui.InjectionTubeContainer;
+import schmoller.tubes.logic.FilterTubeLogic;
 import schmoller.tubes.network.IModPacketHandler;
+import schmoller.tubes.network.ModBlockPacket;
 import schmoller.tubes.network.ModPacket;
+import schmoller.tubes.network.packets.ModPacketSetFilterMode;
 import schmoller.tubes.parts.InventoryTubePart;
 
 public class CommonProxy implements IModPacketHandler, IGuiHandler
@@ -36,6 +41,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 		TubeRegistry.registerTube(new RestrictionTube(), "restriction");
 		TubeRegistry.registerTube(new InjectionTube(), "injection");
 		TubeRegistry.registerTube(new EjectionTube(), "ejection");
+		TubeRegistry.registerTube(new FilterTube(), "filter");
 	}
 	
 	private void registerText()
@@ -44,11 +50,36 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 		LanguageRegistry.instance().addStringLocalization("tubes.restriction.name", "Restriction Tube");
 		LanguageRegistry.instance().addStringLocalization("tubes.injection.name", "Injection Tube");
 		LanguageRegistry.instance().addStringLocalization("tubes.ejection.name", "Ejection Tube");
+		LanguageRegistry.instance().addStringLocalization("tubes.filter.name", "Filter Tube");
+		LanguageRegistry.instance().addStringLocalization("tubes.extraction.name", "Extraction Tube");
+		LanguageRegistry.instance().addStringLocalization("tubes.compressor.name", "Compressor Tube");
+		LanguageRegistry.instance().addStringLocalization("tubes.routing.name", "Routing Tube");
 	}
 
 	@Override
 	public boolean onPacketArrive( ModPacket packet, Player sender )
 	{
+		if(packet instanceof ModBlockPacket)
+		{
+			ITube tube = CommonHelper.getMultiPart(((EntityPlayer)sender).worldObj, ((ModBlockPacket)packet).xCoord, ((ModBlockPacket)packet).yCoord, ((ModBlockPacket)packet).zCoord, ITube.class);
+			
+			if(packet instanceof ModPacketSetFilterMode && tube != null && tube.getLogic() instanceof FilterTubeLogic)
+			{
+				ModPacketSetFilterMode mode = (ModPacketSetFilterMode)packet;
+				
+				FilterTubeLogic logic = (FilterTubeLogic)tube.getLogic();
+				
+				if(mode.mode != null)
+					logic.setMode(mode.mode);
+				else
+					logic.setComparison(mode.comparison);
+				
+				//tube.updateState();
+				
+				return true;
+			}
+			
+		}
 		return false;
 	}
 	
@@ -62,6 +93,8 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 		{
 		case ModTubes.GUI_INJECTION_TUBE:
 			return new InjectionTubeContainer(CommonHelper.getMultiPart(world, x, y, z, InventoryTubePart.class), player);
+		case ModTubes.GUI_FILTER_TUBE:
+			return new FilterTubeContainer((FilterTubeLogic)CommonHelper.getMultiPart(world, x, y, z, ITube.class).getLogic(), player);
 		}
 		
 		return null;

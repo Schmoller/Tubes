@@ -20,4 +20,6 @@ public interface ITube extends ITubeConnectable
 	public TubeLogic getLogic();
 
 	public List<TubeItem> getItems();
+	
+	public void updateState();
 }

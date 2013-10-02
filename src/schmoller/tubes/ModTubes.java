@@ -2,16 +2,10 @@ package schmoller.tubes;
 
 import java.util.logging.Logger;
 
-import codechicken.multipart.MultipartGenerator;
-
-import schmoller.tubes.definitions.InjectionTube;
-import schmoller.tubes.definitions.NormalTube;
-import schmoller.tubes.definitions.RestrictionTube;
 import schmoller.tubes.network.PacketManager;
-import schmoller.tubes.network.packets.ModPacketAddItem;
+import schmoller.tubes.network.packets.ModPacketSetFilterMode;
 import schmoller.tubes.parts.ItemTubeBase;
 import schmoller.tubes.render.RenderHelper;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
@@ -29,7 +23,6 @@ import cpw.mods.fml.common.Mod.PreInit;
 
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.Mod.Instance;
 
 @Mod(name="Tubes", version="1.0.0", modid = "Tubes", dependencies="required-after:Forge; required-before:CCMultipart")
@@ -52,6 +45,7 @@ public class ModTubes
 	public static ItemTubeBase itemTube;
 	
 	public static final int GUI_INJECTION_TUBE = 0;
+	public static final int GUI_FILTER_TUBE = 1;
 	
 	@PreInit
 	public void preInit(FMLPreInitializationEvent event)
@@ -68,7 +62,7 @@ public class ModTubes
 	{
 		packetManager.initialize("tubes");
 		PacketManager.registerHandler(proxy);
-		PacketManager.registerPacket(ModPacketAddItem.class);
+		PacketManager.registerPacket(ModPacketSetFilterMode.class);
 		
 		RenderHelper.initialize();
 		

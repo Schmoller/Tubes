@@ -446,6 +446,8 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 		}
 		
 		root.setTag("items", list);
+		
+		mLogic.onSave(root);
 	}
 	
 	@Override
@@ -461,6 +463,8 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 			
 			mItemsInTransit.add(TubeItem.readFromNBT(tag));
 		}
+		
+		mLogic.onLoad(root);
 	}
 	
 	@Override
@@ -469,6 +473,8 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 		packet.writeShort(mItemsInTransit.size());
 		for(TubeItem item : mItemsInTransit)
 			item.write(packet);
+		
+		mLogic.writeDesc(packet);
 	}
 	
 	@Override
@@ -480,6 +486,8 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 		
 		for(int i = 0; i < count; ++i)
 			mItemsInTransit.add(TubeItem.read(packet));
+		
+		mLogic.readDesc(packet);
 	}
 	
 	@Override
@@ -546,6 +554,12 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 	public boolean activate( EntityPlayer player, MovingObjectPosition part, ItemStack item )
 	{
 		return mLogic.onActivate(player);
+	}
+	
+	@Override
+	public void updateState()
+	{
+		sendDescUpdate();
 	}
 	
 }
