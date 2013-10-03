@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.ForgeDirection;
 
-public class TubeItem
+public class TubeItem implements Cloneable
 {
 	public static final int NORMAL = 0;
 	public static final int NO_PATH = 1;
@@ -72,5 +72,16 @@ public class TubeItem
 		tItem.state = tag.getInteger("S");
 		
 		return tItem;
+	}
+	
+	public TubeItem clone()
+	{
+		TubeItem item = new TubeItem(this.item.copy());
+		item.direction = direction;
+		item.state = state;
+		item.progress = progress;
+		item.updated = updated;
+		
+		return item;
 	}
 }

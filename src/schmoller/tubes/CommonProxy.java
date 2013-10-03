@@ -9,6 +9,7 @@ import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.LanguageRegistry;
+import schmoller.tubes.definitions.CompressorTube;
 import schmoller.tubes.definitions.EjectionTube;
 import schmoller.tubes.definitions.FilterTube;
 import schmoller.tubes.definitions.InjectionTube;
@@ -42,6 +43,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 		TubeRegistry.registerTube(new InjectionTube(), "injection");
 		TubeRegistry.registerTube(new EjectionTube(), "ejection");
 		TubeRegistry.registerTube(new FilterTube(), "filter");
+		TubeRegistry.registerTube(new CompressorTube(), "compressor");
 	}
 	
 	private void registerText()

@@ -14,6 +14,7 @@ public interface ITubeConnectable
 	
 	public boolean addItem(ItemStack item, int side);
 	public boolean addItem(TubeItem item);
+	public boolean addItem(TubeItem item, boolean syncToClient);
 	
 	public boolean canPathThrough();
 	

@@ -8,8 +8,8 @@ import net.minecraft.util.Icon;
 
 public class NormalTube extends TubeDefinition
 {
-	public Icon centerIcon;
-	public Icon straightIcon;
+	public static Icon centerIcon;
+	public static Icon straightIcon;
 	
 	@Override
 	public void registerIcons( IconRegister register )

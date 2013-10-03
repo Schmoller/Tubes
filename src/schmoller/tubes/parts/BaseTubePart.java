@@ -46,6 +46,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion, JIconHitEffects, TSlottedPart
 {
 	private LinkedList<TubeItem> mItemsInTransit = new LinkedList<TubeItem>();
+	private boolean mIsUpdating = false;
+	private LinkedList<TubeItem> mWaitingToAdd = new LinkedList<TubeItem>();
 
 	public static int transitTime = 1000;
 	public static int blockedWaitTime = 10;
@@ -135,7 +137,10 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 		
 		if(!world().isRemote)
 		{
-			mItemsInTransit.add(tItem);
+			if(mIsUpdating)
+				mWaitingToAdd.add(tItem);
+			else
+				mItemsInTransit.add(tItem);
 			
 			if(tItem.direction != 6)
 				addToClient(tItem);
@@ -147,10 +152,23 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 	@Override
 	public boolean addItem(TubeItem item)
 	{
+		return addItem(item, false);
+	}
+	
+	@Override
+	public boolean addItem(TubeItem item, boolean syncToClient)
+	{
 		assert(item.direction >= -1 && item.direction <= 6);
 		
 		mLogic.onItemEnter(item);
-		mItemsInTransit.add(item);
+		if(mIsUpdating)
+			mWaitingToAdd.add(item);
+		else
+			mItemsInTransit.add(item);
+		
+		if(syncToClient)
+			addToClient(item);
+		
 		return true;
 	}
 	
@@ -344,6 +362,7 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 	@Override
 	public void update()
 	{
+		mIsUpdating = true;
 		Iterator<TubeItem> it = mItemsInTransit.iterator();
 		
 		while(it.hasNext())
@@ -388,6 +407,11 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 				}
 			}
 		}
+		
+		mItemsInTransit.addAll(mWaitingToAdd);
+		mWaitingToAdd.clear();
+		
+		mIsUpdating = false;
 	}
 	
 	
@@ -506,7 +530,8 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 	@SideOnly( Side.CLIENT )
 	public void renderDynamic( Vector3 pos, float frame, int pass )
 	{
-		RenderHelper.renderDynamic(this, mDef, pos);
+		if(pass == 0)
+			RenderHelper.renderDynamic(this, mDef, pos);
 	}
 	
 	@Override
