@@ -54,8 +54,11 @@ public class NormalTubeRender implements ITubeRender
 		
 		int tubeCons = connections - invCons;
 		
-		if(invCons == 0 && (connections == 3 || connections == 12 || connections == 48))
-			renderStraight(tubeCons, type);
+		if(connections == 3 || connections == 12 || connections == 48)
+		{
+			renderStraight(connections, type, invCons);
+			renderInventoryConnections(invCons, type);
+		}
 		else
 		{
 			renderCore(connections, type);
@@ -65,24 +68,48 @@ public class NormalTubeRender implements ITubeRender
 		}
 	}
 	
-	protected void renderStraight(int connections, TubeDefinition def)
+	protected void renderStraight(int connections, TubeDefinition def, int cutoff)
 	{
 		mRender.setIcon(def.getStraightIcon());
 		
 		if(connections == 3)
 		{
-			mRender.drawBox(60, 0.25f, 0.0f, 0.25f, 0.75f, 1.0f, 0.75f);
+			float min = 0;
+			float max = 1;
+			
+			if((cutoff & 1) != 0)
+				min = 0.25f;
+			if((cutoff & 2) != 0)
+				max = 0.75f;
+			
+			mRender.drawBox(60, 0.25f, min, 0.25f, 0.75f, max, 0.75f);
 		}
 		else if(connections == 12)
 		{
+			float min = 0;
+			float max = 1;
+			
+			if((cutoff & 4) != 0)
+				min = 0.25f;
+			if((cutoff & 8) != 0)
+				max = 0.75f;
+			
 			mRender.setTextureRotation(0, 0, 1, 1, 1, 1);
-			mRender.drawBox(51, 0.25f, 0.25f, 0.0f, 0.75f, 0.75f, 1.0f);
+			mRender.drawBox(51, 0.25f, 0.25f, min, 0.75f, 0.75f, max);
 		}
 		else
 		{
+			float min = 0;
+			float max = 1;
+			
+			if((cutoff & 16) != 0)
+				min = 0.25f;
+			if((cutoff & 32) != 0)
+				max = 0.75f;
 			mRender.setTextureRotation(1);
-			mRender.drawBox(15, 0.0f, 0.25f, 0.25f, 1.0f, 0.75f, 0.75f);
+			mRender.drawBox(15, min, 0.25f, 0.25f, max, 0.75f, 0.75f);
 		}
+		mRender.resetTextureRotation();
 	}
 	
 	protected void renderCore(int connections, TubeDefinition def)
@@ -173,6 +200,8 @@ public class NormalTubeRender implements ITubeRender
 				mRender.drawFaces(63 - (1 << (i ^ 1))  - (1 << i));
 			}
 		}
+		
+		mRender.resetTextureRotation();
 	}
 
 	@Override

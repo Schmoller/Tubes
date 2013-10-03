@@ -120,9 +120,9 @@ public class CompressorTubeRender extends NormalTubeRender
 	}
 	
 	@Override
-	protected void renderStraight( int connections, TubeDefinition def )
+	protected void renderStraight( int connections, TubeDefinition def, int cutoff )
 	{
-		super.renderStraight(connections, def);
+		super.renderStraight(connections, def, cutoff);
 		
 		renderCore(connections, def);
 	}

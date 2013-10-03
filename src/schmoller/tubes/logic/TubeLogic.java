@@ -79,4 +79,12 @@ public abstract class TubeLogic
 	
 	public void writeDesc(MCDataOutput output) {}
 	public void readDesc(MCDataInput input) {}
+	
+	/**
+	 * Gets how often this logic receives a tick. A rate of 1 is every tick, 2 is every second tick and so on. 
+	 * A rate of 0 means to never tick
+	 */
+	public int getTickRate() { return 0; }
+	
+	public void onTick() {}
 }

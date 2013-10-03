@@ -56,6 +56,8 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 	private TubeDefinition mDef;
 	private String mType;
 	
+	private int mTick = 0;
+	
 	private static final int NO_ROUTE = -1;
 	private static final int ROUTE_TERM = -2;
 	
@@ -412,6 +414,19 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 		mWaitingToAdd.clear();
 		
 		mIsUpdating = false;
+		
+		int rate = mLogic.getTickRate();
+		
+		if(rate > 0)
+		{
+			++mTick;
+			if(mTick >= rate)
+			{
+				mTick = 0;
+				mLogic.onTick();
+			}
+		}
+		
 	}
 	
 	

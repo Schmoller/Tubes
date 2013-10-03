@@ -113,4 +113,74 @@ public class InventoryHelper
 			}
 		}
 	}
+	
+	public static boolean canExtractItem(ItemStack item, IBlockAccess world, int x, int y, int z, int side)
+	{
+		TileEntity ent = world.getBlockTileEntity(x, y, z);
+		
+		if(ent instanceof ISidedInventory)
+		{
+			ISidedInventory inv = (ISidedInventory)ent;
+			
+			for(int slot = 0; slot < inv.getSizeInventory(); ++slot)
+			{
+				ItemStack existing = inv.getStackInSlot(slot);
+				
+				if(existing != null && inv.canExtractItem(slot, existing, side ^ 1) && (item == null || (existing.isItemEqual(item) && ItemStack.areItemStackTagsEqual(existing, item))))
+					return true;
+			}
+		}
+		else if(ent instanceof IInventory)
+		{
+			IInventory inv = (IInventory)ent;
+			
+			for(int slot = 0; slot < inv.getSizeInventory(); ++slot)
+			{
+				ItemStack existing = inv.getStackInSlot(slot);
+				
+				if(existing != null && (item == null || (existing.isItemEqual(item) && ItemStack.areItemStackTagsEqual(existing, item))))
+					return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public static ItemStack extractItem(IBlockAccess world, int x, int y, int z, int side, ItemStack filter)
+	{
+		TileEntity ent = world.getBlockTileEntity(x, y, z);
+		
+		if(ent instanceof ISidedInventory)
+		{
+			ISidedInventory inv = (ISidedInventory)ent;
+			
+			for(int slot = 0; slot < inv.getSizeInventory(); ++slot)
+			{
+				ItemStack existing = inv.getStackInSlot(slot);
+				
+				if(existing != null && inv.canExtractItem(slot, existing, side ^ 1) && (filter == null || (existing.isItemEqual(filter) && ItemStack.areItemStackTagsEqual(existing, filter))))
+				{
+					inv.setInventorySlotContents(slot, null);
+					return existing;
+				}
+			}
+		}
+		else if(ent instanceof IInventory)
+		{
+			IInventory inv = (IInventory)ent;
+			
+			for(int slot = 0; slot < inv.getSizeInventory(); ++slot)
+			{
+				ItemStack existing = inv.getStackInSlot(slot);
+				
+				if(existing != null && (filter == null || (existing.isItemEqual(filter) && ItemStack.areItemStackTagsEqual(existing, filter))))
+				{
+					inv.setInventorySlotContents(slot, null);
+					return existing;
+				}
+			}
+		}
+		
+		return null;
+	}
 }
