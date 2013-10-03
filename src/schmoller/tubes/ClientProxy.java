@@ -9,6 +9,7 @@ import schmoller.tubes.logic.FilterTubeLogic;
 import schmoller.tubes.network.ModPacket;
 import schmoller.tubes.parts.InventoryTubePart;
 import schmoller.tubes.render.EjectionTubeRender;
+import schmoller.tubes.render.FilterTubeRender;
 import schmoller.tubes.render.InjectionTubeRender;
 import schmoller.tubes.render.NormalTubeRender;
 import schmoller.tubes.render.RenderTubeItem;
@@ -32,7 +33,7 @@ public class ClientProxy extends CommonProxy
 		TubeRegistry.registerRenderer("restriction",normal);
 		TubeRegistry.registerRenderer("injection",new InjectionTubeRender());
 		TubeRegistry.registerRenderer("ejection", new EjectionTubeRender());
-		TubeRegistry.registerRenderer("filter", normal);
+		TubeRegistry.registerRenderer("filter", new FilterTubeRender());
 	}
 	
 	@Override

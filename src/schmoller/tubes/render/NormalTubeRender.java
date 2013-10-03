@@ -8,7 +8,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import schmoller.tubes.AdvRender;
-import schmoller.tubes.CommonHelper;
 import schmoller.tubes.ITube;
 import schmoller.tubes.TubeHelper;
 import schmoller.tubes.definitions.EjectionTube;
@@ -138,7 +137,7 @@ public class NormalTubeRender implements ITubeRender
 	
 	protected void renderConnections(int connections, TubeDefinition def)
 	{
-		mRender.setIcon(def.getStraightIcon());
+		mRender.setIcon(def.getCenterIcon());
 		
 		for(int i = 0; i < 6; ++i)
 		{

@@ -60,4 +60,10 @@ public class EjectionTubeLogic extends TubeLogic
 		
 		return -2;
 	}
+	
+	@Override
+	public boolean canConnectToInventories()
+	{
+		return false;
+	}
 }

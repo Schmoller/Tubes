@@ -5,6 +5,7 @@ import java.util.List;
 import schmoller.tubes.IDirectionalTube;
 import schmoller.tubes.TubeRegistry;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -34,6 +35,18 @@ public class ItemTubeBase extends JItemMultiPart
 	public void registerIcons( IconRegister register )
 	{
 		itemIcon = register.registerIcon("missing");
+	}
+	
+	@Override
+	public boolean onItemUse( ItemStack item, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
+	{
+		if(super.onItemUse(item, player, world, x, y, z, side, hitX, hitY, hitZ))
+		{
+			world.playSoundEffect(x + 0.5, y + 0.5, z + 0.5, Block.soundGlassFootstep.getPlaceSound(), (Block.soundGlassFootstep.getVolume() * 5.0F), Block.soundGlassFootstep.getPitch() * .9F);
+			return true;
+		}
+		
+		return false;
 	}
 	
 	@Override
