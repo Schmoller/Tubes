@@ -15,8 +15,10 @@ import schmoller.tubes.definitions.FilterTube;
 import schmoller.tubes.definitions.InjectionTube;
 import schmoller.tubes.definitions.NormalTube;
 import schmoller.tubes.definitions.RestrictionTube;
+import schmoller.tubes.gui.CompressorContainer;
 import schmoller.tubes.gui.FilterTubeContainer;
 import schmoller.tubes.gui.InjectionTubeContainer;
+import schmoller.tubes.logic.CompressorTubeLogic;
 import schmoller.tubes.logic.FilterTubeLogic;
 import schmoller.tubes.network.IModPacketHandler;
 import schmoller.tubes.network.ModBlockPacket;
@@ -97,6 +99,8 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 			return new InjectionTubeContainer(CommonHelper.getMultiPart(world, x, y, z, InventoryTubePart.class), player);
 		case ModTubes.GUI_FILTER_TUBE:
 			return new FilterTubeContainer((FilterTubeLogic)CommonHelper.getMultiPart(world, x, y, z, ITube.class).getLogic(), player);
+		case ModTubes.GUI_COMPRESSOR_TUBE:
+			return new CompressorContainer((CompressorTubeLogic)CommonHelper.getMultiPart(world, x, y, z, ITube.class).getLogic(), player);
 		}
 		
 		return null;

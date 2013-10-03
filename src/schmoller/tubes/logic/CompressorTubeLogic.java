@@ -2,14 +2,17 @@ package schmoller.tubes.logic;
 
 import codechicken.core.data.MCDataInput;
 import codechicken.core.data.MCDataOutput;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import schmoller.tubes.ITube;
 import schmoller.tubes.ITubeConnectable;
+import schmoller.tubes.ModTubes;
 import schmoller.tubes.TubeHelper;
 import schmoller.tubes.TubeItem;
 
-public class CompressorTubeLogic extends TubeLogic
+public class CompressorTubeLogic extends TubeLogic implements IInventory
 {
 	private ITube mTube;
 	private TubeItem mCurrent;
@@ -148,6 +151,145 @@ public class CompressorTubeLogic extends TubeLogic
 		if(con instanceof ITube)
 			return !(((ITube)con).getLogic() instanceof CompressorTubeLogic);
 
+		return true;
+	}
+	
+	public ItemStack getTargetType()
+	{
+		return mTarget;
+	}
+	
+	public void setTargetType(ItemStack item)
+	{
+		if(item == null)
+			mTarget = new ItemStack(0, 64, 0);
+		else
+			mTarget = item;
+	}
+
+	@Override
+	public int getSizeInventory()
+	{
+		return 1;
+	}
+
+	@Override
+	public ItemStack getStackInSlot( int i )
+	{
+		if(mCurrent != null)
+			return mCurrent.item;
+		return null;
+	}
+
+	@Override
+	public ItemStack decrStackSize( int slot, int count )
+	{
+		if(mCurrent == null)
+			return null;
+		
+        ItemStack itemstack;
+
+        if (mCurrent.item.stackSize <= count)
+        {
+            itemstack = mCurrent.item;
+            mCurrent = null;
+        }
+        else
+        {
+            itemstack = mCurrent.item.splitStack(count);
+
+            if (mCurrent.item.stackSize == 0)
+            	mCurrent = null;
+        }
+        
+        onInventoryChanged();
+        return itemstack;
+	}
+
+	@Override
+	public ItemStack getStackInSlotOnClosing( int i )
+	{
+		if(mCurrent == null)
+			return null;
+		
+		ItemStack item = mCurrent.item;
+		mCurrent = null;
+		
+		return item;
+	}
+
+	@Override
+	public void setInventorySlotContents( int i, ItemStack item )
+	{
+		if(item == null)
+		{
+			mCurrent = null;
+			return;
+		}
+		
+		if(mCurrent == null)
+		{
+			mCurrent = new TubeItem(item);
+			mCurrent.direction = 6;
+			mCurrent.progress = 0.5f;
+		}
+		else
+			mCurrent.item = item;
+		
+		if(mCurrent.item.stackSize >= mTarget.stackSize)
+		{
+			mTube.addItem(mCurrent, true);
+			mCurrent = null;
+		}
+	}
+
+	@Override
+	public String getInvName()
+	{
+		return "container.inventory";
+	}
+
+	@Override
+	public boolean isInvNameLocalized()
+	{
+		return false;
+	}
+
+	@Override
+	public int getInventoryStackLimit()
+	{
+		return mTarget.stackSize;
+	}
+
+	@Override
+	public void onInventoryChanged()
+	{
+		
+	}
+
+	@Override
+	public boolean isUseableByPlayer( EntityPlayer player )
+	{
+		return player.getDistanceSq(mTube.x(), mTube.y(), mTube.z()) <= 25;
+	}
+
+	@Override
+	public void openChest() {}
+
+	@Override
+	public void closeChest() {}
+
+	@Override
+	public boolean isStackValidForSlot( int i, ItemStack item )
+	{
+		return (mTarget.itemID == 0 || (item.isItemEqual(mTarget) && ItemStack.areItemStackTagsEqual(item, mTarget)));
+	}
+	
+	@Override
+	public boolean onActivate( EntityPlayer player )
+	{
+		player.openGui(ModTubes.instance, ModTubes.GUI_COMPRESSOR_TUBE, mTube.world(), mTube.x(), mTube.y(), mTube.z());
+		
 		return true;
 	}
 }

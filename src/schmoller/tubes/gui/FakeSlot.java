@@ -1,29 +1,37 @@
 package schmoller.tubes.gui;
 
-import schmoller.tubes.logic.FilterTubeLogic;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class FakeSlot extends Slot
+public abstract class FakeSlot extends Slot
 {
-	private FilterTubeLogic mTube;
-	private int mIndex;
-	
-	public FakeSlot( FilterTubeLogic tube, int index, int x, int y )
+	private boolean mHidden = false;
+	public FakeSlot(ItemStack initial, int x, int y)
 	{
 		super(new InventoryBasic("", false, 1), 0, x, y);
-		mTube = tube;
-		mIndex = index;
-		inventory.setInventorySlotContents(0, tube.getFilter(index));
+		inventory.setInventorySlotContents(0, initial);
 	}
 	
 	@Override
 	public boolean canTakeStack( EntityPlayer player )
 	{
 		return false;
+	}
+	
+	public void setHidden(boolean hidden)
+	{
+		mHidden = hidden;
+	}
+	
+	@Override
+	public ItemStack getStack() 
+	{
+		if(mHidden)
+			return null;
+		else
+			return super.getStack();
 	}
 	
 	@Override
@@ -35,7 +43,7 @@ public class FakeSlot extends Slot
 	@Override
 	public int getSlotStackLimit()
 	{
-		if(getHasStack())
+		if(getHasStack() && getStack().itemID != 0)
 			return getStack().getMaxStackSize();
 		return 64;
 	}
@@ -56,7 +64,12 @@ public class FakeSlot extends Slot
 	public void putStack( ItemStack item )
 	{
 		inventory.setInventorySlotContents(0, item);
-		mTube.setFilter(mIndex, item);
+		setValue(item);
 	}
+	
+	protected abstract ItemStack getValue();
+	protected abstract void setValue(ItemStack item);
 
+	public int getMaxSize() { return 64; }
+	public int getMinSize() { return 0; }
 }

@@ -46,6 +46,7 @@ public class ModTubes
 	
 	public static final int GUI_INJECTION_TUBE = 0;
 	public static final int GUI_FILTER_TUBE = 1;
+	public static final int GUI_COMPRESSOR_TUBE = 2;
 	
 	@PreInit
 	public void preInit(FMLPreInitializationEvent event)

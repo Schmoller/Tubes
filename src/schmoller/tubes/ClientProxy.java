@@ -3,8 +3,10 @@ package schmoller.tubes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
+import schmoller.tubes.gui.CompressorTubeGui;
 import schmoller.tubes.gui.FilterTubeGui;
 import schmoller.tubes.gui.InjectionTubeGui;
+import schmoller.tubes.logic.CompressorTubeLogic;
 import schmoller.tubes.logic.FilterTubeLogic;
 import schmoller.tubes.network.ModPacket;
 import schmoller.tubes.parts.InventoryTubePart;
@@ -53,6 +55,8 @@ public class ClientProxy extends CommonProxy
 			return new InjectionTubeGui(CommonHelper.getMultiPart(world, x, y, z, InventoryTubePart.class), player);
 		case ModTubes.GUI_FILTER_TUBE:
 			return new FilterTubeGui((FilterTubeLogic)CommonHelper.getMultiPart(world, x, y, z, ITube.class).getLogic(), player);
+		case ModTubes.GUI_COMPRESSOR_TUBE:
+			return new CompressorTubeGui((CompressorTubeLogic)CommonHelper.getMultiPart(world, x, y, z, ITube.class).getLogic(), player);
 		}
 		
 		return null;
