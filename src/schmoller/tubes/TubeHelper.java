@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.PriorityQueue;
 import java.util.Random;
 
+import schmoller.tubes.inventory.InventoryHelper;
+
 import codechicken.multipart.TMultiPart;
 import codechicken.multipart.TileMultipart;
 

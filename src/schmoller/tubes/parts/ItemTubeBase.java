@@ -56,7 +56,8 @@ public class ItemTubeBase extends JItemMultiPart
 		
 		if(part instanceof IDirectionalTube)
 		{
-			int face = (player.isSneaking() ? side : side ^ 1);
+			//int face = (player.isSneaking() ? side : side ^ 1);
+			int face = side ^ 1;
 			
 			if(((IDirectionalTube)part).canFaceDirection(face))
 				((IDirectionalTube)part).setFacing(face);

@@ -5,7 +5,7 @@ import net.minecraftforge.common.ForgeDirection;
 import schmoller.tubes.IDirectionalTube;
 import schmoller.tubes.ITube;
 import schmoller.tubes.ITubeConnectable;
-import schmoller.tubes.InventoryHelper;
+import schmoller.tubes.inventory.InventoryHelper;
 
 public class ExtractionTubeLogic extends TubeLogic
 {
