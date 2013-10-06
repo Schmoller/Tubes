@@ -9,7 +9,7 @@ import net.minecraftforge.common.ForgeDirection;
 public class TubeItem implements Cloneable
 {
 	public static final int NORMAL = 0;
-	public static final int NO_PATH = 1;
+	public static final int IMPORT = 1;
 	
 	public TubeItem(ItemStack item)
 	{

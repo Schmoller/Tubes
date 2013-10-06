@@ -77,7 +77,6 @@ public class CustomRenderItem
 		}
 		else
 		{
-			GL11.glTranslated(-0.25, -0.25, 0.0);
             if (item.getItem().requiresMultipleRenderPasses())
             {
                 GL11.glScalef(0.5F, 0.5F, 0.5F);
@@ -127,6 +126,8 @@ public class CustomRenderItem
 		
 		if (RenderManager.instance.options.fancyGraphics)
         {
+			GL11.glTranslated(-0.5, -0.5, 0.0);
+			
             if (item.getItemSpriteNumber() == 0)
                 mRender.bindTexture("/terrain.png");
             else
@@ -171,10 +172,10 @@ public class CustomRenderItem
             GL11.glColor4f(red, green, blue, 1.0F);
             Tessellator.instance.startDrawingQuads();
             Tessellator.instance.setNormal(0.0F, 1.0F, 0.0F);
-            Tessellator.instance.addVertexWithUV(-0.5, -0.25, 0.0D, minU, maxV);
-            Tessellator.instance.addVertexWithUV(0.5, -0.25, 0.0D, maxU, maxV);
-            Tessellator.instance.addVertexWithUV(0.5, 0.75, 0.0D, maxU, minV);
-            Tessellator.instance.addVertexWithUV(-0.5, 0.75, 0.0D, minU, minV);
+            Tessellator.instance.addVertexWithUV(-0.5, -0.5, 0.0D, minU, maxV);
+            Tessellator.instance.addVertexWithUV(0.5, -0.5, 0.0D, maxU, maxV);
+            Tessellator.instance.addVertexWithUV(0.5, 0.5, 0.0D, maxU, minV);
+            Tessellator.instance.addVertexWithUV(-0.5, 0.5, 0.0D, minU, minV);
             Tessellator.instance.draw();
         }
 	}

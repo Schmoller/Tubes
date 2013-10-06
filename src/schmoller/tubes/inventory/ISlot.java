@@ -5,6 +5,8 @@ import net.minecraft.item.ItemStack;
 public interface ISlot
 {
 	public ItemStack getStack();
+	public ItemStack decreaseStack(int amount);
+	
 	public void setStack(ItemStack item);
 	
 	public void addStack(ItemStack item, boolean doAdd);

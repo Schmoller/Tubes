@@ -73,6 +73,42 @@ public class SlotCollection
 		return null;
 	}
 	
+	public ItemStack getAll(ItemStack template)
+	{
+		ItemStack extracted = null;
+		for(ISlot slot : mSlots)
+		{
+			if(slot.canExtract(mSide) && slot.getStack() != null)
+			{
+				ItemStack item = slot.getStack();
+				if(template == null)
+				{
+					extracted = item.copy();
+					slot.setStack(null);
+
+					break;
+				}
+				if(InventoryHelper.areItemsEqual(item, template))
+				{
+					if(extracted == null)
+						extracted = slot.decreaseStack(template.stackSize);
+					else
+					{
+						int toAdd = Math.min(template.stackSize - extracted.stackSize, item.stackSize);
+						slot.decreaseStack(toAdd);
+						extracted.stackSize += toAdd;
+					}
+					
+					if(extracted.stackSize >= template.stackSize)
+						break;
+				}
+			}
+		}
+		
+		mInventory.onInventoryChanged();
+		return extracted;
+	}
+	
 	public ItemStack simulateAdd(ItemStack item)
 	{
 		for(ISlot slot : mSlots)
@@ -89,7 +125,33 @@ public class SlotCollection
 	
 	public boolean canAddAny(ItemStack item)
 	{
-		return (simulateAdd(item.copy()) == null);
+		ItemStack result = simulateAdd(item.copy());
+		return (result == null || result.stackSize != item.stackSize);
+	}
+	
+	public boolean canExtractAll(ItemStack filter)
+	{
+		ItemStack extracted = null;
+		for(ISlot slot : mSlots)
+		{
+			if(slot.canExtract(mSide) && slot.getStack() != null)
+			{
+				ItemStack item = slot.getStack();
+				if(filter == null)
+					return true;
+				if(InventoryHelper.areItemsEqual(item, filter))
+				{
+					if(extracted == null)
+						extracted = item.copy();
+					else
+						extracted.stackSize += item.stackSize;
+					
+					if(extracted.stackSize >= filter.stackSize)
+						return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	public boolean canExtractAny(ItemStack filter)

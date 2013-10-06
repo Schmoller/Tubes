@@ -66,6 +66,18 @@ public class MapperISided extends InventoryMapper
 		{
 			return mInventory.getStackInSlot(mIndex);
 		}
+		
+		@Override
+		public ItemStack decreaseStack( int amount )
+		{
+			if(isEmpty())
+				return null;
+			
+			if(amount >= getStack().stackSize)
+				amount = getStack().stackSize;
+			
+			return mInventory.decrStackSize(mIndex, amount);
+		}
 
 		@Override
 		public void setStack( ItemStack item )

@@ -6,6 +6,9 @@ import java.util.PriorityQueue;
 import java.util.Random;
 
 import schmoller.tubes.inventory.InventoryHelper;
+import schmoller.tubes.routing.BaseRouter;
+import schmoller.tubes.routing.InputRouter;
+import schmoller.tubes.routing.OutputRouter;
 
 import codechicken.multipart.TMultiPart;
 import codechicken.multipart.TileMultipart;
@@ -106,135 +109,24 @@ public class TubeHelper
 		return map;
 	}
 	
-	
-	
-	
-	
 	public static int findNextDirection(IBlockAccess world, int x, int y, int z, TubeItem item)
 	{
-		HashSet<ChunkPosition> searchedLocations = new HashSet<ChunkPosition>();
-		PriorityQueue<PathLocation> toSearch = new PriorityQueue<PathLocation>();
+		BaseRouter.PathLocation path = null;
 		
-		ArrayList<PathLocation> paths = new ArrayList<PathLocation>();
-		int shortestPath = Integer.MAX_VALUE;
-		
-		int conns = getConnectivity(world, x, y, z);
-		searchedLocations.add(new ChunkPosition(x, y, z));
-		for(int i = 0; i < 6; ++i)
+		if(item.state == TubeItem.NORMAL)
+			path = new OutputRouter(world, new ChunkPosition(x, y, z), item).route();
+		else if(item.state == TubeItem.IMPORT)
 		{
-			if((conns & (1 << i)) != 0)
+			path = new InputRouter(world, new ChunkPosition(x, y, z), item).route();
+			if(path == null)
 			{
-				ForgeDirection dir = ForgeDirection.getOrientation(i); 
-				PathLocation loc = new PathLocation(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ, 1, i, i);
-				
-				TileEntity ent = CommonHelper.getTileEntity(world, loc.position);
-				ITubeConnectable con = getTubeConnectable(ent);
-				if(con == null || con.canAddItem(item))
-				{
-					toSearch.add(loc);
-
-					if(con != null && con.canPathThrough())
-					{
-						loc.dist += con.getRouteWeight() - 1;
-						searchedLocations.add(loc.position);
-					}
-				}
+				path = new OutputRouter(world, new ChunkPosition(x, y, z), item).route();
+				item.state = TubeItem.NORMAL;
 			}
 		}
 		
-		while(!toSearch.isEmpty())
-		{
-			PathLocation pos = toSearch.poll();
-			
-			if(pos.dist > shortestPath)
-				break;
-			
-			TileEntity ent = CommonHelper.getTileEntity(world, pos.position);
-			ITubeConnectable con = getTubeConnectable(ent);
-			
-			if(con == null)
-			{
-				if(InventoryHelper.canAcceptItem(item.item, world, pos.position, pos.dir))
-				{
-					shortestPath = pos.dist;
-					paths.add(pos);
-				}
-			}
-			else if(con.canPathThrough())
-			{
-				conns = getConnectivity(world, pos.position);
-				
-				for(int i = 0; i < 6; ++i)
-				{
-					if((conns & (1 << i)) != 0)
-					{
-						PathLocation loc = new PathLocation(pos, i);
-						
-						if(!searchedLocations.contains(loc.position))
-						{
-							ent = CommonHelper.getTileEntity(world, loc.position);
-							con = getTubeConnectable(ent);
-							
-							if(con == null || con.canAddItem(item))
-							{
-								toSearch.add(loc);
-
-								if(con != null && con.canPathThrough())
-								{
-									loc.dist += con.getRouteWeight()-1;
-									searchedLocations.add(loc.position);
-								}
-							}
-						}
-					}
-				}
-			}
-			else
-			{
-				shortestPath = pos.dist;
-				paths.add(pos);
-			}
-				
-		}
-		
-		if(paths.isEmpty())
-			return -1;
-		
-		return paths.get(rand.nextInt(paths.size())).initialDir;
-	}
-	
-	private static class PathLocation implements Comparable<PathLocation>
-	{
-		public final ChunkPosition position;
-		
-		public int dist;
-		public final int dir;
-		public final int initialDir;
-		
-		public PathLocation(PathLocation last, int newDir)
-		{
-			dist = last.dist + 1;
-			dir = newDir;
-			initialDir = last.initialDir;
-			
-			position = new ChunkPosition(last.position.x + ForgeDirection.getOrientation(newDir).offsetX, last.position.y + ForgeDirection.getOrientation(newDir).offsetY, last.position.z + ForgeDirection.getOrientation(newDir).offsetZ);
-		}
-		
-		public PathLocation(int x, int y, int z, int dist, int dir, int initialDir)
-		{
-			position = new ChunkPosition(x, y, z);
-			
-			this.dist = dist;
-			
-			this.dir = dir;
-			
-			this.initialDir = initialDir;
-		}
-		
-		@Override
-		public int compareTo( PathLocation other )
-		{
-			return dist - other.dist;
-		}
+		if(path != null)
+			return path.initialDir;
+		return -1;
 	}
 }

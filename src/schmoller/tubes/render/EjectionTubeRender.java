@@ -11,23 +11,26 @@ import schmoller.tubes.definitions.TubeDefinition;
 
 public class EjectionTubeRender extends NormalTubeRender
 {
-	private int mDir;
 	@Override
 	public void renderStatic( TubeDefinition type, ITube tube, World world, int x, int y, int z )
 	{
+		int connections = tube.getConnections();
 		int direction = ((IDirectionalTube)tube).getFacing();
-		mDir = direction;
 		
-		super.renderStatic(type, tube, world, x, y, z);
+		mRender.resetTransform();
+		mRender.enableNormals = false;
+		mRender.setLightingFromBlock(world, x, y, z);
+		mRender.resetTextureFlip();
+		mRender.resetTextureRotation();
+		
+		mRender.setLocalLights(0.5f, 1.0f, 0.8f, 0.8f, 0.6f, 0.6f);
+		
+		mRender.translate(x, y, z);
+		
+		renderCore(connections | (1 << direction), type);
+		renderConnections(connections, type);
 		
 		renderInventoryConnections(1 << direction, type);
-	}
-	
-	@Override
-	protected void renderCore( int connections, TubeDefinition def )
-	{
-		connections |= (1 << mDir);
-		super.renderCore(connections, def);
 	}
 	
 	@Override

@@ -15,16 +15,21 @@ import schmoller.tubes.definitions.ExtractionTube;
 import schmoller.tubes.definitions.FilterTube;
 import schmoller.tubes.definitions.InjectionTube;
 import schmoller.tubes.definitions.NormalTube;
+import schmoller.tubes.definitions.RequestingTube;
 import schmoller.tubes.definitions.RestrictionTube;
 import schmoller.tubes.gui.CompressorContainer;
 import schmoller.tubes.gui.FilterTubeContainer;
 import schmoller.tubes.gui.InjectionTubeContainer;
+import schmoller.tubes.gui.RequestingTubeContainer;
 import schmoller.tubes.logic.CompressorTubeLogic;
 import schmoller.tubes.logic.FilterTubeLogic;
+import schmoller.tubes.logic.PullMode;
+import schmoller.tubes.logic.RequestingTubeLogic;
 import schmoller.tubes.network.IModPacketHandler;
 import schmoller.tubes.network.ModBlockPacket;
 import schmoller.tubes.network.ModPacket;
 import schmoller.tubes.network.packets.ModPacketSetFilterMode;
+import schmoller.tubes.network.packets.ModPacketSetPullMode;
 import schmoller.tubes.parts.InventoryTubePart;
 
 public class CommonProxy implements IModPacketHandler, IGuiHandler
@@ -48,6 +53,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 		TubeRegistry.registerTube(new FilterTube(), "filter");
 		TubeRegistry.registerTube(new CompressorTube(), "compressor");
 		TubeRegistry.registerTube(new ExtractionTube(), "extraction");
+		TubeRegistry.registerTube(new RequestingTube(), "requesting");
 	}
 	
 	private void registerText()
@@ -60,6 +66,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 		LanguageRegistry.instance().addStringLocalization("tubes.extraction.name", "Extraction Tube");
 		LanguageRegistry.instance().addStringLocalization("tubes.compressor.name", "Compressor Tube");
 		LanguageRegistry.instance().addStringLocalization("tubes.routing.name", "Routing Tube");
+		LanguageRegistry.instance().addStringLocalization("tubes.requesting.name", "Requesting Tube");
 	}
 
 	@Override
@@ -84,7 +91,14 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 				
 				return true;
 			}
-			
+			else if(packet instanceof ModPacketSetPullMode && tube != null && tube.getLogic() instanceof RequestingTubeLogic)
+			{
+				PullMode mode = ((ModPacketSetPullMode)packet).mode;
+				
+				((RequestingTubeLogic)tube.getLogic()).setMode(mode);
+				
+				return true;
+			}
 		}
 		return false;
 	}
@@ -103,6 +117,8 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 			return new FilterTubeContainer((FilterTubeLogic)CommonHelper.getMultiPart(world, x, y, z, ITube.class).getLogic(), player);
 		case ModTubes.GUI_COMPRESSOR_TUBE:
 			return new CompressorContainer((CompressorTubeLogic)CommonHelper.getMultiPart(world, x, y, z, ITube.class).getLogic(), player);
+		case ModTubes.GUI_REQUESTING_TUBE:
+			return new RequestingTubeContainer((RequestingTubeLogic)CommonHelper.getMultiPart(world, x, y, z, ITube.class).getLogic(), player);
 		}
 		
 		return null;

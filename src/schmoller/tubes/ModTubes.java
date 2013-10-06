@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import schmoller.tubes.network.PacketManager;
 import schmoller.tubes.network.packets.ModPacketSetFilterMode;
+import schmoller.tubes.network.packets.ModPacketSetPullMode;
 import schmoller.tubes.parts.ItemTubeBase;
 import schmoller.tubes.render.RenderHelper;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -47,6 +48,7 @@ public class ModTubes
 	public static final int GUI_INJECTION_TUBE = 0;
 	public static final int GUI_FILTER_TUBE = 1;
 	public static final int GUI_COMPRESSOR_TUBE = 2;
+	public static final int GUI_REQUESTING_TUBE = 3;
 	
 	@PreInit
 	public void preInit(FMLPreInitializationEvent event)
@@ -64,6 +66,7 @@ public class ModTubes
 		packetManager.initialize("tubes");
 		PacketManager.registerHandler(proxy);
 		PacketManager.registerPacket(ModPacketSetFilterMode.class);
+		PacketManager.registerPacket(ModPacketSetPullMode.class);
 		
 		RenderHelper.initialize();
 		

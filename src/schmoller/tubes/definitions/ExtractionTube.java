@@ -6,7 +6,7 @@ import schmoller.tubes.ITube;
 import schmoller.tubes.logic.ExtractionTubeLogic;
 import schmoller.tubes.logic.TubeLogic;
 import schmoller.tubes.parts.BaseTubePart;
-import schmoller.tubes.parts.DirectionalTubePart;
+import schmoller.tubes.parts.DirectionalRedstoneTubePart;
 
 public class ExtractionTube extends TubeDefinition
 {
@@ -39,6 +39,6 @@ public class ExtractionTube extends TubeDefinition
 	@Override
 	public Class<? extends BaseTubePart> getPartClass()
 	{
-		return DirectionalTubePart.class;
+		return DirectionalRedstoneTubePart.class;
 	}
 }

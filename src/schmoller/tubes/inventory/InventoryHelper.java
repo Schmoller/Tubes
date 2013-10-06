@@ -106,6 +106,11 @@ public class InventoryHelper
 		mapper.getInsertSlots(item, side ^ 1).add(item);
 	}
 	
+	public static boolean canExtractItem(ItemStack item, IBlockAccess world, ChunkPosition pos, int side)
+	{
+		return canExtractItem(item, world, pos.x, pos.y, pos.z, side);
+	}
+	
 	public static boolean canExtractItem(ItemStack item, IBlockAccess world, int x, int y, int z, int side)
 	{
 		TileEntity ent = world.getBlockTileEntity(x, y, z);
@@ -115,7 +120,7 @@ public class InventoryHelper
 		if(mapper == null)
 			return false;
 		
-		return mapper.getExtractSlots(side ^ 1).canExtractAny(item);
+		return mapper.getExtractSlots(side ^ 1).canExtractAll(item);
 	}
 	
 	public static ItemStack extractItem(IBlockAccess world, int x, int y, int z, int side, ItemStack filter)
@@ -127,6 +132,6 @@ public class InventoryHelper
 		if(mapper == null)
 			return null;
 		
-		return mapper.getExtractSlots(side ^ 1).getFirst(filter);
+		return mapper.getExtractSlots(side ^ 1).getAll(filter);
 	}
 }
