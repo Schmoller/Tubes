@@ -7,6 +7,8 @@ import schmoller.tubes.network.packets.ModPacketSetFilterMode;
 import schmoller.tubes.network.packets.ModPacketSetPullMode;
 import schmoller.tubes.parts.ItemTubeBase;
 import schmoller.tubes.render.RenderHelper;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
@@ -23,7 +25,6 @@ import cpw.mods.fml.common.Mod.PostInit;
 import cpw.mods.fml.common.Mod.PreInit;
 
 import cpw.mods.fml.common.network.NetworkMod;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.Mod.Instance;
 
 @Mod(name="Tubes", version="1.0.0", modid = "Tubes", dependencies="required-after:Forge; required-before:CCMultipart")
@@ -42,8 +43,20 @@ public class ModTubes
 	public static Logger logger = Logger.getLogger("Tubes");
 	
 	public int itemTubeId;
+	public int itemDustPlasticId;
+	public int itemSheetPlasticId;
+	public int itemMilkCurdBucketId;
+	public int itemBucketPlasticId;
+	
+	public int blockPlasticId;
 	
 	public static ItemTubeBase itemTube;
+	
+	public static Item itemDustPlastic;
+	public static Item itemSheetPlastic;
+	public static Item itemMilkCurdBucket;
+	public static Item itemBucketPlastic;
+	public static Block blockPlastic;
 	
 	public static final int GUI_INJECTION_TUBE = 0;
 	public static final int GUI_FILTER_TUBE = 1;
@@ -55,6 +68,12 @@ public class ModTubes
 	{
 		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
 		itemTubeId = config.getItem("Tube", 5000).getInt();
+		itemDustPlasticId = config.getItem("PlasticDust", 5001).getInt();
+		itemSheetPlasticId = config.getItem("PlasticSheet", 5002).getInt();
+		itemMilkCurdBucketId = config.getItem("MilkCurd", 5003).getInt();
+		itemBucketPlasticId = config.getItem("BucketOfPlastic", 5004).getInt();
+		
+		blockPlasticId = config.getBlock("PlasticBlock", 1027).getInt();
 		
 		MinecraftForge.EVENT_BUS.register(this);
 	}
@@ -71,9 +90,6 @@ public class ModTubes
 		RenderHelper.initialize();
 		
 		proxy.initialize();
-		
-		itemTube = new ItemTubeBase(itemTubeId);
-		GameRegistry.registerItem(itemTube, "tubes:items:tube");
 	}
 	
 	@PostInit

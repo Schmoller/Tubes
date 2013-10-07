@@ -1,13 +1,19 @@
 
 package schmoller.tubes;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import codechicken.multipart.MultipartGenerator;
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.Player;
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import schmoller.tubes.definitions.CompressorTube;
 import schmoller.tubes.definitions.EjectionTube;
@@ -21,6 +27,7 @@ import schmoller.tubes.gui.CompressorContainer;
 import schmoller.tubes.gui.FilterTubeContainer;
 import schmoller.tubes.gui.InjectionTubeContainer;
 import schmoller.tubes.gui.RequestingTubeContainer;
+import schmoller.tubes.items.BasicItem;
 import schmoller.tubes.logic.CompressorTubeLogic;
 import schmoller.tubes.logic.FilterTubeLogic;
 import schmoller.tubes.logic.PullMode;
@@ -31,13 +38,16 @@ import schmoller.tubes.network.ModPacket;
 import schmoller.tubes.network.packets.ModPacketSetFilterMode;
 import schmoller.tubes.network.packets.ModPacketSetPullMode;
 import schmoller.tubes.parts.InventoryTubePart;
+import schmoller.tubes.parts.ItemTubeBase;
 
 public class CommonProxy implements IModPacketHandler, IGuiHandler
 {
 	public void initialize()
 	{
 		registerTubes();
+		registerItems();
 		registerText();
+		registerRecipes();
 		
 		NetworkRegistry.instance().registerGuiHandler(ModTubes.instance, this);
 	}
@@ -56,6 +66,25 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 		TubeRegistry.registerTube(new RequestingTube(), "requesting");
 	}
 	
+	private void registerItems()
+	{
+		ModTubes.itemDustPlastic = new BasicItem(ModTubes.instance.itemDustPlasticId).setUnlocalizedName("dustPlastic");
+		ModTubes.itemSheetPlastic = new BasicItem(ModTubes.instance.itemSheetPlasticId).setUnlocalizedName("sheetPlastic");
+		ModTubes.itemMilkCurdBucket = new BasicItem(ModTubes.instance.itemMilkCurdBucketId).setUnlocalizedName("milkCurd").setContainerItem(Item.bucketEmpty).setCreativeTab(CreativeTabs.tabMisc).setMaxStackSize(1);
+		ModTubes.itemBucketPlastic = new BasicItem(ModTubes.instance.itemBucketPlasticId).setUnlocalizedName("bucketOfPlastic").setContainerItem(Item.bucketEmpty).setCreativeTab(CreativeTabs.tabMisc).setMaxStackSize(1);
+		
+		ModTubes.itemTube = new ItemTubeBase(ModTubes.instance.itemTubeId);
+		
+		GameRegistry.registerItem(ModTubes.itemDustPlastic, "dustPlastic");
+		GameRegistry.registerItem(ModTubes.itemSheetPlastic, "sheetPlastic");
+		GameRegistry.registerItem(ModTubes.itemMilkCurdBucket, "milkCurd");
+		GameRegistry.registerItem(ModTubes.itemBucketPlastic, "bucketOfPlastic");
+		GameRegistry.registerItem(ModTubes.itemTube, "tubes:items:tube");
+		
+		ModTubes.blockPlastic = new Block(ModTubes.instance.blockPlasticId, Material.piston).setCreativeTab(CreativeTabs.tabBlock).setUnlocalizedName("Tubes:blockPlastic");
+		GameRegistry.registerBlock(ModTubes.blockPlastic, "blockPlastic");
+	}
+	
 	private void registerText()
 	{
 		LanguageRegistry.instance().addStringLocalization("tubes.basic.name", "Tube");
@@ -67,6 +96,32 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 		LanguageRegistry.instance().addStringLocalization("tubes.compressor.name", "Compressor Tube");
 		LanguageRegistry.instance().addStringLocalization("tubes.routing.name", "Routing Tube");
 		LanguageRegistry.instance().addStringLocalization("tubes.requesting.name", "Requesting Tube");
+		
+		LanguageRegistry.addName(ModTubes.itemDustPlastic, "Plastic Pellets");
+		LanguageRegistry.addName(ModTubes.itemSheetPlastic, "Plastic");
+		LanguageRegistry.addName(ModTubes.itemMilkCurdBucket, "Milk Curd");
+		LanguageRegistry.addName(ModTubes.itemBucketPlastic, "Plastic");
+		LanguageRegistry.addName(ModTubes.blockPlastic, "Block Of Plastic");
+	}
+	
+	private void registerRecipes()
+	{
+		GameRegistry.addSmelting(ModTubes.itemDustPlastic.itemID, new ItemStack(ModTubes.itemSheetPlastic), 0);
+		GameRegistry.addSmelting(Item.bucketMilk.itemID, new ItemStack(ModTubes.itemMilkCurdBucket), 0);
+		GameRegistry.addShapelessRecipe(new ItemStack(ModTubes.itemDustPlastic, 8), ModTubes.itemMilkCurdBucket, new ItemStack(Item.coal, 1, 0), Item.gunpowder, new ItemStack(Item.potion, 1, 0));
+		GameRegistry.addShapelessRecipe(new ItemStack(ModTubes.itemDustPlastic, 8), ModTubes.itemMilkCurdBucket, new ItemStack(Item.coal, 1, 1), Item.gunpowder, new ItemStack(Item.potion, 1, 0));
+		
+		
+		GameRegistry.addShapedRecipe(ModTubes.itemTube.createForType("basic", 8), "pgp", 'p', ModTubes.itemSheetPlastic, 'g', Block.glass);
+		GameRegistry.addShapelessRecipe(ModTubes.itemTube.createForType("restriction"), ModTubes.itemTube.createForType("basic"), Item.ingotIron);
+		GameRegistry.addShapedRecipe(ModTubes.itemTube.createForType("compressor"), "ipi", "ptp", "ipi", 'i', Item.ingotIron, 'p', Block.pistonBase, 't', ModTubes.itemTube.createForType("basic"));
+		GameRegistry.addShapelessRecipe(ModTubes.itemTube.createForType("injection"), ModTubes.itemTube.createForType("basic"), Block.chest);
+		GameRegistry.addShapedRecipe(ModTubes.itemTube.createForType("extraction"), " h ", " t ", " p ", 't', ModTubes.itemTube.createForType("basic"), 'h', Block.hopperBlock, 'p', Block.pistonStickyBase);
+		GameRegistry.addShapedRecipe(ModTubes.itemTube.createForType("requesting"), " t ", " e ", " f ", 't', ModTubes.itemTube.createForType("basic"), 'e', ModTubes.itemTube.createForType("extraction"), 'f', ModTubes.itemTube.createForType("filter"));
+		GameRegistry.addShapedRecipe(ModTubes.itemTube.createForType("filter"), "iei", "btb", "iei", 'i', Item.ingotIron, 'b', Block.fenceIron, 't', ModTubes.itemTube.createForType("basic"), 'e', Item.eyeOfEnder);
+		GameRegistry.addShapelessRecipe(ModTubes.itemTube.createForType("ejection"), ModTubes.itemTube.createForType("basic"), Block.glass);
+		
+		GameRegistry.addShapedRecipe(new ItemStack(ModTubes.blockPlastic), "pp","pp", 'p', ModTubes.itemSheetPlastic);
 	}
 
 	@Override

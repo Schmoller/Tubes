@@ -72,15 +72,20 @@ public class ItemTubeBase extends JItemMultiPart
 		return "tubes." + getTubeType(stack);
 	}
 	
-	public ItemStack createForType(String tubeType)
+	public ItemStack createForType(String tubeType, int amount)
 	{
-		ItemStack item = new ItemStack(this);
+		ItemStack item = new ItemStack(this, amount);
 		
-		NBTTagCompound tag = new NBTTagCompound();
+		NBTTagCompound tag = new NBTTagCompound("tag");
 		tag.setString("tube", tubeType);
 		item.setTagCompound(tag);
 		
 		return item;
+	}
+	
+	public ItemStack createForType(String tubeType)
+	{
+		return createForType(tubeType, 1);
 	}
 	
 	public String getTubeType(ItemStack item)
