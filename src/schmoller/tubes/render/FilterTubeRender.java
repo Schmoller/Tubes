@@ -99,7 +99,6 @@ public class FilterTubeRender extends NormalTubeRender
 		FMLClientHandler.instance().getClient().renderGlobal.renderEngine.bindTexture("/terrain.png");
 		tes.startDrawingQuads();
 		
-		mRender.translate(-0.5f, -0.5f, -0.5f);
 		renderCore(0, type, -1);
 		
 		tes.draw();

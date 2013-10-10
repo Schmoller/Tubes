@@ -171,9 +171,7 @@ public class RequestingTubeRender extends NormalTubeRender
 		Tessellator tes = Tessellator.instance;
 		
 		GL11.glDisable(GL11.GL_CULL_FACE);
-		GL11.glPushMatrix();
-		GL11.glTranslated(-0.5, -0.5, -0.5);
-		
+
 		FMLClientHandler.instance().getClient().renderGlobal.renderEngine.bindTexture("/terrain.png");
 		tes.startDrawingQuads();
 		
@@ -188,8 +186,6 @@ public class RequestingTubeRender extends NormalTubeRender
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		
 		renderPump(3);
-		
-		GL11.glPopMatrix();
 	}
 	
 	

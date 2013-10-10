@@ -8,6 +8,9 @@ import codechicken.core.data.MCDataOutput;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.liquids.LiquidContainerRegistry;
+import net.minecraftforge.liquids.LiquidDictionary;
+import net.minecraftforge.liquids.LiquidStack;
 
 public class NormalTubeLogic extends TubeLogic
 {
@@ -63,6 +66,14 @@ public class NormalTubeLogic extends TubeLogic
 		ItemStack item = player.inventory.getCurrentItem();
 		if(item == null || item.itemID == 0)
 			return false;
+		
+		LiquidStack liquid = LiquidContainerRegistry.getLiquidForFilledItem(item);
+		if(liquid != null && LiquidDictionary.findLiquidName(liquid).equals("Water"))
+		{
+			mColor = -1;
+			mTube.updateState();
+			return true;
+		}
 		
 		int index = CommonHelper.getDyeIndex(item);
 		if(index != -1)

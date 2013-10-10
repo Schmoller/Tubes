@@ -8,7 +8,6 @@ import schmoller.tubes.ITube;
 import schmoller.tubes.definitions.CompressorTube;
 import schmoller.tubes.definitions.FilterTube;
 import schmoller.tubes.definitions.TubeDefinition;
-import org.lwjgl.opengl.GL11;
 
 public class CompressorTubeRender extends NormalTubeRender
 {
@@ -140,9 +139,6 @@ public class CompressorTubeRender extends NormalTubeRender
 		
 		Tessellator tes = Tessellator.instance;
 		
-		GL11.glPushMatrix();
-		GL11.glTranslatef(-0.5f, -0.5f, -0.5f);
-		
 		FMLClientHandler.instance().getClient().renderGlobal.renderEngine.bindTexture("/terrain.png");
 		tes.startDrawingQuads();
 		
@@ -150,7 +146,5 @@ public class CompressorTubeRender extends NormalTubeRender
 		tes.draw();
 		
 		renderPumps(0);
-		
-		GL11.glPopMatrix();
 	}
 }

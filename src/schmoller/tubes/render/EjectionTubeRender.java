@@ -27,7 +27,9 @@ public class EjectionTubeRender extends NormalTubeRender
 		
 		mRender.translate(x, y, z);
 		
-		renderCore(connections | (1 << direction), type, -1);
+		int col = tube.getColor();
+		
+		renderCore(connections | (1 << direction), type, col);
 		renderConnections(connections, type);
 		
 		renderInventoryConnections(1 << direction, type);
@@ -49,7 +51,6 @@ public class EjectionTubeRender extends NormalTubeRender
 		FMLClientHandler.instance().getClient().renderGlobal.renderEngine.bindTexture("/terrain.png");
 		tes.startDrawingQuads();
 		
-		mRender.translate(-0.5f, -0.5f, -0.5f);
 		mRender.setIcon(type.getCenterIcon());
 		mRender.drawBox(63, 0.25f, 0.25f, 0.25f, 0.75f, 0.75f, 0.75f);
 		mRender.drawBox(63, 0.75f, 0.75f, 0.75f, 0.25f, 0.25f, 0.25f);

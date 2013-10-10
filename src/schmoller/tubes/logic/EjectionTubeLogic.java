@@ -7,12 +7,11 @@ import schmoller.tubes.ITube;
 import schmoller.tubes.ITubeConnectable;
 import schmoller.tubes.TubeItem;
 
-public class EjectionTubeLogic extends TubeLogic
+public class EjectionTubeLogic extends NormalTubeLogic
 {
 	public EjectionTubeLogic(ITube tube)
 	{
 		super(tube);
-		mTube = tube;
 	}
 	
 	@Override
@@ -30,6 +29,8 @@ public class EjectionTubeLogic extends TubeLogic
 	@Override
 	public boolean canConnectTo( ITubeConnectable con )
 	{
+		if(!super.canConnectTo(con))
+			return false;
 		return (con.getConnectionClass() == 0);
 	}
 	

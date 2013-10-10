@@ -8,7 +8,7 @@ import schmoller.tubes.ITube;
 import schmoller.tubes.ITubeConnectable;
 import schmoller.tubes.inventory.InventoryHelper;
 
-public class ExtractionTubeLogic extends TubeLogic implements IRedstoneTube
+public class ExtractionTubeLogic extends NormalTubeLogic implements IRedstoneTube
 {
 	private boolean mIsPowered = false;
 	public ExtractionTubeLogic(ITube tube)
@@ -28,7 +28,7 @@ public class ExtractionTubeLogic extends TubeLogic implements IRedstoneTube
 		if(con instanceof ITube)
 			return !(((ITube)con).getLogic() instanceof ExtractionTubeLogic);
 
-		return true;
+		return super.canConnectTo(con);
 	}
 	
 	@Override

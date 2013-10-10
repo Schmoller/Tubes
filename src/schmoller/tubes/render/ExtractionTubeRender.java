@@ -33,6 +33,8 @@ public class ExtractionTubeRender extends NormalTubeRender
 		
 		mRender.translate(x, y, z);
 		
+		int col = tube.getColor();
+		
 		int invCons = 0;
 		
 		for(int i = 0; i < 6; ++i)
@@ -48,7 +50,7 @@ public class ExtractionTubeRender extends NormalTubeRender
 		
 		int tubeCons = connections - invCons;
 		
-		renderCore(connections | (1 << direction), type, -1);
+		renderCore(connections | (1 << direction), type, col);
 		renderConnections(tubeCons, type);
 		
 		renderInventoryConnections(invCons, type);
@@ -167,8 +169,6 @@ public class ExtractionTubeRender extends NormalTubeRender
 		Tessellator tes = Tessellator.instance;
 		
 		GL11.glDisable(GL11.GL_CULL_FACE);
-		GL11.glPushMatrix();
-		GL11.glTranslated(-0.5, -0.5, -0.5);
 		
 		FMLClientHandler.instance().getClient().renderGlobal.renderEngine.bindTexture("/terrain.png");
 		tes.startDrawingQuads();
@@ -183,8 +183,6 @@ public class ExtractionTubeRender extends NormalTubeRender
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		
 		renderPump(3);
-		
-		GL11.glPopMatrix();
 	}
 	
 	
