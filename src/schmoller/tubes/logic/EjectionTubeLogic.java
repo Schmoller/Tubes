@@ -9,10 +9,9 @@ import schmoller.tubes.TubeItem;
 
 public class EjectionTubeLogic extends TubeLogic
 {
-	private ITube mTube;
 	public EjectionTubeLogic(ITube tube)
 	{
-		super();
+		super(tube);
 		mTube = tube;
 	}
 	

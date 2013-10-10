@@ -10,11 +10,10 @@ import net.minecraft.item.ItemStack;
 
 public class InjectionTubeLogic extends TubeLogic implements ISidedInventory
 {
-	private ITube mTube;
-	
+
 	public InjectionTubeLogic(ITube tube)
 	{
-		mTube = tube;
+		super(tube);
 	}
 	
 	@Override

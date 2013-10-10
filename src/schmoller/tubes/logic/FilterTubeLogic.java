@@ -17,11 +17,9 @@ public class FilterTubeLogic extends TubeLogic
 	private Mode mCurrentMode = Mode.Allow;
 	private Comparison mCurrentComparison = Comparison.Any;
 	
-	private ITube mTube;
-	
 	public FilterTubeLogic(ITube tube)
 	{
-		mTube = tube;
+		super(tube);
 		mFilterStacks = new ItemStack[16];
 	}
 	

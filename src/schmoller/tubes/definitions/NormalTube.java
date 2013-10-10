@@ -37,6 +37,6 @@ public class NormalTube extends TubeDefinition
 	@Override
 	public TubeLogic getTubeLogic( ITube tube )
 	{
-		return new NormalTubeLogic();
+		return new NormalTubeLogic(tube);
 	}
 }

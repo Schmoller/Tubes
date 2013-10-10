@@ -10,11 +10,10 @@ import schmoller.tubes.inventory.InventoryHelper;
 
 public class ExtractionTubeLogic extends TubeLogic implements IRedstoneTube
 {
-	private ITube mTube;
 	private boolean mIsPowered = false;
 	public ExtractionTubeLogic(ITube tube)
 	{
-		mTube = tube;
+		super(tube);
 	}
 	
 	@Override

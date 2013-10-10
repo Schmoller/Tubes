@@ -4,12 +4,20 @@ import codechicken.core.data.MCDataInput;
 import codechicken.core.data.MCDataOutput;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import schmoller.tubes.ITube;
 import schmoller.tubes.ITubeConnectable;
 import schmoller.tubes.TubeItem;
 
 public abstract class TubeLogic
 {
 	public static final int NO_DESTINATION = -1;
+	
+	protected ITube mTube;
+	
+	public TubeLogic(ITube tube)
+	{
+		mTube = tube;
+	}
 	
 	/**
 	 * Gets what faces tubes can connect to.

@@ -1,6 +1,7 @@
 package schmoller.tubes.logic;
 
 import schmoller.tubes.CommonHelper;
+import schmoller.tubes.ITube;
 import schmoller.tubes.ITubeConnectable;
 import codechicken.core.data.MCDataInput;
 import codechicken.core.data.MCDataOutput;
@@ -11,6 +12,12 @@ import net.minecraft.nbt.NBTTagCompound;
 public class NormalTubeLogic extends TubeLogic
 {
 	private int mColor = -1;
+	
+
+	public NormalTubeLogic( ITube tube )
+	{
+		super(tube);
+	}
 	
 	@Override
 	public int getColor()
@@ -61,6 +68,7 @@ public class NormalTubeLogic extends TubeLogic
 		if(index != -1)
 		{
 			mColor = index;
+			mTube.updateState();
 			return true;
 		}
 		return false;

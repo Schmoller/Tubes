@@ -544,6 +544,10 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 		case 0:
 			mItemsInTransit.add(TubeItem.read(packet));
 			break;
+		case Byte.MAX_VALUE:
+			readDesc(packet);
+			tile().markRender();
+			break;
 		}
 	}
 	
@@ -605,7 +609,10 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 	@Override
 	public void updateState()
 	{
-		sendDescUpdate();
+		if(!tile().worldObj.isRemote)
+		{
+			tile().markDirty();
+			writeDesc(tile().getWriteStream(this).writeByte(Byte.MAX_VALUE));
+		}
 	}
-	
 }

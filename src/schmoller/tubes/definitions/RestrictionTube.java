@@ -32,6 +32,6 @@ public class RestrictionTube extends TubeDefinition
 	@Override
 	public TubeLogic getTubeLogic( ITube tube )
 	{
-		return new RestrictionTubeLogic();
+		return new RestrictionTubeLogic(tube);
 	}
 }

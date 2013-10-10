@@ -14,13 +14,12 @@ import schmoller.tubes.TubeItem;
 
 public class CompressorTubeLogic extends TubeLogic implements IInventory
 {
-	private ITube mTube;
 	private TubeItem mCurrent;
 	private ItemStack mTarget;
 	
 	public CompressorTubeLogic(ITube tube)
 	{
-		mTube = tube;
+		super(tube);
 		mTarget = new ItemStack(0, 64, 0);
 		mCurrent = null;
 	}

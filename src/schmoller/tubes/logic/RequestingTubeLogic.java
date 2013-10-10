@@ -30,10 +30,9 @@ public class RequestingTubeLogic extends TubeLogic implements ITubeImportDest, I
 	private int mPulses = 0;
 	private boolean mIsPowered;
 	
-	private ITube mTube;
 	public RequestingTubeLogic(ITube tube)
 	{
-		mTube = tube;
+		super(tube);
 	}
 	
 	@Override
