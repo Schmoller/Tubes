@@ -27,7 +27,7 @@ public class EjectionTubeRender extends NormalTubeRender
 		
 		mRender.translate(x, y, z);
 		
-		renderCore(connections | (1 << direction), type);
+		renderCore(connections | (1 << direction), type, -1);
 		renderConnections(connections, type);
 		
 		renderInventoryConnections(1 << direction, type);

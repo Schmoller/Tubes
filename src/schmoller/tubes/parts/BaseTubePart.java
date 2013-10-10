@@ -181,6 +181,12 @@ public class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion
 	}
 	
 	@Override
+	public int getColor()
+	{
+		return mLogic.getColor();
+	}
+	
+	@Override
 	public boolean canAddItem( TubeItem item )
 	{
 		return mLogic.canItemEnter(item, (item.direction == 6 ? 6 : item.direction^1));

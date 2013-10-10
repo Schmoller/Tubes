@@ -80,7 +80,7 @@ public class CompressorTubeRender extends NormalTubeRender
 	}
 	
 	@Override
-	protected void renderCore( int connections, TubeDefinition def )
+	protected void renderCore( int connections, TubeDefinition def, int col )
 	{
 		mRender.resetTextureRotation();
 		
@@ -120,11 +120,11 @@ public class CompressorTubeRender extends NormalTubeRender
 	}
 	
 	@Override
-	protected void renderStraight( int connections, TubeDefinition def, int cutoff )
+	protected void renderStraight( int connections, TubeDefinition def, int cutoff, int col )
 	{
-		super.renderStraight(connections, def, cutoff);
+		super.renderStraight(connections, def, cutoff, col);
 		
-		renderCore(connections, def);
+		renderCore(connections, def, col);
 	}
 	
 	@Override
@@ -146,7 +146,7 @@ public class CompressorTubeRender extends NormalTubeRender
 		FMLClientHandler.instance().getClient().renderGlobal.renderEngine.bindTexture("/terrain.png");
 		tes.startDrawingQuads();
 		
-		renderCore(0, type);
+		renderCore(0, type, -1);
 		tes.draw();
 		
 		renderPumps(0);

@@ -48,19 +48,12 @@ public class ExtractionTubeRender extends NormalTubeRender
 		
 		int tubeCons = connections - invCons;
 		
-		renderCore(connections | (1 << direction), type);
+		renderCore(connections | (1 << direction), type, -1);
 		renderConnections(tubeCons, type);
 		
 		renderInventoryConnections(invCons, type);
 		
 		renderExtractor(direction);
-	}
-	
-	@Override
-	protected void renderCore( int connections, TubeDefinition def )
-	{
-		//connections |= (1 << mDir);
-		super.renderCore(connections, def);
 	}
 	
 	private void renderExtractor(int side)

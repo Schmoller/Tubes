@@ -87,4 +87,11 @@ public abstract class TubeLogic
 	public int getTickRate() { return 0; }
 	
 	public void onTick() {}
+	
+	/**
+	 * Gets the color of the tube.
+	 * -1 is no color
+	 * 0-15 is the same as wool color
+	 */
+	public int getColor() { return -1; }
 }

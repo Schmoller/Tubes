@@ -35,7 +35,7 @@ public class OutputRouter extends BaseRouter
 				
 				if(con != null)
 				{
-					if(!con.canAddItem(mItem))
+					if((mItem.colour != -1 && con.getColor() != -1 && con.getColor() != mItem.colour) || !con.canAddItem(mItem))
 						continue;
 					
 					loc.dist += con.getRouteWeight() - 1;
@@ -62,7 +62,7 @@ public class OutputRouter extends BaseRouter
 				
 				if(con != null)
 				{
-					if(!con.canAddItem(mItem))
+					if((mItem.colour != -1 && con.getColor() != -1 && con.getColor() != mItem.colour) || !con.canAddItem(mItem))
 						continue;
 					
 					loc.dist += con.getRouteWeight() - 1;

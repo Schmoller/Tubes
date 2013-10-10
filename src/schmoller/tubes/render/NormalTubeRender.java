@@ -8,9 +8,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import schmoller.tubes.AdvRender;
+import schmoller.tubes.CommonHelper;
 import schmoller.tubes.ITube;
 import schmoller.tubes.TubeHelper;
 import schmoller.tubes.definitions.EjectionTube;
+import schmoller.tubes.definitions.NormalTube;
 import schmoller.tubes.definitions.TubeDefinition;
 
 public class NormalTubeRender implements ITubeRender
@@ -34,10 +36,13 @@ public class NormalTubeRender implements ITubeRender
 		mRender.setLightingFromBlock(world, x, y, z);
 		mRender.resetTextureFlip();
 		mRender.resetTextureRotation();
+		mRender.resetColor();
 		
 		mRender.setLocalLights(0.5f, 1.0f, 0.8f, 0.8f, 0.6f, 0.6f);
 		
 		mRender.translate(x, y, z);
+		
+		int col = tube.getColor();
 		
 		int invCons = 0;
 		
@@ -56,19 +61,19 @@ public class NormalTubeRender implements ITubeRender
 		
 		if(connections == 3 || connections == 12 || connections == 48)
 		{
-			renderStraight(connections, type, invCons);
+			renderStraight(connections, type, invCons, col);
 			renderInventoryConnections(invCons, type);
 		}
 		else
 		{
-			renderCore(connections, type);
+			renderCore(connections, type, col);
 			
 			renderConnections(tubeCons, type);
 			renderInventoryConnections(invCons, type);
 		}
 	}
 	
-	protected void renderStraight(int connections, TubeDefinition def, int cutoff)
+	protected void renderStraight(int connections, TubeDefinition def, int cutoff, int col)
 	{
 		mRender.setIcon(def.getStraightIcon());
 		
@@ -83,6 +88,12 @@ public class NormalTubeRender implements ITubeRender
 				max = 0.75f;
 			
 			mRender.drawBox(60, 0.25f, min, 0.25f, 0.75f, max, 0.75f);
+			if(col != -1)
+			{
+				mRender.setIcon(NormalTube.paintStraight);
+				mRender.setColorRGB(CommonHelper.getDyeColor(col));
+				mRender.drawBox(60, 0.25f, min, 0.25f, 0.75f, max, 0.75f);
+			}
 		}
 		else if(connections == 12)
 		{
@@ -96,6 +107,12 @@ public class NormalTubeRender implements ITubeRender
 			
 			mRender.setTextureRotation(0, 0, 1, 1, 1, 1);
 			mRender.drawBox(51, 0.25f, 0.25f, min, 0.75f, 0.75f, max);
+			if(col != -1)
+			{
+				mRender.setIcon(NormalTube.paintStraight);
+				mRender.setColorRGB(CommonHelper.getDyeColor(col));
+				mRender.drawBox(51, 0.25f, 0.25f, min, 0.75f, 0.75f, max);
+			}
 		}
 		else
 		{
@@ -108,14 +125,29 @@ public class NormalTubeRender implements ITubeRender
 				max = 0.75f;
 			mRender.setTextureRotation(1);
 			mRender.drawBox(15, min, 0.25f, 0.25f, max, 0.75f, 0.75f);
+			if(col != -1)
+			{
+				mRender.setIcon(NormalTube.paintStraight);
+				mRender.setColorRGB(CommonHelper.getDyeColor(col));
+				mRender.drawBox(15, min, 0.25f, 0.25f, max, 0.75f, 0.75f);
+			}
 		}
+		mRender.resetColor();
 		mRender.resetTextureRotation();
 	}
 	
-	protected void renderCore(int connections, TubeDefinition def)
+	protected void renderCore(int connections, TubeDefinition def, int col)
 	{
 		mRender.setIcon(def.getCenterIcon());
 		mRender.drawBox((~connections) & 63, 0.25f, 0.25f, 0.25f, 0.75f, 0.75f, 0.75f);
+		
+		if(col != -1)
+		{
+			mRender.setIcon(NormalTube.paintCenter);
+			mRender.setColorRGB(CommonHelper.getDyeColor(col));
+			mRender.drawBox((~connections) & 63, 0.25f, 0.25f, 0.25f, 0.75f, 0.75f, 0.75f);
+			mRender.resetColor();
+		}
 	}
 	
 	protected void renderInventoryConnections(int connections, TubeDefinition def)
@@ -212,6 +244,7 @@ public class NormalTubeRender implements ITubeRender
 		mRender.resetTextureFlip();
 		mRender.resetTextureRotation();
 		mRender.resetLighting(15728880);
+		mRender.resetColor();
 		
 		mRender.setLocalLights(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
 		

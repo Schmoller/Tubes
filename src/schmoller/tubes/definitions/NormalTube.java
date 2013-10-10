@@ -11,11 +11,16 @@ public class NormalTube extends TubeDefinition
 	public static Icon centerIcon;
 	public static Icon straightIcon;
 	
+	public static Icon paintStraight;
+	public static Icon paintCenter;
+	
 	@Override
 	public void registerIcons( IconRegister register )
 	{
 		centerIcon = register.registerIcon("Tubes:tube-center");
 		straightIcon = register.registerIcon("Tubes:tube");
+		paintStraight = register.registerIcon("Tubes:paint");
+		paintCenter = register.registerIcon("Tubes:paint-center");
 	}
 	
 	@Override

@@ -3,6 +3,7 @@ package schmoller.tubes.logic;
 import codechicken.core.data.MCDataInput;
 import codechicken.core.data.MCDataOutput;
 import schmoller.tubes.ITube;
+import schmoller.tubes.ITubeConnectable;
 import schmoller.tubes.ModTubes;
 import schmoller.tubes.TubeItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -199,6 +200,15 @@ public class FilterTubeLogic extends TubeLogic
 	public ITube getTube()
 	{
 		return mTube;
+	}
+	
+	@Override
+	public boolean canConnectTo( ITubeConnectable con )
+	{
+		if(con instanceof ITube && ((ITube)con).getLogic() instanceof FilterTubeLogic)
+			return false;
+		
+		return true;
 	}
 	
 	public enum Mode

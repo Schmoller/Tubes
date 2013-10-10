@@ -18,7 +18,7 @@ public class FilterTubeRender extends NormalTubeRender
 	}
 	
 	@Override
-	protected void renderCore( int connections, TubeDefinition def )
+	protected void renderCore( int connections, TubeDefinition def, int col )
 	{
 		mRender.resetTextureRotation();
 		
@@ -75,12 +75,12 @@ public class FilterTubeRender extends NormalTubeRender
 	}
 	
 	@Override
-	protected void renderStraight( int connections, TubeDefinition def, int cutoff )
+	protected void renderStraight( int connections, TubeDefinition def, int cutoff, int col )
 	{
-		super.renderStraight(connections, def, cutoff);
+		super.renderStraight(connections, def, cutoff, col);
 		
 		renderExtraParts(connections);
-		renderCore(connections, def);
+		renderCore(connections, def, col);
 	}
 	
 	@Override
@@ -100,7 +100,7 @@ public class FilterTubeRender extends NormalTubeRender
 		tes.startDrawingQuads();
 		
 		mRender.translate(-0.5f, -0.5f, -0.5f);
-		renderCore(0, type);
+		renderCore(0, type, -1);
 		
 		tes.draw();
 	}

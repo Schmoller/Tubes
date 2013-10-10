@@ -21,4 +21,6 @@ public interface ITubeConnectable
 	public int getRouteWeight();
 	
 	public int getConnectionClass();
+	
+	public int getColor();
 }

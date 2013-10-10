@@ -49,7 +49,7 @@ public class RequestingTubeRender extends NormalTubeRender
 		
 		int tubeCons = connections - invCons;
 		
-		renderCore(connections | (1 << direction), type);
+		renderCore(connections | (1 << direction), type, -1);
 		renderConnections(tubeCons, type);
 		
 		renderInventoryConnections(invCons, type);
@@ -58,7 +58,7 @@ public class RequestingTubeRender extends NormalTubeRender
 	}
 	
 	@Override
-	protected void renderCore( int connections, TubeDefinition def )
+	protected void renderCore( int connections, TubeDefinition def, int col )
 	{
 		mRender.setIcon(RequestingTube.icon);
 		mRender.drawBox(~connections, 0.1875f, 0.1875f, 0.1875f, 0.8125f, 0.8125f, 0.8125f);
@@ -181,7 +181,7 @@ public class RequestingTubeRender extends NormalTubeRender
 		mRender.drawBox(55, 0.25f, 0.25f, 0.25f, 0.75f, 0.75f, 0.75f);
 		
 		renderExtractor(3);
-		renderCore(8, type);
+		renderCore(8, type, -1);
 		
 		tes.draw();
 		

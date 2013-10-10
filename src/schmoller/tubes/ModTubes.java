@@ -95,6 +95,7 @@ public class ModTubes
 	@PostInit
 	public void postInit(FMLPostInitializationEvent event)
 	{
+		proxy.registerOreRecipes();
 		TubeRegistry.instance().finalizeTubes();
 	}
 

@@ -21,6 +21,8 @@ public class TubeItem implements Cloneable
 	public float progress = 0;
 	public boolean updated = false;
 	public int state = NORMAL;
+	public int colour = -1;
+	
 	
 	@Override
 	public String toString()
@@ -33,6 +35,7 @@ public class TubeItem implements Cloneable
 		tag.setInteger("D", direction | (updated ? 128 : 0));
 		tag.setFloat("P", progress);
 		tag.setInteger("S", state);
+		tag.setShort("C", (short)colour);
 		item.writeToNBT(tag);
 	}
 	
@@ -42,6 +45,7 @@ public class TubeItem implements Cloneable
 		output.writeFloat(progress);
 		output.writeItemStack(item);
 		output.writeByte(state);
+		output.writeShort(colour);
 	}
 	
 	public static TubeItem read(MCDataInput input)
@@ -56,6 +60,7 @@ public class TubeItem implements Cloneable
 		item.updated = updated;
 		item.progress = progress;
 		item.state = input.readByte();
+		item.colour = input.readShort();
 		
 		return item;
 	}
@@ -71,6 +76,8 @@ public class TubeItem implements Cloneable
 		tItem.progress = tag.getFloat("P");
 		tItem.state = tag.getInteger("S");
 		
+		tItem.colour = tag.getShort("C");
+		
 		return tItem;
 	}
 	
@@ -81,6 +88,7 @@ public class TubeItem implements Cloneable
 		item.state = state;
 		item.progress = progress;
 		item.updated = updated;
+		item.colour = colour;
 		
 		return item;
 	}

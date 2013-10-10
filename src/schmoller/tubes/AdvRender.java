@@ -179,20 +179,6 @@ public class AdvRender
 		mLocalLighting[5] = east;
 	}
 	
-	private int getAoBrightness(int v1, int v2, int v3, int v4)
-	{
-		if (v1 == 0)
-			v1 = v4;
-		
-		if (v2 == 0)
-			v2 = v4;
-		
-		if (v3 == 0)
-			v3 = v4;
-		
-		return ((v1 + v2 + v3 + v4) >> 2) & 16711935;
-	}
-	
 	public void resetAO()
 	{
 		mEnableAO = false;
@@ -219,7 +205,6 @@ public class AdvRender
 	private int getMixedBrightnessForBlock(IBlockAccess world, int x, int y, int z)
 	{
 		int id = world.getBlockId(x, y, z);
-		int lightVal;
 		if(Block.blocksList[id] != null)
 			return Block.blocksList[id].getMixedBrightnessForBlock(world, x, y, z);
 		else
@@ -255,11 +240,11 @@ public class AdvRender
 		for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
 			setFaceLightingFromWorld(dir.ordinal(), world, x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
 	}
+	
 	public void setFaceLightingFromWorld(int side, IBlockAccess world, int x, int y, int z)
 	{
 		if(!FMLClientHandler.instance().getClient().isAmbientOcclusionEnabled())
 		{
-			int id = world.getBlockId(x, y, z);
 			int lightVal = getMixedBrightnessForBlock(world, x, y, z);
 			
 			mFaceBrightness[side][0] = lightVal;
@@ -403,6 +388,57 @@ public class AdvRender
 			mCornerAO[side][3] = (ao[6] + ao[7] + ao[0] + myAO) / 4.0f;
 			
 			mEnableAO = true;
+		}
+	}
+	
+	public void resetColor()
+	{
+		mUseColor = false;
+	}
+	
+	public void setColorRGB(int color)
+	{
+		mUseColor = true;
+		float r,g,b;
+		
+		r = ((color >> 16) & 255) / 255f;
+		g = ((color >> 8) & 255) / 255f;
+		b = (color & 255) / 255f;
+		
+		for(int i = 0; i < mCornerColors.length; ++i)
+		{
+			mCornerColors[i].x = r;
+			mCornerColors[i].y = g;
+			mCornerColors[i].z = b;
+		}
+	}
+	
+	public void setColorI(int r, int g, int b)
+	{
+		mUseColor = true;
+		float rF,gF,bF;
+		
+		rF = r / 255f;
+		gF = g / 255f;
+		bF = b / 255f;
+		
+		for(int i = 0; i < mCornerColors.length; ++i)
+		{
+			mCornerColors[i].x = rF;
+			mCornerColors[i].y = gF;
+			mCornerColors[i].z = bF;
+		}
+	}
+	
+	public void setColorF(float r, float b, float g)
+	{
+		mUseColor = true;
+
+		for(int i = 0; i < mCornerColors.length; ++i)
+		{
+			mCornerColors[i].x = r;
+			mCornerColors[i].y = g;
+			mCornerColors[i].z = b;
 		}
 	}
 	
