@@ -1,12 +1,11 @@
 package schmoller.tubes.definitions;
 
-import schmoller.tubes.ITube;
-import schmoller.tubes.logic.NormalTubeLogic;
-import schmoller.tubes.logic.TubeLogic;
+import schmoller.tubes.types.BaseTube;
+import schmoller.tubes.types.BasicTube;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.util.Icon;
 
-public class NormalTube extends TubeDefinition
+public class TypeNormalTube extends TubeDefinition
 {
 	public static Icon centerIcon;
 	public static Icon straightIcon;
@@ -38,8 +37,8 @@ public class NormalTube extends TubeDefinition
 	}
 	
 	@Override
-	public TubeLogic getTubeLogic( ITube tube )
+	public BaseTube createTube()
 	{
-		return new NormalTubeLogic(tube);
+		return new BasicTube("basic");
 	}
 }

@@ -1,4 +1,4 @@
-package schmoller.tubes.logic;
+package schmoller.tubes.types;
 
 import java.util.Arrays;
 
@@ -10,28 +10,27 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.ChunkPosition;
-import schmoller.tubes.ITube;
 import schmoller.tubes.ModTubes;
 import schmoller.tubes.TubeHelper;
 import schmoller.tubes.TubeItem;
 import schmoller.tubes.inventory.InventoryHelper;
-import schmoller.tubes.routing.BaseRouter.PathLocation;
 import schmoller.tubes.routing.OutputRouter;
+import schmoller.tubes.routing.BaseRouter.PathLocation;
 
-public class RoutingTubeLogic extends TubeLogic
+public class RoutingTube extends BaseTube
 {
 	private ItemStack[][] mFilters = new ItemStack[9][4];
 	private int[] mColours = new int[9];
 	private RouteDirection[] mDir = new RouteDirection[9]; 
 	
-	public RoutingTubeLogic(ITube tube)
+	public RoutingTube()
 	{
-		super(tube);
+		super("routing");
 		Arrays.fill(mDir, RouteDirection.Closed);
 		Arrays.fill(mColours, -1);
 	}
-	
 	
 	public void setFilter(int column, int row, ItemStack item)
 	{
@@ -63,12 +62,6 @@ public class RoutingTubeLogic extends TubeLogic
 		return mDir[column];
 	}
 	
-	@Override
-	public boolean hasCustomRouting()
-	{
-		return true;
-	}
-	
 	private boolean doesItemMatchFilter(int column, ItemStack item)
 	{
 		boolean empty = true;
@@ -83,6 +76,12 @@ public class RoutingTubeLogic extends TubeLogic
 		}
 		
 		return empty;
+	}
+	
+	@Override
+	public boolean hasCustomRouting()
+	{
+		return true;
 	}
 	
 	@Override
@@ -154,9 +153,9 @@ public class RoutingTubeLogic extends TubeLogic
 				PathLocation loc;
 				
 				if(mDir[col] == RouteDirection.Any)
-					loc = new OutputRouter(mTube.world(), new ChunkPosition(mTube.x(), mTube.y(), mTube.z()), item).route();
+					loc = new OutputRouter(world(), new ChunkPosition(x(), y(), z()), item).route();
 				else
-					loc = new OutputRouter(mTube.world(), new ChunkPosition(mTube.x(), mTube.y(), mTube.z()), item, mDir[col].ordinal()).route();
+					loc = new OutputRouter(world(), new ChunkPosition(x(), y(), z()), item, mDir[col].ordinal()).route();
 				
 				if(loc != null)
 				{
@@ -194,7 +193,7 @@ public class RoutingTubeLogic extends TubeLogic
 	}
 	
 	@Override
-	public boolean canItemEnter( TubeItem item, int side )
+	public boolean canItemEnter( TubeItem item )
 	{
 		for(int col = 0; col < 9; ++col)
 		{
@@ -206,8 +205,10 @@ public class RoutingTubeLogic extends TubeLogic
 	}
 	
 	@Override
-	public void onSave( NBTTagCompound root )
+	public void save( NBTTagCompound root )
 	{
+		super.save(root);
+		
 		NBTTagList list = new NBTTagList();
 		for(int i = 0; i < 9; ++i)
 		{
@@ -238,8 +239,10 @@ public class RoutingTubeLogic extends TubeLogic
 	}
 	
 	@Override
-	public void onLoad( NBTTagCompound root )
+	public void load( NBTTagCompound root )
 	{
+		super.load(root);
+		
 		NBTTagList filters = root.getTagList("Filter");
 		NBTTagList colours = root.getTagList("Colours");
 		NBTTagList directions = root.getTagList("Dirs");
@@ -264,6 +267,8 @@ public class RoutingTubeLogic extends TubeLogic
 	@Override
 	public void writeDesc( MCDataOutput output )
 	{
+		super.writeDesc(output);
+		
 		for(int i = 0; i < 9; ++i)
 			output.writeShort(mColours[i]);
 		
@@ -274,6 +279,8 @@ public class RoutingTubeLogic extends TubeLogic
 	@Override
 	public void readDesc( MCDataInput input )
 	{
+		super.readDesc(input);
+		
 		for(int i = 0; i < 9; ++i)
 			mColours[i] = input.readShort();
 		
@@ -282,16 +289,10 @@ public class RoutingTubeLogic extends TubeLogic
 	}
 	
 	@Override
-	public boolean onActivate( EntityPlayer player )
+	public boolean activate( EntityPlayer player, MovingObjectPosition part, ItemStack item )
 	{
-		player.openGui(ModTubes.instance, ModTubes.GUI_ROUTING_TUBE, mTube.world(), mTube.x(), mTube.y(), mTube.z());
+		player.openGui(ModTubes.instance, ModTubes.GUI_ROUTING_TUBE, world(), x(), y(), z());
 		return true;
-	}
-
-
-	public ITube getTube()
-	{
-		return mTube;
 	}
 	
 	public enum RouteDirection

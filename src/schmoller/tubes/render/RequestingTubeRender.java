@@ -10,9 +10,9 @@ import net.minecraftforge.common.ForgeDirection;
 import schmoller.tubes.IDirectionalTube;
 import schmoller.tubes.ITube;
 import schmoller.tubes.TubeHelper;
-import schmoller.tubes.definitions.EjectionTube;
-import schmoller.tubes.definitions.FilterTube;
-import schmoller.tubes.definitions.RequestingTube;
+import schmoller.tubes.definitions.TypeEjectionTube;
+import schmoller.tubes.definitions.TypeFilterTube;
+import schmoller.tubes.definitions.TypeRequestingTube;
 import schmoller.tubes.definitions.TubeDefinition;
 import org.lwjgl.opengl.GL11;
 
@@ -60,50 +60,50 @@ public class RequestingTubeRender extends NormalTubeRender
 	@Override
 	protected void renderCore( int connections, TubeDefinition def, int col )
 	{
-		mRender.setIcon(RequestingTube.icon);
+		mRender.setIcon(TypeRequestingTube.icon);
 		mRender.drawBox(~connections, 0.1875f, 0.1875f, 0.1875f, 0.8125f, 0.8125f, 0.8125f);
-		mRender.setIcon(FilterTube.filterOpenIcon);
+		mRender.setIcon(TypeFilterTube.filterOpenIcon);
 		mRender.drawBox(connections, 0.1875f, 0.1875f, 0.1875f, 0.8125f, 0.8125f, 0.8125f);
 	}
 	
 	private void renderExtractor(int side)
 	{
-		mRender.setIcon(RequestingTube.icon);
+		mRender.setIcon(TypeRequestingTube.icon);
 		
 		switch(side)
 		{
 		case 0:
 			mRender.drawBox(60, 0.25f, 0.0f, 0.25f, 0.75f, 0.25f, 0.75f);
-			mRender.setIcon(EjectionTube.endIcon, EjectionTube.endIcon, RequestingTube.icon, RequestingTube.icon, RequestingTube.icon, RequestingTube.icon);
+			mRender.setIcon(TypeEjectionTube.endIcon, TypeEjectionTube.endIcon, TypeRequestingTube.icon, TypeRequestingTube.icon, TypeRequestingTube.icon, TypeRequestingTube.icon);
 			mRender.drawBox(63, 0.1875f, 0.0f, 0.1875f, 0.8125f, 0.0625f, 0.8125f);
 			break;
 		case 1:
 			mRender.drawBox(60, 0.25f, 0.75f, 0.25f, 0.75f, 1.0f, 0.75f);
-			mRender.setIcon(EjectionTube.endIcon, EjectionTube.endIcon, RequestingTube.icon, RequestingTube.icon, RequestingTube.icon, RequestingTube.icon);
+			mRender.setIcon(TypeEjectionTube.endIcon, TypeEjectionTube.endIcon, TypeRequestingTube.icon, TypeRequestingTube.icon, TypeRequestingTube.icon, TypeRequestingTube.icon);
 			mRender.drawBox(63, 0.1875f, 0.9375f, 0.1875f, 0.8125f, 1.0f, 0.8125f);
 			break;
 		case 2:
 			mRender.setTextureRotation(0, 0, 0, 0, 1, 1);
 			mRender.drawBox(51, 0.25f, 0.25f, 0.0f, 0.75f, 0.75f, 0.25f);
-			mRender.setIcon(RequestingTube.icon, RequestingTube.icon, EjectionTube.endIcon, EjectionTube.endIcon, RequestingTube.icon, RequestingTube.icon);
+			mRender.setIcon(TypeRequestingTube.icon, TypeRequestingTube.icon, TypeEjectionTube.endIcon, TypeEjectionTube.endIcon, TypeRequestingTube.icon, TypeRequestingTube.icon);
 			mRender.drawBox(63, 0.1875f, 0.1875f, 0.0f, 0.8125f, 0.8125f, 0.0625f);
 			break;
 		case 3:
 			mRender.setTextureRotation(0, 0, 0, 0, 1, 1);
 			mRender.drawBox(51, 0.25f, 0.25f, 0.75f, 0.75f, 0.75f, 1.0f);
-			mRender.setIcon(RequestingTube.icon, RequestingTube.icon, EjectionTube.endIcon, EjectionTube.endIcon, RequestingTube.icon, RequestingTube.icon);
+			mRender.setIcon(TypeRequestingTube.icon, TypeRequestingTube.icon, TypeEjectionTube.endIcon, TypeEjectionTube.endIcon, TypeRequestingTube.icon, TypeRequestingTube.icon);
 			mRender.drawBox(63, 0.1875f, 0.1875f, 0.9375f, 0.8125f, 0.8125f, 1.0f);
 			break;
 		case 4:
 			mRender.setTextureRotation(1, 1, 1, 1, 0, 0);
 			mRender.drawBox(15, 0.0f, 0.25f, 0.25f, 0.25f, 0.75f, 0.75f);
-			mRender.setIcon(RequestingTube.icon, RequestingTube.icon, RequestingTube.icon, RequestingTube.icon, EjectionTube.endIcon, EjectionTube.endIcon);
+			mRender.setIcon(TypeRequestingTube.icon, TypeRequestingTube.icon, TypeRequestingTube.icon, TypeRequestingTube.icon, TypeEjectionTube.endIcon, TypeEjectionTube.endIcon);
 			mRender.drawBox(63, 0.0f, 0.1875f, 0.1875f, 0.0625f, 0.8125f, 0.8125f);
 			break;
 		case 5:
 			mRender.setTextureRotation(1, 1, 1, 1, 0, 0);
 			mRender.drawBox(15, 0.75f, 0.25f, 0.25f, 1.0f, 0.75f, 0.75f);
-			mRender.setIcon(RequestingTube.icon, RequestingTube.icon, RequestingTube.icon, RequestingTube.icon, EjectionTube.endIcon, EjectionTube.endIcon);
+			mRender.setIcon(TypeRequestingTube.icon, TypeRequestingTube.icon, TypeRequestingTube.icon, TypeRequestingTube.icon, TypeEjectionTube.endIcon, TypeEjectionTube.endIcon);
 			mRender.drawBox(63, 0.9375f, 0.1875f, 0.1875f, 1.0f, 0.8125f, 0.8125f);
 			break;
 		}

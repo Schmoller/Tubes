@@ -1,32 +1,31 @@
-package schmoller.tubes.logic;
+package schmoller.tubes.types;
 
 import codechicken.core.data.MCDataInput;
 import codechicken.core.data.MCDataOutput;
-import schmoller.tubes.ITube;
-import schmoller.tubes.ITubeConnectable;
-import schmoller.tubes.ModTubes;
-import schmoller.tubes.TubeItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.MovingObjectPosition;
+import schmoller.tubes.ITubeConnectable;
+import schmoller.tubes.ModTubes;
 
-public class FilterTubeLogic extends TubeLogic
+public class FilterTube extends BaseTube
 {
 	private ItemStack[] mFilterStacks;
 	private Mode mCurrentMode = Mode.Allow;
 	private Comparison mCurrentComparison = Comparison.Any;
 	
-	public FilterTubeLogic(ITube tube)
+	public FilterTube()
 	{
-		super(tube);
+		super("filter");
 		mFilterStacks = new ItemStack[16];
 	}
 	
 	@Override
-	public boolean onActivate( EntityPlayer player )
+	public boolean activate( EntityPlayer player, MovingObjectPosition part, ItemStack item )
 	{
-		player.openGui(ModTubes.instance, ModTubes.GUI_FILTER_TUBE, mTube.world(), mTube.x(), mTube.y(), mTube.z());
+		player.openGui(ModTubes.instance, ModTubes.GUI_FILTER_TUBE, world(), x(), y(), z());
 		
 		return true;
 	}
@@ -97,8 +96,9 @@ public class FilterTubeLogic extends TubeLogic
 		
 		return matches;
 	}
+	
 	@Override
-	public boolean canItemEnter( TubeItem item, int side )
+	public boolean canAddItem( ItemStack item, int direction )
 	{
 		boolean empty = true;
 
@@ -110,12 +110,12 @@ public class FilterTubeLogic extends TubeLogic
 				
 				if(mCurrentMode == Mode.Allow)
 				{
-					if(doesMatchFilter(item.item, i))
+					if(doesMatchFilter(item, i))
 						return true;
 				}
 				else
 				{
-					if(!doesMatchFilter(item.item, i))
+					if(!doesMatchFilter(item, i))
 						return false;
 				}
 			}
@@ -126,10 +126,19 @@ public class FilterTubeLogic extends TubeLogic
 		
 		return mCurrentMode == Mode.Deny;
 	}
-
+	
 	@Override
-	public void onSave( NBTTagCompound root )
+	public boolean canConnectTo( ITubeConnectable con )
 	{
+		return !(con instanceof FilterTube);
+	}
+	
+	
+	@Override
+	public void save( NBTTagCompound root )
+	{
+		super.save(root);
+		
 		NBTTagList items = new NBTTagList();
 		for(int i = 0; i < mFilterStacks.length; ++i)
 		{
@@ -149,8 +158,10 @@ public class FilterTubeLogic extends TubeLogic
 	}
 	
 	@Override
-	public void onLoad( NBTTagCompound root )
+	public void load( NBTTagCompound root )
 	{
+		super.load(root);
+		
 		NBTTagList items = root.getTagList("filter");
 		
 		for(int i = 0; i < items.tagCount(); ++i)
@@ -167,6 +178,8 @@ public class FilterTubeLogic extends TubeLogic
 	@Override
 	public void writeDesc( MCDataOutput output )
 	{
+		super.writeDesc(output);
+		
 		output.writeByte(mCurrentMode.ordinal());
 		output.writeByte(mCurrentComparison.ordinal());
 		
@@ -185,6 +198,8 @@ public class FilterTubeLogic extends TubeLogic
 	@Override
 	public void readDesc( MCDataInput input )
 	{
+		super.readDesc(input);
+		
 		mCurrentMode = Mode.values()[input.readByte()];
 		mCurrentComparison = Comparison.values()[input.readByte()];
 		
@@ -194,21 +209,7 @@ public class FilterTubeLogic extends TubeLogic
 				mFilterStacks[i] = input.readItemStack();
 		}
 	}
-	
-	public ITube getTube()
-	{
-		return mTube;
-	}
-	
-	@Override
-	public boolean canConnectTo( ITubeConnectable con )
-	{
-		if(con instanceof ITube && ((ITube)con).getLogic() instanceof FilterTubeLogic)
-			return false;
-		
-		return true;
-	}
-	
+
 	public enum Mode
 	{
 		Allow,

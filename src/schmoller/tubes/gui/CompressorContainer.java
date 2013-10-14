@@ -1,14 +1,14 @@
 package schmoller.tubes.gui;
 
-import schmoller.tubes.logic.CompressorTubeLogic;
+import schmoller.tubes.types.CompressorTube;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 public class CompressorContainer extends ExtContainer
 {
-	private CompressorTubeLogic mTube;
-	public CompressorContainer(CompressorTubeLogic tube, EntityPlayer player)
+	private CompressorTube mTube;
+	public CompressorContainer(CompressorTube tube, EntityPlayer player)
 	{
 		addSlotToContainer(new Slot(tube, 0, 80, 25));
 		
@@ -84,9 +84,9 @@ public class CompressorContainer extends ExtContainer
 	
 	private static class CompressorTargetSlot extends FakeSlot
 	{
-		private CompressorTubeLogic mTube;
+		private CompressorTube mTube;
 		
-		public CompressorTargetSlot(CompressorTubeLogic tube, int x, int y)
+		public CompressorTargetSlot(CompressorTube tube, int x, int y)
 		{
 			super(tube.getTargetType(), x, y);
 			mTube = tube;

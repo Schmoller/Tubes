@@ -1,12 +1,9 @@
 package schmoller.tubes;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.PriorityQueue;
 import java.util.Random;
 
-import schmoller.tubes.inventory.InventoryHelper;
 import schmoller.tubes.routing.BaseRouter;
+import schmoller.tubes.routing.BlockedRouter;
 import schmoller.tubes.routing.InputRouter;
 import schmoller.tubes.routing.OutputRouter;
 
@@ -57,12 +54,12 @@ public class TubeHelper
 				
 			if(other instanceof ITube)
 			{
-				if(!((ITube)other).getLogic().canConnectTo(con))
+				if(!((ITube)other).canConnectTo(con))
 					return false;
 				
 				if(con instanceof ITube)
 				{
-					if(!((ITube)con).getLogic().canConnectTo(other))
+					if(!((ITube)con).canConnectTo(other))
 						return false;
 				}
 			}
@@ -73,7 +70,7 @@ public class TubeHelper
 		{
 			if(other instanceof ITube)
 			{
-				if(!((ITube)other).getLogic().canConnectToInventories())
+				if(!((ITube)other).canConnectToInventories())
 					return false;
 			}
 			
@@ -123,6 +120,15 @@ public class TubeHelper
 				path = new OutputRouter(world, new ChunkPosition(x, y, z), item).route();
 				item.state = TubeItem.NORMAL;
 			}
+		}
+		else if(item.state == TubeItem.BLOCKED)
+		{
+			path = new OutputRouter(world, new ChunkPosition(x,y,z), item).route();
+			
+			if(path == null)
+				path = new BlockedRouter(world, new ChunkPosition(x,y,z), item).route();
+			else
+				item.state = TubeItem.NORMAL;
 		}
 		
 		if(path != null)

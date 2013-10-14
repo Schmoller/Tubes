@@ -24,7 +24,7 @@ import org.lwjgl.opengl.GL12;
 import schmoller.tubes.AdvRender;
 import schmoller.tubes.CommonHelper;
 import schmoller.tubes.TubeItem;
-import schmoller.tubes.definitions.NormalTube;
+import schmoller.tubes.definitions.TypeNormalTube;
 
 @SideOnly(Side.CLIENT)
 public class CustomRenderItem
@@ -56,7 +56,7 @@ public class CustomRenderItem
 			
 			mAdv.scale(0.4f, 0.4f, 0.4f);
 			mAdv.translate((float)x, (float)y, (float)z);
-			mAdv.setIcon(NormalTube.itemBorder);
+			mAdv.setIcon(TypeNormalTube.itemBorder);
 			
 			Tessellator tes = Tessellator.instance;
 			tes.startDrawingQuads();

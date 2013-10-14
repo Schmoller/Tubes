@@ -1,9 +1,8 @@
 package schmoller.tubes.definitions;
 
 import codechicken.core.vec.Cuboid6;
-import schmoller.tubes.ITube;
-import schmoller.tubes.logic.TubeLogic;
 import schmoller.tubes.parts.BaseTubePart;
+import schmoller.tubes.types.BaseTube;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.util.Icon;
 
@@ -14,8 +13,8 @@ public abstract class TubeDefinition
 	
 	public abstract Icon getCenterIcon();
 	public abstract Icon getStraightIcon();
-	
-	public abstract TubeLogic getTubeLogic(ITube tube);
+
+	public abstract BaseTube createTube();
 
 	public Class<? extends BaseTubePart> getPartClass() { return BaseTubePart.class; }
 	

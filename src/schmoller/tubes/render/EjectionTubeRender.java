@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import schmoller.tubes.IDirectionalTube;
 import schmoller.tubes.ITube;
-import schmoller.tubes.definitions.EjectionTube;
+import schmoller.tubes.definitions.TypeEjectionTube;
 import schmoller.tubes.definitions.TubeDefinition;
 
 public class EjectionTubeRender extends NormalTubeRender
@@ -55,10 +55,10 @@ public class EjectionTubeRender extends NormalTubeRender
 		mRender.drawBox(63, 0.25f, 0.25f, 0.25f, 0.75f, 0.75f, 0.75f);
 		mRender.drawBox(63, 0.75f, 0.75f, 0.75f, 0.25f, 0.25f, 0.25f);
 		
-		mRender.setIcon(EjectionTube.funnelIcon);
+		mRender.setIcon(TypeEjectionTube.funnelIcon);
 		mRender.drawBox(51, 0.25f, 0.25f, 0.75f, 0.75f, 0.75f, 1.0f);
 		mRender.drawBox(51, 0.75f, 0.75f, 1.0f, 0.25f, 0.25f, 0.75f);
-		mRender.setIcon(EjectionTube.funnelIcon, EjectionTube.funnelIcon, EjectionTube.endIcon, EjectionTube.endIcon, EjectionTube.funnelIcon, EjectionTube.funnelIcon);
+		mRender.setIcon(TypeEjectionTube.funnelIcon, TypeEjectionTube.funnelIcon, TypeEjectionTube.endIcon, TypeEjectionTube.endIcon, TypeEjectionTube.funnelIcon, TypeEjectionTube.funnelIcon);
 		mRender.drawBox(63, 0.1875f, 0.1875f, 0.9375f, 0.8125f, 0.8125f, 1.0f);
 		mRender.drawBox(63, 0.8125f, 0.8125f, 1.0f, 0.1875f, 0.1875f, 0.9375f);
 		

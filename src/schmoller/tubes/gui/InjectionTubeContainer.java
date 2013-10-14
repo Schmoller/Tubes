@@ -1,6 +1,6 @@
 package schmoller.tubes.gui;
 
-import schmoller.tubes.parts.InventoryTubePart;
+import schmoller.tubes.types.InjectionTube;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
@@ -8,9 +8,9 @@ import net.minecraft.item.ItemStack;
 
 public class InjectionTubeContainer extends Container
 {
-	private InventoryTubePart mTube;
+	private InjectionTube mTube;
 	
-	public InjectionTubeContainer(InventoryTubePart tube, EntityPlayer player)
+	public InjectionTubeContainer(InjectionTube tube, EntityPlayer player)
 	{
 		mTube = tube;
 		addSlotToContainer(new Slot(tube, 0, 80, 20));

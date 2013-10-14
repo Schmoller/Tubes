@@ -1,14 +1,14 @@
 package schmoller.tubes.gui;
 
-import schmoller.tubes.logic.FilterTubeLogic;
+import schmoller.tubes.types.FilterTube;
 import net.minecraft.item.ItemStack;
 
 public class FilterSlot extends FakeSlot
 {
-	private FilterTubeLogic mTube;
+	private FilterTube mTube;
 	private int mIndex;
 	
-	public FilterSlot(FilterTubeLogic tube, int index, int x, int y)
+	public FilterSlot(FilterTube tube, int index, int x, int y)
 	{
 		super(tube.getFilter(index), x, y);
 		mTube = tube;

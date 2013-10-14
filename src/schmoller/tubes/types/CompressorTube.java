@@ -1,4 +1,4 @@
-package schmoller.tubes.logic;
+package schmoller.tubes.types;
 
 import codechicken.core.data.MCDataInput;
 import codechicken.core.data.MCDataOutput;
@@ -6,88 +6,38 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import schmoller.tubes.ITube;
+import net.minecraft.util.MovingObjectPosition;
 import schmoller.tubes.ITubeConnectable;
 import schmoller.tubes.ModTubes;
 import schmoller.tubes.TubeHelper;
 import schmoller.tubes.TubeItem;
 
-public class CompressorTubeLogic extends TubeLogic implements IInventory
+public class CompressorTube extends BaseTube implements IInventory
 {
 	private TubeItem mCurrent;
 	private ItemStack mTarget;
 	
-	public CompressorTubeLogic(ITube tube)
+	public CompressorTube()
 	{
-		super(tube);
+		super("compressor");
+		
 		mTarget = new ItemStack(0, 64, 0);
 		mCurrent = null;
 	}
 	
 	@Override
+	public boolean canAddItem( ItemStack item, int direction )
+	{
+		if(mCurrent != null)
+			return (item.isItemEqual(mCurrent.item) && ItemStack.areItemStackTagsEqual(item, mCurrent.item));
+		
+		return true;
+	}
+
+	@Override
 	public boolean hasCustomRouting()
 	{
 		return true;
-	}
-	
-	@Override
-	public boolean canItemEnter( TubeItem item, int side )
-	{
-		if(mCurrent != null)
-			return (item.item.isItemEqual(mCurrent.item) && ItemStack.areItemStackTagsEqual(item.item, mCurrent.item));
-		
-		return true;
-	}
-	
-	@Override
-	public void onLoad( NBTTagCompound root )
-	{
-		NBTTagCompound target = (NBTTagCompound)root.getTag("Target");
-		mTarget = new ItemStack(0,0,0);
-		mTarget.readFromNBT(target);
-		
-		
-		if(root.hasKey("Current"))
-		{
-			NBTTagCompound current = (NBTTagCompound)root.getTag("Current");
-			mCurrent = TubeItem.readFromNBT(current);
-		}
-	}
-	
-	@Override
-	public void onSave( NBTTagCompound root )
-	{
-		NBTTagCompound target = new NBTTagCompound();
-		mTarget.writeToNBT(target);
-		root.setTag("Target", target);
-		
-		if(mCurrent != null)
-		{
-			NBTTagCompound current = new NBTTagCompound();
-			mCurrent.writeToNBT(current);
-			root.setTag("Current", current);
-		}
-	}
-	
-	@Override
-	public void readDesc( MCDataInput input )
-	{
-		if(input.readBoolean())
-			mCurrent = TubeItem.read(input);
-		else
-			mCurrent = null;
-	}
-	
-	@Override
-	public void writeDesc( MCDataOutput output )
-	{
-		if(mCurrent != null)
-		{
-			output.writeBoolean(true);
-			mCurrent.write(output);
-		}
-		else
-			output.writeBoolean(false);
 	}
 	
 	@Override
@@ -105,7 +55,7 @@ public class CompressorTubeLogic extends TubeLogic implements IInventory
 			if(mCurrent.item.stackSize == mTarget.stackSize)
 			{
 				mCurrent.updated = true;
-				mTube.addItem(mCurrent, true);
+				addItem(mCurrent, true);
 				mCurrent = null;
 				
 				if(item.item.stackSize > 0)
@@ -123,7 +73,7 @@ public class CompressorTubeLogic extends TubeLogic implements IInventory
 			}
 		}
 		
-		int conns = mTube.getConnections();
+		int conns = getConnections();
 		int count = 0;
 		int dir = 0;
 		
@@ -139,7 +89,7 @@ public class CompressorTubeLogic extends TubeLogic implements IInventory
 		}
 		
 		if(count > 1)
-			dir = TubeHelper.findNextDirection(mTube.world(), mTube.x(), mTube.y(), mTube.z(), item);
+			dir = TubeHelper.findNextDirection(world(), x(), y(), z(), item);
 		
 		return dir;
 	}
@@ -147,10 +97,7 @@ public class CompressorTubeLogic extends TubeLogic implements IInventory
 	@Override
 	public boolean canConnectTo( ITubeConnectable con )
 	{
-		if(con instanceof ITube)
-			return !(((ITube)con).getLogic() instanceof CompressorTubeLogic);
-
-		return true;
+		return !(con instanceof CompressorTube);
 	}
 	
 	public ItemStack getTargetType()
@@ -165,7 +112,7 @@ public class CompressorTubeLogic extends TubeLogic implements IInventory
 		else
 			mTarget = item;
 	}
-
+	
 	@Override
 	public int getSizeInventory()
 	{
@@ -237,7 +184,7 @@ public class CompressorTubeLogic extends TubeLogic implements IInventory
 		
 		if(mCurrent.item.stackSize >= mTarget.stackSize)
 		{
-			mTube.addItem(mCurrent, true);
+			addItem(mCurrent, true);
 			mCurrent = null;
 		}
 	}
@@ -269,7 +216,7 @@ public class CompressorTubeLogic extends TubeLogic implements IInventory
 	@Override
 	public boolean isUseableByPlayer( EntityPlayer player )
 	{
-		return player.getDistanceSq(mTube.x(), mTube.y(), mTube.z()) <= 25;
+		return player.getDistanceSq(x(), y(), z()) <= 25;
 	}
 
 	@Override
@@ -285,10 +232,70 @@ public class CompressorTubeLogic extends TubeLogic implements IInventory
 	}
 	
 	@Override
-	public boolean onActivate( EntityPlayer player )
+	public boolean activate( EntityPlayer player, MovingObjectPosition part, ItemStack item )
 	{
-		player.openGui(ModTubes.instance, ModTubes.GUI_COMPRESSOR_TUBE, mTube.world(), mTube.x(), mTube.y(), mTube.z());
+		player.openGui(ModTubes.instance, ModTubes.GUI_COMPRESSOR_TUBE, world(), x(), y(), z());
 		
 		return true;
+	}
+	
+	
+	@Override
+	public void load( NBTTagCompound root )
+	{
+		super.load(root);
+		
+		NBTTagCompound target = (NBTTagCompound)root.getTag("Target");
+		mTarget = new ItemStack(0,0,0);
+		mTarget.readFromNBT(target);
+		
+		
+		if(root.hasKey("Current"))
+		{
+			NBTTagCompound current = (NBTTagCompound)root.getTag("Current");
+			mCurrent = TubeItem.readFromNBT(current);
+		}
+	}
+	
+	@Override
+	public void save( NBTTagCompound root )
+	{
+		super.save(root);
+		
+		NBTTagCompound target = new NBTTagCompound();
+		mTarget.writeToNBT(target);
+		root.setTag("Target", target);
+		
+		if(mCurrent != null)
+		{
+			NBTTagCompound current = new NBTTagCompound();
+			mCurrent.writeToNBT(current);
+			root.setTag("Current", current);
+		}
+	}
+	
+	@Override
+	public void readDesc( MCDataInput input )
+	{
+		super.readDesc(input);
+		
+		if(input.readBoolean())
+			mCurrent = TubeItem.read(input);
+		else
+			mCurrent = null;
+	}
+	
+	@Override
+	public void writeDesc( MCDataOutput output )
+	{
+		super.writeDesc(output);
+		
+		if(mCurrent != null)
+		{
+			output.writeBoolean(true);
+			mCurrent.write(output);
+		}
+		else
+			output.writeBoolean(false);
 	}
 }

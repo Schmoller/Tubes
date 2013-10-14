@@ -11,8 +11,8 @@ import schmoller.tubes.AdvRender;
 import schmoller.tubes.CommonHelper;
 import schmoller.tubes.ITube;
 import schmoller.tubes.TubeHelper;
-import schmoller.tubes.definitions.EjectionTube;
-import schmoller.tubes.definitions.NormalTube;
+import schmoller.tubes.definitions.TypeEjectionTube;
+import schmoller.tubes.definitions.TypeNormalTube;
 import schmoller.tubes.definitions.TubeDefinition;
 
 public class NormalTubeRender implements ITubeRender
@@ -90,7 +90,7 @@ public class NormalTubeRender implements ITubeRender
 			mRender.drawBox(60, 0.25f, min, 0.25f, 0.75f, max, 0.75f);
 			if(col != -1)
 			{
-				mRender.setIcon(NormalTube.paintStraight);
+				mRender.setIcon(TypeNormalTube.paintStraight);
 				mRender.setColorRGB(CommonHelper.getDyeColor(col));
 				mRender.drawBox(60, 0.25f, min, 0.25f, 0.75f, max, 0.75f);
 			}
@@ -109,7 +109,7 @@ public class NormalTubeRender implements ITubeRender
 			mRender.drawBox(51, 0.25f, 0.25f, min, 0.75f, 0.75f, max);
 			if(col != -1)
 			{
-				mRender.setIcon(NormalTube.paintStraight);
+				mRender.setIcon(TypeNormalTube.paintStraight);
 				mRender.setColorRGB(CommonHelper.getDyeColor(col));
 				mRender.drawBox(51, 0.25f, 0.25f, min, 0.75f, 0.75f, max);
 			}
@@ -127,7 +127,7 @@ public class NormalTubeRender implements ITubeRender
 			mRender.drawBox(15, min, 0.25f, 0.25f, max, 0.75f, 0.75f);
 			if(col != -1)
 			{
-				mRender.setIcon(NormalTube.paintStraight);
+				mRender.setIcon(TypeNormalTube.paintStraight);
 				mRender.setColorRGB(CommonHelper.getDyeColor(col));
 				mRender.drawBox(15, min, 0.25f, 0.25f, max, 0.75f, 0.75f);
 			}
@@ -143,7 +143,7 @@ public class NormalTubeRender implements ITubeRender
 		
 		if(col != -1)
 		{
-			mRender.setIcon(NormalTube.paintCenter);
+			mRender.setIcon(TypeNormalTube.paintCenter);
 			mRender.setColorRGB(CommonHelper.getDyeColor(col));
 			mRender.drawBox((~connections) & 63, 0.25f, 0.25f, 0.25f, 0.75f, 0.75f, 0.75f);
 			mRender.resetColor();
@@ -156,37 +156,37 @@ public class NormalTubeRender implements ITubeRender
 		{
 			if((connections & (1 << i)) != 0)
 			{
-				mRender.setIcon(EjectionTube.funnelIcon);
+				mRender.setIcon(TypeEjectionTube.funnelIcon);
 				switch(i)
 				{
 				case 0:
 					mRender.drawBox(60, 0.25f, 0.0f, 0.25f, 0.75f, 0.25f, 0.75f);
-					mRender.setIcon(EjectionTube.endIcon, EjectionTube.endIcon, EjectionTube.funnelIcon, EjectionTube.funnelIcon, EjectionTube.funnelIcon, EjectionTube.funnelIcon);
+					mRender.setIcon(TypeEjectionTube.endIcon, TypeEjectionTube.endIcon, TypeEjectionTube.funnelIcon, TypeEjectionTube.funnelIcon, TypeEjectionTube.funnelIcon, TypeEjectionTube.funnelIcon);
 					mRender.drawBox(63, 0.1875f, 0.0f, 0.1875f, 0.8125f, 0.0625f, 0.8125f);
 					break;
 				case 1:
 					mRender.drawBox(60, 0.25f, 0.75f, 0.25f, 0.75f, 1.0f, 0.75f);
-					mRender.setIcon(EjectionTube.endIcon, EjectionTube.endIcon, EjectionTube.funnelIcon, EjectionTube.funnelIcon, EjectionTube.funnelIcon, EjectionTube.funnelIcon);
+					mRender.setIcon(TypeEjectionTube.endIcon, TypeEjectionTube.endIcon, TypeEjectionTube.funnelIcon, TypeEjectionTube.funnelIcon, TypeEjectionTube.funnelIcon, TypeEjectionTube.funnelIcon);
 					mRender.drawBox(63, 0.1875f, 0.9375f, 0.1875f, 0.8125f, 1.0f, 0.8125f);
 					break;
 				case 2:
 					mRender.drawBox(51, 0.25f, 0.25f, 0.0f, 0.75f, 0.75f, 0.25f);
-					mRender.setIcon(EjectionTube.funnelIcon, EjectionTube.funnelIcon, EjectionTube.endIcon, EjectionTube.endIcon, EjectionTube.funnelIcon, EjectionTube.funnelIcon);
+					mRender.setIcon(TypeEjectionTube.funnelIcon, TypeEjectionTube.funnelIcon, TypeEjectionTube.endIcon, TypeEjectionTube.endIcon, TypeEjectionTube.funnelIcon, TypeEjectionTube.funnelIcon);
 					mRender.drawBox(63, 0.1875f, 0.1875f, 0.0f, 0.8125f, 0.8125f, 0.0625f);
 					break;
 				case 3:
 					mRender.drawBox(51, 0.25f, 0.25f, 0.75f, 0.75f, 0.75f, 1.0f);
-					mRender.setIcon(EjectionTube.funnelIcon, EjectionTube.funnelIcon, EjectionTube.endIcon, EjectionTube.endIcon, EjectionTube.funnelIcon, EjectionTube.funnelIcon);
+					mRender.setIcon(TypeEjectionTube.funnelIcon, TypeEjectionTube.funnelIcon, TypeEjectionTube.endIcon, TypeEjectionTube.endIcon, TypeEjectionTube.funnelIcon, TypeEjectionTube.funnelIcon);
 					mRender.drawBox(63, 0.1875f, 0.1875f, 0.9375f, 0.8125f, 0.8125f, 1.0f);
 					break;
 				case 4:
 					mRender.drawBox(15, 0.0f, 0.25f, 0.25f, 0.25f, 0.75f, 0.75f);
-					mRender.setIcon(EjectionTube.funnelIcon, EjectionTube.funnelIcon, EjectionTube.funnelIcon, EjectionTube.funnelIcon, EjectionTube.endIcon, EjectionTube.endIcon);
+					mRender.setIcon(TypeEjectionTube.funnelIcon, TypeEjectionTube.funnelIcon, TypeEjectionTube.funnelIcon, TypeEjectionTube.funnelIcon, TypeEjectionTube.endIcon, TypeEjectionTube.endIcon);
 					mRender.drawBox(63, 0.0f, 0.1875f, 0.1875f, 0.0625f, 0.8125f, 0.8125f);
 					break;
 				case 5:
 					mRender.drawBox(15, 0.75f, 0.25f, 0.25f, 1.0f, 0.75f, 0.75f);
-					mRender.setIcon(EjectionTube.funnelIcon, EjectionTube.funnelIcon, EjectionTube.funnelIcon, EjectionTube.funnelIcon, EjectionTube.endIcon, EjectionTube.endIcon);
+					mRender.setIcon(TypeEjectionTube.funnelIcon, TypeEjectionTube.funnelIcon, TypeEjectionTube.funnelIcon, TypeEjectionTube.funnelIcon, TypeEjectionTube.endIcon, TypeEjectionTube.endIcon);
 					mRender.drawBox(63, 0.9375f, 0.1875f, 0.1875f, 1.0f, 0.8125f, 0.8125f);
 					break;
 				}

@@ -1,4 +1,4 @@
-package schmoller.tubes.logic;
+package schmoller.tubes;
 
 public enum PullMode
 {

@@ -5,8 +5,8 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import schmoller.tubes.ITube;
-import schmoller.tubes.definitions.CompressorTube;
-import schmoller.tubes.definitions.FilterTube;
+import schmoller.tubes.definitions.TypeCompressorTube;
+import schmoller.tubes.definitions.TypeFilterTube;
 import schmoller.tubes.definitions.TubeDefinition;
 
 public class CompressorTubeRender extends NormalTubeRender
@@ -83,10 +83,10 @@ public class CompressorTubeRender extends NormalTubeRender
 	{
 		mRender.resetTextureRotation();
 		
-		mRender.setIcon(FilterTube.filterOpenIcon);
+		mRender.setIcon(TypeFilterTube.filterOpenIcon);
 		mRender.drawBox(connections, 0.1875f, 0.1875f, 0.1875f, 0.8125f, 0.8125f, 0.8125f);
 		
-		mRender.setIcon(CompressorTube.compressorIcon);
+		mRender.setIcon(TypeCompressorTube.compressorIcon);
 		mRender.drawBox(~connections, 0.1875f, 0.1875f, 0.1875f, 0.8125f, 0.8125f, 0.8125f);
 		
 		for(int i = 0; i < 6; ++i)

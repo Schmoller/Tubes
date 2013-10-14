@@ -5,8 +5,8 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import schmoller.tubes.ITube;
-import schmoller.tubes.definitions.EjectionTube;
-import schmoller.tubes.definitions.FilterTube;
+import schmoller.tubes.definitions.TypeEjectionTube;
+import schmoller.tubes.definitions.TypeFilterTube;
 import schmoller.tubes.definitions.TubeDefinition;
 
 public class FilterTubeRender extends NormalTubeRender
@@ -22,9 +22,9 @@ public class FilterTubeRender extends NormalTubeRender
 	{
 		mRender.resetTextureRotation();
 		
-		mRender.setIcon(FilterTube.filterIcon);
+		mRender.setIcon(TypeFilterTube.filterIcon);
 		mRender.drawBox(~connections, 0.1875f, 0.1875f, 0.1875f, 0.8125f, 0.8125f, 0.8125f);
-		mRender.setIcon(FilterTube.filterOpenIcon);
+		mRender.setIcon(TypeFilterTube.filterOpenIcon);
 		mRender.drawBox(connections, 0.1875f, 0.1875f, 0.1875f, 0.8125f, 0.8125f, 0.8125f);
 	}
 	
@@ -38,27 +38,27 @@ public class FilterTubeRender extends NormalTubeRender
 				switch(i)
 				{
 				case 0:
-					mRender.setIcon(EjectionTube.endIcon, EjectionTube.endIcon, FilterTube.filterIcon, FilterTube.filterIcon, FilterTube.filterIcon, FilterTube.filterIcon);
+					mRender.setIcon(TypeEjectionTube.endIcon, TypeEjectionTube.endIcon, TypeFilterTube.filterIcon, TypeFilterTube.filterIcon, TypeFilterTube.filterIcon, TypeFilterTube.filterIcon);
 					mRender.drawBox(63, 0.1875f, 0.0625f, 0.1875f, 0.8125f, 0.125f, 0.8125f);
 					break;
 				case 1:
-					mRender.setIcon(EjectionTube.endIcon, EjectionTube.endIcon, FilterTube.filterIcon, FilterTube.filterIcon, FilterTube.filterIcon, FilterTube.filterIcon);
+					mRender.setIcon(TypeEjectionTube.endIcon, TypeEjectionTube.endIcon, TypeFilterTube.filterIcon, TypeFilterTube.filterIcon, TypeFilterTube.filterIcon, TypeFilterTube.filterIcon);
 					mRender.drawBox(63, 0.1875f, 0.875f, 0.1875f, 0.8125f, 0.9375f, 0.8125f);
 					break;
 				case 2:
-					mRender.setIcon(FilterTube.filterIcon, FilterTube.filterIcon, EjectionTube.endIcon, EjectionTube.endIcon, FilterTube.filterIcon, FilterTube.filterIcon);
+					mRender.setIcon(TypeFilterTube.filterIcon, TypeFilterTube.filterIcon, TypeEjectionTube.endIcon, TypeEjectionTube.endIcon, TypeFilterTube.filterIcon, TypeFilterTube.filterIcon);
 					mRender.drawBox(63, 0.1875f, 0.1875f, 0.0625f, 0.8125f, 0.8125f, 0.125f);
 					break;
 				case 3:
-					mRender.setIcon(FilterTube.filterIcon, FilterTube.filterIcon, EjectionTube.endIcon, EjectionTube.endIcon, FilterTube.filterIcon, FilterTube.filterIcon);
+					mRender.setIcon(TypeFilterTube.filterIcon, TypeFilterTube.filterIcon, TypeEjectionTube.endIcon, TypeEjectionTube.endIcon, TypeFilterTube.filterIcon, TypeFilterTube.filterIcon);
 					mRender.drawBox(63, 0.1875f, 0.1875f, 0.875f, 0.8125f, 0.8125f, 0.9375f);
 					break;
 				case 4:
-					mRender.setIcon(FilterTube.filterIcon, FilterTube.filterIcon, FilterTube.filterIcon, FilterTube.filterIcon, EjectionTube.endIcon, EjectionTube.endIcon);
+					mRender.setIcon(TypeFilterTube.filterIcon, TypeFilterTube.filterIcon, TypeFilterTube.filterIcon, TypeFilterTube.filterIcon, TypeEjectionTube.endIcon, TypeEjectionTube.endIcon);
 					mRender.drawBox(63, 0.0625f, 0.1875f, 0.1875f, 0.125f, 0.8125f, 0.8125f);
 					break;
 				case 5:
-					mRender.setIcon(FilterTube.filterIcon, FilterTube.filterIcon, FilterTube.filterIcon, FilterTube.filterIcon, EjectionTube.endIcon, EjectionTube.endIcon);
+					mRender.setIcon(TypeFilterTube.filterIcon, TypeFilterTube.filterIcon, TypeFilterTube.filterIcon, TypeFilterTube.filterIcon, TypeEjectionTube.endIcon, TypeEjectionTube.endIcon);
 					mRender.drawBox(63, 0.875f, 0.1875f, 0.1875f, 0.9375f, 0.8125f, 0.8125f);
 					break;
 				}

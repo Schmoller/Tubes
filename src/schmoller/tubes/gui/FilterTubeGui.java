@@ -3,18 +3,18 @@ package schmoller.tubes.gui;
 import java.util.Arrays;
 
 import schmoller.tubes.ModTubes;
-import schmoller.tubes.logic.FilterTubeLogic;
-import schmoller.tubes.logic.FilterTubeLogic.Comparison;
-import schmoller.tubes.logic.FilterTubeLogic.Mode;
 import schmoller.tubes.network.packets.ModPacketSetFilterMode;
+import schmoller.tubes.types.FilterTube;
+import schmoller.tubes.types.FilterTube.Comparison;
+import schmoller.tubes.types.FilterTube.Mode;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.StatCollector;
 
 public class FilterTubeGui extends GuiContainer
 {
-	private FilterTubeLogic mTube;
-	public FilterTubeGui(FilterTubeLogic tube, EntityPlayer player)
+	private FilterTube mTube;
+	public FilterTubeGui(FilterTube tube, EntityPlayer player)
 	{
 		super(new FilterTubeContainer(tube, player));
 		
@@ -98,7 +98,7 @@ public class FilterTubeGui extends GuiContainer
 					i = 0;
 				
 				mTube.setMode(Mode.values()[i]);
-				ModTubes.packetManager.sendPacketToServer(new ModPacketSetFilterMode(mTube.getTube().x(), mTube.getTube().y(), mTube.getTube().z(), Mode.values()[i]));
+				ModTubes.packetManager.sendPacketToServer(new ModPacketSetFilterMode(mTube.x(), mTube.y(), mTube.z(), Mode.values()[i]));
 			}
 			else if(yy >= 35 && yy <= 49) // Comparison button
 			{
@@ -115,7 +115,7 @@ public class FilterTubeGui extends GuiContainer
 					i = 0;
 				
 				mTube.setComparison(Comparison.values()[i]);
-				ModTubes.packetManager.sendPacketToServer(new ModPacketSetFilterMode(mTube.getTube().x(), mTube.getTube().y(), mTube.getTube().z(), Comparison.values()[i]));
+				ModTubes.packetManager.sendPacketToServer(new ModPacketSetFilterMode(mTube.x(), mTube.y(), mTube.z(), Comparison.values()[i]));
 			}
 		}
 		super.mouseClicked(x, y, button);

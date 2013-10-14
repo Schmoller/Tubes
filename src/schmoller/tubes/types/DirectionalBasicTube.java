@@ -1,25 +1,32 @@
-package schmoller.tubes.parts;
+package schmoller.tubes.types;
 
+import net.minecraft.nbt.NBTTagCompound;
 import codechicken.core.data.MCDataInput;
 import codechicken.core.data.MCDataOutput;
-import net.minecraft.nbt.NBTTagCompound;
 import schmoller.tubes.IDirectionalTube;
 
-public class DirectionalTubePart extends BaseTubePart implements IDirectionalTube
+public abstract class DirectionalBasicTube extends BasicTube implements IDirectionalTube
 {
 	private int mDirection;
-	public DirectionalTubePart(String type)
+
+	public DirectionalBasicTube( String type )
 	{
 		super(type);
 		mDirection = 0;
 	}
-	
+
+	@Override
+	protected int getConnectableSides()
+	{
+		return 63 - (63 & (1 << mDirection));
+	}
+
 	@Override
 	public int getFacing()
 	{
 		return mDirection;
 	}
-	
+
 	@Override
 	public boolean canFaceDirection( int face )
 	{
@@ -31,32 +38,33 @@ public class DirectionalTubePart extends BaseTubePart implements IDirectionalTub
 	{
 		mDirection = face;
 	}
-	
+
 	@Override
 	public void save( NBTTagCompound root )
 	{
 		super.save(root);
 		root.setByte("Dir", (byte)mDirection);
 	}
-	
+
 	@Override
 	public void load( NBTTagCompound root )
 	{
 		super.load(root);
 		mDirection = root.getByte("Dir");
 	}
-	
+
 	@Override
 	public void readDesc( MCDataInput packet )
 	{
 		super.readDesc(packet);
 		mDirection = packet.readByte();
 	}
-	
+
 	@Override
 	public void writeDesc( MCDataOutput packet )
 	{
 		super.writeDesc(packet);
 		packet.writeByte(mDirection);
 	}
+
 }

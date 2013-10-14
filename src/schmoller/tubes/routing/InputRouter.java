@@ -1,7 +1,6 @@
 package schmoller.tubes.routing;
 
 import schmoller.tubes.CommonHelper;
-import schmoller.tubes.ITube;
 import schmoller.tubes.ITubeConnectable;
 import schmoller.tubes.ITubeImportDest;
 import schmoller.tubes.TubeHelper;
@@ -36,7 +35,7 @@ public class InputRouter extends BaseRouter
 				
 				if(con != null)
 				{
-					if((mItem.colour != -1 && con.getColor() != -1 && con.getColor() != mItem.colour) || !con.canAddItem(mItem))
+					if((mItem.colour != -1 && con.getColor() != -1 && con.getColor() != mItem.colour) || !con.canItemEnter(mItem))
 						continue;
 					
 					loc.dist += con.getRouteWeight() - 1;
@@ -63,7 +62,7 @@ public class InputRouter extends BaseRouter
 				
 				if(con != null)
 				{
-					if((mItem.colour != -1 && con.getColor() != -1 && con.getColor() != mItem.colour) || !con.canAddItem(mItem))
+					if((mItem.colour != -1 && con.getColor() != -1 && con.getColor() != mItem.colour) || !con.canItemEnter(mItem))
 						continue;
 					
 					loc.dist += con.getRouteWeight() - 1;
@@ -80,7 +79,7 @@ public class InputRouter extends BaseRouter
 		TileEntity ent = CommonHelper.getTileEntity(getWorld(), current);
 		ITubeConnectable con = TubeHelper.getTubeConnectable(ent);
 		
-		return (con instanceof ITubeImportDest && ((ITubeImportDest)con).canImportFromSide(side) && con.canAddItem(mItem)) || (con instanceof ITube && ((ITube)con).getLogic() instanceof ITubeImportDest && con.canAddItem(mItem));
+		return (con instanceof ITubeImportDest && ((ITubeImportDest)con).canImportFromSide(side) && con.canItemEnter(mItem));
 	}
 
 }

@@ -5,7 +5,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import schmoller.tubes.ITube;
-import schmoller.tubes.definitions.InjectionTube;
+import schmoller.tubes.definitions.TypeInjectionTube;
 import schmoller.tubes.definitions.TubeDefinition;
 
 public class InjectionTubeRender extends NormalTubeRender
@@ -21,7 +21,7 @@ public class InjectionTubeRender extends NormalTubeRender
 	{
 		super.renderStatic(type, tube, world, x, y, z);
 		
-		mRender.setIcon(InjectionTube.coreIcon);
+		mRender.setIcon(TypeInjectionTube.coreIcon);
 		mRender.drawBox(63, 0.1875f, 0.1875f, 0.1875f, 0.8125f, 0.8125f, 0.8125f);
 	}
 	
@@ -41,7 +41,7 @@ public class InjectionTubeRender extends NormalTubeRender
 		FMLClientHandler.instance().getClient().renderGlobal.renderEngine.bindTexture("/terrain.png");
 		tes.startDrawingQuads();
 		
-		mRender.setIcon(InjectionTube.coreIcon);
+		mRender.setIcon(TypeInjectionTube.coreIcon);
 		mRender.drawBox(63, 0.1875f, 0.1875f, 0.1875f, 0.8125f, 0.8125f, 0.8125f);
 		
 		tes.draw();

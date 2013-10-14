@@ -1,13 +1,13 @@
 package schmoller.tubes.gui;
 
-import schmoller.tubes.logic.FilterTubeLogic;
+import schmoller.tubes.types.FilterTube;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 public class FilterTubeContainer extends ExtContainer
 {
-	public FilterTubeContainer(FilterTubeLogic tube, EntityPlayer player)
+	public FilterTubeContainer(FilterTube tube, EntityPlayer player)
 	{
 		for(int i = 0; i < 2; ++i)
 		{

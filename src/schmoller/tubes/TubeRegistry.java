@@ -1,20 +1,16 @@
 package schmoller.tubes;
 
-import java.lang.reflect.Constructor;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import codechicken.multipart.MultiPartRegistry;
 import codechicken.multipart.TMultiPart;
 import codechicken.multipart.MultiPartRegistry.IPartFactory;
-import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IconRegister;
 import schmoller.tubes.definitions.TubeDefinition;
-import schmoller.tubes.parts.BaseTubePart;
 import schmoller.tubes.render.ITubeRender;
 
 public class TubeRegistry implements IPartFactory
@@ -92,39 +88,13 @@ public class TubeRegistry implements IPartFactory
 		return mRenderers.values().iterator().next();
 	}
 	
-	private HashMap<String, Constructor<? extends BaseTubePart>> mCachedConstructors = new HashMap<String, Constructor<? extends BaseTubePart>>();
-	
 	@Override
 	public TMultiPart createPart( String name, boolean client )
 	{
 		String actualName = name.replaceFirst("tubes_", "");
 		
-		try
-		{
-			Constructor<? extends BaseTubePart> constructor = mCachedConstructors.get(actualName);
-			if(constructor == null)
-			{
-				TubeDefinition def = getDefinition(actualName);
-				constructor = def.getPartClass().getConstructor(String.class);
-				mCachedConstructors.put(actualName, constructor);
-			}
-			
-			return constructor.newInstance(actualName);
-		}
-		catch(NoSuchMethodException e)
-		{
-			FMLLog.severe("Cannot find the constructor that takes a String, for the specified TubePart used by %s", actualName);
-			throw new RuntimeException(e);
-		}
-		catch(IllegalAccessException e)
-		{
-			FMLLog.severe("Cannot find the constructor that takes a String, for the specified TubePart used by %s", actualName);
-			throw new RuntimeException(e);
-		}
-		catch(Exception e)
-		{
-			throw new RuntimeException(e);
-		}
+		TubeDefinition def = getDefinition(actualName);
+		return def.createTube();
 	}
 	
 	

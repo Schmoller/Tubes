@@ -2,11 +2,10 @@ package schmoller.tubes.definitions;
 
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.util.Icon;
-import schmoller.tubes.ITube;
-import schmoller.tubes.logic.CompressorTubeLogic;
-import schmoller.tubes.logic.TubeLogic;
+import schmoller.tubes.types.BaseTube;
+import schmoller.tubes.types.CompressorTube;
 
-public class CompressorTube extends TubeDefinition
+public class TypeCompressorTube extends TubeDefinition
 {
 	public static Icon compressorIcon;
 	
@@ -19,19 +18,19 @@ public class CompressorTube extends TubeDefinition
 	@Override
 	public Icon getCenterIcon()
 	{
-		return NormalTube.centerIcon;
+		return TypeNormalTube.centerIcon;
 	}
 
 	@Override
 	public Icon getStraightIcon()
 	{
-		return NormalTube.straightIcon;
+		return TypeNormalTube.straightIcon;
 	}
 
 	@Override
-	public TubeLogic getTubeLogic( ITube tube )
+	public BaseTube createTube()
 	{
-		return new CompressorTubeLogic(tube);
+		return new CompressorTube();
 	}
 
 }

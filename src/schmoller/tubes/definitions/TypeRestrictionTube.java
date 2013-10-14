@@ -1,12 +1,11 @@
 package schmoller.tubes.definitions;
 
-import schmoller.tubes.ITube;
-import schmoller.tubes.logic.RestrictionTubeLogic;
-import schmoller.tubes.logic.TubeLogic;
+import schmoller.tubes.types.BaseTube;
+import schmoller.tubes.types.RestrictionTube;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.util.Icon;
 
-public class RestrictionTube extends TubeDefinition
+public class TypeRestrictionTube extends TubeDefinition
 {
 	public Icon centerIcon;
 	public Icon straightIcon;
@@ -30,8 +29,8 @@ public class RestrictionTube extends TubeDefinition
 	}
 	
 	@Override
-	public TubeLogic getTubeLogic( ITube tube )
+	public BaseTube createTube()
 	{
-		return new RestrictionTubeLogic(tube);
+		return new RestrictionTube();
 	}
 }

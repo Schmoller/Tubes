@@ -10,7 +10,8 @@ public interface ITubeConnectable
 	 */
 	public int getConnectableMask();
 	
-	public boolean canAddItem(TubeItem item);
+	public boolean canItemEnter(TubeItem item);
+	public boolean canAddItem(ItemStack item, int direction);
 	
 	public boolean addItem(ItemStack item, int side);
 	public boolean addItem(TubeItem item);
@@ -19,8 +20,6 @@ public interface ITubeConnectable
 	public boolean canPathThrough();
 	
 	public int getRouteWeight();
-	
-	public int getConnectionClass();
 	
 	public int getColor();
 }

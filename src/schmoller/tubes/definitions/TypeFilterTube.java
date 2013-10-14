@@ -3,11 +3,10 @@ package schmoller.tubes.definitions;
 import codechicken.core.vec.Cuboid6;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.util.Icon;
-import schmoller.tubes.ITube;
-import schmoller.tubes.logic.FilterTubeLogic;
-import schmoller.tubes.logic.TubeLogic;
+import schmoller.tubes.types.BaseTube;
+import schmoller.tubes.types.FilterTube;
 
-public class FilterTube extends TubeDefinition
+public class TypeFilterTube extends TubeDefinition
 {
 	public Icon centerIcon;
 	public Icon straightIcon;
@@ -36,9 +35,9 @@ public class FilterTube extends TubeDefinition
 	}
 	
 	@Override
-	public TubeLogic getTubeLogic( ITube tube )
+	public BaseTube createTube()
 	{
-		return new FilterTubeLogic(tube);
+		return new FilterTube();
 	}
 	
 	@Override

@@ -3,13 +3,10 @@ package schmoller.tubes.definitions;
 import codechicken.core.vec.Cuboid6;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.util.Icon;
-import schmoller.tubes.ITube;
-import schmoller.tubes.logic.InjectionTubeLogic;
-import schmoller.tubes.logic.TubeLogic;
-import schmoller.tubes.parts.BaseTubePart;
-import schmoller.tubes.parts.InventoryTubePart;
+import schmoller.tubes.types.BaseTube;
+import schmoller.tubes.types.InjectionTube;
 
-public class InjectionTube extends TubeDefinition
+public class TypeInjectionTube extends TubeDefinition
 {
 	public Icon centerIcon;
 	public Icon straightIcon;
@@ -36,15 +33,9 @@ public class InjectionTube extends TubeDefinition
 	}
 	
 	@Override
-	public TubeLogic getTubeLogic( ITube tube )
+	public BaseTube createTube()
 	{
-		return new InjectionTubeLogic(tube);
-	}
-	
-	@Override
-	public Class<? extends BaseTubePart> getPartClass()
-	{
-		return InventoryTubePart.class;
+		return new InjectionTube();
 	}
 	
 	@Override

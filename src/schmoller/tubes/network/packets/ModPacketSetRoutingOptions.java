@@ -4,7 +4,7 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-import schmoller.tubes.logic.RoutingTubeLogic.RouteDirection;
+import schmoller.tubes.types.RoutingTube.RouteDirection;
 import schmoller.tubes.network.ModBlockPacket;
 
 public class ModPacketSetRoutingOptions extends ModBlockPacket

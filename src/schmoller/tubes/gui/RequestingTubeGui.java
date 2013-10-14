@@ -3,17 +3,17 @@ package schmoller.tubes.gui;
 import java.util.Arrays;
 
 import schmoller.tubes.ModTubes;
-import schmoller.tubes.logic.PullMode;
-import schmoller.tubes.logic.RequestingTubeLogic;
+import schmoller.tubes.PullMode;
 import schmoller.tubes.network.packets.ModPacketSetPullMode;
+import schmoller.tubes.types.RequestingTube;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.StatCollector;
 
 public class RequestingTubeGui extends GuiContainer
 {
-	private RequestingTubeLogic mTube;
-	public RequestingTubeGui(RequestingTubeLogic tube, EntityPlayer player)
+	private RequestingTube mTube;
+	public RequestingTubeGui(RequestingTube tube, EntityPlayer player)
 	{
 		super(new RequestingTubeContainer(tube, player));
 		
@@ -80,7 +80,7 @@ public class RequestingTubeGui extends GuiContainer
 				i = 0;
 			
 			mTube.setMode(PullMode.values()[i]);
-			ModTubes.packetManager.sendPacketToServer(new ModPacketSetPullMode(mTube.getTube().x(), mTube.getTube().y(), mTube.getTube().z(), PullMode.values()[i]));
+			ModTubes.packetManager.sendPacketToServer(new ModPacketSetPullMode(mTube.x(), mTube.y(), mTube.z(), PullMode.values()[i]));
 		}
 	}
 	

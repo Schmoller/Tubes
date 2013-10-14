@@ -4,7 +4,8 @@ import java.util.Arrays;
 
 import org.lwjgl.opengl.GL11;
 
-import schmoller.tubes.logic.CompressorTubeLogic;
+import schmoller.tubes.types.CompressorTube;
+
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
@@ -13,8 +14,8 @@ import net.minecraft.util.StatCollector;
 
 public class CompressorTubeGui extends GuiContainer
 {
-	private CompressorTubeLogic mTube;
-	public CompressorTubeGui(CompressorTubeLogic tube, EntityPlayer player)
+	private CompressorTube mTube;
+	public CompressorTubeGui(CompressorTube tube, EntityPlayer player)
 	{
 		super(new CompressorContainer(tube, player));
 		xSize = 176;

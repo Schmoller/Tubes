@@ -1,15 +1,15 @@
 package schmoller.tubes.gui;
 
-import schmoller.tubes.logic.RoutingTubeLogic;
+import schmoller.tubes.types.RoutingTube;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 public class RoutingTubeContainer extends ExtContainer
 {
-	private RoutingTubeLogic mTube;
+	private RoutingTube mTube;
 	
-	public RoutingTubeContainer(RoutingTubeLogic tube, EntityPlayer player)
+	public RoutingTubeContainer(RoutingTube tube, EntityPlayer player)
 	{
 		mTube = tube;
 		for(int i = 0; i < 4; ++i)

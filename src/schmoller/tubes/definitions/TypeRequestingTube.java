@@ -3,13 +3,10 @@ package schmoller.tubes.definitions;
 import codechicken.core.vec.Cuboid6;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.util.Icon;
-import schmoller.tubes.ITube;
-import schmoller.tubes.logic.RequestingTubeLogic;
-import schmoller.tubes.logic.TubeLogic;
-import schmoller.tubes.parts.BaseTubePart;
-import schmoller.tubes.parts.DirectionalRedstoneTubePart;
+import schmoller.tubes.types.BaseTube;
+import schmoller.tubes.types.RequestingTube;
 
-public class RequestingTube extends TubeDefinition
+public class TypeRequestingTube extends TubeDefinition
 {
 	public static Icon icon;
 	
@@ -22,25 +19,19 @@ public class RequestingTube extends TubeDefinition
 	@Override
 	public Icon getCenterIcon()
 	{
-		return NormalTube.centerIcon;
+		return TypeNormalTube.centerIcon;
 	}
 
 	@Override
 	public Icon getStraightIcon()
 	{
-		return NormalTube.straightIcon;
+		return TypeNormalTube.straightIcon;
 	}
-
+	
 	@Override
-	public TubeLogic getTubeLogic( ITube tube )
+	public BaseTube createTube()
 	{
-		return new RequestingTubeLogic(tube);
-	}
-
-	@Override
-	public Class<? extends BaseTubePart> getPartClass()
-	{
-		return DirectionalRedstoneTubePart.class;
+		return new RequestingTube();
 	}
 	
 	@Override

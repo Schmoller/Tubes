@@ -10,6 +10,7 @@ public class TubeItem implements Cloneable
 {
 	public static final int NORMAL = 0;
 	public static final int IMPORT = 1;
+	public static final int BLOCKED = 2;
 	
 	public TubeItem(ItemStack item)
 	{

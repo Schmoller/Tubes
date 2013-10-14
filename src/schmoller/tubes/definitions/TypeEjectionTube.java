@@ -2,13 +2,10 @@ package schmoller.tubes.definitions;
 
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.util.Icon;
-import schmoller.tubes.ITube;
-import schmoller.tubes.logic.EjectionTubeLogic;
-import schmoller.tubes.logic.TubeLogic;
-import schmoller.tubes.parts.BaseTubePart;
-import schmoller.tubes.parts.DirectionalTubePart;
+import schmoller.tubes.types.BaseTube;
+import schmoller.tubes.types.EjectionTube;
 
-public class EjectionTube extends TubeDefinition
+public class TypeEjectionTube extends TubeDefinition
 {
 	public Icon centerIcon;
 	public Icon straightIcon;
@@ -36,15 +33,9 @@ public class EjectionTube extends TubeDefinition
 	}
 
 	@Override
-	public TubeLogic getTubeLogic( ITube tube )
+	public BaseTube createTube()
 	{
-		return new EjectionTubeLogic(tube);
-	}
-	
-	@Override
-	public Class<? extends BaseTubePart> getPartClass()
-	{
-		return DirectionalTubePart.class;
+		return new EjectionTube();
 	}
 
 }

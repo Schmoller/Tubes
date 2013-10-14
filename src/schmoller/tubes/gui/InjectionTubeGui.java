@@ -1,13 +1,13 @@
 package schmoller.tubes.gui;
 
-import schmoller.tubes.parts.InventoryTubePart;
+import schmoller.tubes.types.InjectionTube;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.StatCollector;
 
 public class InjectionTubeGui extends GuiContainer
 {
-	public InjectionTubeGui(InventoryTubePart tube, EntityPlayer player)
+	public InjectionTubeGui(InjectionTube tube, EntityPlayer player)
 	{
 		super(new InjectionTubeContainer(tube, player));
 		

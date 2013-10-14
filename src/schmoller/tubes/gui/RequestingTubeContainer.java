@@ -1,13 +1,13 @@
 package schmoller.tubes.gui;
 
-import schmoller.tubes.logic.RequestingTubeLogic;
+import schmoller.tubes.types.RequestingTube;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 public class RequestingTubeContainer extends ExtContainer
 {
-	public RequestingTubeContainer(RequestingTubeLogic tube, EntityPlayer player)
+	public RequestingTubeContainer(RequestingTube tube, EntityPlayer player)
 	{
 		for(int i = 0; i < 2; ++i)
 		{
@@ -70,9 +70,9 @@ public class RequestingTubeContainer extends ExtContainer
 	
 	private static class FilterSlot extends FakeSlot
 	{
-		private RequestingTubeLogic mTube;
+		private RequestingTube mTube;
 		private int mIndex;
-		public FilterSlot( RequestingTubeLogic tube, int index, int x, int y )
+		public FilterSlot( RequestingTube tube, int index, int x, int y )
 		{
 			super(tube.getFilter(index), x, y);
 			mTube = tube;

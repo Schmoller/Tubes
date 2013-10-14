@@ -21,34 +21,33 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
-import schmoller.tubes.definitions.CompressorTube;
-import schmoller.tubes.definitions.EjectionTube;
-import schmoller.tubes.definitions.ExtractionTube;
-import schmoller.tubes.definitions.FilterTube;
-import schmoller.tubes.definitions.InjectionTube;
-import schmoller.tubes.definitions.NormalTube;
-import schmoller.tubes.definitions.RequestingTube;
-import schmoller.tubes.definitions.RestrictionTube;
-import schmoller.tubes.definitions.RoutingTube;
+import schmoller.tubes.definitions.TypeCompressorTube;
+import schmoller.tubes.definitions.TypeEjectionTube;
+import schmoller.tubes.definitions.TypeExtractionTube;
+import schmoller.tubes.definitions.TypeFilterTube;
+import schmoller.tubes.definitions.TypeInjectionTube;
+import schmoller.tubes.definitions.TypeNormalTube;
+import schmoller.tubes.definitions.TypeRequestingTube;
+import schmoller.tubes.definitions.TypeRestrictionTube;
+import schmoller.tubes.definitions.TypeRoutingTube;
 import schmoller.tubes.gui.CompressorContainer;
 import schmoller.tubes.gui.FilterTubeContainer;
 import schmoller.tubes.gui.InjectionTubeContainer;
 import schmoller.tubes.gui.RequestingTubeContainer;
 import schmoller.tubes.gui.RoutingTubeContainer;
 import schmoller.tubes.items.BasicItem;
-import schmoller.tubes.logic.CompressorTubeLogic;
-import schmoller.tubes.logic.FilterTubeLogic;
-import schmoller.tubes.logic.PullMode;
-import schmoller.tubes.logic.RequestingTubeLogic;
-import schmoller.tubes.logic.RoutingTubeLogic;
 import schmoller.tubes.network.IModPacketHandler;
 import schmoller.tubes.network.ModBlockPacket;
 import schmoller.tubes.network.ModPacket;
 import schmoller.tubes.network.packets.ModPacketSetFilterMode;
 import schmoller.tubes.network.packets.ModPacketSetPullMode;
 import schmoller.tubes.network.packets.ModPacketSetRoutingOptions;
-import schmoller.tubes.parts.InventoryTubePart;
 import schmoller.tubes.parts.ItemTubeBase;
+import schmoller.tubes.types.CompressorTube;
+import schmoller.tubes.types.FilterTube;
+import schmoller.tubes.types.InjectionTube;
+import schmoller.tubes.types.RequestingTube;
+import schmoller.tubes.types.RoutingTube;
 
 public class CommonProxy implements IModPacketHandler, IGuiHandler
 {
@@ -73,15 +72,15 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 	{
 		MultipartGenerator.registerPassThroughInterface(ISidedInventory.class.getName(), true, true);
 		
-		TubeRegistry.registerTube(new NormalTube(), "basic");
-		TubeRegistry.registerTube(new RestrictionTube(), "restriction");
-		TubeRegistry.registerTube(new InjectionTube(), "injection");
-		TubeRegistry.registerTube(new EjectionTube(), "ejection");
-		TubeRegistry.registerTube(new FilterTube(), "filter");
-		TubeRegistry.registerTube(new CompressorTube(), "compressor");
-		TubeRegistry.registerTube(new ExtractionTube(), "extraction");
-		TubeRegistry.registerTube(new RequestingTube(), "requesting");
-		TubeRegistry.registerTube(new RoutingTube(), "routing");
+		TubeRegistry.registerTube(new TypeNormalTube(), "basic");
+		TubeRegistry.registerTube(new TypeRestrictionTube(), "restriction");
+		TubeRegistry.registerTube(new TypeInjectionTube(), "injection");
+		TubeRegistry.registerTube(new TypeEjectionTube(), "ejection");
+		TubeRegistry.registerTube(new TypeFilterTube(), "filter");
+		TubeRegistry.registerTube(new TypeCompressorTube(), "compressor");
+		TubeRegistry.registerTube(new TypeExtractionTube(), "extraction");
+		TubeRegistry.registerTube(new TypeRequestingTube(), "requesting");
+		TubeRegistry.registerTube(new TypeRoutingTube(), "routing");
 	}
 	
 	private void registerItems()
@@ -154,11 +153,11 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 		{
 			ITube tube = CommonHelper.getMultiPart(((EntityPlayer)sender).worldObj, ((ModBlockPacket)packet).xCoord, ((ModBlockPacket)packet).yCoord, ((ModBlockPacket)packet).zCoord, ITube.class);
 			
-			if(packet instanceof ModPacketSetFilterMode && tube != null && tube.getLogic() instanceof FilterTubeLogic)
+			if(packet instanceof ModPacketSetFilterMode && tube instanceof FilterTube)
 			{
 				ModPacketSetFilterMode mode = (ModPacketSetFilterMode)packet;
 				
-				FilterTubeLogic logic = (FilterTubeLogic)tube.getLogic();
+				FilterTube logic = (FilterTube)tube;
 				
 				if(mode.mode != null)
 					logic.setMode(mode.mode);
@@ -169,18 +168,18 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 				
 				return true;
 			}
-			else if(packet instanceof ModPacketSetPullMode && tube != null && tube.getLogic() instanceof RequestingTubeLogic)
+			else if(packet instanceof ModPacketSetPullMode && tube instanceof RequestingTube)
 			{
 				PullMode mode = ((ModPacketSetPullMode)packet).mode;
 				
-				((RequestingTubeLogic)tube.getLogic()).setMode(mode);
+				((RequestingTube)tube).setMode(mode);
 				
 				return true;
 			}
-			else if(packet instanceof ModPacketSetRoutingOptions && tube != null && tube.getLogic() instanceof RoutingTubeLogic)
+			else if(packet instanceof ModPacketSetRoutingOptions && tube instanceof RoutingTube)
 			{
 				ModPacketSetRoutingOptions options = (ModPacketSetRoutingOptions)packet;
-				RoutingTubeLogic logic = (RoutingTubeLogic)tube.getLogic();
+				RoutingTube logic = (RoutingTube)tube;
 				
 				if(options.hasColour)
 					logic.setColour(options.column, options.colour);
@@ -201,15 +200,15 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 		switch(ID)
 		{
 		case ModTubes.GUI_INJECTION_TUBE:
-			return new InjectionTubeContainer(CommonHelper.getMultiPart(world, x, y, z, InventoryTubePart.class), player);
+			return new InjectionTubeContainer(CommonHelper.getMultiPart(world, x, y, z, InjectionTube.class), player);
 		case ModTubes.GUI_FILTER_TUBE:
-			return new FilterTubeContainer((FilterTubeLogic)CommonHelper.getMultiPart(world, x, y, z, ITube.class).getLogic(), player);
+			return new FilterTubeContainer(CommonHelper.getMultiPart(world, x, y, z, FilterTube.class), player);
 		case ModTubes.GUI_COMPRESSOR_TUBE:
-			return new CompressorContainer((CompressorTubeLogic)CommonHelper.getMultiPart(world, x, y, z, ITube.class).getLogic(), player);
+			return new CompressorContainer(CommonHelper.getMultiPart(world, x, y, z, CompressorTube.class), player);
 		case ModTubes.GUI_REQUESTING_TUBE:
-			return new RequestingTubeContainer((RequestingTubeLogic)CommonHelper.getMultiPart(world, x, y, z, ITube.class).getLogic(), player);
+			return new RequestingTubeContainer(CommonHelper.getMultiPart(world, x, y, z, RequestingTube.class), player);
 		case ModTubes.GUI_ROUTING_TUBE:
-			return new RoutingTubeContainer((RoutingTubeLogic)CommonHelper.getMultiPart(world, x, y, z, ITube.class).getLogic(), player);
+			return new RoutingTubeContainer(CommonHelper.getMultiPart(world, x, y, z, RoutingTube.class), player);
 		}
 		
 		return null;

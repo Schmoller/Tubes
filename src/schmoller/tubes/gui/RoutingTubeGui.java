@@ -6,17 +6,17 @@ import org.lwjgl.opengl.GL11;
 
 import schmoller.tubes.CommonHelper;
 import schmoller.tubes.ModTubes;
-import schmoller.tubes.logic.RoutingTubeLogic;
-import schmoller.tubes.logic.RoutingTubeLogic.RouteDirection;
 import schmoller.tubes.network.packets.ModPacketSetRoutingOptions;
+import schmoller.tubes.types.RoutingTube;
+import schmoller.tubes.types.RoutingTube.RouteDirection;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.StatCollector;
 
 public class RoutingTubeGui extends GuiContainer
 {
-	private RoutingTubeLogic mTube;
-	public RoutingTubeGui(RoutingTubeLogic tube, EntityPlayer player)
+	private RoutingTube mTube;
+	public RoutingTubeGui(RoutingTube tube, EntityPlayer player)
 	{
 		super(new RoutingTubeContainer(tube, player));
 		
@@ -89,7 +89,7 @@ public class RoutingTubeGui extends GuiContainer
 						dir = 0;
 					
 					mTube.setDirection(i, RouteDirection.from(dir));
-					ModTubes.packetManager.sendPacketToServer(new ModPacketSetRoutingOptions(mTube.getTube().x(), mTube.getTube().y(), mTube.getTube().z(), i, RouteDirection.from(dir)));
+					ModTubes.packetManager.sendPacketToServer(new ModPacketSetRoutingOptions(mTube.x(), mTube.y(), mTube.z(), i, RouteDirection.from(dir)));
 				}
 				else if(yy >= 107 && yy <= 121) // Colour button
 				{
@@ -109,7 +109,7 @@ public class RoutingTubeGui extends GuiContainer
 					
 					mTube.setColour(i, colour);
 					
-					ModTubes.packetManager.sendPacketToServer(new ModPacketSetRoutingOptions(mTube.getTube().x(), mTube.getTube().y(), mTube.getTube().z(), i, colour));
+					ModTubes.packetManager.sendPacketToServer(new ModPacketSetRoutingOptions(mTube.x(), mTube.y(), mTube.z(), i, colour));
 				}
 			}
 		}

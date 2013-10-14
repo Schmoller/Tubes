@@ -1,19 +1,18 @@
-package schmoller.tubes.logic;
+package schmoller.tubes.types;
 
-import schmoller.tubes.ITube;
 import schmoller.tubes.ITubeConnectable;
 import schmoller.tubes.ModTubes;
 import schmoller.tubes.TubeItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.MovingObjectPosition;
 
-public class InjectionTubeLogic extends TubeLogic implements ISidedInventory
+public class InjectionTube extends BaseTube implements ISidedInventory
 {
-
-	public InjectionTubeLogic(ITube tube)
+	public InjectionTube()
 	{
-		super(tube);
+		super("injection");
 	}
 	
 	@Override
@@ -43,7 +42,7 @@ public class InjectionTubeLogic extends TubeLogic implements ISidedInventory
 	@Override
 	public void setInventorySlotContents( int i, ItemStack itemstack )
 	{
-		mTube.addItem(itemstack, -1);
+		addItem(itemstack, -1);
 	}
 
 	@Override
@@ -72,7 +71,7 @@ public class InjectionTubeLogic extends TubeLogic implements ISidedInventory
 	@Override
 	public boolean isUseableByPlayer( EntityPlayer player )
 	{
-		return (player.getDistanceSq(mTube.x(), mTube.y(), mTube.z()) <= 25);
+		return (player.getDistanceSq(x(), y(), z()) <= 25);
 	}
 
 	@Override
@@ -116,7 +115,13 @@ public class InjectionTubeLogic extends TubeLogic implements ISidedInventory
 	}
 	
 	@Override
-	public boolean canItemEnter( TubeItem item, int side )
+	public boolean canAddItem( ItemStack item, int direction )
+	{
+		return false;
+	}
+	
+	@Override
+	public boolean canItemEnter( TubeItem item )
 	{
 		return false;
 	}
@@ -130,19 +135,13 @@ public class InjectionTubeLogic extends TubeLogic implements ISidedInventory
 	@Override
 	public boolean canConnectTo( ITubeConnectable con )
 	{
-		return con.getConnectionClass() == 0;
+		return !(con instanceof InjectionTube);
 	}
 	
 	@Override
-	public int getConnectionClass()
+	public boolean activate( EntityPlayer player, MovingObjectPosition part, ItemStack item )
 	{
-		return 20;
-	}
-	
-	@Override
-	public boolean onActivate( EntityPlayer player )
-	{
-		player.openGui(ModTubes.instance, ModTubes.GUI_INJECTION_TUBE, mTube.world(), mTube.x(), mTube.y(), mTube.z());
+		player.openGui(ModTubes.instance, ModTubes.GUI_INJECTION_TUBE, world(), x(), y(), z());
 		return true;
 	}
 }

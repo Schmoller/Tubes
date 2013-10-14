@@ -4,8 +4,8 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-import schmoller.tubes.logic.FilterTubeLogic.Comparison;
-import schmoller.tubes.logic.FilterTubeLogic.Mode;
+import schmoller.tubes.types.FilterTube.Comparison;
+import schmoller.tubes.types.FilterTube.Mode;
 import schmoller.tubes.network.ModBlockPacket;
 
 public class ModPacketSetFilterMode extends ModBlockPacket

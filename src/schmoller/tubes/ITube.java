@@ -2,7 +2,6 @@ package schmoller.tubes;
 
 import java.util.List;
 
-import schmoller.tubes.logic.TubeLogic;
 import net.minecraft.world.World;
 
 public interface ITube extends ITubeConnectable
@@ -16,10 +15,17 @@ public interface ITube extends ITubeConnectable
 	public World world();
 	
 	public int getConnections();
-	
-	public TubeLogic getLogic();
 
 	public List<TubeItem> getItems();
-	
-	public void updateState();
+
+	/**
+	 * Gets whether this tube can connect to inventories
+	 * Basic Tube connectivity checks are already done by this point
+	 */
+	public boolean canConnectToInventories();
+	/**
+	 * Gets whether this tube can connect to the specified object
+	 * Basic Tube connectivity checks are already done by this point
+	 */
+	public boolean canConnectTo(ITubeConnectable con);
 }

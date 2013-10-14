@@ -8,12 +8,7 @@ import schmoller.tubes.gui.FilterTubeGui;
 import schmoller.tubes.gui.InjectionTubeGui;
 import schmoller.tubes.gui.RequestingTubeGui;
 import schmoller.tubes.gui.RoutingTubeGui;
-import schmoller.tubes.logic.CompressorTubeLogic;
-import schmoller.tubes.logic.FilterTubeLogic;
-import schmoller.tubes.logic.RequestingTubeLogic;
-import schmoller.tubes.logic.RoutingTubeLogic;
 import schmoller.tubes.network.ModPacket;
-import schmoller.tubes.parts.InventoryTubePart;
 import schmoller.tubes.render.CompressorTubeRender;
 import schmoller.tubes.render.EjectionTubeRender;
 import schmoller.tubes.render.ExtractionTubeRender;
@@ -22,6 +17,11 @@ import schmoller.tubes.render.InjectionTubeRender;
 import schmoller.tubes.render.NormalTubeRender;
 import schmoller.tubes.render.RenderTubeItem;
 import schmoller.tubes.render.RequestingTubeRender;
+import schmoller.tubes.types.CompressorTube;
+import schmoller.tubes.types.FilterTube;
+import schmoller.tubes.types.InjectionTube;
+import schmoller.tubes.types.RequestingTube;
+import schmoller.tubes.types.RoutingTube;
 import cpw.mods.fml.common.network.Player;
 
 public class ClientProxy extends CommonProxy
@@ -61,15 +61,15 @@ public class ClientProxy extends CommonProxy
 		switch(ID)
 		{
 		case ModTubes.GUI_INJECTION_TUBE:
-			return new InjectionTubeGui(CommonHelper.getMultiPart(world, x, y, z, InventoryTubePart.class), player);
+			return new InjectionTubeGui(CommonHelper.getMultiPart(world, x, y, z, InjectionTube.class), player);
 		case ModTubes.GUI_FILTER_TUBE:
-			return new FilterTubeGui((FilterTubeLogic)CommonHelper.getMultiPart(world, x, y, z, ITube.class).getLogic(), player);
+			return new FilterTubeGui(CommonHelper.getMultiPart(world, x, y, z, FilterTube.class), player);
 		case ModTubes.GUI_COMPRESSOR_TUBE:
-			return new CompressorTubeGui((CompressorTubeLogic)CommonHelper.getMultiPart(world, x, y, z, ITube.class).getLogic(), player);
+			return new CompressorTubeGui(CommonHelper.getMultiPart(world, x, y, z, CompressorTube.class), player);
 		case ModTubes.GUI_REQUESTING_TUBE:
-			return new RequestingTubeGui((RequestingTubeLogic)CommonHelper.getMultiPart(world, x, y, z, ITube.class).getLogic(), player);
+			return new RequestingTubeGui(CommonHelper.getMultiPart(world, x, y, z, RequestingTube.class), player);
 		case ModTubes.GUI_ROUTING_TUBE:
-			return new RoutingTubeGui((RoutingTubeLogic)CommonHelper.getMultiPart(world, x, y, z, ITube.class).getLogic(), player);
+			return new RoutingTubeGui(CommonHelper.getMultiPart(world, x, y, z, RoutingTube.class), player);
 		}
 		
 		return null;
