@@ -12,12 +12,21 @@ import net.minecraft.world.IBlockAccess;
 public class OutputRouter extends BaseRouter
 {
 	private TubeItem mItem;
+	private int mDirection = -1;
 	
 	public OutputRouter(IBlockAccess world, ChunkPosition position, TubeItem item)
 	{
 		mItem = item;
 		setup(world, position);
 	}
+	
+	public OutputRouter(IBlockAccess world, ChunkPosition position, TubeItem item, int direction)
+	{
+		mItem = item;
+		mDirection = direction;
+		setup(world, position);
+	}
+	
 	
 	@Override
 	protected void getNextLocations( PathLocation current )
@@ -53,6 +62,9 @@ public class OutputRouter extends BaseRouter
 		
 		for(int i = 0; i < 6; ++i)
 		{
+			if(mDirection != -1 && mDirection != i)
+				continue;
+			
 			if((conns & (1 << i)) != 0)
 			{
 				PathLocation loc = new PathLocation(position, i);

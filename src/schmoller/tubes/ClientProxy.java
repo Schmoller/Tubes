@@ -7,9 +7,11 @@ import schmoller.tubes.gui.CompressorTubeGui;
 import schmoller.tubes.gui.FilterTubeGui;
 import schmoller.tubes.gui.InjectionTubeGui;
 import schmoller.tubes.gui.RequestingTubeGui;
+import schmoller.tubes.gui.RoutingTubeGui;
 import schmoller.tubes.logic.CompressorTubeLogic;
 import schmoller.tubes.logic.FilterTubeLogic;
 import schmoller.tubes.logic.RequestingTubeLogic;
+import schmoller.tubes.logic.RoutingTubeLogic;
 import schmoller.tubes.network.ModPacket;
 import schmoller.tubes.parts.InventoryTubePart;
 import schmoller.tubes.render.CompressorTubeRender;
@@ -44,6 +46,7 @@ public class ClientProxy extends CommonProxy
 		TubeRegistry.registerRenderer("compressor",new CompressorTubeRender());
 		TubeRegistry.registerRenderer("extraction", new ExtractionTubeRender());
 		TubeRegistry.registerRenderer("requesting", new RequestingTubeRender());
+		TubeRegistry.registerRenderer("routing", normal);
 	}
 	
 	@Override
@@ -65,6 +68,8 @@ public class ClientProxy extends CommonProxy
 			return new CompressorTubeGui((CompressorTubeLogic)CommonHelper.getMultiPart(world, x, y, z, ITube.class).getLogic(), player);
 		case ModTubes.GUI_REQUESTING_TUBE:
 			return new RequestingTubeGui((RequestingTubeLogic)CommonHelper.getMultiPart(world, x, y, z, ITube.class).getLogic(), player);
+		case ModTubes.GUI_ROUTING_TUBE:
+			return new RoutingTubeGui((RoutingTubeLogic)CommonHelper.getMultiPart(world, x, y, z, ITube.class).getLogic(), player);
 		}
 		
 		return null;

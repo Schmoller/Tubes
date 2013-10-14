@@ -30,6 +30,7 @@ public abstract class BaseRouter
 		mSearchQueue.clear();
 		
 		mWorld = world;
+		mVisitedLocations.add(initialPosition);
 		
 		getInitialLocations(initialPosition);
 	}

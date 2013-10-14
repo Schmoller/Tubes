@@ -12,6 +12,7 @@ import net.minecraftforge.oredict.OreDictionary;
 public class CommonHelper
 {
 	private static final String[] dyes = { "dyeWhite", "dyeOrange", "dyeMagenta", "dyeLightBlue", "dyeYellow", "dyeLime", "dyePink", "dyeGray", "dyeLightGray", "dyeCyan", "dyePurple", "dyeBlue", "dyeBrown", "dyeGreen", "dyeRed", "dyeBlack" };
+	private static final String[] colourNames = {"White", "Orange", "Magenta", "Light Blue", "Yellow", "Lime", "Pink", "Gray", "Light Gray", "Cyan", "Purple", "Blue", "Brown", "Green", "Red", "Black"};
 	private static int[] dyeIds;
 	
 	public static TileEntity getTileEntity(IBlockAccess world, ChunkPosition pos)
@@ -75,6 +76,11 @@ public class CommonHelper
 	{
 		float[] rgb = EntitySheep.fleeceColorTable[index];
 		
-		return (int)(rgb[0] * 255) << 16 | (int)(rgb[1] * 255) << 8 | (int)(rgb[2] * 255);
+		return (255 << 24) | (int)(rgb[0] * 255) << 16 | (int)(rgb[1] * 255) << 8 | (int)(rgb[2] * 255);
+	}
+	
+	public static String getDyeName(int index)
+	{
+		return colourNames[index];
 	}
 }

@@ -25,7 +25,11 @@ public abstract class ExtContainer extends Container
 				{
 					ItemStack held = player.inventory.getItemStack(); 
 					if(held != null && (existing == null || (!held.isItemEqual(slot.getStack()) || !ItemStack.areItemStackTagsEqual(held, slot.getStack())))) // Replace with this one
-						slot.putStack(held.copy());
+					{
+						ItemStack put = held.copy();
+						put.stackSize = Math.min(put.stackSize, slot.getSlotStackLimit());
+						slot.putStack(put);
+					}
 					else if(slot.getStack() != null) //  Decrease Slot
 					{
 						int amount = (modifier == 1 ? 10 : 1); // Shift?
