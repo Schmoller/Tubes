@@ -21,14 +21,52 @@ import cpw.mods.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import schmoller.tubes.AdvRender;
+import schmoller.tubes.CommonHelper;
+import schmoller.tubes.TubeItem;
+import schmoller.tubes.definitions.NormalTube;
+
 @SideOnly(Side.CLIENT)
 public class CustomRenderItem
 {
 	private RenderBlocks itemRenderBlocks = new RenderBlocks();
+	private AdvRender mAdv = new AdvRender();
 	private EntityItem mDummy = new EntityItem(null);
 	
 	private RenderEngine mRender;
 	
+	public void renderTubeItem(TubeItem item, double x, double y, double z)
+	{
+		renderItemStack(item.item, x, y, z);
+		
+		if(item.colour != -1)
+		{
+			mRender.bindTexture("/terrain.png");
+			
+			mAdv.enableNormals = false;
+			mAdv.resetLighting(15728880);
+			mAdv.resetColor();
+			mAdv.resetAO();
+			mAdv.setLocalLights(1f, 1f, 1f, 1f, 1f, 1f);
+			mAdv.resetTransform();
+
+			mAdv.setColorRGB(CommonHelper.getDyeColor(item.colour));
+			
+			mAdv.translate(-0.5f, -0.5f, -0.5f);
+			
+			mAdv.scale(0.4f, 0.4f, 0.4f);
+			mAdv.translate((float)x, (float)y, (float)z);
+			mAdv.setIcon(NormalTube.itemBorder);
+			
+			Tessellator tes = Tessellator.instance;
+			tes.startDrawingQuads();
+			
+			
+			mAdv.drawBox(63, 0f, 0f, 0f, 1f, 1f, 1f);
+			tes.draw();
+		}
+		
+	}
 	public void renderItemStack(ItemStack item, double x, double y, double z)
 	{
 		if(mRender == null)

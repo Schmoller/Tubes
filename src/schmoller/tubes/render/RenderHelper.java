@@ -22,7 +22,7 @@ public class RenderHelper
 		for(TubeItem item : tube.getItems())
 		{
 			ForgeDirection dir = ForgeDirection.getOrientation(item.direction);
-			mRenderer.renderItemStack(item.item, 0.5 + (item.progress - 0.5) * dir.offsetX, 0.5 + (item.progress - 0.5) * dir.offsetY, 0.5 + (item.progress - 0.5) * dir.offsetZ);
+			mRenderer.renderTubeItem(item, 0.5 + (item.progress - 0.5) * dir.offsetX, 0.5 + (item.progress - 0.5) * dir.offsetY, 0.5 + (item.progress - 0.5) * dir.offsetZ);
 		}
 	}
 
