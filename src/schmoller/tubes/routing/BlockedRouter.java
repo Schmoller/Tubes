@@ -79,7 +79,7 @@ public class BlockedRouter extends BaseRouter
 		TileEntity ent = CommonHelper.getTileEntity(getWorld(), current);
 		ITubeConnectable con = TubeHelper.getTubeConnectable(ent);
 		
-		if(con instanceof ITubeOverflowDestination)
+		if(con instanceof ITubeOverflowDestination && ((ITubeOverflowDestination)con).canAcceptOverflowFromSide(side))
 			return true;
 		
 		return false;

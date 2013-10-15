@@ -75,8 +75,9 @@ public class ExtractionTube extends DirectionalBasicTube implements IRedstonePar
 	}
 	
 	@Override
-	public void scheduledTick()
+	public boolean canAcceptOverflowFromSide( int side )
 	{
+		return (side != getFacing());
 	}
 	
 	private int getPower()
@@ -111,18 +112,6 @@ public class ExtractionTube extends DirectionalBasicTube implements IRedstonePar
 	public int weakPowerLevel( int side ) { return 0; }
 
 	@Override
-	public boolean hasOverflow()
-	{
-		return !mOverflow.isEmpty();
-	}
-
-	@Override
-	public void addToOverflow( TubeItem item )
-	{
-		mOverflow.addItem(item);
-	}
-	
-	@Override
 	protected boolean onItemJunction( TubeItem item )
 	{
 		if(item.state == TubeItem.BLOCKED)
@@ -141,7 +130,7 @@ public class ExtractionTube extends DirectionalBasicTube implements IRedstonePar
 		if(item.state == TubeItem.BLOCKED && item.direction == getFacing())
 		{
 			if(!world().isRemote)
-				addToOverflow(item);
+				mOverflow.addItem(item);
 			
 			return true;
 		}

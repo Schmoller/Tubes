@@ -14,19 +14,23 @@ import net.minecraft.world.ChunkPosition;
 import schmoller.tubes.CommonHelper;
 import schmoller.tubes.ITubeConnectable;
 import schmoller.tubes.ITubeImportDest;
+import schmoller.tubes.ITubeOverflowDestination;
 import schmoller.tubes.ModTubes;
+import schmoller.tubes.OverflowBuffer;
 import schmoller.tubes.PullMode;
 import schmoller.tubes.TubeHelper;
 import schmoller.tubes.TubeItem;
 import schmoller.tubes.inventory.InventoryHelper;
 import schmoller.tubes.routing.ImportSourceFinder;
+import schmoller.tubes.routing.OutputRouter;
 import schmoller.tubes.routing.BaseRouter.PathLocation;
 
-public class RequestingTube extends DirectionalTube implements ITubeImportDest, IRedstonePart
+public class RequestingTube extends DirectionalTube implements ITubeImportDest, IRedstonePart, ITubeOverflowDestination
 {
 	private ItemStack[] mFilter = new ItemStack[16];
 	private int mNext = 0;
 	private PullMode mMode = PullMode.RedstoneConstant;
+	private OverflowBuffer mOverflow;
 	
 	private int mPulses = 0;
 	private boolean mIsPowered;
@@ -34,6 +38,8 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 	public RequestingTube()
 	{
 		super("requesting");
+		
+		mOverflow = new OverflowBuffer();
 	}
 	
 	@Override
@@ -53,13 +59,28 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 	@Override
 	public int getTickRate()
 	{
-		return 20;
+		return mOverflow.isEmpty() ? 20 : 10;
 	}
 	
 	@Override
 	public void onTick()
 	{
-		if(mMode == PullMode.Constant || (mMode == PullMode.RedstoneConstant && mIsPowered) || (mMode == PullMode.RedstoneSingle && mPulses > 0))
+		if(!mOverflow.isEmpty())
+		{
+			TubeItem item = mOverflow.peekNext();
+			PathLocation loc = new OutputRouter(world(), new ChunkPosition(x(),y(),z()), item, getFacing() ^ 1).route();
+			
+			if(loc != null)
+			{
+				mOverflow.getNext();
+				item.state = TubeItem.NORMAL;
+				item.direction = getFacing() ^ 1;
+				item.updated = true;
+				item.progress = 0.5f;
+				addItem(item, true);
+			}
+		}
+		else if(mMode == PullMode.Constant || (mMode == PullMode.RedstoneConstant && mIsPowered) || (mMode == PullMode.RedstoneSingle && mPulses > 0))
 		{
 			ItemStack filterItem = null;
 			int start = mNext;
@@ -95,6 +116,12 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 	}
 	
 	@Override
+	public boolean canAcceptOverflowFromSide( int side )
+	{
+		return (side == (getFacing() ^ 1));
+	}
+	
+	@Override
 	public boolean hasCustomRouting()
 	{
 		return true;
@@ -114,7 +141,56 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 	@Override
 	public boolean canItemEnter( TubeItem item )
 	{
-		return item.state == TubeItem.IMPORT;
+		if(item.state == TubeItem.BLOCKED && item.direction == (getFacing() ^ 1))
+			return true;
+		else if(item.state != TubeItem.IMPORT)
+			return false;
+		
+		return canAddItem(item.item, item.direction);
+	}
+	
+	@Override
+	public boolean canAddItem( ItemStack item, int direction )
+	{
+		for(int i = 0; i < 16; ++i)
+		{
+			if(mFilter[i] == null)
+				continue;
+			
+			if(InventoryHelper.areItemsEqual(mFilter[i], item))
+				return true;
+		}
+		
+		return false;
+	}
+	
+	@Override
+	protected boolean onItemJunction( TubeItem item )
+	{
+		if(item.state == TubeItem.BLOCKED)
+		{
+			if(!world().isRemote)
+				mOverflow.addItem(item);
+			
+			return false;
+		}
+
+		if(item.direction == getFacing())
+		{
+			item.direction = getFacing() ^ 1;
+			item.updated = true;
+			
+			return true;
+		}
+		else if(!mOverflow.isEmpty())
+		{
+			if(!world().isRemote)
+				mOverflow.addItem(item);
+			
+			return false;
+		}
+		
+		return super.onItemJunction(item);
 	}
 	
 	private int getPower()
@@ -216,6 +292,7 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 		
 		root.setString("PullMode", mMode.name());
 		root.setInteger("Pulses", mPulses);
+		mOverflow.save(root);
 	}
 	
 	@Override
@@ -239,6 +316,7 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 		mMode = PullMode.valueOf(root.getString("PullMode"));
 		
 		mPulses = root.getInteger("Pulses");
+		mOverflow.load(root);
 	}
 	
 	@Override

@@ -172,24 +172,12 @@ public class InjectionTube extends BaseTube implements ISidedInventory, ITubeOve
 		if(item.state == TubeItem.BLOCKED)
 		{
 			if(!world().isRemote)
-				addToOverflow(item);
+				mOverflow.addItem(item);
 			
 			return false;
 		}
 		
 		return super.onItemJunction(item);
-	}
-	
-	@Override
-	public void addToOverflow( TubeItem item )
-	{
-		mOverflow.addItem(item);
-	}
-	
-	@Override
-	public boolean hasOverflow()
-	{
-		return !mOverflow.isEmpty();
 	}
 	
 	@Override
@@ -224,6 +212,12 @@ public class InjectionTube extends BaseTube implements ISidedInventory, ITubeOve
 			addItem(mItem, -1);
 			mItem = null;
 		}
+	}
+	
+	@Override
+	public boolean canAcceptOverflowFromSide( int side )
+	{
+		return true;
 	}
 	
 	@Override
