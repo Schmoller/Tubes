@@ -3,18 +3,29 @@ package schmoller.tubes.types;
 import codechicken.multipart.IRedstonePart;
 import codechicken.multipart.RedstoneInteractions;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.ChunkPosition;
 import net.minecraftforge.common.ForgeDirection;
 import schmoller.tubes.ITubeConnectable;
+import schmoller.tubes.ITubeOverflowDestination;
+import schmoller.tubes.OverflowBuffer;
+import schmoller.tubes.TubeItem;
 import schmoller.tubes.inventory.InventoryHelper;
+import schmoller.tubes.routing.BaseRouter.PathLocation;
+import schmoller.tubes.routing.OutputRouter;
 
-public class ExtractionTube extends DirectionalBasicTube implements IRedstonePart
+public class ExtractionTube extends DirectionalBasicTube implements IRedstonePart, ITubeOverflowDestination
 {
 	private boolean mIsPowered;
+	private OverflowBuffer mOverflow;
+	
+	public static final int BLOCKED_TICKS = 10;
 	
 	public ExtractionTube()
 	{
 		super("extraction");
 		mIsPowered = false;
+		mOverflow = new OverflowBuffer();
 	}
 	
 	@Override
@@ -29,13 +40,30 @@ public class ExtractionTube extends DirectionalBasicTube implements IRedstonePar
 	@Override
 	public int getTickRate()
 	{
-		return 20;
+		return mOverflow.isEmpty() ? 20 : BLOCKED_TICKS;
 	}
 	
 	@Override
 	public void onTick()
 	{
-		if(mIsPowered)
+		if(!mOverflow.isEmpty())
+		{
+			TubeItem item = mOverflow.peekNext();
+			PathLocation loc = new OutputRouter(world(), new ChunkPosition(x(),y(),z()), item).route();
+			
+			if(loc != null)
+			{
+				mOverflow.getNext();
+				item.state = TubeItem.NORMAL;
+				item.direction = getFacing() ^ 1;
+				item.updated = false;
+				item.progress = 0;
+				addItem(item, true);
+			}
+			
+			return;
+		}
+		else if(mIsPowered)
 			return;
 		
 		ForgeDirection dir = ForgeDirection.getOrientation(getFacing());
@@ -44,6 +72,11 @@ public class ExtractionTube extends DirectionalBasicTube implements IRedstonePar
 		
 		if(item != null)
 			addItem(item, dir.ordinal() ^ 1);
+	}
+	
+	@Override
+	public void scheduledTick()
+	{
 	}
 	
 	private int getPower()
@@ -76,4 +109,59 @@ public class ExtractionTube extends DirectionalBasicTube implements IRedstonePar
 
 	@Override
 	public int weakPowerLevel( int side ) { return 0; }
+
+	@Override
+	public boolean hasOverflow()
+	{
+		return !mOverflow.isEmpty();
+	}
+
+	@Override
+	public void addToOverflow( TubeItem item )
+	{
+		mOverflow.addItem(item);
+	}
+	
+	@Override
+	protected boolean onItemJunction( TubeItem item )
+	{
+		if(item.state == TubeItem.BLOCKED)
+		{
+			item.direction = getFacing();
+			item.updated = true;
+			return true;
+		}
+		else
+			return super.onItemJunction(item);
+	}
+	
+	@Override
+	protected boolean onItemLeave( TubeItem item )
+	{
+		if(item.state == TubeItem.BLOCKED && item.direction == getFacing())
+		{
+			if(!world().isRemote)
+				addToOverflow(item);
+			
+			return true;
+		}
+
+		return super.onItemLeave(item);
+	}
+	
+	@Override
+	public void save( NBTTagCompound root )
+	{
+		super.save(root);
+		
+		mOverflow.save(root);
+	}
+	
+	@Override
+	public void load( NBTTagCompound root )
+	{
+		super.load(root);
+		
+		mOverflow.load(root);
+	}
 }

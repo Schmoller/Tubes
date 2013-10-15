@@ -197,38 +197,6 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 		return dir;
 	}
 	
-	private boolean transferToNext(TubeItem item)
-	{
-		if(item.direction == 6)
-			return false;
-		
-		ForgeDirection dir = ForgeDirection.getOrientation(item.direction);
-		
-		TileEntity ent = world().getBlockTileEntity(x() + dir.offsetX, y() + dir.offsetY, z() + dir.offsetZ);
-		ITubeConnectable con = TubeHelper.getTubeConnectable(ent);
-		if(con != null)
-		{
-			item.progress -= 1;
-			item.updated = false;
-			
-			return con.addItem(item);
-		}
-		
-		if(world().isRemote)
-			return true;
-		
-		if(ent != null && InventoryHelper.canAcceptItem(item.item, world(), ent.xCoord, ent.yCoord, ent.zCoord, item.direction))
-		{
-			InventoryHelper.insertItem(item.item, world(), ent.xCoord, ent.yCoord, ent.zCoord, item.direction);
-			
-			if(item.item.stackSize == 0)
-				return true;
-		}
-		
-		return false;
-	}
-
-	
 	@Override
 	public int getRouteWeight()
 	{
@@ -247,7 +215,7 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 			
 			if(item.direction == 6) // It needs a path right away
 			{
-				if(!handleJunction(item))
+				if(!onItemJunction(item))
 				{
 					it.remove();
 					continue;
@@ -261,7 +229,7 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 			if(!item.updated && item.progress >= 0.5)
 			{
 				// Find new direction to go
-				if(!handleJunction(item))
+				if(!onItemJunction(item))
 				{
 					it.remove();
 					continue;
@@ -270,10 +238,11 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 			
 			if(item.progress >= 1)
 			{
-				if(transferToNext(item))
+				if(onItemLeave(item))
 					it.remove();
 				else
 				{
+					item.state = TubeItem.BLOCKED;
 					item.progress -= 1;
 					item.updated = false;
 					item.direction ^= 1;
@@ -345,9 +314,9 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 				item.direction = lastDir ^ 1;
 			else
 			{
-				//item.state = TubeItem.NO_PATH;
-//				item.direction = getNextDirection(item);
-//				if(item.direction == NO_ROUTE)
+				item.state = TubeItem.BLOCKED;
+				item.direction = TubeHelper.findNextDirection(world(), x(), y(), z(), item);
+				if(item.direction == NO_ROUTE)
 					item.direction = randDirection(lastDir);
 				
 				addToClient(item); // Client will have deleted it
@@ -448,7 +417,50 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 	 */
 	protected void onItemEnter(TubeItem item) {}
 	
-	protected boolean onItemLeave(TubeItem item) { return true; }
+	/**
+	 * Called when an item is about to leave the tube in a particular direction.
+	 * @return true will cause the item to be removed
+	 */
+	protected boolean onItemLeave(TubeItem item) 
+	{
+		if(item.direction == 6)
+			return false;
+		
+		ForgeDirection dir = ForgeDirection.getOrientation(item.direction);
+		
+		TileEntity ent = world().getBlockTileEntity(x() + dir.offsetX, y() + dir.offsetY, z() + dir.offsetZ);
+		ITubeConnectable con = TubeHelper.getTubeConnectable(ent);
+		if(con != null)
+		{
+			item.progress -= 1;
+			item.updated = false;
+			
+			
+			return con.addItem(item);
+		}
+		
+		if(world().isRemote)
+			return true;
+		
+		if(ent != null && InventoryHelper.canAcceptItem(item.item, world(), ent.xCoord, ent.yCoord, ent.zCoord, item.direction))
+		{
+			InventoryHelper.insertItem(item.item, world(), ent.xCoord, ent.yCoord, ent.zCoord, item.direction);
+			
+			if(item.item.stackSize == 0)
+				return true;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Called when an item hits the junction point (regardless if there is a junction or not)
+	 * @return false will cause the item to be removed
+	 */
+	protected boolean onItemJunction(TubeItem item) 
+	{
+		return handleJunction(item);
+	}
 	
 	@Override
 	public boolean canConnectToInventories() { return true; }

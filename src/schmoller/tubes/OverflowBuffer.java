@@ -2,6 +2,9 @@ package schmoller.tubes;
 
 import java.util.LinkedList;
 
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+
 public class OverflowBuffer
 {
 	private LinkedList<TubeItem> mBuffer;
@@ -21,6 +24,38 @@ public class OverflowBuffer
 		mBuffer.add(item);
 	}
 	
+	public TubeItem getNext()
+	{
+		return mBuffer.removeFirst();
+	}
 	
+	public TubeItem peekNext()
+	{
+		return mBuffer.getFirst();
+	}
 	
+	public void save(NBTTagCompound root)
+	{
+		NBTTagList list = new NBTTagList();
+		for(TubeItem item : mBuffer)
+		{
+			NBTTagCompound tag = new NBTTagCompound();
+			item.writeToNBT(tag);
+			list.appendTag(tag);
+		}
+		
+		root.setTag("Overflow", list);
+	}
+	
+	public void load(NBTTagCompound root)
+	{
+		NBTTagList list = root.getTagList("Overflow");
+		mBuffer.clear();
+		
+		for(int i = 0; i < list.tagCount(); ++i)
+		{
+			NBTTagCompound tag = (NBTTagCompound)list.tagAt(i);
+			mBuffer.add(TubeItem.readFromNBT(tag));
+		}
+	}
 }

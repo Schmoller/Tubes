@@ -158,7 +158,7 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 	@Override
 	public boolean canImportFromSide( int side )
 	{
-		return side == getFacing();
+		return side == (getFacing() ^ 1);
 	}
 
 	public ItemStack getFilter(int slot)

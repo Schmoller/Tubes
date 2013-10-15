@@ -46,6 +46,7 @@ public class PacketManager implements IPacketHandler
 		return sNextId-1;
 	}
 	
+	@SuppressWarnings( "unchecked" )
 	public static void registerHandler(IModPacketHandler handler, Class<? extends ModPacket>... filter)
 	{
 		mHandlers.add(handler);

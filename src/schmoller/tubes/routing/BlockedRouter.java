@@ -81,8 +81,6 @@ public class BlockedRouter extends BaseRouter
 		
 		if(con instanceof ITubeOverflowDestination)
 			return true;
-		else if(con instanceof ITubeOverflowDestination)
-			return true;
 		
 		return false;
 	}

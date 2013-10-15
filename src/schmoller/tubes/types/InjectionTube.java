@@ -1,18 +1,28 @@
 package schmoller.tubes.types;
 
 import schmoller.tubes.ITubeConnectable;
+import schmoller.tubes.ITubeOverflowDestination;
 import schmoller.tubes.ModTubes;
+import schmoller.tubes.OverflowBuffer;
 import schmoller.tubes.TubeItem;
+import schmoller.tubes.routing.OutputRouter;
+import schmoller.tubes.routing.BaseRouter.PathLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.world.ChunkPosition;
 
-public class InjectionTube extends BaseTube implements ISidedInventory
+public class InjectionTube extends BaseTube implements ISidedInventory, ITubeOverflowDestination
 {
+	private OverflowBuffer mOverflow;
+	private ItemStack mItem;
+	
 	public InjectionTube()
 	{
 		super("injection");
+		mOverflow = new OverflowBuffer();
 	}
 	
 	@Override
@@ -24,31 +34,41 @@ public class InjectionTube extends BaseTube implements ISidedInventory
 	@Override
 	public ItemStack getStackInSlot( int i )
 	{
-		return null;
+		return mItem;
 	}
 
 	@Override
-	public ItemStack decrStackSize( int i, int j )
+	public ItemStack decrStackSize( int i, int amount )
 	{
-		return null;
+		if(mItem == null)
+			return null;
+		
+		if(mItem.stackSize <= amount)
+		{
+			ItemStack item = mItem;
+			mItem = null;
+			return item;
+		}
+		else
+			return mItem.splitStack(amount);
 	}
 
 	@Override
 	public ItemStack getStackInSlotOnClosing( int i )
 	{
-		return null;
+		return mItem;
 	}
 
 	@Override
 	public void setInventorySlotContents( int i, ItemStack itemstack )
 	{
-		addItem(itemstack, -1);
+		mItem = itemstack;
 	}
 
 	@Override
 	public String getInvName()
 	{
-		return null;
+		return "container.inventory";
 	}
 
 	@Override
@@ -66,6 +86,11 @@ public class InjectionTube extends BaseTube implements ISidedInventory
 	@Override
 	public void onInventoryChanged()
 	{
+		if(!world().isRemote && mOverflow.isEmpty() && mItem != null)
+		{
+			addItem(mItem, -1);
+			mItem = null;
+		}
 	}
 
 	@Override
@@ -75,14 +100,10 @@ public class InjectionTube extends BaseTube implements ISidedInventory
 	}
 
 	@Override
-	public void openChest()
-	{
-	}
+	public void openChest() {}
 
 	@Override
-	public void closeChest()
-	{
-	}
+	public void closeChest() {}
 
 	@Override
 	public boolean isStackValidForSlot( int i, ItemStack itemstack )
@@ -143,5 +164,91 @@ public class InjectionTube extends BaseTube implements ISidedInventory
 	{
 		player.openGui(ModTubes.instance, ModTubes.GUI_INJECTION_TUBE, world(), x(), y(), z());
 		return true;
+	}
+	
+	@Override
+	protected boolean onItemJunction( TubeItem item )
+	{
+		if(item.state == TubeItem.BLOCKED)
+		{
+			if(!world().isRemote)
+				addToOverflow(item);
+			
+			return false;
+		}
+		
+		return super.onItemJunction(item);
+	}
+	
+	@Override
+	public void addToOverflow( TubeItem item )
+	{
+		mOverflow.addItem(item);
+	}
+	
+	@Override
+	public boolean hasOverflow()
+	{
+		return !mOverflow.isEmpty();
+	}
+	
+	@Override
+	public int getTickRate()
+	{
+		return 10;
+	}
+	
+	@Override
+	public void onTick()
+	{
+		if(world().isRemote)
+			return;
+		
+		if(!mOverflow.isEmpty())
+		{
+			TubeItem item = mOverflow.peekNext();
+			PathLocation loc = new OutputRouter(world(), new ChunkPosition(x(),y(),z()), item).route();
+			
+			if(loc != null)
+			{
+				mOverflow.getNext();
+				item.state = TubeItem.NORMAL;
+				item.direction = 6;
+				item.updated = false;
+				item.progress = 0;
+				addItem(item, false);
+			}
+		}
+		else if(mItem != null)
+		{
+			addItem(mItem, -1);
+			mItem = null;
+		}
+	}
+	
+	@Override
+	public void save( NBTTagCompound root )
+	{
+		super.save(root);
+		
+		if(mItem != null)
+		{
+			NBTTagCompound tag = new NBTTagCompound();
+			mItem.writeToNBT(tag);
+			root.setTag("item", tag);
+		}
+		
+		mOverflow.save(root);
+	}
+	
+	@Override
+	public void load( NBTTagCompound root )
+	{
+		super.load(root);
+		
+		if(root.hasKey("item"))
+			mItem = ItemStack.loadItemStackFromNBT(root.getCompoundTag("item"));
+			
+		mOverflow.load(root);
 	}
 }
