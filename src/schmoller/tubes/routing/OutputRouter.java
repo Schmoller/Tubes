@@ -2,11 +2,11 @@ package schmoller.tubes.routing;
 
 import schmoller.tubes.CommonHelper;
 import schmoller.tubes.ITubeConnectable;
+import schmoller.tubes.Position;
 import schmoller.tubes.TubeHelper;
 import schmoller.tubes.TubeItem;
 import schmoller.tubes.inventory.InventoryHelper;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.IBlockAccess;
 
 public class OutputRouter extends BaseRouter
@@ -14,13 +14,13 @@ public class OutputRouter extends BaseRouter
 	private TubeItem mItem;
 	private int mDirection = -1;
 	
-	public OutputRouter(IBlockAccess world, ChunkPosition position, TubeItem item)
+	public OutputRouter(IBlockAccess world, Position position, TubeItem item)
 	{
 		mItem = item;
 		setup(world, position);
 	}
 	
-	public OutputRouter(IBlockAccess world, ChunkPosition position, TubeItem item, int direction)
+	public OutputRouter(IBlockAccess world, Position position, TubeItem item, int direction)
 	{
 		mItem = item;
 		mDirection = direction;
@@ -56,7 +56,7 @@ public class OutputRouter extends BaseRouter
 	}
 	
 	@Override
-	protected void getInitialLocations( ChunkPosition position )
+	protected void getInitialLocations( Position position )
 	{
 		int conns = TubeHelper.getConnectivity(getWorld(), position);
 		
@@ -86,7 +86,7 @@ public class OutputRouter extends BaseRouter
 	}
 
 	@Override
-	protected boolean isTerminator( ChunkPosition current, int side )
+	protected boolean isTerminator( Position current, int side )
 	{
 		TileEntity ent = CommonHelper.getTileEntity(getWorld(), current);
 		ITubeConnectable con = TubeHelper.getTubeConnectable(ent);

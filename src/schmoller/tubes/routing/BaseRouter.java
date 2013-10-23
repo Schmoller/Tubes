@@ -5,26 +5,25 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
 
+import schmoller.tubes.Position;
 import schmoller.tubes.TubeHelper;
 
-import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.common.ForgeDirection;
 
 public abstract class BaseRouter
 {
-	private HashSet<ChunkPosition> mVisitedLocations;
+	private HashSet<Position> mVisitedLocations;
 	private PriorityQueue<PathLocation> mSearchQueue;
 
 	private IBlockAccess mWorld;
 	
 	public BaseRouter()
 	{
-		mVisitedLocations = new HashSet<ChunkPosition>();
+		mVisitedLocations = new HashSet<Position>();
 		mSearchQueue = new PriorityQueue<PathLocation>();
 	}
 	
-	protected void setup(IBlockAccess world, ChunkPosition initialPosition)
+	protected void setup(IBlockAccess world, Position initialPosition)
 	{
 		mVisitedLocations.clear();
 		mSearchQueue.clear();
@@ -54,7 +53,7 @@ public abstract class BaseRouter
 	 */
 	protected abstract void getNextLocations(PathLocation current);
 
-	protected void getInitialLocations(ChunkPosition position)
+	protected void getInitialLocations(Position position)
 	{
 		getNextLocations(new PathLocation(position.x, position.y, position.z, 0, 6, 6));
 	}
@@ -62,7 +61,7 @@ public abstract class BaseRouter
 	/**
 	 * Called to determine if routing is finished
 	 */
-	protected abstract boolean isTerminator(ChunkPosition current, int side);
+	protected abstract boolean isTerminator(Position current, int side);
 
 	/**
 	 * Find the applicable destination or null if none was found
@@ -104,7 +103,7 @@ public abstract class BaseRouter
 	
 	public static class PathLocation implements Comparable<PathLocation>
 	{
-		public final ChunkPosition position;
+		public final Position position;
 		
 		public int dist;
 		public final int dir;
@@ -116,19 +115,19 @@ public abstract class BaseRouter
 			dir = newDir;
 			initialDir = last.initialDir;
 			
-			position = new ChunkPosition(last.position.x + ForgeDirection.getOrientation(newDir).offsetX, last.position.y + ForgeDirection.getOrientation(newDir).offsetY, last.position.z + ForgeDirection.getOrientation(newDir).offsetZ);
+			position = last.position.copy().offset(newDir,  1);
 		}
 		
-		public PathLocation(ChunkPosition position, int direction)
+		public PathLocation(Position position, int direction)
 		{
-			this.position = new ChunkPosition(position.x + ForgeDirection.getOrientation(direction).offsetX, position.y + ForgeDirection.getOrientation(direction).offsetY, position.z + ForgeDirection.getOrientation(direction).offsetZ);
+			this.position = position.copy().offset(direction, 1);
 			dist = 1;
 			dir = initialDir = direction;
 		}
 		
 		public PathLocation(int x, int y, int z, int dist, int dir, int initialDir)
 		{
-			position = new ChunkPosition(x, y, z);
+			position = new Position(x, y, z);
 			
 			this.dist = dist;
 			

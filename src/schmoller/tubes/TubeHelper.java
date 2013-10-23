@@ -13,7 +13,6 @@ import codechicken.multipart.TileMultipart;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.ForgeDirection;
 
@@ -83,7 +82,7 @@ public class TubeHelper
 		return false;
 	}
 	
-	public static int getConnectivity(IBlockAccess world, ChunkPosition position)
+	public static int getConnectivity(IBlockAccess world, Position position)
 	{
 		return getConnectivity(world, position.x, position.y, position.z);
 	}
@@ -111,22 +110,22 @@ public class TubeHelper
 		BaseRouter.PathLocation path = null;
 		
 		if(item.state == TubeItem.NORMAL)
-			path = new OutputRouter(world, new ChunkPosition(x, y, z), item).route();
+			path = new OutputRouter(world, new Position(x, y, z), item).route();
 		else if(item.state == TubeItem.IMPORT)
 		{
-			path = new InputRouter(world, new ChunkPosition(x, y, z), item).route();
+			path = new InputRouter(world, new Position(x, y, z), item).route();
 			if(path == null)
 			{
-				path = new OutputRouter(world, new ChunkPosition(x, y, z), item).route();
+				path = new OutputRouter(world, new Position(x, y, z), item).route();
 				item.state = TubeItem.NORMAL;
 			}
 		}
 		else if(item.state == TubeItem.BLOCKED)
 		{
-			path = new OutputRouter(world, new ChunkPosition(x,y,z), item).route();
+			path = new OutputRouter(world, new Position(x,y,z), item).route();
 			
 			if(path == null)
-				path = new BlockedRouter(world, new ChunkPosition(x,y,z), item).route();
+				path = new BlockedRouter(world, new Position(x,y,z), item).route();
 			else
 				item.state = TubeItem.NORMAL;
 		}

@@ -4,11 +4,11 @@ import codechicken.multipart.IRedstonePart;
 import codechicken.multipart.RedstoneInteractions;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.ChunkPosition;
 import net.minecraftforge.common.ForgeDirection;
 import schmoller.tubes.ITubeConnectable;
 import schmoller.tubes.ITubeOverflowDestination;
 import schmoller.tubes.OverflowBuffer;
+import schmoller.tubes.Position;
 import schmoller.tubes.TubeItem;
 import schmoller.tubes.inventory.InventoryHelper;
 import schmoller.tubes.routing.BaseRouter.PathLocation;
@@ -49,7 +49,7 @@ public class ExtractionTube extends DirectionalBasicTube implements IRedstonePar
 		if(!mOverflow.isEmpty())
 		{
 			TubeItem item = mOverflow.peekNext();
-			PathLocation loc = new OutputRouter(world(), new ChunkPosition(x(),y(),z()), item).route();
+			PathLocation loc = new OutputRouter(world(), new Position(x(),y(),z()), item).route();
 			
 			if(loc != null)
 			{

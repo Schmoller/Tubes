@@ -3,17 +3,17 @@ package schmoller.tubes.routing;
 import schmoller.tubes.CommonHelper;
 import schmoller.tubes.ITubeConnectable;
 import schmoller.tubes.ITubeOverflowDestination;
+import schmoller.tubes.Position;
 import schmoller.tubes.TubeHelper;
 import schmoller.tubes.TubeItem;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.IBlockAccess;
 
 public class BlockedRouter extends BaseRouter
 {
 	private TubeItem mItem;
 
-	public BlockedRouter(IBlockAccess world, ChunkPosition position, TubeItem item)
+	public BlockedRouter(IBlockAccess world, Position position, TubeItem item)
 	{
 		mItem = item;
 		setup(world, position);
@@ -47,7 +47,7 @@ public class BlockedRouter extends BaseRouter
 	}
 	
 	@Override
-	protected void getInitialLocations( ChunkPosition position )
+	protected void getInitialLocations( Position position )
 	{
 		int conns = TubeHelper.getConnectivity(getWorld(), position);
 		
@@ -74,7 +74,7 @@ public class BlockedRouter extends BaseRouter
 	}
 
 	@Override
-	protected boolean isTerminator( ChunkPosition current, int side )
+	protected boolean isTerminator( Position current, int side )
 	{
 		TileEntity ent = CommonHelper.getTileEntity(getWorld(), current);
 		ITubeConnectable con = TubeHelper.getTubeConnectable(ent);

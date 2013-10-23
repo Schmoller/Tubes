@@ -11,8 +11,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.world.ChunkPosition;
 import schmoller.tubes.ModTubes;
+import schmoller.tubes.Position;
 import schmoller.tubes.TubeHelper;
 import schmoller.tubes.TubeItem;
 import schmoller.tubes.inventory.InventoryHelper;
@@ -153,9 +153,9 @@ public class RoutingTube extends BaseTube
 				PathLocation loc;
 				
 				if(mDir[col] == RouteDirection.Any)
-					loc = new OutputRouter(world(), new ChunkPosition(x(), y(), z()), item).route();
+					loc = new OutputRouter(world(), new Position(x(), y(), z()), item).route();
 				else
-					loc = new OutputRouter(world(), new ChunkPosition(x(), y(), z()), item, mDir[col].ordinal()).route();
+					loc = new OutputRouter(world(), new Position(x(), y(), z()), item, mDir[col].ordinal()).route();
 				
 				if(loc != null)
 				{

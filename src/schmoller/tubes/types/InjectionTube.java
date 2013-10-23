@@ -4,6 +4,7 @@ import schmoller.tubes.ITubeConnectable;
 import schmoller.tubes.ITubeOverflowDestination;
 import schmoller.tubes.ModTubes;
 import schmoller.tubes.OverflowBuffer;
+import schmoller.tubes.Position;
 import schmoller.tubes.TubeItem;
 import schmoller.tubes.routing.OutputRouter;
 import schmoller.tubes.routing.BaseRouter.PathLocation;
@@ -12,7 +13,6 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.world.ChunkPosition;
 
 public class InjectionTube extends BaseTube implements ISidedInventory, ITubeOverflowDestination
 {
@@ -195,7 +195,7 @@ public class InjectionTube extends BaseTube implements ISidedInventory, ITubeOve
 		if(!mOverflow.isEmpty())
 		{
 			TubeItem item = mOverflow.peekNext();
-			PathLocation loc = new OutputRouter(world(), new ChunkPosition(x(),y(),z()), item).route();
+			PathLocation loc = new OutputRouter(world(), new Position(x(),y(),z()), item).route();
 			
 			if(loc != null)
 			{

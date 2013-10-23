@@ -10,13 +10,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.world.ChunkPosition;
 import schmoller.tubes.CommonHelper;
 import schmoller.tubes.ITubeConnectable;
 import schmoller.tubes.ITubeImportDest;
 import schmoller.tubes.ITubeOverflowDestination;
 import schmoller.tubes.ModTubes;
 import schmoller.tubes.OverflowBuffer;
+import schmoller.tubes.Position;
 import schmoller.tubes.PullMode;
 import schmoller.tubes.TubeHelper;
 import schmoller.tubes.TubeItem;
@@ -41,6 +41,7 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 		
 		mOverflow = new OverflowBuffer();
 	}
+	
 	
 	@Override
 	public boolean canConnectTo( ITubeConnectable con )
@@ -68,7 +69,7 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 		if(!mOverflow.isEmpty())
 		{
 			TubeItem item = mOverflow.peekNext();
-			PathLocation loc = new OutputRouter(world(), new ChunkPosition(x(),y(),z()), item, getFacing() ^ 1).route();
+			PathLocation loc = new OutputRouter(world(), new Position(x(),y(),z()), item, getFacing() ^ 1).route();
 			
 			if(loc != null)
 			{
@@ -92,7 +93,7 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 			}
 			while(filterItem == null && mNext != start);
 			
-			PathLocation source = new ImportSourceFinder(world(), new ChunkPosition(x(), y(), z()), getFacing(), filterItem).route();
+			PathLocation source = new ImportSourceFinder(world(), new Position(x(), y(), z()), getFacing(), filterItem).route();
 			
 			if(source != null)
 			{
@@ -152,16 +153,22 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 	@Override
 	public boolean canAddItem( ItemStack item, int direction )
 	{
+		if(direction != (getFacing() ^ 1))
+			return false;
+		
+		boolean empty = true;
 		for(int i = 0; i < 16; ++i)
 		{
 			if(mFilter[i] == null)
 				continue;
 			
+			empty = false;
+			
 			if(InventoryHelper.areItemsEqual(mFilter[i], item))
 				return true;
 		}
 		
-		return false;
+		return empty;
 	}
 	
 	@Override

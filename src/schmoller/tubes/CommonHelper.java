@@ -5,7 +5,6 @@ import codechicken.multipart.TileMultipart;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -15,12 +14,12 @@ public class CommonHelper
 	private static final String[] colourNames = {"White", "Orange", "Magenta", "Light Blue", "Yellow", "Lime", "Pink", "Gray", "Light Gray", "Cyan", "Purple", "Blue", "Brown", "Green", "Red", "Black"};
 	private static int[] dyeIds;
 	
-	public static TileEntity getTileEntity(IBlockAccess world, ChunkPosition pos)
+	public static TileEntity getTileEntity(IBlockAccess world, Position pos)
 	{
 		return world.getBlockTileEntity(pos.x, pos.y, pos.z);
 	}
 	
-	public static <T> T getTileEntity(IBlockAccess world, ChunkPosition pos, Class<? extends T> tileClass)
+	public static <T> T getTileEntity(IBlockAccess world, Position pos, Class<? extends T> tileClass)
 	{
 		return getTileEntity(world, pos.x, pos.y, pos.z, tileClass);
 	}

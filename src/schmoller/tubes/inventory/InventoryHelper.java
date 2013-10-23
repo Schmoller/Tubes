@@ -1,10 +1,10 @@
 package schmoller.tubes.inventory;
 
+import schmoller.tubes.Position;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.IBlockAccess;
 
 public class InventoryHelper
@@ -32,7 +32,7 @@ public class InventoryHelper
 		return (item1 == null && item2 == null) || (item1 != null && item2 != null && item1.isItemEqual(item2) && ItemStack.areItemStackTagsEqual(item1, item2));
 	}
 	
-	public static boolean canAcceptItem(ItemStack item, IBlockAccess world, ChunkPosition pos, int side)
+	public static boolean canAcceptItem(ItemStack item, IBlockAccess world, Position pos, int side)
 	{
 		return canAcceptItem(item, world, pos.x, pos.y, pos.z, side);
 	}
@@ -106,7 +106,7 @@ public class InventoryHelper
 		mapper.getInsertSlots(item, side ^ 1).add(item);
 	}
 	
-	public static boolean canExtractItem(ItemStack item, IBlockAccess world, ChunkPosition pos, int side)
+	public static boolean canExtractItem(ItemStack item, IBlockAccess world, Position pos, int side)
 	{
 		return canExtractItem(item, world, pos.x, pos.y, pos.z, side);
 	}
