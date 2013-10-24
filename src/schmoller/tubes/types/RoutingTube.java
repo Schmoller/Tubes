@@ -15,6 +15,7 @@ import schmoller.tubes.ModTubes;
 import schmoller.tubes.Position;
 import schmoller.tubes.TubeHelper;
 import schmoller.tubes.TubeItem;
+import schmoller.tubes.definitions.TypeRoutingTube;
 import schmoller.tubes.inventory.InventoryHelper;
 import schmoller.tubes.routing.OutputRouter;
 import schmoller.tubes.routing.BaseRouter.PathLocation;
@@ -320,6 +321,15 @@ public class RoutingTube extends BaseTube
 				return Closed;
 			else
 				return values()[dir];
+		}
+		
+		@Override
+		public String toString()
+		{
+			if(this == Any || this == Closed)
+				return name();
+			
+			return TypeRoutingTube.sideColoursText[ordinal()].toString() + name();
 		}
 	}
 }

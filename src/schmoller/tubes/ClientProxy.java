@@ -18,6 +18,7 @@ import schmoller.tubes.render.NormalTubeRender;
 import schmoller.tubes.render.RenderTubeItem;
 import schmoller.tubes.render.RequestingTubeRender;
 import schmoller.tubes.render.RestrictionTubeRender;
+import schmoller.tubes.render.RoutingTubeRender;
 import schmoller.tubes.types.CompressorTube;
 import schmoller.tubes.types.FilterTube;
 import schmoller.tubes.types.InjectionTube;
@@ -47,7 +48,7 @@ public class ClientProxy extends CommonProxy
 		TubeRegistry.registerRenderer("compressor",new CompressorTubeRender());
 		TubeRegistry.registerRenderer("extraction", new ExtractionTubeRender());
 		TubeRegistry.registerRenderer("requesting", new RequestingTubeRender());
-		TubeRegistry.registerRenderer("routing", normal);
+		TubeRegistry.registerRenderer("routing", new RoutingTubeRender());
 	}
 	
 	@Override
