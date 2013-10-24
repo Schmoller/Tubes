@@ -1,6 +1,10 @@
 package schmoller.tubes.types;
 
+import buildcraft.api.tools.IToolWrench;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.MovingObjectPosition;
 import codechicken.core.data.MCDataInput;
 import codechicken.core.data.MCDataOutput;
 import schmoller.tubes.IDirectionalTube;
@@ -67,4 +71,27 @@ public abstract class DirectionalTube extends BaseTube implements IDirectionalTu
 		packet.writeByte(mDirection);
 	}
 
+	@Override
+	public boolean activate( EntityPlayer player, MovingObjectPosition part, ItemStack item )
+	{
+		if(item != null && item.getItem() instanceof IToolWrench)
+		{
+			IToolWrench wrench = (IToolWrench)item.getItem();
+			
+			if(wrench.canWrench(player, x(), y(), z()))
+			{
+				++mDirection;
+				
+				if(mDirection >= 6)
+					mDirection = 0;
+				
+				markForRender();
+				
+				wrench.wrenchUsed(player, x(), y(), z());
+				return true;
+			}
+		}
+		
+		return false;
+	}
 }

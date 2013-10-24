@@ -181,12 +181,17 @@ public abstract class BaseTubePart extends JCuboidPart implements ITube, JNormal
 	
 	protected void markForUpdate()
 	{
+		if(world().isRemote)
+			return;
 		writeDesc(tile().getWriteStream(this).writeByte(CHANNEL_DATA));
 	}
 	
 	protected void markForRender()
 	{
-		tile().getWriteStream(this).writeByte(CHANNEL_RENDER);
+		if(world().isRemote)
+			tile().markRender();
+		else
+			tile().getWriteStream(this).writeByte(CHANNEL_RENDER);
 	}
 	
 	protected void onDropItems(List<ItemStack> itemsToDrop) {}

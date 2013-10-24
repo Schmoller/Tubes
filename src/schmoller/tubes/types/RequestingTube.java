@@ -371,7 +371,11 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 	@Override
 	public boolean activate( EntityPlayer player, MovingObjectPosition part, ItemStack item )
 	{
-		player.openGui(ModTubes.instance, ModTubes.GUI_REQUESTING_TUBE, world(), x(), y(), z());
-		return true;
+		if(!super.activate(player, part, item))
+		{
+			player.openGui(ModTubes.instance, ModTubes.GUI_REQUESTING_TUBE, world(), x(), y(), z());
+			return true;
+		}
+		return false;
 	}
 }
