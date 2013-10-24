@@ -58,6 +58,12 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 	}
 	
 	@Override
+	public boolean canPathThrough()
+	{
+		return false;
+	}
+	
+	@Override
 	public int getTickRate()
 	{
 		return mOverflow.isEmpty() ? 20 : 10;
@@ -66,6 +72,9 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 	@Override
 	public void onTick()
 	{
+		if(world().isRemote)
+			return;
+		
 		if(!mOverflow.isEmpty())
 		{
 			TubeItem item = mOverflow.peekNext();
@@ -111,6 +120,8 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 						con.addItem(item, true);
 					
 					--mPulses;
+					if(mPulses < 0)
+						mPulses = 0;
 				}
 			}
 		}
@@ -218,12 +229,15 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 	@Override
 	public void update()
 	{
-		boolean state = getPower() > 0;
-		
-		if(!mIsPowered && state && mMode == PullMode.RedstoneSingle)
-			++mPulses;
-
-		mIsPowered = state;
+		if(!world().isRemote)
+		{
+			boolean state = getPower() > 0;
+			
+			if(!mIsPowered && state && mMode == PullMode.RedstoneSingle)
+				++mPulses;
+	
+			mIsPowered = state;
+		}
 		
 		super.update();
 	}

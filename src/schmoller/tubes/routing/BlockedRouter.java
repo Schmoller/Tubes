@@ -15,7 +15,7 @@ public class BlockedRouter extends BaseRouter
 
 	public BlockedRouter(IBlockAccess world, Position position, TubeItem item)
 	{
-		mItem = item;
+		mItem = item.clone();
 		setup(world, position);
 	}
 	
@@ -35,7 +35,8 @@ public class BlockedRouter extends BaseRouter
 				
 				if(con != null)
 				{
-					if((mItem.colour != -1 && con.getColor() != -1 && con.getColor() != mItem.colour) || !con.canItemEnter(mItem))
+					mItem.direction = loc.dir;
+					if(!con.canItemEnter(mItem))
 						continue;
 					
 					loc.dist += con.getRouteWeight() - 1;
@@ -62,7 +63,8 @@ public class BlockedRouter extends BaseRouter
 				
 				if(con != null)
 				{
-					if((mItem.colour != -1 && con.getColor() != -1 && con.getColor() != mItem.colour) || !con.canItemEnter(mItem))
+					mItem.direction = loc.dir;
+					if(!con.canItemEnter(mItem))
 						continue;
 					
 					loc.dist += con.getRouteWeight() - 1;

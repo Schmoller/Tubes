@@ -16,13 +16,13 @@ public class OutputRouter extends BaseRouter
 	
 	public OutputRouter(IBlockAccess world, Position position, TubeItem item)
 	{
-		mItem = item;
+		mItem = item.clone();
 		setup(world, position);
 	}
 	
 	public OutputRouter(IBlockAccess world, Position position, TubeItem item, int direction)
 	{
-		mItem = item;
+		mItem = item.clone();
 		mDirection = direction;
 		setup(world, position);
 	}
@@ -44,7 +44,8 @@ public class OutputRouter extends BaseRouter
 				
 				if(con != null)
 				{
-					if((mItem.colour != -1 && con.getColor() != -1 && con.getColor() != mItem.colour) || !con.canItemEnter(mItem))
+					mItem.direction = loc.dir;
+					if(!con.canItemEnter(mItem))
 						continue;
 					
 					loc.dist += con.getRouteWeight() - 1;
@@ -74,7 +75,8 @@ public class OutputRouter extends BaseRouter
 				
 				if(con != null)
 				{
-					if((mItem.colour != -1 && con.getColor() != -1 && con.getColor() != mItem.colour) || !con.canItemEnter(mItem))
+					mItem.direction = loc.dir;
+					if(!con.canItemEnter(mItem))
 						continue;
 					
 					loc.dist += con.getRouteWeight() - 1;
@@ -90,6 +92,7 @@ public class OutputRouter extends BaseRouter
 	{
 		TileEntity ent = CommonHelper.getTileEntity(getWorld(), current);
 		ITubeConnectable con = TubeHelper.getTubeConnectable(ent);
+		mItem.direction = side;
 		
 		if(con == null)
 		{

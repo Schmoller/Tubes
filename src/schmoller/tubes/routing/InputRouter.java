@@ -15,7 +15,7 @@ public class InputRouter extends BaseRouter
 	
 	public InputRouter(IBlockAccess world, Position position, TubeItem item)
 	{
-		mItem = item;
+		mItem = item.clone();
 		setup(world, position);
 	}
 	
@@ -35,6 +35,7 @@ public class InputRouter extends BaseRouter
 				
 				if(con != null)
 				{
+					mItem.direction = loc.dir;
 					if(!con.canItemEnter(mItem))
 						continue;
 					
@@ -62,6 +63,7 @@ public class InputRouter extends BaseRouter
 				
 				if(con != null)
 				{
+					mItem.direction = loc.dir;
 					if(!con.canItemEnter(mItem))
 						continue;
 					
@@ -78,6 +80,7 @@ public class InputRouter extends BaseRouter
 	{
 		TileEntity ent = CommonHelper.getTileEntity(getWorld(), current);
 		ITubeConnectable con = TubeHelper.getTubeConnectable(ent);
+		mItem.direction = side;
 		
 		return (con instanceof ITubeImportDest && ((ITubeImportDest)con).canImportFromSide(side) && con.canItemEnter(mItem));
 	}
