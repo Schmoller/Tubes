@@ -8,7 +8,6 @@ import schmoller.tubes.network.packets.ModPacketSetFilterMode;
 import schmoller.tubes.network.packets.ModPacketSetPullMode;
 import schmoller.tubes.network.packets.ModPacketSetRoutingOptions;
 import schmoller.tubes.parts.ItemTubeBase;
-import schmoller.tubes.render.RenderHelper;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -28,6 +27,8 @@ import cpw.mods.fml.common.Mod.PreInit;
 
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @Mod(name="Tubes", version="1.0.0", modid = "Tubes", dependencies="required-after:Forge; required-before:CCMultipart")
 @NetworkMod(clientSideRequired=true, serverSideRequired=true)
@@ -91,8 +92,7 @@ public class ModTubes
 		PacketManager.registerPacket(ModPacketSetPullMode.class);
 		PacketManager.registerPacket(ModPacketSetRoutingOptions.class);
 		PacketManager.registerPacket(ModPacketSetColor.class);
-		RenderHelper.initialize();
-		
+
 		proxy.initialize();
 	}
 	
@@ -104,6 +104,7 @@ public class ModTubes
 	}
 
 	@ForgeSubscribe
+	@SideOnly(Side.CLIENT)
 	public void registerIcons(TextureStitchEvent.Pre event)
 	{
 		if(event.map.textureType == 0)

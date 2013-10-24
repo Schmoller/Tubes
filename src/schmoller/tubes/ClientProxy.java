@@ -15,6 +15,7 @@ import schmoller.tubes.render.ExtractionTubeRender;
 import schmoller.tubes.render.FilterTubeRender;
 import schmoller.tubes.render.InjectionTubeRender;
 import schmoller.tubes.render.NormalTubeRender;
+import schmoller.tubes.render.RenderHelper;
 import schmoller.tubes.render.RenderTubeItem;
 import schmoller.tubes.render.RequestingTubeRender;
 import schmoller.tubes.render.RestrictionTubeRender;
@@ -32,6 +33,9 @@ public class ClientProxy extends CommonProxy
 	public void initialize()
 	{
 		super.initialize();
+		
+		RenderHelper.initialize();
+		
 		registerRenderers();
 	}
 	
