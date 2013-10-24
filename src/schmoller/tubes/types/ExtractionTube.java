@@ -77,7 +77,7 @@ public class ExtractionTube extends DirectionalBasicTube implements IRedstonePar
 	@Override
 	public boolean canAcceptOverflowFromSide( int side )
 	{
-		return (side == getFacing());
+		return (side != (getFacing() ^ 1));
 	}
 	
 	private int getPower()
