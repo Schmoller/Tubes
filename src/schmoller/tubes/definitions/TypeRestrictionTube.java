@@ -7,25 +7,27 @@ import net.minecraft.util.Icon;
 
 public class TypeRestrictionTube extends TubeDefinition
 {
-	public Icon centerIcon;
-	public Icon straightIcon;
+	public static Icon center;
+	public static Icon straight;
+	public static Icon edge;
 	
 	@Override
 	public void registerIcons( IconRegister register )
 	{
-		centerIcon = register.registerIcon("Tubes:tube-restriction-center");
-		straightIcon = register.registerIcon("Tubes:tube-restriction");
+		center = register.registerIcon("Tubes:tube-restriction-center");
+		straight = register.registerIcon("Tubes:tube-restriction");
+		edge = register.registerIcon("Tubes:tube-restriction-edge");
 	}
 	
 	@Override
 	public Icon getCenterIcon()
 	{
-		return centerIcon;
+		return TypeNormalTube.centerIcon;
 	}
 	
 	public Icon getStraightIcon() 
 	{
-		return straightIcon;
+		return TypeNormalTube.straightIcon;
 	}
 	
 	@Override

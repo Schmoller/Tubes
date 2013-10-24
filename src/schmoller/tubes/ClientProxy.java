@@ -17,6 +17,7 @@ import schmoller.tubes.render.InjectionTubeRender;
 import schmoller.tubes.render.NormalTubeRender;
 import schmoller.tubes.render.RenderTubeItem;
 import schmoller.tubes.render.RequestingTubeRender;
+import schmoller.tubes.render.RestrictionTubeRender;
 import schmoller.tubes.types.CompressorTube;
 import schmoller.tubes.types.FilterTube;
 import schmoller.tubes.types.InjectionTube;
@@ -39,7 +40,7 @@ public class ClientProxy extends CommonProxy
 		
 		NormalTubeRender normal = new NormalTubeRender();
 		TubeRegistry.registerRenderer("basic",normal);
-		TubeRegistry.registerRenderer("restriction",normal);
+		TubeRegistry.registerRenderer("restriction",new RestrictionTubeRender());
 		TubeRegistry.registerRenderer("injection",new InjectionTubeRender());
 		TubeRegistry.registerRenderer("ejection", new EjectionTubeRender());
 		TubeRegistry.registerRenderer("filter", new FilterTubeRender());
