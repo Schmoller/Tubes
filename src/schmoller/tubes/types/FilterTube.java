@@ -9,12 +9,14 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.MovingObjectPosition;
 import schmoller.tubes.ITubeConnectable;
 import schmoller.tubes.ModTubes;
+import schmoller.tubes.TubeItem;
 
 public class FilterTube extends BaseTube
 {
 	private ItemStack[] mFilterStacks;
 	private Mode mCurrentMode = Mode.Allow;
 	private Comparison mCurrentComparison = Comparison.Any;
+	private int mColor = -1;
 	
 	public FilterTube()
 	{
@@ -58,6 +60,16 @@ public class FilterTube extends BaseTube
 	public Comparison getComparison()
 	{
 		return mCurrentComparison;
+	}
+	
+	public void setColour(short colour)
+	{
+		mColor = colour;
+	}
+	
+	public int getColour()
+	{
+		return mColor;
 	}
 
 	private boolean doesMatchFilter(ItemStack item, int index)
@@ -128,6 +140,21 @@ public class FilterTube extends BaseTube
 	}
 	
 	@Override
+	public boolean simulateEffects( TubeItem item )
+	{
+		item.colour = mColor;
+		return true;
+	}
+	
+	@Override
+	protected boolean onItemJunction( TubeItem item )
+	{
+		item.colour = mColor;
+		
+		return super.onItemJunction(item);
+	}
+	
+	@Override
 	public boolean canConnectTo( ITubeConnectable con )
 	{
 		return !(con instanceof FilterTube);
@@ -155,6 +182,8 @@ public class FilterTube extends BaseTube
 		
 		root.setInteger("mode", mCurrentMode.ordinal());
 		root.setInteger("comp", mCurrentComparison.ordinal());
+		
+		root.setShort("Color", (short)mColor);
 	}
 	
 	@Override
@@ -173,6 +202,8 @@ public class FilterTube extends BaseTube
 		
 		mCurrentMode = Mode.values()[root.getInteger("mode")];
 		mCurrentComparison = Comparison.values()[root.getInteger("comp")];
+		
+		mColor = root.getShort("Color");
 	}
 	
 	@Override
@@ -193,6 +224,8 @@ public class FilterTube extends BaseTube
 			else
 				output.writeBoolean(false);
 		}
+		
+		output.writeShort(mColor);
 	}
 	
 	@Override
@@ -208,6 +241,8 @@ public class FilterTube extends BaseTube
 			if(input.readBoolean())
 				mFilterStacks[i] = input.readItemStack();
 		}
+		
+		mColor = input.readShort();
 	}
 
 	public enum Mode

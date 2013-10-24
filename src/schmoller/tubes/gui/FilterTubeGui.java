@@ -2,7 +2,11 @@ package schmoller.tubes.gui;
 
 import java.util.Arrays;
 
+import org.lwjgl.opengl.GL11;
+
+import schmoller.tubes.CommonHelper;
 import schmoller.tubes.ModTubes;
+import schmoller.tubes.network.packets.ModPacketSetColor;
 import schmoller.tubes.network.packets.ModPacketSetFilterMode;
 import schmoller.tubes.types.FilterTube;
 import schmoller.tubes.types.FilterTube.Comparison;
@@ -69,6 +73,15 @@ public class FilterTubeGui extends GuiContainer
 				
 				width = old;
 			}
+			else if(yy >= 51 && yy <= 65)
+			{
+				int colour = mTube.getColour();
+				String text = "No Color";
+				if(colour != -1)
+					text = CommonHelper.getDyeName(colour);
+				
+				drawHoveringText(Arrays.asList(text), xx, yy, fontRenderer);
+			}
 		}
 		
 
@@ -117,6 +130,26 @@ public class FilterTubeGui extends GuiContainer
 				mTube.setComparison(Comparison.values()[i]);
 				ModTubes.packetManager.sendPacketToServer(new ModPacketSetFilterMode(mTube.x(), mTube.y(), mTube.z(), Comparison.values()[i]));
 			}
+			else if(yy >= 51 && yy <= 65)
+			{
+				int colour = mTube.getColour();
+				
+				if(button == 0)
+					++colour;
+				else if(button == 1)
+					-- colour;
+				else if(button == 2)
+					colour = -1;
+				
+				if(colour > 15)
+					colour = -1;
+				if(colour < -1)
+					colour = 15;
+				
+				mTube.setColour((short)colour);
+				
+				ModTubes.packetManager.sendPacketToServer(new ModPacketSetColor(mTube.x(), mTube.y(), mTube.z(), colour));
+			}
 		}
 		super.mouseClicked(x, y, button);
 	}
@@ -136,6 +169,13 @@ public class FilterTubeGui extends GuiContainer
 		drawTexturedModalRect(x + 153, y + 19, xSize, 14 * mTube.getMode().ordinal(), 14, 14);
 		drawTexturedModalRect(x + 153, y + 35, xSize + 14, 14 * mTube.getComparison().ordinal(), 14, 14);
 		
+		int colour = mTube.getColour();
+		
+		if(colour != -1)
+		{
+			drawRect(x + 156, y + 54, x + 164, y + 62, CommonHelper.getDyeColor(colour));
+			GL11.glColor4f(1f, 1f, 1f, 1f);
+		}
 	}
 
 }

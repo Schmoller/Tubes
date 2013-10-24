@@ -2,8 +2,12 @@ package schmoller.tubes.gui;
 
 import java.util.Arrays;
 
+import org.lwjgl.opengl.GL11;
+
+import schmoller.tubes.CommonHelper;
 import schmoller.tubes.ModTubes;
 import schmoller.tubes.PullMode;
+import schmoller.tubes.network.packets.ModPacketSetColor;
 import schmoller.tubes.network.packets.ModPacketSetPullMode;
 import schmoller.tubes.types.RequestingTube;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -37,22 +41,35 @@ public class RequestingTubeGui extends GuiContainer
 		
 		int old = width;
 		width -= (xx + curX); 
-		if(xx >= 153 && xx <= 167 && yy >= 19 && yy <= 33)
+		if(xx >= 153 && xx <= 167)
 		{
-			String text = "";
-			switch(mTube.getMode())
+			if(yy >= 19 && yy <= 33)
 			{
-			case Constant:
-				text = "Always pull";
-				break;
-			case RedstoneConstant:
-				text = "Pull while redstone is active";
-				break;
-			case RedstoneSingle:
-				text = "Pull once per restone pulse";
-				break;
+				String text = "";
+				switch(mTube.getMode())
+				{
+				case Constant:
+					text = "Always pull";
+					break;
+				case RedstoneConstant:
+					text = "Pull while redstone is active";
+					break;
+				case RedstoneSingle:
+					text = "Pull once per restone pulse";
+					break;
+				}
+				drawHoveringText(Arrays.asList(text), xx, yy, fontRenderer);
 			}
-			drawHoveringText(Arrays.asList(text), xx, yy, fontRenderer);
+			else if(yy >= 35 && yy <= 49)
+			{
+				int colour = mTube.getColour();
+				String text = "No Color";
+				if(colour != -1)
+					text = CommonHelper.getDyeName(colour);
+				
+				drawHoveringText(Arrays.asList(text), xx, yy, fontRenderer);
+			}
+			
 		}
 		width = old;
 	}
@@ -65,22 +82,45 @@ public class RequestingTubeGui extends GuiContainer
 		
 		
 		super.mouseClicked(x, y, button);
-		if(xx >= 153 && xx <= 167 && yy >= 19 && yy <= 33)
+		if(xx >= 153 && xx <= 167)
 		{
-			PullMode current = mTube.getMode();
-			int i = current.ordinal();
-			if(button == 0)
-				++i;
-			else if(button == 1)
-				--i;
-			
-			if(i < 0)
-				i = PullMode.values().length - 1;
-			else if(i >= PullMode.values().length)
-				i = 0;
-			
-			mTube.setMode(PullMode.values()[i]);
-			ModTubes.packetManager.sendPacketToServer(new ModPacketSetPullMode(mTube.x(), mTube.y(), mTube.z(), PullMode.values()[i]));
+			if(yy >= 19 && yy <= 33)
+			{
+				PullMode current = mTube.getMode();
+				int i = current.ordinal();
+				if(button == 0)
+					++i;
+				else if(button == 1)
+					--i;
+				
+				if(i < 0)
+					i = PullMode.values().length - 1;
+				else if(i >= PullMode.values().length)
+					i = 0;
+				
+				mTube.setMode(PullMode.values()[i]);
+				ModTubes.packetManager.sendPacketToServer(new ModPacketSetPullMode(mTube.x(), mTube.y(), mTube.z(), PullMode.values()[i]));
+			}
+			else if(yy >= 35 && yy <= 49)
+			{
+				int colour = mTube.getColour();
+				
+				if(button == 0)
+					++colour;
+				else if(button == 1)
+					-- colour;
+				else if(button == 2)
+					colour = -1;
+				
+				if(colour > 15)
+					colour = -1;
+				if(colour < -1)
+					colour = 15;
+				
+				mTube.setColour((short)colour);
+				
+				ModTubes.packetManager.sendPacketToServer(new ModPacketSetColor(mTube.x(), mTube.y(), mTube.z(), colour));
+			}
 		}
 	}
 	
@@ -97,6 +137,14 @@ public class RequestingTubeGui extends GuiContainer
 		drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
 		
 		drawTexturedModalRect(x + 153, y + 19, 176, mTube.getMode().ordinal() * 14, 14, 14);
+		
+		int colour = mTube.getColour();
+		
+		if(colour != -1)
+		{
+			drawRect(x + 156, y + 38, x + 164, y + 46, CommonHelper.getDyeColor(colour));
+			GL11.glColor4f(1f, 1f, 1f, 1f);
+		}
 	}
 
 }

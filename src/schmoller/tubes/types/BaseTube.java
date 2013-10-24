@@ -403,6 +403,9 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 			itemsToDrop.add(item.item);
 	}
 	
+	@Override
+	public boolean simulateEffects( TubeItem item )	{ return true; }
+	
 	// ======================================
 	//  Thingies
 	// ======================================

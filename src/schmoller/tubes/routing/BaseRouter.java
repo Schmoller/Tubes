@@ -58,6 +58,8 @@ public abstract class BaseRouter
 		getNextLocations(new PathLocation(position.x, position.y, position.z, 0, 6, 6));
 	}
 	
+	protected abstract void updateState(PathLocation current);
+	
 	/**
 	 * Called to determine if routing is finished
 	 */
@@ -95,7 +97,10 @@ public abstract class BaseRouter
 				paths.add(path);
 			}
 			else
+			{
+				updateState(path);
 				getNextLocations(path);
+			}
 		}
 		
 		return paths;
@@ -108,6 +113,7 @@ public abstract class BaseRouter
 		public int dist;
 		public final int dir;
 		public final int initialDir;
+		public int color = -1;
 		
 		public PathLocation(PathLocation last, int newDir)
 		{
@@ -116,6 +122,7 @@ public abstract class BaseRouter
 			initialDir = last.initialDir;
 			
 			position = last.position.copy().offset(newDir,  1);
+			color = last.color;
 		}
 		
 		public PathLocation(Position position, int direction)
@@ -145,7 +152,7 @@ public abstract class BaseRouter
 		@Override
 		public String toString()
 		{
-			return String.format("{Path: %d, %d, %d: %d initial: %d len: %d}", position.x, position.y, position.z, dir, initialDir, dist); 
+			return String.format("{Path: %d, %d, %d: %d initial: %d len: %d col: %d}", position.x, position.y, position.z, dir, initialDir, dist, color); 
 		}
 	}
 }

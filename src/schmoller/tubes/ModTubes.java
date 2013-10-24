@@ -3,6 +3,7 @@ package schmoller.tubes;
 import java.util.logging.Logger;
 
 import schmoller.tubes.network.PacketManager;
+import schmoller.tubes.network.packets.ModPacketSetColor;
 import schmoller.tubes.network.packets.ModPacketSetFilterMode;
 import schmoller.tubes.network.packets.ModPacketSetPullMode;
 import schmoller.tubes.network.packets.ModPacketSetRoutingOptions;
@@ -89,7 +90,7 @@ public class ModTubes
 		PacketManager.registerPacket(ModPacketSetFilterMode.class);
 		PacketManager.registerPacket(ModPacketSetPullMode.class);
 		PacketManager.registerPacket(ModPacketSetRoutingOptions.class);
-		
+		PacketManager.registerPacket(ModPacketSetColor.class);
 		RenderHelper.initialize();
 		
 		proxy.initialize();

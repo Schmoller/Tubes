@@ -17,6 +17,13 @@ public interface ITubeConnectable
 	public boolean addItem(TubeItem item);
 	public boolean addItem(TubeItem item, boolean syncToClient);
 	
+	/**
+	 * This is used by routing to keep track of state changes to items.
+	 * If a tube sets the items color, this method should do that
+	 * @return false indicates that the item would have been removed
+	 */
+	public boolean simulateEffects(TubeItem item);
+	
 	public boolean canPathThrough();
 	
 	public int getRouteWeight();

@@ -57,6 +57,7 @@ public class BlockedRouter extends BaseRouter
 			if((conns & (1 << i)) != 0)
 			{
 				PathLocation loc = new PathLocation(position, i);
+				loc.color = mItem.colour;				
 				
 				TileEntity ent = CommonHelper.getTileEntity(getWorld(), loc.position);
 				ITubeConnectable con = TubeHelper.getTubeConnectable(ent);
@@ -72,6 +73,22 @@ public class BlockedRouter extends BaseRouter
 				
 				addSearchPoint(loc);
 			}
+		}
+	}
+	
+	@Override
+	protected void updateState( PathLocation current )
+	{
+		TileEntity ent = CommonHelper.getTileEntity(getWorld(), current.position);
+		ITubeConnectable con = TubeHelper.getTubeConnectable(ent);
+		
+		if(con != null)
+		{
+			mItem.colour = current.color;
+			mItem.direction = current.dir;
+			con.simulateEffects(mItem);
+			
+			current.color = mItem.colour;
 		}
 	}
 

@@ -31,6 +31,7 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 	private int mNext = 0;
 	private PullMode mMode = PullMode.RedstoneConstant;
 	private OverflowBuffer mOverflow;
+	private int mColor = -1;
 	
 	private int mPulses = 0;
 	private boolean mIsPowered;
@@ -130,7 +131,7 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 	@Override
 	public boolean canAcceptOverflowFromSide( int side )
 	{
-		return (side == (getFacing() ^ 1));
+		return (side == getFacing());
 	}
 	
 	@Override
@@ -140,11 +141,21 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 	}
 	
 	@Override
+	public boolean simulateEffects( TubeItem item )
+	{
+		item.colour = mColor;
+		item.state = TubeItem.NORMAL;
+		
+		return true;
+	}
+	
+	@Override
 	public int onDetermineDestination( TubeItem item )
 	{
 		if(item.state != TubeItem.IMPORT)
 			return item.direction ^ 1;
 		
+		item.colour = mColor;
 		item.state = TubeItem.NORMAL;
 		
 		return getFacing() ^ 1;
@@ -153,7 +164,7 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 	@Override
 	public boolean canItemEnter( TubeItem item )
 	{
-		if(item.state == TubeItem.BLOCKED && item.direction == (getFacing() ^ 1))
+		if(item.state == TubeItem.BLOCKED && item.direction == getFacing())
 			return true;
 		else if(item.state != TubeItem.IMPORT)
 			return false;
@@ -278,11 +289,22 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 		mMode = mode;
 	}
 	
+	public short getColour()
+	{
+		return (short)mColor;
+	}
+	
+	public void setColour(short colour)
+	{
+		mColor = colour;
+	}
+	
 	@Override
 	public void readDesc( MCDataInput input )
 	{
 		super.readDesc(input);
 		mMode = PullMode.values()[input.readByte()];
+		mColor = input.readShort();
 	}
 	
 	@Override
@@ -290,6 +312,7 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 	{
 		super.writeDesc(output);
 		output.writeByte(mMode.ordinal());
+		output.writeShort(mColor);
 	}
 	
 	@Override
@@ -314,6 +337,8 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 		root.setString("PullMode", mMode.name());
 		root.setInteger("Pulses", mPulses);
 		mOverflow.save(root);
+		
+		root.setShort("Color", (short)mColor);
 	}
 	
 	@Override
@@ -338,6 +363,9 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 		
 		mPulses = root.getInteger("Pulses");
 		mOverflow.load(root);
+		
+		if(root.hasKey("Color"))
+			mColor = root.getShort("Color");
 	}
 	
 	@Override

@@ -85,6 +85,14 @@ public class RoutingTube extends BaseTube
 	}
 	
 	@Override
+	public boolean simulateEffects( TubeItem item )
+	{
+		item.direction = onDetermineDestination(item);
+		
+		return true;
+	}
+	
+	@Override
 	public int onDetermineDestination( TubeItem item )
 	{
 		int[] matches = new int[9];
