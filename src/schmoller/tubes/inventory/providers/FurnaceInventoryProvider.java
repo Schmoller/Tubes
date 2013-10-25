@@ -101,7 +101,7 @@ public class FurnaceInventoryProvider implements IInventoryProvider
 		}
 
 		@Override
-		public boolean isStackValidForSlot( int slot, ItemStack item )
+		public boolean isItemValidForSlot( int slot, ItemStack item )
 		{
 			if(slot == 0) // Stuff to smelt
 				return (FurnaceRecipes.smelting().getSmeltingResult(item) != null);
@@ -124,7 +124,7 @@ public class FurnaceInventoryProvider implements IInventoryProvider
 		@Override
 		public boolean canInsertItem( int slot, ItemStack item, int side )
 		{
-			return isStackValidForSlot(slot, item);
+			return isItemValidForSlot(slot, item);
 		}
 
 		@Override

@@ -22,7 +22,7 @@ public class MapperBasic extends InventoryMapper
 		
 		for(int i = 0; i < mInventory.getSizeInventory(); ++i)
 		{
-			if(mInventory.isStackValidForSlot(i, item))
+			if(mInventory.isItemValidForSlot(i, item))
 				slots[max++] = new Slot(i);
 		}
 		
@@ -97,7 +97,7 @@ public class MapperBasic extends InventoryMapper
 		@Override
 		public boolean canHold( ItemStack item )
 		{
-			return mInventory.isStackValidForSlot(mIndex, item);
+			return mInventory.isItemValidForSlot(mIndex, item);
 		}
 
 		@Override

@@ -1,5 +1,6 @@
 package schmoller.tubes.gui;
 
+import schmoller.tubes.definitions.TypeInjectionTube;
 import schmoller.tubes.types.InjectionTube;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
@@ -28,7 +29,7 @@ public class InjectionTubeGui extends GuiContainer
 	@Override
 	protected void drawGuiContainerBackgroundLayer( float f, int i, int j )
 	{
-		mc.renderEngine.bindTexture("/mods/Tubes/textures/gui/injectionTube.png");
+		mc.renderEngine.bindTexture(TypeInjectionTube.gui);
 		
 		int x = (width - xSize) / 2;
 		int y = (height - ySize) / 2;

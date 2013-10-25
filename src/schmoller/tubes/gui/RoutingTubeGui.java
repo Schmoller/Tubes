@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL11;
 
 import schmoller.tubes.CommonHelper;
 import schmoller.tubes.ModTubes;
+import schmoller.tubes.definitions.TypeRoutingTube;
 import schmoller.tubes.network.packets.ModPacketSetRoutingOptions;
 import schmoller.tubes.types.RoutingTube;
 import schmoller.tubes.types.RoutingTube.RouteDirection;
@@ -125,7 +126,7 @@ public class RoutingTubeGui extends GuiContainer
 		int x = (width - xSize) / 2;
 		int y = (height - ySize) / 2;
 		
-		mc.renderEngine.bindTexture("/mods/Tubes/textures/gui/routingTube.png");
+		mc.renderEngine.bindTexture(TypeRoutingTube.gui);
 		
 		drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
 		

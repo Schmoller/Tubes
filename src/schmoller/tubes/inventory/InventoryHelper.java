@@ -50,7 +50,7 @@ public class InventoryHelper
 	
 	public static void mergeItemStackSimulate(IInventory inv, int slot, ItemStack item)
 	{
-		if (!inv.isStackValidForSlot(slot, item))
+		if (!inv.isItemValidForSlot(slot, item))
 			return;
 		
 		ItemStack existing = inv.getStackInSlot(slot);
@@ -70,7 +70,7 @@ public class InventoryHelper
 	
 	public static void mergeItemStack(IInventory inv, int slot, ItemStack item)
 	{
-		if (!inv.isStackValidForSlot(slot, item))
+		if (!inv.isItemValidForSlot(slot, item))
 			return;
 		
 		ItemStack existing = inv.getStackInSlot(slot);

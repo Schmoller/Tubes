@@ -2,3 +2,5 @@
 /.project
 /bin
 .minecraft
+/.settings
+/dist

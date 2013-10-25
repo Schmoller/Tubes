@@ -1,7 +1,7 @@
 package schmoller.tubes.types;
 
-import codechicken.core.data.MCDataInput;
-import codechicken.core.data.MCDataOutput;
+import codechicken.lib.data.MCDataInput;
+import codechicken.lib.data.MCDataOutput;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -226,7 +226,7 @@ public class CompressorTube extends BaseTube implements IInventory
 	public void closeChest() {}
 
 	@Override
-	public boolean isStackValidForSlot( int i, ItemStack item )
+	public boolean isItemValidForSlot( int i, ItemStack item )
 	{
 		return (mTarget.itemID == 0 || (item.isItemEqual(mTarget) && ItemStack.areItemStackTagsEqual(item, mTarget)));
 	}

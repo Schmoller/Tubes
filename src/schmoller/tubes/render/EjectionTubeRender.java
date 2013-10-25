@@ -2,6 +2,7 @@ package schmoller.tubes.render;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import schmoller.tubes.IDirectionalTube;
@@ -48,7 +49,7 @@ public class EjectionTubeRender extends NormalTubeRender
 		
 		Tessellator tes = Tessellator.instance;
 		
-		FMLClientHandler.instance().getClient().renderGlobal.renderEngine.bindTexture("/terrain.png");
+		FMLClientHandler.instance().getClient().renderGlobal.renderEngine.bindTexture(TextureMap.locationBlocksTexture);
 		tes.startDrawingQuads();
 		
 		mRender.setIcon(type.getCenterIcon());

@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import org.lwjgl.opengl.GL11;
 
+import schmoller.tubes.definitions.TypeCompressorTube;
 import schmoller.tubes.types.CompressorTube;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -57,7 +58,7 @@ public class CompressorTubeGui extends GuiContainer
 		int x = (width - xSize) / 2;
 		int y = (height - ySize) / 2;
 		
-		mc.renderEngine.bindTexture("/mods/Tubes/textures/gui/compressorTube.png");
+		mc.renderEngine.bindTexture(TypeCompressorTube.gui);
 		
 		drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
 		

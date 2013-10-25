@@ -1,7 +1,7 @@
 package schmoller.tubes.types;
 
-import codechicken.core.data.MCDataInput;
-import codechicken.core.data.MCDataOutput;
+import codechicken.lib.data.MCDataInput;
+import codechicken.lib.data.MCDataOutput;
 import codechicken.multipart.IRedstonePart;
 import codechicken.multipart.RedstoneInteractions;
 import net.minecraft.entity.player.EntityPlayer;

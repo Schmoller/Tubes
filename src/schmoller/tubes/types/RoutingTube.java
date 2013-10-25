@@ -2,8 +2,8 @@ package schmoller.tubes.types;
 
 import java.util.Arrays;
 
-import codechicken.core.data.MCDataInput;
-import codechicken.core.data.MCDataOutput;
+import codechicken.lib.data.MCDataInput;
+import codechicken.lib.data.MCDataOutput;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

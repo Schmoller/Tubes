@@ -1,8 +1,9 @@
 package schmoller.tubes.definitions;
 
-import codechicken.core.vec.Cuboid6;
+import codechicken.lib.vec.Cuboid6;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.util.Icon;
+import net.minecraft.util.ResourceLocation;
 import schmoller.tubes.types.BaseTube;
 import schmoller.tubes.types.InjectionTube;
 
@@ -12,6 +13,8 @@ public class TypeInjectionTube extends TubeDefinition
 	public Icon straightIcon;
 	
 	public static Icon coreIcon;
+	
+	public static ResourceLocation gui = new ResourceLocation("tubes", "textures/gui/injectionTube.png");
 	
 	@Override
 	public void registerIcons( IconRegister register )

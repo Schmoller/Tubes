@@ -15,6 +15,7 @@ import codechicken.microblock.BlockMicroMaterial;
 import codechicken.microblock.MicroMaterialRegistry;
 import codechicken.multipart.MultipartGenerator;
 
+import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -71,6 +72,8 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 	
 	private void registerTubes()
 	{
+		// FIXME: This does not seem to work after obfuscation
+		FMLLog.info("ISidedInventory: %s",ISidedInventory.class.getName());
 		MultipartGenerator.registerPassThroughInterface(ISidedInventory.class.getName(), true, true);
 		
 		TubeRegistry.registerTube(new TypeNormalTube(), "basic");
@@ -100,7 +103,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 		GameRegistry.registerItem(ModTubes.itemBucketPlastic, "bucketOfPlastic");
 		GameRegistry.registerItem(ModTubes.itemTube, "tubes:items:tube");
 		
-		ModTubes.blockPlastic = new Block(ModTubes.instance.blockPlasticId, Material.piston).setCreativeTab(CreativeTabs.tabBlock).setUnlocalizedName("Tubes:blockPlastic");
+		ModTubes.blockPlastic = new Block(ModTubes.instance.blockPlasticId, Material.piston).setCreativeTab(CreativeTabs.tabBlock).setUnlocalizedName("Tubes:blockPlastic").setTextureName("tubes:blockPlastic");
 		GameRegistry.registerBlock(ModTubes.blockPlastic, "blockPlastic");
 	}
 	
@@ -137,6 +140,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 		GameRegistry.addShapedRecipe(ModTubes.itemTube.createForType("extraction"), " h ", " t ", " p ", 't', ModTubes.itemTube.createForType("basic"), 'h', Block.hopperBlock, 'p', Block.pistonStickyBase);
 		GameRegistry.addShapedRecipe(ModTubes.itemTube.createForType("requesting"), " t ", " e ", " f ", 't', ModTubes.itemTube.createForType("basic"), 'e', ModTubes.itemTube.createForType("extraction"), 'f', ModTubes.itemTube.createForType("filter"));
 		GameRegistry.addShapedRecipe(ModTubes.itemTube.createForType("filter"), "iei", "btb", "iei", 'i', Item.ingotIron, 'b', Block.fenceIron, 't', ModTubes.itemTube.createForType("basic"), 'e', Item.eyeOfEnder);
+		GameRegistry.addShapedRecipe(ModTubes.itemTube.createForType("routing"), "iti", "tft", "iti", 'i', Item.ingotIron, 't', ModTubes.itemTube.createForType("basic"), 'f', ModTubes.itemTube.createForType("filter"));
 		GameRegistry.addShapelessRecipe(ModTubes.itemTube.createForType("ejection"), ModTubes.itemTube.createForType("basic"), Block.glass);
 	}
 

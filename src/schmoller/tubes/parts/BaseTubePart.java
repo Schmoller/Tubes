@@ -12,11 +12,11 @@ import schmoller.tubes.ModTubes;
 import schmoller.tubes.TubeRegistry;
 import schmoller.tubes.definitions.TubeDefinition;
 import schmoller.tubes.render.RenderHelper;
-import codechicken.core.data.MCDataInput;
-import codechicken.core.data.MCDataOutput;
-import codechicken.core.lighting.LazyLightMatrix;
-import codechicken.core.vec.Cuboid6;
-import codechicken.core.vec.Vector3;
+import codechicken.lib.data.MCDataInput;
+import codechicken.lib.data.MCDataOutput;
+import codechicken.lib.lighting.LazyLightMatrix;
+import codechicken.lib.vec.Cuboid6;
+import codechicken.lib.vec.Vector3;
 import codechicken.multipart.IconHitEffects;
 import codechicken.multipart.JCuboidPart;
 import codechicken.multipart.JIconHitEffects;
@@ -57,7 +57,7 @@ public abstract class BaseTubePart extends JCuboidPart implements ITube, JNormal
 	@Override
 	public boolean occlusionTest( TMultiPart npart )
 	{
-		return NormalOcclusionTest.apply(this, npart);
+		return NormalOcclusionTest.apply((JNormalOcclusion)this, npart);
 	}
 	
 	@Override
@@ -109,7 +109,7 @@ public abstract class BaseTubePart extends JCuboidPart implements ITube, JNormal
 	@Override
 	public final void read( MCDataInput packet )
 	{
-		int id = packet.readUnsignedByte();
+		int id = packet.readUByte();
 		if(id == CHANNEL_DATA)
 			readDesc(packet);
 		else if(id == CHANNEL_RENDER)

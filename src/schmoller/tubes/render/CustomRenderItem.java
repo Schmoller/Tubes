@@ -6,13 +6,15 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.RenderEngine;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.MinecraftForgeClient;
 import cpw.mods.fml.client.FMLClientHandler;
@@ -29,11 +31,12 @@ import schmoller.tubes.definitions.TypeNormalTube;
 @SideOnly(Side.CLIENT)
 public class CustomRenderItem
 {
+	public static ResourceLocation itemGlint = new ResourceLocation("textures/misc/enchanted_item_glint.png");
 	private RenderBlocks itemRenderBlocks = new RenderBlocks();
 	private AdvRender mAdv = new AdvRender();
 	private EntityItem mDummy = new EntityItem(null);
 	
-	private RenderEngine mRender;
+	private TextureManager mRender;
 	
 	public void renderTubeItem(TubeItem item, double x, double y, double z)
 	{
@@ -41,7 +44,7 @@ public class CustomRenderItem
 		
 		if(item.colour != -1)
 		{
-			mRender.bindTexture("/terrain.png");
+			mRender.bindTexture(TextureMap.locationBlocksTexture);
 			
 			mAdv.enableNormals = false;
 			mAdv.resetLighting(15728880);
@@ -105,7 +108,7 @@ public class CustomRenderItem
 		{
 			GL11.glRotatef(0.0F, 0.0F, 1.0F, 0.0F);
 
-			mRender.bindTexture("/terrain.png");
+			mRender.bindTexture(TextureMap.locationBlocksTexture);
 			int renderType = block.getRenderType();
 			float scale = (renderType == 1 || renderType == 19 || renderType == 12 || renderType == 2 ? 0.5F : 0.25F);
             
@@ -119,7 +122,7 @@ public class CustomRenderItem
             {
                 GL11.glScalef(0.5F, 0.5F, 0.5F);
 
-                mRender.bindTexture("/gui/items.png");
+                mRender.bindTexture(TextureMap.locationItemsTexture);
 
                 for (int pass = 0; pass < item.getItem().getRenderPasses(item.getItemDamage()); ++pass)
                 {
@@ -140,9 +143,9 @@ public class CustomRenderItem
                 Icon icon = item.getIconIndex();
 
                 if (item.getItemSpriteNumber() == 0)
-                	mRender.bindTexture("/terrain.png");
+                	mRender.bindTexture(TextureMap.locationBlocksTexture);
                 else
-                	mRender.bindTexture("/gui/items.png");
+                	mRender.bindTexture(TextureMap.locationItemsTexture);
 
                 int color = Item.itemsList[item.itemID].getColorFromItemStack(item, 0);
                 float blue = (float)(color >> 16 & 255) / 255.0F;
@@ -155,7 +158,10 @@ public class CustomRenderItem
 	private void renderDroppedItem(ItemStack item, Icon icon, float red, float green, float blue)
 	{
 		if (icon == null)
-            icon = mRender.getMissingIcon(item.getItemSpriteNumber());
+		{
+			ResourceLocation resourcelocation = mRender.getResourceLocation(item.getItemSpriteNumber());
+            icon = ((TextureMap)mRender.getTexture(resourcelocation)).getAtlasSprite("missingno");
+		}
         
 		float minU = icon.getMinU();
 		float minV = icon.getMinV();
@@ -166,19 +172,16 @@ public class CustomRenderItem
         {
 			GL11.glTranslated(-0.5, -0.5, 0.0);
 			
-            if (item.getItemSpriteNumber() == 0)
-                mRender.bindTexture("/terrain.png");
-            else
-            	mRender.bindTexture("/gui/items.png");
+			mRender.bindTexture(mRender.getResourceLocation(item.getItemSpriteNumber()));
 
             GL11.glColor4f(red, green, blue, 1.0F);
-            ItemRenderer.renderItemIn2D(Tessellator.instance, maxU, minV, minU, maxV, icon.getSheetWidth(), icon.getSheetHeight(), 0.0625f);
+            ItemRenderer.renderItemIn2D(Tessellator.instance, maxU, minV, minU, maxV, icon.getIconWidth(), icon.getIconHeight(), 0.0625f);
 
-            if (item != null && item.hasEffect())
+            if (item != null && item.hasEffect(0))
             {
                 GL11.glDepthFunc(GL11.GL_EQUAL);
                 GL11.glDisable(GL11.GL_LIGHTING);
-                mRender.bindTexture("%blur%/misc/glint.png");
+                mRender.bindTexture(itemGlint);
                 GL11.glEnable(GL11.GL_BLEND);
                 GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
                 float f13 = 0.76F;
@@ -226,7 +229,7 @@ public class CustomRenderItem
 
         boolean is3D = customRenderer.shouldUseRenderHelper(ENTITY, item, BLOCK_3D);
 
-        mRender.bindTexture(item.getItemSpriteNumber() == 0 ? "/terrain.png" : "/gui/items.png");
+        mRender.bindTexture(mRender.getResourceLocation(item.getItemSpriteNumber()));
         Block block = (item.itemID < Block.blocksList.length ? Block.blocksList[item.itemID] : null);
         if (is3D || (block != null && RenderBlocks.renderItemIn3d(block.getRenderType())))
         {

@@ -1,0 +1,75 @@
+<project name="Tubes Build" basedir="." default="main">
+	<!-- Properties -->
+	<property name="bin.dir" value="bin"/>
+    <property name="src.dir" value="src"/>
+    <property name="mcp.dir" value = "../.."/>
+    <property name="obf.dir" value="${mcp.dir}/reobf/minecraft"/>
+    <property name="mod.version" value="1.0.0"/>
+	<property name="mc.version" value="1.6.4"/>
+    
+    <property name="mcsrc.dir" value="${mcp.dir}/src/minecraft/temp"/>
+    <property name="python" value="${mcp.dir}/runtime/bin/python/python_mcp"/>
+    
+    <target name="prepare">
+        <copy todir="${mcsrc.dir}">
+            <fileset dir="${src.dir}">
+            </fileset>
+        </copy>
+    	<replace token="@{mod.version}" value="${mod.version}">
+    		<fileset dir="${mcsrc.dir}"/>
+    	</replace>
+    	<replace token="@{mc.version}" value="${mc.version}">
+            <fileset dir="${mcsrc.dir}"/>
+        </replace>
+    </target>
+    
+    <target name="recompile" depends="prepare">
+        <exec executable="${python}" dir="${mcp.dir}">
+            <arg value="runtime/recompile.py"/>
+        </exec>
+    </target>
+    
+    <target name="reobf" depends="recompile">
+    	<unzip src="${mcp.dir}/lib/ForgeMultipart-dev-1.6.4-1.0.0.193.jar" dest="${mcp.dir}/bin/minecraft">
+    		<patternset>
+    			  <include name="codechicken/**"/>
+    		</patternset>
+    	</unzip>
+
+        <exec executable="${python}" dir="${mcp.dir}">
+            <arg value="runtime/reobfuscate.py"/>
+        	<arg value="--srgnames"/>
+        </exec>
+    </target>
+    
+    <target name="copyExtra" depends="reobf">
+    	<copy todir="${obf.dir}">
+            <fileset file="mcmod.info"/>
+        </copy>
+    	<copy todir="${obf.dir}/assets/tubes/">
+    		<fileset dir="assets"/>
+    	</copy>
+    	
+    	<replace token="@{mod.version}" value="${mod.version}">
+            <fileset dir="${obf.dir}"/>
+        </replace>
+        <replace token="@{mc.version}" value="${mc.version}">
+            <fileset dir="${obf.dir}"/>
+        </replace>
+    </target>
+    
+    <target name="package" depends="copyExtra">
+        <jar destfile="./dist/Tubes-${mod.version}.jar" baseDir="${obf.dir}" compress="true">
+        	<include name="**schmoller/**"/>
+        	<include name="**buildcraft/**"/>
+        	<include name="**mcmod.info"/>
+        	<include name="**assets/**"/>
+    	</jar>
+    </target>
+    
+    <target name="cleanup" depends="package">
+        <delete dir="${mcsrc.dir}"/>
+    </target>
+    
+    <target name="main" depends="prepare,recompile,reobf,copyExtra,package,cleanup"/>
+</project>

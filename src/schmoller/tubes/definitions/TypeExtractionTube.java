@@ -2,12 +2,14 @@ package schmoller.tubes.definitions;
 
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.util.Icon;
+import net.minecraft.util.ResourceLocation;
 import schmoller.tubes.types.BaseTube;
 import schmoller.tubes.types.ExtractionTube;
 
 public class TypeExtractionTube extends TubeDefinition
 {
 	public static Icon icon;
+	public static ResourceLocation pumpTexture = new ResourceLocation("tubes", "textures/models/tube-extractor-pump.png");
 	
 	@Override
 	public void registerIcons( IconRegister register )

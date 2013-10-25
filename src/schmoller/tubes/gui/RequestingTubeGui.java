@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL11;
 import schmoller.tubes.CommonHelper;
 import schmoller.tubes.ModTubes;
 import schmoller.tubes.PullMode;
+import schmoller.tubes.definitions.TypeRequestingTube;
 import schmoller.tubes.network.packets.ModPacketSetColor;
 import schmoller.tubes.network.packets.ModPacketSetPullMode;
 import schmoller.tubes.types.RequestingTube;
@@ -132,7 +133,7 @@ public class RequestingTubeGui extends GuiContainer
 		int x = (width - xSize) / 2;
 		int y = (height - ySize) / 2;
 		
-		mc.renderEngine.bindTexture("/mods/Tubes/textures/gui/requesterTube.png");
+		mc.renderEngine.bindTexture(TypeRequestingTube.gui);
 		
 		drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
 		

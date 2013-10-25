@@ -21,6 +21,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.PostInit;
 import cpw.mods.fml.common.Mod.PreInit;
@@ -30,7 +31,7 @@ import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@Mod(name="Tubes", version="1.0.0", modid = "Tubes", dependencies="required-after:Forge; required-before:CCMultipart")
+@Mod(name="Tubes", version="@{mod.version}", modid = "Tubes", dependencies="required-after:Forge; required-before:ForgeMultipart")
 @NetworkMod(clientSideRequired=true, serverSideRequired=true)
 public class ModTubes
 {
@@ -67,7 +68,7 @@ public class ModTubes
 	public static final int GUI_REQUESTING_TUBE = 3;
 	public static final int GUI_ROUTING_TUBE = 4;
 	
-	@PreInit
+	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
 		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
@@ -79,11 +80,13 @@ public class ModTubes
 		
 		blockPlasticId = config.getBlock("PlasticBlock", 1027).getInt();
 		
+		config.save();
+		
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 	
 	@SuppressWarnings( "unchecked" )
-	@Init
+	@EventHandler
 	public void init(FMLInitializationEvent event)
 	{
 		packetManager.initialize("tubes");
@@ -96,7 +99,7 @@ public class ModTubes
 		proxy.initialize();
 	}
 	
-	@PostInit
+	@EventHandler
 	public void postInit(FMLPostInitializationEvent event)
 	{
 		proxy.registerOreRecipes();

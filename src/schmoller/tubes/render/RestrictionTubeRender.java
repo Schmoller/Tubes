@@ -4,6 +4,7 @@ import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
 import schmoller.tubes.CommonHelper;
 import schmoller.tubes.definitions.TubeDefinition;
@@ -184,7 +185,7 @@ public class RestrictionTubeRender extends NormalTubeRender
 		
 		GL11.glDisable(GL11.GL_CULL_FACE);
 		
-		FMLClientHandler.instance().getClient().renderGlobal.renderEngine.bindTexture("/terrain.png");
+		FMLClientHandler.instance().getClient().renderGlobal.renderEngine.bindTexture(TextureMap.locationBlocksTexture);
 		tes.startDrawingQuads();
 		
 		mRender.setIcon(TypeRestrictionTube.straight);

@@ -116,12 +116,12 @@ public class PacketManager implements IPacketHandler
 	
 	public void sendPacketForBlock(ModBlockPacket packet, World world)
 	{
-		PacketDispatcher.sendPacketToAllAround(packet.xCoord, packet.yCoord, packet.zCoord, 200, world.getWorldInfo().getDimension(), toPacket(packet));
+		PacketDispatcher.sendPacketToAllAround(packet.xCoord, packet.yCoord, packet.zCoord, 200, world.provider.dimensionId, toPacket(packet));
 	}
 	
 	public void sendPacketToWorld(ModPacket packet, World world) 
 	{
-		PacketDispatcher.sendPacketToAllInDimension(toPacket(packet), world.getWorldInfo().getDimension());
+		PacketDispatcher.sendPacketToAllInDimension(toPacket(packet), world.provider.dimensionId);
 	}
 	
 	@ForgeSubscribe

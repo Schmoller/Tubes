@@ -2,6 +2,7 @@ package schmoller.tubes.render;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import schmoller.tubes.ITube;
@@ -29,7 +30,7 @@ public class CompressorTubeRender extends NormalTubeRender
 	
 	private void renderPumps(int connections)
 	{
-		FMLClientHandler.instance().getClient().renderGlobal.renderEngine.bindTexture("/mods/Tubes/textures/models/tube-compressor-pumps.png");
+		FMLClientHandler.instance().getClient().renderGlobal.renderEngine.bindTexture(TypeCompressorTube.pumpTexture);
 		
 		mRender.setTextureIndex(0);
 		mRender.setTextureSize(1, 1);
@@ -139,7 +140,7 @@ public class CompressorTubeRender extends NormalTubeRender
 		
 		Tessellator tes = Tessellator.instance;
 		
-		FMLClientHandler.instance().getClient().renderGlobal.renderEngine.bindTexture("/terrain.png");
+		FMLClientHandler.instance().getClient().renderGlobal.renderEngine.bindTexture(TextureMap.locationBlocksTexture);
 		tes.startDrawingQuads();
 		
 		renderCore(0, type, -1);

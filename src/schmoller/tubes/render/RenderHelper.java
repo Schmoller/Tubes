@@ -1,6 +1,6 @@
 package schmoller.tubes.render;
 
-import codechicken.core.vec.Vector3;
+import codechicken.lib.vec.Vector3;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeDirection;
 import schmoller.tubes.ITube;

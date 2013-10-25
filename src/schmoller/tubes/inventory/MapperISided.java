@@ -97,7 +97,7 @@ public class MapperISided extends InventoryMapper
 		@Override
 		public boolean canHold( ItemStack item )
 		{
-			return mInventory.isStackValidForSlot(mIndex, item);
+			return mInventory.isItemValidForSlot(mIndex, item);
 		}
 
 		@Override

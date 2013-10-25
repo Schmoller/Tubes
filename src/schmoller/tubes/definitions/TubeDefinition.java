@@ -1,6 +1,6 @@
 package schmoller.tubes.definitions;
 
-import codechicken.core.vec.Cuboid6;
+import codechicken.lib.vec.Cuboid6;
 import schmoller.tubes.parts.BaseTubePart;
 import schmoller.tubes.types.BaseTube;
 import net.minecraft.client.renderer.texture.IconRegister;
