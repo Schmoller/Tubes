@@ -17,6 +17,7 @@ import schmoller.tubes.render.RenderHelper;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import codechicken.lib.lighting.LazyLightMatrix;
+import codechicken.lib.raytracer.IndexedCuboid6;
 import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Vector3;
 import codechicken.multipart.IconHitEffects;
@@ -116,6 +117,17 @@ public abstract class BaseTubePart extends JCuboidPart implements ITube, JNormal
 		}
 		
 		return boxes;
+	}
+	
+	@Override
+	public Iterable<IndexedCuboid6> getSubParts()
+	{
+		List<Cuboid6> boxes = (List<Cuboid6>)getCollisionBoxes();
+		ArrayList<IndexedCuboid6> parts = new ArrayList<IndexedCuboid6>(boxes.size());
+		for(int i = 0; i < boxes.size(); ++i)
+			parts.add(new IndexedCuboid6(i, boxes.get(i)));
+		
+		return parts;
 	}
 	
 	@Override

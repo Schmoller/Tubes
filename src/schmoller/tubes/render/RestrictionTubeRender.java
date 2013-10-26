@@ -107,7 +107,7 @@ public class RestrictionTubeRender extends NormalTubeRender
 			
 			if(col != -1)
 			{
-				mRender.setIcon(TypeNormalTube.paintStraight);
+				mRender.setIcon(TypeRestrictionTube.paintStraight);
 				mRender.setColorRGB(CommonHelper.getDyeColor(col));
 				mRender.drawBox(60, 0.3125f, min, 0.3125f, 0.6875f, max, 0.6875f);
 			}
@@ -133,7 +133,7 @@ public class RestrictionTubeRender extends NormalTubeRender
 			
 			if(col != -1)
 			{
-				mRender.setIcon(TypeNormalTube.paintStraight);
+				mRender.setIcon(TypeRestrictionTube.paintStraight);
 				mRender.setColorRGB(CommonHelper.getDyeColor(col));
 				mRender.drawBox(51, 0.25f, 0.25f, min, 0.75f, 0.75f, max);
 			}
@@ -159,7 +159,7 @@ public class RestrictionTubeRender extends NormalTubeRender
 			
 			if(col != -1)
 			{
-				mRender.setIcon(TypeNormalTube.paintStraight);
+				mRender.setIcon(TypeRestrictionTube.paintStraight);
 				mRender.setColorRGB(CommonHelper.getDyeColor(col));
 				mRender.drawBox(15, min, 0.25f, 0.25f, max, 0.75f, 0.75f);
 			}
