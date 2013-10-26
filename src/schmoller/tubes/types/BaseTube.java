@@ -20,7 +20,8 @@ import schmoller.tubes.ITube;
 import schmoller.tubes.ITubeConnectable;
 import schmoller.tubes.TubeHelper;
 import schmoller.tubes.TubeItem;
-import schmoller.tubes.inventory.InventoryHelper;
+import schmoller.tubes.inventory.IInventoryHandler;
+import schmoller.tubes.inventory.InventoryHandlers;
 import schmoller.tubes.parts.BaseTubePart;
 
 public abstract class BaseTube extends BaseTubePart implements ITube
@@ -450,12 +451,15 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 		if(world().isRemote)
 			return true;
 		
-		if(ent != null && InventoryHelper.canAcceptItem(item.item, world(), ent.xCoord, ent.yCoord, ent.zCoord, item.direction))
+		IInventoryHandler handler = InventoryHandlers.getHandler(ent);
+		
+		if(handler != null)
 		{
-			InventoryHelper.insertItem(item.item, world(), ent.xCoord, ent.yCoord, ent.zCoord, item.direction);
-			
-			if(item.item.stackSize == 0)
+			ItemStack remaining = handler.insertItem(item.item, item.direction ^ 1, true);
+			if(remaining == null)
 				return true;
+			
+			item.item.stackSize = remaining.stackSize;
 		}
 		
 		return false;

@@ -10,7 +10,8 @@ import schmoller.tubes.ITubeOverflowDestination;
 import schmoller.tubes.OverflowBuffer;
 import schmoller.tubes.Position;
 import schmoller.tubes.TubeItem;
-import schmoller.tubes.inventory.InventoryHelper;
+import schmoller.tubes.inventory.IInventoryHandler;
+import schmoller.tubes.inventory.InventoryHandlers;
 import schmoller.tubes.routing.BaseRouter.PathLocation;
 import schmoller.tubes.routing.OutputRouter;
 
@@ -68,10 +69,13 @@ public class ExtractionTube extends DirectionalBasicTube implements IRedstonePar
 		
 		ForgeDirection dir = ForgeDirection.getOrientation(getFacing());
 		
-		ItemStack item = InventoryHelper.extractItem(world(), x() + dir.offsetX, y() + dir.offsetY, z() + dir.offsetZ, dir.ordinal(), null);
-		
-		if(item != null)
-			addItem(item, dir.ordinal() ^ 1);
+		IInventoryHandler handler = InventoryHandlers.getHandlerFor(world(), x() + dir.offsetX, y() + dir.offsetY, z() + dir.offsetZ);
+		if(handler != null)
+		{
+			ItemStack extracted = handler.extractItem(null, dir.ordinal() ^ 1, true);
+			if(extracted != null)
+				addItem(extracted, dir.ordinal() ^ 1);
+		}
 	}
 	
 	@Override

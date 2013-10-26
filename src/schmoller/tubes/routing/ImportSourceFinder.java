@@ -4,7 +4,9 @@ import schmoller.tubes.CommonHelper;
 import schmoller.tubes.ITubeConnectable;
 import schmoller.tubes.Position;
 import schmoller.tubes.TubeHelper;
-import schmoller.tubes.inventory.InventoryHelper;
+import schmoller.tubes.inventory.IInventoryHandler;
+import schmoller.tubes.inventory.InventoryHandlers;
+import schmoller.tubes.inventory.SizeMode;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
@@ -85,8 +87,18 @@ public class ImportSourceFinder extends BaseRouter
 		
 		if(con == null)
 		{
-			if(InventoryHelper.canExtractItem(mItem, getWorld(), current, side))
-				return true;
+			IInventoryHandler handler = InventoryHandlers.getHandlerFor(getWorld(),current);
+			if(handler != null)
+			{
+				ItemStack extracted;
+				if(mItem == null)
+					extracted = handler.extractItem(mItem, side ^ 1, false);
+				else
+					extracted = handler.extractItem(mItem, side ^ 1, mItem.stackSize, SizeMode.Exact, false);
+				
+				if(extracted != null)
+					return true;
+			}
 		}
 		return false;
 	}

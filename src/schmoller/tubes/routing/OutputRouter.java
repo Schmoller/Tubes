@@ -5,7 +5,9 @@ import schmoller.tubes.ITubeConnectable;
 import schmoller.tubes.Position;
 import schmoller.tubes.TubeHelper;
 import schmoller.tubes.TubeItem;
-import schmoller.tubes.inventory.InventoryHelper;
+import schmoller.tubes.inventory.IInventoryHandler;
+import schmoller.tubes.inventory.InventoryHandlers;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 
@@ -117,8 +119,14 @@ public class OutputRouter extends BaseRouter
 		
 		if(con == null)
 		{
-			if(InventoryHelper.canAcceptItem(mItem.item, getWorld(), current, side))
-				return true;
+			IInventoryHandler handler = InventoryHandlers.getHandler(ent);
+			if(handler != null)
+			{
+				ItemStack remaining = handler.insertItem(mItem.item, side ^ 1, false);
+				
+				if(remaining == null || remaining.stackSize != mItem.item.stackSize)
+					return true;
+			}
 		}
 		else if(!con.canPathThrough() && con.canItemEnter(mItem))
 			return true;

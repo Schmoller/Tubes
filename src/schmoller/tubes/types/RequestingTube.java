@@ -20,7 +20,10 @@ import schmoller.tubes.Position;
 import schmoller.tubes.PullMode;
 import schmoller.tubes.TubeHelper;
 import schmoller.tubes.TubeItem;
+import schmoller.tubes.inventory.IInventoryHandler;
+import schmoller.tubes.inventory.InventoryHandlers;
 import schmoller.tubes.inventory.InventoryHelper;
+import schmoller.tubes.inventory.SizeMode;
 import schmoller.tubes.routing.ImportSourceFinder;
 import schmoller.tubes.routing.OutputRouter;
 import schmoller.tubes.routing.BaseRouter.PathLocation;
@@ -107,22 +110,31 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 			
 			if(source != null)
 			{
-				ItemStack extracted = InventoryHelper.extractItem(world(), source.position.x, source.position.y, source.position.z, source.dir, filterItem);
-				if(extracted != null)
+				IInventoryHandler handler = InventoryHandlers.getHandlerFor(world(), source.position);
+				if(handler != null)
 				{
-					TubeItem item = new TubeItem(extracted);
-					item.state = TubeItem.IMPORT;
-					item.direction = source.dir ^ 1;
+					ItemStack extracted;
+					if(filterItem == null)
+						extracted = handler.extractItem(null, source.dir ^ 1, true);
+					else
+						extracted = handler.extractItem(filterItem, source.dir ^ 1, filterItem.stackSize, SizeMode.Exact, true);
 					
-					PathLocation tubeLoc = new PathLocation(source, source.dir ^ 1);
-					TileEntity tile = CommonHelper.getTileEntity(world(), tubeLoc.position);
-					ITubeConnectable con = TubeHelper.getTubeConnectable(tile);
-					if(con != null)
-						con.addItem(item, true);
-					
-					--mPulses;
-					if(mPulses < 0)
-						mPulses = 0;
+					if(extracted != null)
+					{
+						TubeItem item = new TubeItem(extracted);
+						item.state = TubeItem.IMPORT;
+						item.direction = source.dir ^ 1;
+						
+						PathLocation tubeLoc = new PathLocation(source, source.dir ^ 1);
+						TileEntity tile = CommonHelper.getTileEntity(world(), tubeLoc.position);
+						ITubeConnectable con = TubeHelper.getTubeConnectable(tile);
+						if(con != null)
+							con.addItem(item, true);
+						
+						--mPulses;
+						if(mPulses < 0)
+							mPulses = 0;
+					}
 				}
 			}
 		}
