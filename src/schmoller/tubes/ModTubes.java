@@ -14,6 +14,7 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.fluids.Fluid;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -59,6 +60,8 @@ public class ModTubes
 	public static Item itemBucketPlastic;
 	public static Block blockPlastic;
 	
+	public static Fluid fluidPlastic;
+	
 	public static final int GUI_INJECTION_TUBE = 0;
 	public static final int GUI_FILTER_TUBE = 1;
 	public static final int GUI_COMPRESSOR_TUBE = 2;
@@ -101,6 +104,8 @@ public class ModTubes
 	{
 		proxy.registerOreRecipes();
 		TubeRegistry.instance().finalizeTubes();
+		
+		event.buildSoftDependProxy("BuildCraft|Core", BuildcraftProxy.class.getName());
 	}
 
 	@ForgeSubscribe
@@ -108,6 +113,10 @@ public class ModTubes
 	public void registerIcons(TextureStitchEvent.Pre event)
 	{
 		if(event.map.textureType == 0)
+		{
 			TubeRegistry.instance().registerIcons(event.map);
+			if(fluidPlastic != null)
+				fluidPlastic.setIcons(event.map.registerIcon("tubes:fluidPlastic"));
+		}
 	}
 }

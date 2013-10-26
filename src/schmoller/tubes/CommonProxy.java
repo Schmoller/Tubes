@@ -10,6 +10,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import codechicken.microblock.BlockMicroMaterial;
@@ -114,6 +117,12 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 		MinecraftForge.setBlockHarvestLevel(ModTubes.blockPlastic, "axe", 0);
 		
 		GameRegistry.registerBlock(ModTubes.blockPlastic, "blockPlastic");
+		
+		ModTubes.fluidPlastic = new Fluid("plastic").setDensity(800).setViscosity(1500);
+		FluidRegistry.registerFluid(ModTubes.fluidPlastic);
+		ModTubes.fluidPlastic = FluidRegistry.getFluid("plastic");
+		
+		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluidStack("plastic", FluidContainerRegistry.BUCKET_VOLUME), new ItemStack(ModTubes.itemBucketPlastic), new ItemStack(Item.bucketEmpty));
 	}
 	
 	private void registerText()
@@ -140,6 +149,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 		GameRegistry.addSmelting(ModTubes.itemDustPlastic.itemID, new ItemStack(ModTubes.itemSheetPlastic), 0);
 		GameRegistry.addSmelting(Item.bucketMilk.itemID, new ItemStack(ModTubes.itemMilkCurdBucket), 0);
 		GameRegistry.addShapelessRecipe(new ItemStack(ModTubes.itemDustPlastic, 2), ModTubes.itemMilkCurdBucket, new ItemStack(Item.coal, 1, OreDictionary.WILDCARD_VALUE), Item.gunpowder, new ItemStack(Item.potion, 1, 0));
+		GameRegistry.addShapelessRecipe(new ItemStack(ModTubes.itemDustPlastic, 8), ModTubes.itemBucketPlastic, new ItemStack(Item.coal, 1, OreDictionary.WILDCARD_VALUE));
 		
 		
 		
