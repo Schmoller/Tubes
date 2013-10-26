@@ -13,7 +13,6 @@ import schmoller.tubes.ITube;
 import schmoller.tubes.ModTubes;
 import schmoller.tubes.TubeRegistry;
 import schmoller.tubes.definitions.TubeDefinition;
-import schmoller.tubes.definitions.TypeEjectionTube;
 import schmoller.tubes.render.RenderHelper;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
