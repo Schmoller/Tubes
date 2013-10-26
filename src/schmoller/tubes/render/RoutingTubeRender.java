@@ -176,7 +176,6 @@ public class RoutingTubeRender extends NormalTubeRender
 		
 		mRender.setIcon(TypeRoutingTube.center);
 		mRender.drawBox(63, 0.1875f, 0.1875f, 0.1875f, 0.8125f, 0.8125f, 0.8125f);
-		mRender.drawBox(63, 0.8125f, 0.8125f, 0.8125f, 0.1875f, 0.1875f, 0.1875f);
 		
 		tes.draw();
 	}

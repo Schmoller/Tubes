@@ -1,5 +1,6 @@
 package schmoller.tubes.definitions;
 
+import codechicken.lib.vec.Cuboid6;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.Icon;
@@ -40,5 +41,11 @@ public class TypeRoutingTube extends TubeDefinition
 	public BaseTube createTube()
 	{
 		return new RoutingTube();
+	}
+	
+	@Override
+	public Cuboid6 getSize()
+	{
+		return new Cuboid6(0.1875, 0.1875, 0.1875, 0.8125, 0.8125, 0.8125);
 	}
 }

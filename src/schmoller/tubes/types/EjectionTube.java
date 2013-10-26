@@ -42,7 +42,9 @@ public class EjectionTube extends DirectionalBasicTube
 		ForgeDirection dir = ForgeDirection.getOrientation(getFacing());
 		EntityItem entity = new EntityItem(world(), x() + 0.5 + dir.offsetX * 0.4, y() + 0.5 + dir.offsetY * 0.4, z() + 0.5 + dir.offsetZ * 0.4, item.item);
 		
-		entity.setVelocity(dir.offsetX * 0.5, dir.offsetY * 0.5, dir.offsetZ * 0.5);
+		entity.motionX = dir.offsetX * 0.5;
+		entity.motionY = dir.offsetY * 0.5;
+		entity.motionZ = dir.offsetZ * 0.5;
 		
 		world().spawnEntityInWorld(entity);
 		

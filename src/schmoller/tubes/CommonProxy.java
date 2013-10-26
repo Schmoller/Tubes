@@ -9,6 +9,7 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import codechicken.microblock.BlockMicroMaterial;
@@ -103,7 +104,15 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 		GameRegistry.registerItem(ModTubes.itemBucketPlastic, "bucketOfPlastic");
 		GameRegistry.registerItem(ModTubes.itemTube, "tubes:items:tube");
 		
-		ModTubes.blockPlastic = new Block(ModTubes.instance.blockPlasticId, Material.piston).setCreativeTab(CreativeTabs.tabBlock).setUnlocalizedName("Tubes:blockPlastic").setTextureName("tubes:blockPlastic");
+		ModTubes.blockPlastic = new Block(ModTubes.instance.blockPlasticId, Material.piston)
+			.setCreativeTab(CreativeTabs.tabBlock)
+			.setUnlocalizedName("Tubes:blockPlastic")
+			.setTextureName("tubes:blockPlastic")
+			.setHardness(2.5f);
+		
+		MinecraftForge.setBlockHarvestLevel(ModTubes.blockPlastic, "pickaxe", 0);
+		MinecraftForge.setBlockHarvestLevel(ModTubes.blockPlastic, "axe", 0);
+		
 		GameRegistry.registerBlock(ModTubes.blockPlastic, "blockPlastic");
 	}
 	

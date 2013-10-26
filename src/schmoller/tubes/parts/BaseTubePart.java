@@ -3,7 +3,9 @@ package schmoller.tubes.parts;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.particle.EffectRenderer;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MovingObjectPosition;
@@ -11,6 +13,7 @@ import schmoller.tubes.ITube;
 import schmoller.tubes.ModTubes;
 import schmoller.tubes.TubeRegistry;
 import schmoller.tubes.definitions.TubeDefinition;
+import schmoller.tubes.definitions.TypeEjectionTube;
 import schmoller.tubes.render.RenderHelper;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
@@ -43,6 +46,12 @@ public abstract class BaseTubePart extends JCuboidPart implements ITube, JNormal
 	}
 	
 	@Override
+	public float getStrength( MovingObjectPosition hit, EntityPlayer player )
+	{
+		return player.getCurrentPlayerStrVsBlock(Block.netherrack, false, 0) /  Block.netherrack.blockHardness;
+	}
+	
+	@Override
 	public String getType()
 	{
 		return "tubes_" + mType;
@@ -65,6 +74,48 @@ public abstract class BaseTubePart extends JCuboidPart implements ITube, JNormal
 	{
 		ArrayList<Cuboid6> boxes = new ArrayList<Cuboid6>();
 		boxes.add(getBounds());
+		return boxes;
+	}
+	
+	@Override
+	public Iterable<Cuboid6> getCollisionBoxes()
+	{
+		ArrayList<Cuboid6> boxes = new ArrayList<Cuboid6>();
+		boxes.add(getBounds());
+		
+		if(tile() != null)
+		{
+			int connections = getConnections();
+			
+			for(int i = 0; i < 6; ++i)
+			{
+				if((connections & (1 << i)) != 0)
+				{
+					switch(i)
+					{
+					case 0:
+						boxes.add(new Cuboid6(0.25, 0.0, 0.25, 0.75, 0.25, 0.75));
+						break;
+					case 1:
+						boxes.add(new Cuboid6(0.25f, 0.75f, 0.25f, 0.75f, 1.0f, 0.75f));
+						break;
+					case 2:
+						boxes.add(new Cuboid6(0.25f, 0.25f, 0.0f, 0.75f, 0.75f, 0.25f));
+						break;
+					case 3:
+						boxes.add(new Cuboid6(0.25f, 0.25f, 0.75f, 0.75f, 0.75f, 1.0f));
+						break;
+					case 4:
+						boxes.add(new Cuboid6(0.0f, 0.25f, 0.25f, 0.25f, 0.75f, 0.75f));
+						break;
+					case 5:
+						boxes.add(new Cuboid6(0.75f, 0.25f, 0.25f, 1.0f, 0.75f, 0.75f));
+						break;
+					}
+				}
+			}
+		}
+		
 		return boxes;
 	}
 	

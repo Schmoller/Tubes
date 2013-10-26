@@ -51,12 +51,12 @@ public class AdvRender
 	
 	// Lighting information
 	private boolean mEnableAO = false;
-	private float[] mAoValues = new float[7];
 	
 	private float[][] mCornerAO = new float[6][4];
-	private int[][] mCornerBrightnessAO = new int[6][4];
+	private float mInternalAO = 0;
 	
 	private int[][] mFaceBrightness = new int[6][4];
+	private int mInternalBrightness = 0;
 	
 	private float[] mLocalLighting = new float[6];
 	
@@ -194,6 +194,9 @@ public class AdvRender
 			mFaceBrightness[side][3] = brightness;
 		}
 		
+		mInternalBrightness = brightness;
+		mInternalAO = 1.0f;
+		
 		opacity = 1;
 	}
 	
@@ -239,6 +242,9 @@ public class AdvRender
 	{
 		for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
 			setFaceLightingFromWorld(dir.ordinal(), world, x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
+		
+		mInternalBrightness = getMixedBrightnessForBlock(world, x, y, z);
+		mInternalAO = getAmbientOcclusionLightValue(world, x, y, z);
 	}
 	
 	public void setFaceLightingFromWorld(int side, IBlockAccess world, int x, int y, int z)
@@ -258,6 +264,7 @@ public class AdvRender
 			float[] ao = new float[8]; // Same as above
 			int myBrightness = getMixedBrightnessForBlock(world, x, y, z);
 			float myAO = getAmbientOcclusionLightValue(world, x, y, z);
+			
 			
 			switch(side)
 			{
@@ -453,31 +460,31 @@ public class AdvRender
 	}
 	
 	
-	private Vector2f getLocalCoords(Vector3f vec, int side)
+	private Vector3f getLocalCoords(Vector3f vec, int side)
 	{
-		Vector2f coords;
+		Vector3f coords;
 		
 		ForgeDirection dir = ForgeDirection.getOrientation(side);
 		
 		switch(dir)
 		{
 		case DOWN:
-			coords = new Vector2f(vec.x, vec.z);
+			coords = new Vector3f(vec.x, vec.z, 1 - vec.y);
 			break;
 		case EAST:
-			coords = new Vector2f(1 - vec.z, vec.y);
+			coords = new Vector3f(1 - vec.z, vec.y, vec.x);
 			break;
 		case NORTH:
-			coords = new Vector2f(1 - vec.x, vec.y);
+			coords = new Vector3f(1 - vec.x, vec.y, 1 - vec.z);
 			break;
 		case SOUTH:
-			coords = new Vector2f(vec.x, vec.y);
+			coords = new Vector3f(vec.x, vec.y, vec.z);
 			break;
 		case UP:
-			coords = new Vector2f(vec.x, 1 - vec.z);
+			coords = new Vector3f(vec.x, 1 - vec.z, vec.y);
 			break;
 		case WEST:
-			coords = new Vector2f(vec.z,vec.y);
+			coords = new Vector3f(vec.z,vec.y, 1 - vec.x);
 			break;
 		default:
 			coords = null;
@@ -490,6 +497,18 @@ public class AdvRender
 	}
 	
 	// Rotates a vector the number of times specified
+	private void rotateVector(Vector3f vec, int amount)
+	{
+		double x, y;
+		double theta = amount * (Math.PI / 2);
+		
+		x = vec.x * Math.cos(theta) - vec.y * Math.sin(theta);
+		y = vec.x * Math.sin(theta) + vec.y * Math.cos(theta);
+		
+		vec.x = (float)x;
+		vec.y = (float)y;
+	}
+	
 	private void rotateVector(Vector2f vec, int amount)
 	{
 		double x, y;
@@ -501,6 +520,7 @@ public class AdvRender
 		vec.x = (float)x;
 		vec.y = (float)y;
 	}
+	
 	private void normalizeCoords(Vector2f[] coords)
 	{
 		int xNeg = 0;
@@ -535,7 +555,41 @@ public class AdvRender
 		}
 	}
 	
-	private void flipCoords(Vector2f[] coords, int flip)
+	private void normalizeCoords(Vector3f[] coords)
+	{
+		int xNeg = 0;
+		int yNeg = 0;
+		
+		int xPos = 0;
+		int yPos = 0;
+		
+		for(int i = 0; i < coords.length; i++)
+		{
+			if (coords[i].x < -0.00001)
+				xNeg = (int)Math.max(xNeg, -Math.floor(coords[i].x));
+			if (coords[i].y < -0.00001)
+				yNeg = (int)Math.max(yNeg, -Math.floor(coords[i].y));
+			
+			if (coords[i].x > 1.00001)
+				xPos = (int)Math.max(xPos, Math.floor(coords[i].x));
+			if (coords[i].y > 1.00001)
+				yPos = (int)Math.max(yPos, Math.floor(coords[i].y));
+		}
+		
+		if (xNeg != 0 || yNeg != 0 || xPos != 0 || yPos != 0)
+		{
+			for(int i = 0; i < coords.length; i++)
+			{
+				coords[i].x += xNeg;
+				coords[i].y += yNeg;
+				
+				coords[i].x -= xPos;
+				coords[i].y -= yPos;
+			}
+		}
+	}
+	
+	private void flipCoords(Vector3f[] coords, int flip)
 	{
 		if((flip & 1) != 0)
 		{
@@ -578,7 +632,7 @@ public class AdvRender
 			
 			if (mAbsoluteTexCoords)
 			{
-				Vector2f[] coords = new Vector2f[4];
+				Vector3f[] coords = new Vector3f[4];
 				
 				for(int i = 0; i < 4; ++i)
 				{
@@ -706,7 +760,7 @@ public class AdvRender
 			{
 				// Draw the face
 				
-				Vector2f[] coords = new Vector2f[4];
+				Vector3f[] coords = new Vector3f[4];
 				
 				for(int v = 0; v < 4; ++v)
 				{
@@ -715,7 +769,7 @@ public class AdvRender
 				
 				if(i == 0 || i == 1)
 				{
-					Vector2f temp = coords[0];
+					Vector3f temp = coords[0];
 					coords[0] = coords[2];
 					coords[2] = temp;
 					temp = coords[3];
@@ -736,7 +790,7 @@ public class AdvRender
 					{
 						if(mAbsoluteTexCoords)
 						{
-							float ao = interpolateAO(i, coords[v].x, coords[v].y);
+							float ao = (coords[v].z < 1 ? mInternalAO : interpolateAO(i, coords[v].x, coords[v].y));
 							
 							color.x *= ao;
 							color.y *= ao;
@@ -755,7 +809,7 @@ public class AdvRender
 					color.z *= mLocalLighting[i];
 
 					tes.setColorRGBA_F(color.x, color.y, color.z, opacity);
-					tes.setBrightness(interpolateBrightness(i, coords[v].x, coords[v].y));
+					tes.setBrightness((coords[v].z < 1 ? mInternalBrightness : interpolateBrightness(i, coords[v].x, coords[v].y)));
 					
 					if (enableNormals)
 						tes.setNormal((float)ForgeDirection.getOrientation(i).offsetX, (float)ForgeDirection.getOrientation(i).offsetY, (float)ForgeDirection.getOrientation(i).offsetZ);

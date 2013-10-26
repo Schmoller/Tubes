@@ -256,7 +256,6 @@ public class NormalTubeRender implements ITubeRender
 		
 		mRender.setIcon(type.getCenterIcon());
 		mRender.drawBox(63, 0.25f, 0.25f, 0.25f, 0.75f, 0.75f, 0.75f);
-		mRender.drawBox(63, 0.75f, 0.75f, 0.75f, 0.25f, 0.25f, 0.25f);
 		
 		tes.draw();
 	}
