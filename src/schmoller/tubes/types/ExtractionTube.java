@@ -1,5 +1,7 @@
 package schmoller.tubes.types;
 
+import java.util.List;
+
 import codechicken.multipart.IRedstonePart;
 import codechicken.multipart.RedstoneInteractions;
 import net.minecraft.item.ItemStack;
@@ -91,6 +93,13 @@ public class ExtractionTube extends DirectionalBasicTube implements IRedstonePar
 			current = Math.max(current, RedstoneInteractions.getPowerTo(world(), x(), y(), z(), side, 0x1f));
 		
 		return current;
+	}
+	
+	@Override
+	protected void onDropItems( List<ItemStack> itemsToDrop )
+	{
+		super.onDropItems(itemsToDrop);
+		mOverflow.onDropItems(itemsToDrop);
 	}
 	
 	@Override

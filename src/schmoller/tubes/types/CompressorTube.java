@@ -1,5 +1,7 @@
 package schmoller.tubes.types;
 
+import java.util.List;
+
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import net.minecraft.entity.player.EntityPlayer;
@@ -229,6 +231,14 @@ public class CompressorTube extends BaseTube implements IInventory
 	public boolean isItemValidForSlot( int i, ItemStack item )
 	{
 		return (mTarget.itemID == 0 || (item.isItemEqual(mTarget) && ItemStack.areItemStackTagsEqual(item, mTarget)));
+	}
+	
+	@Override
+	protected void onDropItems( List<ItemStack> itemsToDrop )
+	{
+		super.onDropItems(itemsToDrop);
+		if(mCurrent != null && mCurrent.item != null)
+			itemsToDrop.add(mCurrent.item);
 	}
 	
 	@Override

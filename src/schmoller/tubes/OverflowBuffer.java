@@ -1,7 +1,9 @@
 package schmoller.tubes;
 
 import java.util.LinkedList;
+import java.util.List;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
@@ -57,5 +59,11 @@ public class OverflowBuffer
 			NBTTagCompound tag = (NBTTagCompound)list.tagAt(i);
 			mBuffer.add(TubeItem.readFromNBT(tag));
 		}
+	}
+
+	public void onDropItems( List<ItemStack> itemsToDrop )
+	{
+		for(TubeItem item : mBuffer)
+			itemsToDrop.add(item.item);
 	}
 }

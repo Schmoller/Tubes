@@ -1,5 +1,7 @@
 package schmoller.tubes.types;
 
+import java.util.List;
+
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import codechicken.multipart.IRedstonePart;
@@ -309,6 +311,13 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 	public void setColour(short colour)
 	{
 		mColor = colour;
+	}
+	
+	@Override
+	protected void onDropItems( List<ItemStack> itemsToDrop )
+	{
+		super.onDropItems(itemsToDrop);
+		mOverflow.onDropItems(itemsToDrop);
 	}
 	
 	@Override

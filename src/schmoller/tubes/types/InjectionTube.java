@@ -1,5 +1,7 @@
 package schmoller.tubes.types;
 
+import java.util.List;
+
 import schmoller.tubes.ITubeConnectable;
 import schmoller.tubes.ITubeOverflowDestination;
 import schmoller.tubes.ModTubes;
@@ -218,6 +220,15 @@ public class InjectionTube extends BaseTube implements ISidedInventory, ITubeOve
 	public boolean canAcceptOverflowFromSide( int side )
 	{
 		return true;
+	}
+	
+	@Override
+	protected void onDropItems( List<ItemStack> itemsToDrop )
+	{
+		super.onDropItems(itemsToDrop);
+		mOverflow.onDropItems(itemsToDrop);
+		if(mItem != null)
+			itemsToDrop.add(mItem);
 	}
 	
 	@Override
