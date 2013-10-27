@@ -3,6 +3,7 @@ package schmoller.tubes.parts;
 import java.util.List;
 
 import schmoller.tubes.IDirectionalTube;
+import schmoller.tubes.SpecialShapedRecipe.ISpecialItemCompare;
 import schmoller.tubes.TubeRegistry;
 
 import net.minecraft.block.Block;
@@ -20,7 +21,7 @@ import codechicken.multipart.TMultiPart;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemTubeBase extends JItemMultiPart
+public class ItemTubeBase extends JItemMultiPart implements ISpecialItemCompare
 {
 
 	public ItemTubeBase( int id )
@@ -109,5 +110,14 @@ public class ItemTubeBase extends JItemMultiPart
 			items.add(createForType(type));
 	}
 
+	@Override
+	public boolean areItemsEqual( ItemStack a, ItemStack b )
+	{
+		String typeA = getTubeType(a);
+		if(typeA == null)
+			return false;
+		
+		return typeA.equals(getTubeType(b));
+	}
 	
 }
