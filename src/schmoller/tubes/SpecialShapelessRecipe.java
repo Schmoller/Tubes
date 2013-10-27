@@ -67,7 +67,7 @@ public class SpecialShapelessRecipe implements IRecipe
                     {
                     	ItemStack toMatch = (ItemStack)obj;
                     	
-                    	if(!inSlot.isItemEqual(toMatch))
+                    	if(inSlot.itemID != toMatch.itemID)
                     		continue;
                     	
                     	if(inSlot.getItemDamage() != toMatch.getItemDamage() && toMatch.getItemDamage() != OreDictionary.WILDCARD_VALUE)
@@ -87,7 +87,7 @@ public class SpecialShapelessRecipe implements IRecipe
                     	boolean matched = false;
                     	for(ItemStack toMatch : toMatchAny)
                     	{
-                    		if(!inSlot.isItemEqual(toMatch))
+                    		if(inSlot.itemID != toMatch.itemID)
                     			continue;
                         	
                         	if(inSlot.getItemDamage() != toMatch.getItemDamage() && toMatch.getItemDamage() != OreDictionary.WILDCARD_VALUE)
@@ -110,8 +110,9 @@ public class SpecialShapelessRecipe implements IRecipe
                     {
                     	FluidStack toMatch = (FluidStack)obj;
                     	
-                    	if(!FluidContainerRegistry.containsFluid(inSlot, toMatch))
-                    		continue;
+                    	FluidStack contained = FluidContainerRegistry.getFluidForFilledItem(inSlot);
+                    	if(contained == null || !contained.isFluidStackIdentical(toMatch))
+                    		return false;
                     }
                 	
                 	found = true;

@@ -121,7 +121,7 @@ public class SpecialShapedRecipe implements IRecipe
                 {
                 	ItemStack toMatch = (ItemStack)obj;
                 	
-                	if(!inSlot.isItemEqual(toMatch))
+                	if(inSlot.itemID != toMatch.itemID)
                 		return false;
                 	
                 	if(inSlot.getItemDamage() != toMatch.getItemDamage() && toMatch.getItemDamage() != OreDictionary.WILDCARD_VALUE)
@@ -140,7 +140,7 @@ public class SpecialShapedRecipe implements IRecipe
                 	boolean matched = false;
                 	for(ItemStack toMatch : toMatchAny)
                 	{
-                		if(!inSlot.isItemEqual(toMatch))
+                		if(inSlot.itemID != toMatch.itemID)
                 			continue;
                     	
                     	if(inSlot.getItemDamage() != toMatch.getItemDamage() && toMatch.getItemDamage() != OreDictionary.WILDCARD_VALUE)
@@ -163,7 +163,8 @@ public class SpecialShapedRecipe implements IRecipe
                 {
                 	FluidStack toMatch = (FluidStack)obj;
                 	
-                	if(!FluidContainerRegistry.containsFluid(inSlot, toMatch))
+                	FluidStack contained = FluidContainerRegistry.getFluidForFilledItem(inSlot);
+                	if(contained == null || !contained.isFluidStackIdentical(toMatch))
                 		return false;
                 }
             }

@@ -47,7 +47,7 @@ public class SpecialShapedRecipeHandler extends TemplateRecipeHandler
 						ArrayList<ItemStack> items = new ArrayList<ItemStack>();
 						for(FluidContainerData data : FluidContainerRegistry.getRegisteredFluidContainerData())
 						{
-							if(data.fluid.containsFluid((FluidStack)obj))
+							if(data.fluid.isFluidStackIdentical((FluidStack)obj))
 								items.add(data.filledContainer);
 						}
 						obj = items;
@@ -134,7 +134,7 @@ public class SpecialShapedRecipeHandler extends TemplateRecipeHandler
 	                {
 	                	ItemStack toMatch = (ItemStack)obj;
 	                	
-	                	if(!ingredient.isItemEqual(toMatch))
+	                	if(ingredient.itemID != toMatch.itemID)
 	                		continue;
 	                	
 	                	if(ingredient.getItemDamage() != toMatch.getItemDamage() && toMatch.getItemDamage() != OreDictionary.WILDCARD_VALUE)
@@ -153,7 +153,7 @@ public class SpecialShapedRecipeHandler extends TemplateRecipeHandler
 	                	boolean matched = false;
 	                	for(ItemStack toMatch : toMatchAny)
 	                	{
-	                		if(!ingredient.isItemEqual(toMatch))
+	                		if(ingredient.itemID != toMatch.itemID)
 	                			continue;
 	                    	
 	                    	if(ingredient.getItemDamage() != toMatch.getItemDamage() && toMatch.getItemDamage() != OreDictionary.WILDCARD_VALUE)
@@ -176,7 +176,8 @@ public class SpecialShapedRecipeHandler extends TemplateRecipeHandler
 	                {
 	                	FluidStack toMatch = (FluidStack)obj;
 	                	
-	                	if(!FluidContainerRegistry.containsFluid(ingredient, toMatch))
+	                	FluidStack contained = FluidContainerRegistry.getFluidForFilledItem(ingredient);
+	                	if(contained == null || !contained.isFluidStackIdentical(toMatch))
 	                		continue;
 	                }
 	                else if(obj == null)

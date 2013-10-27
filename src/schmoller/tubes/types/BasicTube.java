@@ -6,9 +6,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraftforge.liquids.LiquidContainerRegistry;
-import net.minecraftforge.liquids.LiquidDictionary;
-import net.minecraftforge.liquids.LiquidStack;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import schmoller.tubes.CommonHelper;
 import schmoller.tubes.ITubeConnectable;
 import schmoller.tubes.TubeItem;
@@ -99,8 +99,8 @@ public class BasicTube extends BaseTube implements ITubeConnectable
 		if(item == null || item.itemID == 0)
 			return false;
 		
-		LiquidStack liquid = LiquidContainerRegistry.getLiquidForFilledItem(item);
-		if(liquid != null && LiquidDictionary.findLiquidName(liquid).equals("Water"))
+		FluidStack liquid = FluidContainerRegistry.getFluidForFilledItem(item);
+		if(liquid != null && FluidRegistry.getFluidName(liquid).equals("water"))
 		{
 			mColor = NO_COLOUR;
 			updateColour();

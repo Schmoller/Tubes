@@ -151,8 +151,8 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 	{
 		GameRegistry.addSmelting(ModTubes.itemDustPlastic.itemID, new ItemStack(ModTubes.itemSheetPlastic), 0);
 		GameRegistry.addSmelting(Item.bucketMilk.itemID, new ItemStack(ModTubes.itemMilkCurdBucket), 0);
-		GameRegistry.addRecipe(new SpecialShapelessRecipe(new ItemStack(ModTubes.itemDustPlastic, 2), ModTubes.itemMilkCurdBucket, new ItemStack(Item.coal, 1, OreDictionary.WILDCARD_VALUE), Item.gunpowder, new ItemStack(Item.potion, 1, 0)));
-		GameRegistry.addRecipe(new SpecialShapelessRecipe(new ItemStack(ModTubes.itemDustPlastic, 8), ModTubes.itemBucketPlastic, new ItemStack(Item.coal, 1, OreDictionary.WILDCARD_VALUE)));
+		GameRegistry.addRecipe(new SpecialShapelessRecipe(new ItemStack(ModTubes.itemDustPlastic, 2), ModTubes.itemMilkCurdBucket, new ItemStack(Item.coal, 1, OreDictionary.WILDCARD_VALUE), Item.gunpowder, FluidRegistry.getFluid("water")));
+		GameRegistry.addRecipe(new SpecialShapelessRecipe(new ItemStack(ModTubes.itemDustPlastic, 8), ModTubes.fluidPlastic, new ItemStack(Item.coal, 1, OreDictionary.WILDCARD_VALUE)));
 		
 		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("basic", 8), "pgp", 'p', "itemPlastic", 'g', Block.glass));
 		GameRegistry.addRecipe(new SpecialShapedRecipe(new ItemStack(ModTubes.blockPlastic), "pp","pp", 'p', "itemPlastic"));
