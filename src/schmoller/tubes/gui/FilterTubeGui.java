@@ -12,11 +12,10 @@ import schmoller.tubes.network.packets.ModPacketSetFilterMode;
 import schmoller.tubes.types.FilterTube;
 import schmoller.tubes.types.FilterTube.Comparison;
 import schmoller.tubes.types.FilterTube.Mode;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.StatCollector;
 
-public class FilterTubeGui extends GuiContainer
+public class FilterTubeGui extends GuiExtContainer
 {
 	private FilterTube mTube;
 	public FilterTubeGui(FilterTube tube, EntityPlayer player)

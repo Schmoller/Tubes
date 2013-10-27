@@ -3,14 +3,13 @@ package schmoller.tubes.nei;
 import java.util.List;
 
 import schmoller.tubes.ModTubes;
-import schmoller.tubes.gui.ExtContainer;
 import schmoller.tubes.gui.FakeSlot;
+import schmoller.tubes.gui.GuiExtContainer;
 import schmoller.tubes.network.packets.ModPacketNEIDragDrop;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import codechicken.core.ReflectionManager;
 import codechicken.nei.VisiblityData;
 import codechicken.nei.api.INEIGuiHandler;
 import codechicken.nei.api.TaggedInventoryArea;
@@ -39,16 +38,13 @@ public class DragDropHandler implements INEIGuiHandler
 	@Override
 	public boolean handleDragNDrop( GuiContainer gui, int x, int y, ItemStack item, int button )
 	{
-		if(!(gui.inventorySlots instanceof ExtContainer))
+		if(!(gui instanceof GuiExtContainer))
 			return false;
 		
 		Slot slot = null;
 		
-		int xSize = ReflectionManager.getField(GuiContainer.class, Integer.class, gui, "xSize");
-		int ySize = ReflectionManager.getField(GuiContainer.class, Integer.class, gui, "ySize");
-		
-		x = x - (gui.width - xSize) / 2;
-		y = y - (gui.height - ySize) / 2;
+		x = x - ((GuiExtContainer)gui).getLeft();
+		y = y - ((GuiExtContainer)gui).getTop();
 		
 		int index = 0;
 		for(Slot s : (List<Slot>)gui.inventorySlots.inventorySlots)

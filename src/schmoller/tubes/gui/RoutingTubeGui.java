@@ -10,11 +10,10 @@ import schmoller.tubes.definitions.TypeRoutingTube;
 import schmoller.tubes.network.packets.ModPacketSetRoutingOptions;
 import schmoller.tubes.types.RoutingTube;
 import schmoller.tubes.types.RoutingTube.RouteDirection;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.StatCollector;
 
-public class RoutingTubeGui extends GuiContainer
+public class RoutingTubeGui extends GuiExtContainer
 {
 	private RoutingTube mTube;
 	public RoutingTubeGui(RoutingTube tube, EntityPlayer player)

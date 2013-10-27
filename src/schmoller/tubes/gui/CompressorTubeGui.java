@@ -7,13 +7,12 @@ import org.lwjgl.opengl.GL11;
 import schmoller.tubes.definitions.TypeCompressorTube;
 import schmoller.tubes.types.CompressorTube;
 
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 
-public class CompressorTubeGui extends GuiContainer
+public class CompressorTubeGui extends GuiExtContainer
 {
 	private CompressorTube mTube;
 	public CompressorTubeGui(CompressorTube tube, EntityPlayer player)

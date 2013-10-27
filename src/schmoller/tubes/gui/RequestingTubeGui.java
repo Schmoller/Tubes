@@ -11,11 +11,10 @@ import schmoller.tubes.definitions.TypeRequestingTube;
 import schmoller.tubes.network.packets.ModPacketSetColor;
 import schmoller.tubes.network.packets.ModPacketSetPullMode;
 import schmoller.tubes.types.RequestingTube;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.StatCollector;
 
-public class RequestingTubeGui extends GuiContainer
+public class RequestingTubeGui extends GuiExtContainer
 {
 	private RequestingTube mTube;
 	public RequestingTubeGui(RequestingTube tube, EntityPlayer player)
