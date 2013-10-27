@@ -30,5 +30,7 @@ public class NEITubesConfig implements IConfigureNEI
 		
 		API.registerUsageHandler(new SpecialShapelessRecipeHandler());
 		API.registerRecipeHandler(new SpecialShapelessRecipeHandler());
+		
+		API.registerNEIGuiHandler(new DragDropHandler());
 	}
 }

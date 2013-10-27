@@ -6,6 +6,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -35,6 +36,8 @@ import schmoller.tubes.definitions.TypeRequestingTube;
 import schmoller.tubes.definitions.TypeRestrictionTube;
 import schmoller.tubes.definitions.TypeRoutingTube;
 import schmoller.tubes.gui.CompressorContainer;
+import schmoller.tubes.gui.ExtContainer;
+import schmoller.tubes.gui.FakeSlot;
 import schmoller.tubes.gui.FilterTubeContainer;
 import schmoller.tubes.gui.InjectionTubeContainer;
 import schmoller.tubes.gui.RequestingTubeContainer;
@@ -43,6 +46,7 @@ import schmoller.tubes.items.BasicItem;
 import schmoller.tubes.network.IModPacketHandler;
 import schmoller.tubes.network.ModBlockPacket;
 import schmoller.tubes.network.ModPacket;
+import schmoller.tubes.network.packets.ModPacketNEIDragDrop;
 import schmoller.tubes.network.packets.ModPacketSetColor;
 import schmoller.tubes.network.packets.ModPacketSetFilterMode;
 import schmoller.tubes.network.packets.ModPacketSetPullMode;
@@ -218,6 +222,19 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 					((RequestingTube)tube).setColour((short)color);
 				else if(tube instanceof FilterTube)
 					((FilterTube)tube).setColour((short)color);
+			}
+		}
+		else if(packet instanceof ModPacketNEIDragDrop)
+		{
+			EntityPlayer player = (EntityPlayer)sender;
+			ItemStack item = ((ModPacketNEIDragDrop)packet).item;
+			int slotId = ((ModPacketNEIDragDrop)packet).slot;
+			
+			if(player.openContainer instanceof ExtContainer && slotId >= 0 && slotId < player.openContainer.inventorySlots.size())
+			{
+				Slot slot = (Slot)player.openContainer.inventorySlots.get(slotId);
+				if(slot instanceof FakeSlot)
+					slot.putStack(item);
 			}
 		}
 		return false;
