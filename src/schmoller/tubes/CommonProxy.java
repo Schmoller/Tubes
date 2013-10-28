@@ -138,7 +138,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 		LanguageRegistry.instance().addStringLocalization("tubes.routing.name", "Routing Tube");
 		LanguageRegistry.instance().addStringLocalization("tubes.requesting.name", "Requesting Tube");
 		
-		LanguageRegistry.instance().addStringLocalization("fluid.plastic.name", "Plastic");
+		LanguageRegistry.instance().addStringLocalization("fluid.plastic", "Plastic");
 		
 		LanguageRegistry.addName(ModTubes.itemDustPlastic, "Plastic Pellets");
 		LanguageRegistry.addName(ModTubes.itemSheetPlastic, "Plastic");
