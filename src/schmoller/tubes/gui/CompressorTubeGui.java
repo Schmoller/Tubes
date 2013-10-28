@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL11;
 import schmoller.tubes.definitions.TypeCompressorTube;
 import schmoller.tubes.types.CompressorTube;
 
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -47,6 +48,7 @@ public class CompressorTubeGui extends GuiExtContainer
 			else
 				drawHoveringText(Arrays.asList("Compressing " + item.getDisplayName() + " to " + item.stackSize + " items."), xx, yy, fontRenderer);
 			
+			RenderHelper.enableGUIStandardItemLighting();
 			width = old;
 		}
 	}

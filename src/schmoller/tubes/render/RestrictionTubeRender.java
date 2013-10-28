@@ -109,7 +109,7 @@ public class RestrictionTubeRender extends NormalTubeRender
 			{
 				mRender.setIcon(TypeRestrictionTube.paintStraight);
 				mRender.setColorRGB(CommonHelper.getDyeColor(col));
-				mRender.drawBox(60, 0.3125f, min, 0.3125f, 0.6875f, max, 0.6875f);
+				mRender.drawBox(60, 0.25f, min, 0.25f, 0.75f, max, 0.75f);
 			}
 		}
 		else if(connections == 12)

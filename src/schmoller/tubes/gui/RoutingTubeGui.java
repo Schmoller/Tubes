@@ -10,6 +10,7 @@ import schmoller.tubes.definitions.TypeRoutingTube;
 import schmoller.tubes.network.packets.ModPacketSetRoutingOptions;
 import schmoller.tubes.types.RoutingTube;
 import schmoller.tubes.types.RoutingTube.RouteDirection;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.StatCollector;
 
@@ -48,6 +49,7 @@ public class RoutingTubeGui extends GuiExtContainer
 					String text = mTube.getDirection(i).toString();
 
 					drawHoveringText(Arrays.asList(text), xx, yy, fontRenderer);
+					RenderHelper.enableGUIStandardItemLighting();
 				}
 				else if(yy >= 107 && yy <= 121) // Colour button
 				{
@@ -57,6 +59,7 @@ public class RoutingTubeGui extends GuiExtContainer
 						text = CommonHelper.getDyeName(colour);
 					
 					drawHoveringText(Arrays.asList(text), xx, yy, fontRenderer);
+					RenderHelper.enableGUIStandardItemLighting();
 				}
 			}
 		}

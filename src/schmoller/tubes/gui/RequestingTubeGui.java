@@ -11,6 +11,7 @@ import schmoller.tubes.definitions.TypeRequestingTube;
 import schmoller.tubes.network.packets.ModPacketSetColor;
 import schmoller.tubes.network.packets.ModPacketSetPullMode;
 import schmoller.tubes.types.RequestingTube;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.StatCollector;
 
@@ -59,6 +60,7 @@ public class RequestingTubeGui extends GuiExtContainer
 					break;
 				}
 				drawHoveringText(Arrays.asList(text), xx, yy, fontRenderer);
+				RenderHelper.enableGUIStandardItemLighting();
 			}
 			else if(yy >= 35 && yy <= 49)
 			{
@@ -68,6 +70,7 @@ public class RequestingTubeGui extends GuiExtContainer
 					text = CommonHelper.getDyeName(colour);
 				
 				drawHoveringText(Arrays.asList(text), xx, yy, fontRenderer);
+				RenderHelper.enableGUIStandardItemLighting();
 			}
 			
 		}

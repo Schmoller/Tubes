@@ -63,6 +63,7 @@
         	<include name="**schmoller/**"/>
         	<include name="**buildcraft/**"/>
         	<include name="**mcmod.info"/>
+        	<include name="**pack.mcmeta"/>
         	<include name="**assets/**"/>
     	</jar>
     </target>

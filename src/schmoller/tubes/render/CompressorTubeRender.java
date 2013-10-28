@@ -1,5 +1,7 @@
 package schmoller.tubes.render;
 
+import org.lwjgl.opengl.GL11;
+
 import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -35,6 +37,8 @@ public class CompressorTubeRender extends NormalTubeRender
 		mRender.setTextureIndex(0);
 		mRender.setTextureSize(1, 1);
 		
+		GL11.glColor4f(1, 1, 1, 1);
+		GL11.glDisable(GL11.GL_LIGHTING);
 		Tessellator tes = Tessellator.instance;
 		tes.startDrawingQuads();
 		
@@ -77,6 +81,8 @@ public class CompressorTubeRender extends NormalTubeRender
 		}
 		
 		tes.draw();
+		
+		GL11.glEnable(GL11.GL_LIGHTING);
 	}
 	
 	@Override

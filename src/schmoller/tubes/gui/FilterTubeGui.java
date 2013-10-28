@@ -12,6 +12,7 @@ import schmoller.tubes.network.packets.ModPacketSetFilterMode;
 import schmoller.tubes.types.FilterTube;
 import schmoller.tubes.types.FilterTube.Comparison;
 import schmoller.tubes.types.FilterTube.Mode;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.StatCollector;
 
@@ -45,6 +46,7 @@ public class FilterTubeGui extends GuiExtContainer
 			if(yy >= 19 && yy <= 33) // Mode button
 			{
 				drawHoveringText(Arrays.asList(mTube.getMode() == Mode.Allow ? "Allow specified items" : "Deny specified items"), xx, yy, fontRenderer);
+				RenderHelper.enableGUIStandardItemLighting();
 			}
 			else if(yy >= 35 && yy <= 49) // Comparison button
 			{
@@ -70,6 +72,7 @@ public class FilterTubeGui extends GuiExtContainer
 				int old = width;
 				width -= (xx + curX); 
 				drawHoveringText(Arrays.asList(text), xx, yy, fontRenderer);
+				RenderHelper.enableGUIStandardItemLighting();
 				
 				width = old;
 			}
@@ -81,6 +84,7 @@ public class FilterTubeGui extends GuiExtContainer
 					text = CommonHelper.getDyeName(colour);
 				
 				drawHoveringText(Arrays.asList(text), xx, yy, fontRenderer);
+				RenderHelper.enableGUIStandardItemLighting();
 			}
 		}
 		
