@@ -109,6 +109,9 @@ public class BasicInvHandler implements IInventoryHandler
 			if(existing == null)
 				continue;
 			
+			if(pulled != null && !InventoryHelper.areItemsEqual(pulled, existing))
+				continue;
+			
 			if(template == null || InventoryHelper.areItemsEqual(template, existing))
 			{
 				int toGrab = 0;

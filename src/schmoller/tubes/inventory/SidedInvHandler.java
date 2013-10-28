@@ -113,6 +113,9 @@ public class SidedInvHandler implements IInventoryHandler
 			if(existing == null || !mInv.canExtractItem(i, existing, side))
 				continue;
 			
+			if(pulled != null && !InventoryHelper.areItemsEqual(pulled, existing))
+				continue;
+			
 			if(template == null || InventoryHelper.areItemsEqual(template, existing))
 			{
 				int toGrab = 0;

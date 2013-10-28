@@ -98,11 +98,16 @@ public class RoutingTube extends BaseTube
 	{
 		int[] matches = new int[9];
 		int highest = -1;
+		int conns = getConnections();
 		
 		for(int col = 0; col < 9; ++col)
 		{
 			if(mDir[col] != RouteDirection.Closed)
 			{
+				// There must be a connection to consider it
+				if (mDir[col] != RouteDirection.Any && ((conns & (1 << mDir[col].ordinal())) == 0))
+					continue;
+				
 				boolean empty = true;
 				boolean match = false;
 				int level = 0;
@@ -204,9 +209,11 @@ public class RoutingTube extends BaseTube
 	@Override
 	public boolean canItemEnter( TubeItem item )
 	{
+		int conns = getConnections();
+		
 		for(int col = 0; col < 9; ++col)
 		{
-			if(mDir[col] != RouteDirection.Closed && doesItemMatchFilter(col, item.item))
+			if(mDir[col] != RouteDirection.Closed && (mDir[col] == RouteDirection.Any || ((conns & (1 << mDir[col].ordinal())) != 0)) && doesItemMatchFilter(col, item.item))
 				return true;
 		}
 		

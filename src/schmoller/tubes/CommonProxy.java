@@ -67,7 +67,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 		registerRecipes();
 		
 		OreDictionary.registerOre("dustPlastic", ModTubes.itemDustPlastic);
-		OreDictionary.registerOre("itemPlastic", ModTubes.itemSheetPlastic);
+		OreDictionary.registerOre("sheetPlastic", ModTubes.itemSheetPlastic);
 		OreDictionary.registerOre("blockPlastic", ModTubes.blockPlastic);
 		
 		MicroMaterialRegistry.registerMaterial(new BlockMicroMaterial(ModTubes.blockPlastic, 0), "tile.tubes.blockPlastic");
