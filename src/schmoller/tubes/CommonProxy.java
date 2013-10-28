@@ -19,7 +19,6 @@ import codechicken.microblock.BlockMicroMaterial;
 import codechicken.microblock.MicroMaterialRegistry;
 import codechicken.multipart.MultipartGenerator;
 
-import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -80,8 +79,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 	private void registerTubes()
 	{
 		// FIXME: This does not seem to work after obfuscation
-		FMLLog.info("ISidedInventory: %s",ISidedInventory.class.getName());
-		MultipartGenerator.registerPassThroughInterface(ISidedInventory.class.getName(), true, true);
+		MultipartGenerator.registerPassThroughInterface(ISidedInventory.class.getName());
 		
 		TubeRegistry.registerTube(new TypeNormalTube(), "basic");
 		TubeRegistry.registerTube(new TypeRestrictionTube(), "restriction");
@@ -140,6 +138,8 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 		LanguageRegistry.instance().addStringLocalization("tubes.routing.name", "Routing Tube");
 		LanguageRegistry.instance().addStringLocalization("tubes.requesting.name", "Requesting Tube");
 		
+		LanguageRegistry.instance().addStringLocalization("fluid.plastic.name", "Plastic");
+		
 		LanguageRegistry.addName(ModTubes.itemDustPlastic, "Plastic Pellets");
 		LanguageRegistry.addName(ModTubes.itemSheetPlastic, "Plastic");
 		LanguageRegistry.addName(ModTubes.itemMilkCurdBucket, "Milk Curd");
@@ -159,7 +159,8 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 		
 		GameRegistry.addRecipe(new SpecialShapelessRecipe(ModTubes.itemTube.createForType("restriction"), ModTubes.itemTube.createForType("basic"), Item.ingotIron));
 		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("compressor"), "ipi", "ptp", "ipi", 'i', Item.ingotIron, 'p', Block.pistonBase, 't', ModTubes.itemTube.createForType("basic")));
-		GameRegistry.addRecipe(new SpecialShapelessRecipe(ModTubes.itemTube.createForType("injection"), ModTubes.itemTube.createForType("basic"), Block.chest));
+		// TODO: Put this back in when the passthrough interface works again
+		//GameRegistry.addRecipe(new SpecialShapelessRecipe(ModTubes.itemTube.createForType("injection"), ModTubes.itemTube.createForType("basic"), Block.chest));
 		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("extraction"), "h", "t", "p", 't', ModTubes.itemTube.createForType("basic"), 'h', Block.hopperBlock, 'p', Block.pistonStickyBase));
 		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("requesting"), "t", "e", "f", 't', ModTubes.itemTube.createForType("basic"), 'e', ModTubes.itemTube.createForType("extraction"), 'f', ModTubes.itemTube.createForType("filter")));
 		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("filter"), "iei", "btb", "iei", 'i', Item.ingotIron, 'b', Block.fenceIron, 't', ModTubes.itemTube.createForType("basic"), 'e', Item.eyeOfEnder));
