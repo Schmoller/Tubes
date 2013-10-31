@@ -94,6 +94,75 @@ public class RoutingTube extends BaseTube
 	}
 	
 	@Override
+	public int getRoutableDirections( TubeItem item )
+	{
+		int allowed = 0;
+		int[] matches = new int[9];
+		int highest = -1;
+		int conns = getConnections();
+		
+		for(int col = 0; col < 9; ++col)
+		{
+			if(mDir[col] != RouteDirection.Closed)
+			{
+				// There must be a connection to consider it
+				if (mDir[col] != RouteDirection.Any && ((conns & (1 << mDir[col].ordinal())) == 0))
+					continue;
+				
+				boolean empty = true;
+				boolean match = false;
+				int level = 0;
+				for(int i = 0; i < 4; ++i)
+				{
+					if(mFilters[col][i] == null)
+						continue;
+					
+					empty = false;
+					if(InventoryHelper.areItemsEqual(mFilters[col][i], item.item))
+					{
+						match = true;
+						level = i;
+						break;
+					}
+				}
+				
+				if(!match && !empty)
+					matches[col] = -1;
+				else if(empty)
+				{
+					matches[col] = 0;
+					if(mDir[col] != RouteDirection.Any)
+						matches[col] += 1;
+				}
+				else
+				{
+					matches[col] = (5 - level);
+					if(mDir[col] != RouteDirection.Any)
+						matches[col] += 1;
+				}
+				
+				if(matches[col] > highest)
+					highest = matches[col];
+			}
+			else
+				matches[col] = -1;
+		}
+	
+		for(int col = 0; col < 9; ++col)
+		{
+			if(matches[col] == highest && highest != -1)
+			{
+				if(mDir[col] != RouteDirection.Any)
+					allowed |= (1 << mDir[col].ordinal());
+				else
+					allowed = 63;
+			}
+		}
+		
+		return allowed;
+	}
+	
+	@Override
 	public int onDetermineDestination( TubeItem item )
 	{
 		int[] matches = new int[9];
@@ -204,6 +273,63 @@ public class RoutingTube extends BaseTube
 	public boolean canPathThrough()
 	{
 		return true;
+	}
+	
+	@Override
+	protected boolean onItemJunction( TubeItem item )
+	{
+		if(item.state == TubeItem.BLOCKED)
+		{
+			int fromDir = item.direction;
+			item.state = TubeItem.BLOCKED;
+			item.direction = TubeHelper.findNextDirection(world(), x(), y(), z(), item);
+			if(item.direction == NO_ROUTE)
+			{
+				fromDir = fromDir ^ 1;
+				
+				int con = getConnections();
+				con &= getRoutableDirections(item);
+				
+				int total = Integer.bitCount(con);
+				if(total <= 1)
+				{
+					item.direction = Integer.numberOfTrailingZeros(con);
+					item.updated = true;
+					addToClient(item);
+					return true;
+				}
+				
+				int num = TubeHelper.rand.nextInt(total - 1);
+				
+				int index = 0;
+				for(int i = 0; i < 6; ++i)
+				{
+					if(i != fromDir && (con & (1 << i)) != 0)
+					{
+						if(num == index)
+						{
+							item.direction = i;
+							item.updated = true;
+							addToClient(item);
+							return true;
+						}
+						
+						++index;
+					}
+				}
+				
+				item.direction = fromDir;
+				item.updated = true;
+				addToClient(item);
+				return true;
+			}
+			
+			addToClient(item);
+			
+			return true;
+		}
+		else
+			return super.onItemJunction(item);
 	}
 	
 	@Override

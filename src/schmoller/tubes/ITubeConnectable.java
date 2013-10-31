@@ -24,6 +24,12 @@ public interface ITubeConnectable
 	 */
 	public boolean simulateEffects(TubeItem item);
 	
+	/**
+	 * This is used by routing to determine directions the routing can go. Only called if canPathThrough() is true
+	 * @return A mask of the directions that can be pathed 
+	 */
+	public int getRoutableDirections(TubeItem item);
+	
 	public boolean canPathThrough();
 	
 	public int getRouteWeight();

@@ -332,7 +332,7 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 		return true;
 	}
 	
-	private void addToClient(TubeItem item)
+	protected void addToClient(TubeItem item)
 	{
 		if(world().isRemote)
 			return;
@@ -406,6 +406,9 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 	
 	@Override
 	public boolean simulateEffects( TubeItem item )	{ return true; }
+	
+	@Override
+	public int getRoutableDirections( TubeItem item ) { return 63; }
 	
 	// ======================================
 	//  Thingies

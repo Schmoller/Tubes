@@ -36,6 +36,10 @@ public class OutputRouter extends BaseRouter
 	protected void getNextLocations( PathLocation current )
 	{
 		int conns = TubeHelper.getConnectivity(getWorld(), current.position);
+		ITubeConnectable myCon = TubeHelper.getTubeConnectable(getWorld(), current.position.x, current.position.y, current.position.z);
+		int allowed = (myCon != null ? myCon.getRoutableDirections(mItem) : 63);
+		
+		conns &= allowed;
 		
 		for(int i = 0; i < 6; ++i)
 		{
@@ -65,6 +69,10 @@ public class OutputRouter extends BaseRouter
 	protected void getInitialLocations( Position position )
 	{
 		int conns = TubeHelper.getConnectivity(getWorld(), position);
+		ITubeConnectable myCon = TubeHelper.getTubeConnectable(getWorld(), position.x, position.y, position.z);
+		int allowed = (myCon != null ? myCon.getRoutableDirections(mItem) : 63);
+		
+		conns &= allowed;
 		
 		for(int i = 0; i < 6; ++i)
 		{

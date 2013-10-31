@@ -14,6 +14,7 @@ import net.minecraft.item.Item;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.Property;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.fluids.Fluid;
 
@@ -50,8 +51,11 @@ public class ModTubes
 	public int itemSheetPlasticId;
 	public int itemMilkCurdBucketId;
 	public int itemBucketPlasticId;
+	public int itemRedstoneCircuitId;
 	
 	public int blockPlasticId;
+	
+	public int plasticYield;
 	
 	public static ItemTubeBase itemTube;
 	
@@ -59,6 +63,7 @@ public class ModTubes
 	public static Item itemSheetPlastic;
 	public static Item itemMilkCurdBucket;
 	public static Item itemBucketPlastic;
+	public static Item itemRedstoneCircuit;
 	public static Block blockPlastic;
 	
 	public static Fluid fluidPlastic;
@@ -78,8 +83,13 @@ public class ModTubes
 		itemSheetPlasticId = config.getItem("PlasticSheet", 5002).getInt();
 		itemMilkCurdBucketId = config.getItem("MilkCurd", 5003).getInt();
 		itemBucketPlasticId = config.getItem("BucketOfPlastic", 5004).getInt();
+		itemRedstoneCircuitId = config.getItem("redstoneCircuit", 5005).getInt();
 		
 		blockPlasticId = config.getBlock("PlasticBlock", 1027).getInt();
+		
+		Property prop =  config.get("general", "plasticYield", 2);
+		prop.comment = "How much the base plastic recipe gives. Next level recipe is 4 times this. Default 2.";
+		plasticYield = prop.getInt();
 		
 		config.save();
 		

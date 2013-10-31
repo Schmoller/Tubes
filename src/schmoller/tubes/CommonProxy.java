@@ -5,7 +5,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ISidedInventory;
+//import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -17,7 +17,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import codechicken.microblock.BlockMicroMaterial;
 import codechicken.microblock.MicroMaterialRegistry;
-import codechicken.multipart.MultipartGenerator;
+//import codechicken.multipart.MultipartGenerator;
 
 import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.common.network.IGuiHandler;
@@ -79,7 +79,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 	private void registerTubes()
 	{
 		// FIXME: This does not seem to work after obfuscation
-		MultipartGenerator.registerPassThroughInterface(ISidedInventory.class.getName());
+		//MultipartGenerator.registerPassThroughInterface(ISidedInventory.class.getName());
 		
 		TubeRegistry.registerTube(new TypeNormalTube(), "basic");
 		TubeRegistry.registerTube(new TypeRestrictionTube(), "restriction");
@@ -99,6 +99,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 		ModTubes.itemSheetPlastic = new BasicItem(ModTubes.instance.itemSheetPlasticId).setUnlocalizedName("sheetPlastic");
 		ModTubes.itemMilkCurdBucket = new BasicItem(ModTubes.instance.itemMilkCurdBucketId).setUnlocalizedName("milkCurd").setContainerItem(Item.bucketEmpty).setCreativeTab(CreativeTabs.tabMisc).setMaxStackSize(1);
 		ModTubes.itemBucketPlastic = new BasicItem(ModTubes.instance.itemBucketPlasticId).setUnlocalizedName("bucketOfPlastic").setContainerItem(Item.bucketEmpty).setCreativeTab(CreativeTabs.tabMisc).setMaxStackSize(1);
+		ModTubes.itemRedstoneCircuit = new BasicItem(ModTubes.instance.itemRedstoneCircuitId).setUnlocalizedName("redstoneCircuit").setCreativeTab(CreativeTabs.tabMisc);
 		
 		ModTubes.itemTube = new ItemTubeBase(ModTubes.instance.itemTubeId);
 		
@@ -107,6 +108,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 		GameRegistry.registerItem(ModTubes.itemMilkCurdBucket, "milkCurd");
 		GameRegistry.registerItem(ModTubes.itemBucketPlastic, "bucketOfPlastic");
 		GameRegistry.registerItem(ModTubes.itemTube, "tubes:items:tube");
+		GameRegistry.registerItem(ModTubes.itemRedstoneCircuit, "redstoneCircuit");
 		
 		ModTubes.blockPlastic = new Block(ModTubes.instance.blockPlasticId, Material.piston)
 			.setCreativeTab(CreativeTabs.tabBlock)
@@ -145,14 +147,16 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 		LanguageRegistry.addName(ModTubes.itemMilkCurdBucket, "Milk Curd");
 		LanguageRegistry.addName(ModTubes.itemBucketPlastic, "Plastic");
 		LanguageRegistry.addName(ModTubes.blockPlastic, "Block Of Plastic");
+		LanguageRegistry.addName(ModTubes.itemRedstoneCircuit, "Redstone Circuit");
 	}
 	
 	private void registerRecipes()
 	{
 		GameRegistry.addSmelting(ModTubes.itemDustPlastic.itemID, new ItemStack(ModTubes.itemSheetPlastic), 0);
 		GameRegistry.addSmelting(Item.bucketMilk.itemID, new ItemStack(ModTubes.itemMilkCurdBucket), 0);
-		GameRegistry.addRecipe(new SpecialShapelessRecipe(new ItemStack(ModTubes.itemDustPlastic, 2), ModTubes.itemMilkCurdBucket, new ItemStack(Item.coal, 1, OreDictionary.WILDCARD_VALUE), Item.gunpowder, FluidRegistry.getFluid("water")));
-		GameRegistry.addRecipe(new SpecialShapelessRecipe(new ItemStack(ModTubes.itemDustPlastic, 8), ModTubes.fluidPlastic, new ItemStack(Item.coal, 1, OreDictionary.WILDCARD_VALUE)));
+		GameRegistry.addRecipe(new SpecialShapelessRecipe(new ItemStack(ModTubes.itemDustPlastic, ModTubes.instance.plasticYield * 4), ModTubes.itemMilkCurdBucket, new ItemStack(Item.coal, 1, OreDictionary.WILDCARD_VALUE), Item.gunpowder, FluidRegistry.getFluid("water")));
+		GameRegistry.addRecipe(new SpecialShapelessRecipe(new ItemStack(ModTubes.itemDustPlastic, ModTubes.instance.plasticYield * 4), ModTubes.itemMilkCurdBucket, new ItemStack(Item.coal, 1, OreDictionary.WILDCARD_VALUE), Item.gunpowder, FluidRegistry.getFluid("water")));
+		GameRegistry.addRecipe(new SpecialShapedRecipe(new ItemStack(ModTubes.itemDustPlastic, ModTubes.instance.plasticYield), " c ", "sCs", " c ", 'c', new ItemStack(Item.coal, 1, OreDictionary.WILDCARD_VALUE), 'C', Item.clay, 's', Block.sand));
 		
 		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("basic", 8), "pgp", 'p', "sheetPlastic", 'g', Block.glass));
 		GameRegistry.addRecipe(new SpecialShapedRecipe(new ItemStack(ModTubes.blockPlastic), "pp","pp", 'p', "sheetPlastic"));
@@ -163,9 +167,11 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 		//GameRegistry.addRecipe(new SpecialShapelessRecipe(ModTubes.itemTube.createForType("injection"), ModTubes.itemTube.createForType("basic"), Block.chest));
 		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("extraction"), "h", "t", "p", 't', ModTubes.itemTube.createForType("basic"), 'h', Block.hopperBlock, 'p', Block.pistonStickyBase));
 		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("requesting"), "t", "e", "f", 't', ModTubes.itemTube.createForType("basic"), 'e', ModTubes.itemTube.createForType("extraction"), 'f', ModTubes.itemTube.createForType("filter")));
-		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("filter"), "iei", "btb", "iei", 'i', Item.ingotIron, 'b', Block.fenceIron, 't', ModTubes.itemTube.createForType("basic"), 'e', Item.eyeOfEnder));
+		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("filter"), "ici", "ctc", "ici", 'i', Item.ingotIron, 't', ModTubes.itemTube.createForType("basic"), 'c', ModTubes.itemRedstoneCircuit));
 		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("routing"), "iti", "tft", "iti", 'i', Item.ingotIron, 't', ModTubes.itemTube.createForType("basic"), 'f', ModTubes.itemTube.createForType("filter")));
 		GameRegistry.addRecipe(new SpecialShapelessRecipe(ModTubes.itemTube.createForType("ejection"), ModTubes.itemTube.createForType("basic"), Block.glass));
+		
+		GameRegistry.addShapedRecipe(new ItemStack(ModTubes.itemRedstoneCircuit, 4), "igi", "rrr", "igi", 'i', Item.ingotIron, 'g', Item.ingotGold, 'r', Item.redstone);
 	}
 
 	public void registerOreRecipes()
