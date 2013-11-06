@@ -34,7 +34,7 @@ public interface ITubeConnectable
 	/**
 	 * Adds the item to the tube.
 	 * The updated field of the item should be reset by this method.
-	 * The item should be synchronized to the client
+	 * The should not be synchronized to the client
 	 * @return True if the item was actually added
 	 */
 	public boolean addItem(TubeItem item);

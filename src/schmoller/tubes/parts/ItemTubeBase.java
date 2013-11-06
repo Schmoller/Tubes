@@ -2,9 +2,9 @@ package schmoller.tubes.parts;
 
 import java.util.List;
 
-import schmoller.tubes.SpecialShapedRecipe.ISpecialItemCompare;
 import schmoller.tubes.api.TubeRegistry;
 import schmoller.tubes.api.interfaces.IDirectionalTube;
+import schmoller.tubes.api.interfaces.ISpecialItemCompare;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IconRegister;

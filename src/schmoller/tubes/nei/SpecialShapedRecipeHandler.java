@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import schmoller.tubes.SpecialShapedRecipe;
-import schmoller.tubes.SpecialShapedRecipe.ISpecialItemCompare;
+import schmoller.tubes.api.interfaces.ISpecialItemCompare;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiCrafting;

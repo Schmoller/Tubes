@@ -78,13 +78,15 @@ public class TubeRegistry implements IPartFactory
 		return mRegisteredTubes.get("basic");
 	}
 	
+	@SideOnly(Side.CLIENT)
 	public ITubeRender getRender(TubeDefinition def)
 	{
 		ITubeRender render = mRenderers.get(def);
 		if(render != null)
 			return render;
 		
-		return mRenderers.values().iterator().next();
+		mRenderers.put(def, mRenderers.get(getDefinition("basic")));
+		return mRenderers.get(def);
 	}
 	
 	@Override

@@ -3,6 +3,8 @@ package schmoller.tubes;
 import java.util.HashMap;
 import java.util.List;
 
+import schmoller.tubes.api.interfaces.ISpecialItemCompare;
+
 import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
@@ -189,11 +191,6 @@ public class SpecialShapedRecipe implements IRecipe
 	public ItemStack getRecipeOutput()
 	{
 		return output;
-	}
-	
-	public interface ISpecialItemCompare
-	{
-		public boolean areItemsEqual(ItemStack a, ItemStack b);
 	}
 
 }

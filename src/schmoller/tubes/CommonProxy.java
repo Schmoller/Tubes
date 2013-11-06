@@ -41,6 +41,7 @@ import schmoller.tubes.definitions.TypeNormalTube;
 import schmoller.tubes.definitions.TypeRequestingTube;
 import schmoller.tubes.definitions.TypeRestrictionTube;
 import schmoller.tubes.definitions.TypeRoutingTube;
+import schmoller.tubes.definitions.TypeValveTube;
 import schmoller.tubes.gui.CompressorContainer;
 import schmoller.tubes.gui.FilterTubeContainer;
 import schmoller.tubes.gui.InjectionTubeContainer;
@@ -95,6 +96,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 		TubeRegistry.registerTube(new TypeExtractionTube(), "extraction");
 		TubeRegistry.registerTube(new TypeRequestingTube(), "requesting");
 		TubeRegistry.registerTube(new TypeRoutingTube(), "routing");
+		TubeRegistry.registerTube(new TypeValveTube(), "valve");
 	}
 	
 	private void registerItems()
@@ -144,6 +146,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 		LanguageRegistry.instance().addStringLocalization("tubes.compressor.name", "Compressor Tube");
 		LanguageRegistry.instance().addStringLocalization("tubes.routing.name", "Routing Tube");
 		LanguageRegistry.instance().addStringLocalization("tubes.requesting.name", "Requesting Tube");
+		LanguageRegistry.instance().addStringLocalization("tubes.valve.name", "Valve Tube");
 		
 		LanguageRegistry.instance().addStringLocalization("fluid.plastic", "Plastic");
 		

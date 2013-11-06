@@ -23,6 +23,7 @@ import schmoller.tubes.render.RenderTubeItem;
 import schmoller.tubes.render.RequestingTubeRender;
 import schmoller.tubes.render.RestrictionTubeRender;
 import schmoller.tubes.render.RoutingTubeRender;
+import schmoller.tubes.render.ValveTubeRender;
 import schmoller.tubes.types.CompressorTube;
 import schmoller.tubes.types.FilterTube;
 import schmoller.tubes.types.InjectionTube;
@@ -46,8 +47,7 @@ public class ClientProxy extends CommonProxy
 	{
 		MinecraftForgeClient.registerItemRenderer(Items.Tube.getItemID(), new RenderTubeItem());
 		
-		NormalTubeRender normal = new NormalTubeRender();
-		TubeRegistry.registerRenderer("basic",normal);
+		TubeRegistry.registerRenderer("basic",new NormalTubeRender());
 		TubeRegistry.registerRenderer("restriction",new RestrictionTubeRender());
 		TubeRegistry.registerRenderer("injection",new InjectionTubeRender());
 		TubeRegistry.registerRenderer("ejection", new EjectionTubeRender());
@@ -56,6 +56,7 @@ public class ClientProxy extends CommonProxy
 		TubeRegistry.registerRenderer("extraction", new ExtractionTubeRender());
 		TubeRegistry.registerRenderer("requesting", new RequestingTubeRender());
 		TubeRegistry.registerRenderer("routing", new RoutingTubeRender());
+		TubeRegistry.registerRenderer("valve", new ValveTubeRender());
 	}
 	
 	@Override
