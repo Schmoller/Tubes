@@ -11,6 +11,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MovingObjectPosition;
 import schmoller.tubes.ModTubes;
 import schmoller.tubes.api.TubeItem;
+import schmoller.tubes.api.helpers.InventoryHelper;
 import schmoller.tubes.api.helpers.TubeHelper;
 import schmoller.tubes.api.interfaces.ITubeConnectable;
 
@@ -50,11 +51,11 @@ public class CompressorTube extends BaseTube implements IInventory
 			if(!item.item.isItemEqual(mCurrent.item) || !ItemStack.areItemStackTagsEqual(item.item, mCurrent.item))
 				return item.direction ^ 1;
 			
-			int amt = Math.min(item.item.stackSize, mTarget.stackSize - mCurrent.item.stackSize);
+			int amt = Math.min(item.item.stackSize, Math.min(mTarget.stackSize, mCurrent.item.getMaxStackSize()) - mCurrent.item.stackSize);
 			mCurrent.item.stackSize += amt;
 			item.item.stackSize -= amt;
 			
-			if(mCurrent.item.stackSize == mTarget.stackSize)
+			if(mCurrent.item.stackSize == mTarget.stackSize || mCurrent.item.stackSize == mCurrent.item.getMaxStackSize())
 			{
 				mCurrent.updated = true;
 				addItem(mCurrent, true);
@@ -68,7 +69,7 @@ public class CompressorTube extends BaseTube implements IInventory
 		}
 		else if(mTarget.itemID == 0 || (item.item.isItemEqual(mTarget) && ItemStack.areItemStackTagsEqual(item.item, mTarget)))
 		{
-			if(item.item.stackSize < mTarget.stackSize)
+			if(item.item.stackSize < mTarget.stackSize && item.item.stackSize < item.item.getMaxStackSize())
 			{
 				mCurrent = item.clone();
 				return -2;
@@ -113,6 +114,15 @@ public class CompressorTube extends BaseTube implements IInventory
 			mTarget = new ItemStack(0, 64, 0);
 		else
 			mTarget = item;
+
+		if(mCurrent != null)
+		{
+			if(mCurrent.item.stackSize >= mTarget.stackSize || mCurrent.item.stackSize >= mCurrent.item.getMaxStackSize() || (mTarget.itemID != 0 && !InventoryHelper.areItemsEqual(mCurrent.item, mTarget)))
+			{
+				addItem(mCurrent, true);
+				mCurrent = null;
+			}
+		}
 	}
 	
 	@Override
@@ -184,7 +194,7 @@ public class CompressorTube extends BaseTube implements IInventory
 		else
 			mCurrent.item = item;
 		
-		if(mCurrent.item.stackSize >= mTarget.stackSize)
+		if(mCurrent.item.stackSize >= mTarget.stackSize || mCurrent.item.stackSize >= mCurrent.item.getMaxStackSize())
 		{
 			addItem(mCurrent, true);
 			mCurrent = null;

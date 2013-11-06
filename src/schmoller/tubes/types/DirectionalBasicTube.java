@@ -92,7 +92,7 @@ public abstract class DirectionalBasicTube extends BasicTube implements IDirecti
 			}
 		}
 		
-		return false;
+		return super.activate(player, part, item);
 	}
 
 }

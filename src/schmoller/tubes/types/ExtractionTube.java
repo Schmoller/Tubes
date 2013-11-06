@@ -13,7 +13,6 @@ import schmoller.tubes.api.Position;
 import schmoller.tubes.api.TubeItem;
 import schmoller.tubes.api.helpers.BaseRouter.PathLocation;
 import schmoller.tubes.api.interfaces.IInventoryHandler;
-import schmoller.tubes.api.interfaces.ITubeConnectable;
 import schmoller.tubes.api.interfaces.ITubeOverflowDestination;
 import schmoller.tubes.routing.OutputRouter;
 
@@ -29,15 +28,6 @@ public class ExtractionTube extends DirectionalBasicTube implements IRedstonePar
 		super("extraction");
 		mIsPowered = false;
 		mOverflow = new OverflowBuffer();
-	}
-	
-	@Override
-	public boolean canConnectTo( ITubeConnectable con )
-	{
-		if(con instanceof ExtractionTube)
-			return false;
-		
-		return super.canConnectTo(con);
 	}
 
 	@Override
