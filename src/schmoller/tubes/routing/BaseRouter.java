@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
 
-import schmoller.tubes.Position;
+import schmoller.tubes.api.Position;
 import schmoller.tubes.api.helpers.TubeHelper;
 
 import net.minecraft.world.IBlockAccess;

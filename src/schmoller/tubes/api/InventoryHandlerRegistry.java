@@ -4,7 +4,6 @@ import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import schmoller.tubes.Position;
 import schmoller.tubes.api.interfaces.IInventoryHandler;
 import schmoller.tubes.inventory.BasicInvHandler;
 import schmoller.tubes.inventory.SidedInvHandler;

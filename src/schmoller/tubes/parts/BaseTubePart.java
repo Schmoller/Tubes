@@ -9,9 +9,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MovingObjectPosition;
-import schmoller.tubes.ModTubes;
 import schmoller.tubes.api.TubeDefinition;
 import schmoller.tubes.api.TubeRegistry;
+import schmoller.tubes.api.TubesAPI;
 import schmoller.tubes.api.helpers.RenderHelper;
 import schmoller.tubes.api.interfaces.ITube;
 import codechicken.lib.data.MCDataInput;
@@ -133,14 +133,14 @@ public abstract class BaseTubePart extends JCuboidPart implements ITube, JNormal
 	@Override
 	public ItemStack pickItem( MovingObjectPosition hit )
 	{
-		return ModTubes.itemTube.createForType(mType);
+		return TubesAPI.instance.createTubeForType(mType);
 	}
 	
 	@Override
 	public final Iterable<ItemStack> getDrops()
 	{
 		ArrayList<ItemStack> stacks = new ArrayList<ItemStack>(1);
-		stacks.add(ModTubes.itemTube.createForType(mType));
+		stacks.add(TubesAPI.instance.createTubeForType(mType));
 		
 		onDropItems(stacks);
 		

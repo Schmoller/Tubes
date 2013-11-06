@@ -1,7 +1,7 @@
 package schmoller.tubes.routing;
 
-import schmoller.tubes.Position;
 import schmoller.tubes.api.InventoryHandlerRegistry;
+import schmoller.tubes.api.Position;
 import schmoller.tubes.api.SizeMode;
 import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.api.helpers.TubeHelper;

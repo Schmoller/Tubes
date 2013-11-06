@@ -1,4 +1,4 @@
-package schmoller.tubes;
+package schmoller.tubes.api;
 
 import net.minecraftforge.common.ForgeDirection;
 

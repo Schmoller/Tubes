@@ -1,6 +1,6 @@
 package schmoller.tubes.api.helpers;
 
-import schmoller.tubes.Position;
+import schmoller.tubes.api.Position;
 import codechicken.multipart.TMultiPart;
 import codechicken.multipart.TileMultipart;
 import net.minecraft.entity.passive.EntitySheep;

@@ -2,7 +2,10 @@ package schmoller.tubes;
 
 import java.util.logging.Logger;
 
+import schmoller.tubes.api.Blocks;
+import schmoller.tubes.api.Items;
 import schmoller.tubes.api.TubeRegistry;
+import schmoller.tubes.api.TubesAPI;
 import schmoller.tubes.network.PacketManager;
 import schmoller.tubes.network.packets.ModPacketNEIDragDrop;
 import schmoller.tubes.network.packets.ModPacketSetColor;
@@ -10,8 +13,7 @@ import schmoller.tubes.network.packets.ModPacketSetFilterMode;
 import schmoller.tubes.network.packets.ModPacketSetPullMode;
 import schmoller.tubes.network.packets.ModPacketSetRoutingOptions;
 import schmoller.tubes.parts.ItemTubeBase;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
@@ -28,13 +30,14 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.Mod.EventHandler;
 
 import cpw.mods.fml.common.network.NetworkMod;
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @Mod(name="Tubes", version="@{mod.version}", modid = "Tubes", dependencies="required-after:Forge; required-before:ForgeMultipart")
 @NetworkMod(clientSideRequired=true, serverSideRequired=true)
-public class ModTubes
+public class ModTubes extends TubesAPI
 {
 	@Instance("Tubes")
     public static ModTubes instance;
@@ -47,25 +50,9 @@ public class ModTubes
 	
 	public static Logger logger = Logger.getLogger("Tubes");
 	
-	public int itemTubeId;
-	public int itemDustPlasticId;
-	public int itemSheetPlasticId;
-	public int itemMilkCurdBucketId;
-	public int itemBucketPlasticId;
-	public int itemRedstoneCircuitId;
-	
-	public int blockPlasticId;
-	
 	public int plasticYield;
 	
 	public static ItemTubeBase itemTube;
-	
-	public static Item itemDustPlastic;
-	public static Item itemSheetPlastic;
-	public static Item itemMilkCurdBucket;
-	public static Item itemBucketPlastic;
-	public static Item itemRedstoneCircuit;
-	public static Block blockPlastic;
 	
 	public static Fluid fluidPlastic;
 	
@@ -78,15 +65,15 @@ public class ModTubes
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
-		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
-		itemTubeId = config.getItem("Tube", 5000).getInt();
-		itemDustPlasticId = config.getItem("PlasticDust", 5001).getInt();
-		itemSheetPlasticId = config.getItem("PlasticSheet", 5002).getInt();
-		itemMilkCurdBucketId = config.getItem("MilkCurd", 5003).getInt();
-		itemBucketPlasticId = config.getItem("BucketOfPlastic", 5004).getInt();
-		itemRedstoneCircuitId = config.getItem("redstoneCircuit", 5005).getInt();
+		TubesAPI.instance = this;
 		
-		blockPlasticId = config.getBlock("PlasticBlock", 1027).getInt();
+		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
+		
+		for(Items item : Items.values())
+			item.initialize(config.getItem(item.getConfigName(), item.getItemID()).getInt(), null);
+		
+		for(Blocks block : Blocks.values())
+			block.initialize(config.getBlock(block.getConfigName(), block.getBlockID()).getInt(), null);
 		
 		Property prop =  config.get("general", "plasticYield", 2);
 		prop.comment = "How much the base plastic recipe gives. Next level recipe is 4 times this. Default 2.";
@@ -131,5 +118,35 @@ public class ModTubes
 			if(fluidPlastic != null)
 				fluidPlastic.setIcons(event.map.registerIcon("tubes:fluidPlastic"));
 		}
+	}
+
+	@Override
+	public void registerShapedRecipe( ItemStack output, Object... input )
+	{
+		GameRegistry.addRecipe(new SpecialShapedRecipe(output, input));
+	}
+
+	@Override
+	public void registerShapelessRecipe( ItemStack output, Object... input )
+	{
+		GameRegistry.addRecipe(new SpecialShapelessRecipe(output, input));
+	}
+
+	@Override
+	public ItemStack createTubeForType( String type )
+	{
+		return createTubeForType(type, 1);
+	}
+	
+	@Override
+	public ItemStack createTubeForType( String type, int amount )
+	{
+		return itemTube.createForType(type, amount);
+	}
+
+	@Override
+	public String getTubeType( ItemStack item )
+	{
+		return itemTube.getTubeType(item);
 	}
 }

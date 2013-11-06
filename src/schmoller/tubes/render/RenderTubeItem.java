@@ -1,7 +1,7 @@
 package schmoller.tubes.render;
 
-import schmoller.tubes.ModTubes;
 import schmoller.tubes.api.TubeRegistry;
+import schmoller.tubes.api.TubesAPI;
 import schmoller.tubes.api.helpers.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
@@ -27,7 +27,7 @@ public class RenderTubeItem implements IItemRenderer
 		GL11.glPushMatrix();
 		if(type == ItemRenderType.ENTITY)
 			GL11.glTranslated(-0.5,-0.5, -0.5);
-		RenderHelper.renderItem(item, TubeRegistry.instance().getDefinition(ModTubes.itemTube.getTubeType(item)));
+		RenderHelper.renderItem(item, TubeRegistry.instance().getDefinition(TubesAPI.instance.getTubeType(item)));
 		GL11.glPopMatrix();
 	}
 

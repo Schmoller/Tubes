@@ -3,6 +3,7 @@ package schmoller.tubes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
+import schmoller.tubes.api.Items;
 import schmoller.tubes.api.TubeRegistry;
 import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.api.helpers.RenderHelper;
@@ -43,7 +44,7 @@ public class ClientProxy extends CommonProxy
 	
 	private void registerRenderers()
 	{
-		MinecraftForgeClient.registerItemRenderer(ModTubes.instance.itemTubeId + 256, new RenderTubeItem());
+		MinecraftForgeClient.registerItemRenderer(Items.Tube.getItemID(), new RenderTubeItem());
 		
 		NormalTubeRender normal = new NormalTubeRender();
 		TubeRegistry.registerRenderer("basic",normal);

@@ -1,6 +1,6 @@
 package schmoller.tubes.routing;
 
-import schmoller.tubes.Position;
+import schmoller.tubes.api.Position;
 import schmoller.tubes.api.TubeItem;
 import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.api.helpers.TubeHelper;

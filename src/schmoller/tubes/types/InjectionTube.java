@@ -3,8 +3,8 @@ package schmoller.tubes.types;
 import java.util.List;
 
 import schmoller.tubes.ModTubes;
-import schmoller.tubes.Position;
 import schmoller.tubes.api.OverflowBuffer;
+import schmoller.tubes.api.Position;
 import schmoller.tubes.api.TubeItem;
 import schmoller.tubes.api.interfaces.ITubeConnectable;
 import schmoller.tubes.api.interfaces.ITubeOverflowDestination;

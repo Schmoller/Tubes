@@ -25,6 +25,8 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
+import schmoller.tubes.api.Blocks;
+import schmoller.tubes.api.Items;
 import schmoller.tubes.api.TubeRegistry;
 import schmoller.tubes.api.gui.ExtContainer;
 import schmoller.tubes.api.gui.FakeSlot;
@@ -69,12 +71,12 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 		registerText();
 		registerRecipes();
 		
-		OreDictionary.registerOre("dustPlastic", ModTubes.itemDustPlastic);
-		OreDictionary.registerOre("sheetPlastic", ModTubes.itemSheetPlastic);
-		OreDictionary.registerOre("blockPlastic", ModTubes.blockPlastic);
+		OreDictionary.registerOre("dustPlastic", Items.PlasticDust.getItem());
+		OreDictionary.registerOre("sheetPlastic", Items.PlasticSheet.getItem());
+		OreDictionary.registerOre("blockPlastic", Blocks.BlockPlastic.getBlock());
 		
-		MicroMaterialRegistry.registerMaterial(new BlockMicroMaterial(ModTubes.blockPlastic, 0), "tile.tubes.blockPlastic");
-		FMLInterModComms.sendMessage("BuildCraft|Transport", "add-facade", String.format("%d@%d", ModTubes.blockPlastic.blockID, 0 ));
+		MicroMaterialRegistry.registerMaterial(new BlockMicroMaterial(Blocks.BlockPlastic.getBlock(), 0), "tile.tubes.blockPlastic");
+		FMLInterModComms.sendMessage("BuildCraft|Transport", "add-facade", String.format("%d@%d", Blocks.BlockPlastic.getBlockID(), 0 ));
 		
 		NetworkRegistry.instance().registerGuiHandler(ModTubes.instance, this);
 	}
@@ -97,38 +99,38 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 	
 	private void registerItems()
 	{
-
-		ModTubes.itemDustPlastic = new BasicItem(ModTubes.instance.itemDustPlasticId).setUnlocalizedName("dustPlastic");
-		ModTubes.itemSheetPlastic = new BasicItem(ModTubes.instance.itemSheetPlasticId).setUnlocalizedName("sheetPlastic");
-		ModTubes.itemMilkCurdBucket = new BasicItem(ModTubes.instance.itemMilkCurdBucketId).setUnlocalizedName("milkCurd").setContainerItem(Item.bucketEmpty).setCreativeTab(CreativeTabs.tabMisc).setMaxStackSize(1);
-		ModTubes.itemBucketPlastic = new BasicItem(ModTubes.instance.itemBucketPlasticId).setUnlocalizedName("bucketOfPlastic").setContainerItem(Item.bucketEmpty).setCreativeTab(CreativeTabs.tabMisc).setMaxStackSize(1);
-		ModTubes.itemRedstoneCircuit = new BasicItem(ModTubes.instance.itemRedstoneCircuitId).setUnlocalizedName("redstoneCircuit").setCreativeTab(CreativeTabs.tabMisc);
+		Items.PlasticDust.initialize(Items.PlasticDust.getItemID() + 256, new BasicItem(Items.PlasticDust.getItemID()).setUnlocalizedName("dustPlastic"));
+		Items.PlasticSheet.initialize(Items.PlasticSheet.getItemID() + 256, new BasicItem(Items.PlasticSheet.getItemID()).setUnlocalizedName("sheetPlastic"));
+		Items.BucketMilkCurd.initialize(Items.BucketMilkCurd.getItemID() + 256, new BasicItem(Items.BucketMilkCurd.getItemID()).setUnlocalizedName("milkCurd").setContainerItem(Item.bucketEmpty).setCreativeTab(CreativeTabs.tabMisc).setMaxStackSize(1));
+		Items.BucketPlastic.initialize(Items.BucketPlastic.getItemID() + 256, new BasicItem(Items.BucketPlastic.getItemID()).setUnlocalizedName("bucketOfPlastic").setContainerItem(Item.bucketEmpty).setCreativeTab(CreativeTabs.tabMisc).setMaxStackSize(1));
+		Items.RedstoneCircuit.initialize(Items.RedstoneCircuit.getItemID() + 256, new BasicItem(Items.RedstoneCircuit.getItemID()).setUnlocalizedName("redstoneCircuit").setCreativeTab(CreativeTabs.tabMisc));
 		
-		ModTubes.itemTube = new ItemTubeBase(ModTubes.instance.itemTubeId);
+		ModTubes.itemTube = new ItemTubeBase(Items.Tube.getItemID());
+		Items.Tube.initialize(Items.Tube.getItemID() + 256, ModTubes.itemTube);
 		
-		GameRegistry.registerItem(ModTubes.itemDustPlastic, "dustPlastic");
-		GameRegistry.registerItem(ModTubes.itemSheetPlastic, "sheetPlastic");
-		GameRegistry.registerItem(ModTubes.itemMilkCurdBucket, "milkCurd");
-		GameRegistry.registerItem(ModTubes.itemBucketPlastic, "bucketOfPlastic");
-		GameRegistry.registerItem(ModTubes.itemTube, "tubes:items:tube");
-		GameRegistry.registerItem(ModTubes.itemRedstoneCircuit, "redstoneCircuit");
+		GameRegistry.registerItem(Items.PlasticDust.getItem(), "dustPlastic");
+		GameRegistry.registerItem(Items.PlasticSheet.getItem(), "sheetPlastic");
+		GameRegistry.registerItem(Items.BucketMilkCurd.getItem(), "milkCurd");
+		GameRegistry.registerItem(Items.BucketPlastic.getItem(), "bucketOfPlastic");
+		GameRegistry.registerItem(Items.Tube.getItem(), "tubes:items:tube");
+		GameRegistry.registerItem(Items.RedstoneCircuit.getItem(), "redstoneCircuit");
 		
-		ModTubes.blockPlastic = new Block(ModTubes.instance.blockPlasticId, Material.piston)
+		Blocks.BlockPlastic.initialize(Blocks.BlockPlastic.getBlockID(), new Block(Blocks.BlockPlastic.getBlockID(), Material.piston)
 			.setCreativeTab(CreativeTabs.tabBlock)
 			.setUnlocalizedName("Tubes:blockPlastic")
 			.setTextureName("tubes:blockPlastic")
-			.setHardness(2.5f);
+			.setHardness(2.5f));
 		
-		MinecraftForge.setBlockHarvestLevel(ModTubes.blockPlastic, "pickaxe", 0);
-		MinecraftForge.setBlockHarvestLevel(ModTubes.blockPlastic, "axe", 0);
+		MinecraftForge.setBlockHarvestLevel(Blocks.BlockPlastic.getBlock(), "pickaxe", 0);
+		MinecraftForge.setBlockHarvestLevel(Blocks.BlockPlastic.getBlock(), "axe", 0);
 		
-		GameRegistry.registerBlock(ModTubes.blockPlastic, "blockPlastic");
+		GameRegistry.registerBlock(Blocks.BlockPlastic.getBlock(), "blockPlastic");
 		
 		ModTubes.fluidPlastic = new Fluid("plastic").setDensity(800).setViscosity(1500);
 		FluidRegistry.registerFluid(ModTubes.fluidPlastic);
 		ModTubes.fluidPlastic = FluidRegistry.getFluid("plastic");
 		
-		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluidStack("plastic", FluidContainerRegistry.BUCKET_VOLUME), new ItemStack(ModTubes.itemBucketPlastic), new ItemStack(Item.bucketEmpty));
+		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluidStack("plastic", FluidContainerRegistry.BUCKET_VOLUME), new ItemStack(Items.BucketPlastic.getItem()), new ItemStack(Item.bucketEmpty));
 	}
 	
 	private void registerText()
@@ -145,24 +147,24 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 		
 		LanguageRegistry.instance().addStringLocalization("fluid.plastic", "Plastic");
 		
-		LanguageRegistry.addName(ModTubes.itemDustPlastic, "Plastic Pellets");
-		LanguageRegistry.addName(ModTubes.itemSheetPlastic, "Plastic");
-		LanguageRegistry.addName(ModTubes.itemMilkCurdBucket, "Milk Curd");
-		LanguageRegistry.addName(ModTubes.itemBucketPlastic, "Plastic");
-		LanguageRegistry.addName(ModTubes.blockPlastic, "Block Of Plastic");
-		LanguageRegistry.addName(ModTubes.itemRedstoneCircuit, "Redstone Circuit");
+		LanguageRegistry.addName(Items.PlasticDust.getItem(), "Plastic Pellets");
+		LanguageRegistry.addName(Items.PlasticSheet.getItem(), "Plastic");
+		LanguageRegistry.addName(Items.BucketMilkCurd.getItem(), "Milk Curd");
+		LanguageRegistry.addName(Items.BucketPlastic.getItem(), "Plastic");
+		LanguageRegistry.addName(Blocks.BlockPlastic.getBlock(), "Block Of Plastic");
+		LanguageRegistry.addName(Items.RedstoneCircuit.getItem(), "Redstone Circuit");
 	}
 	
 	private void registerRecipes()
 	{
-		GameRegistry.addSmelting(ModTubes.itemDustPlastic.itemID, new ItemStack(ModTubes.itemSheetPlastic), 0);
-		GameRegistry.addSmelting(Item.bucketMilk.itemID, new ItemStack(ModTubes.itemMilkCurdBucket), 0);
-		GameRegistry.addRecipe(new SpecialShapelessRecipe(new ItemStack(ModTubes.itemDustPlastic, ModTubes.instance.plasticYield * 4), ModTubes.itemMilkCurdBucket, new ItemStack(Item.coal, 1, OreDictionary.WILDCARD_VALUE), Item.gunpowder, FluidRegistry.getFluid("water")));
-		GameRegistry.addRecipe(new SpecialShapelessRecipe(new ItemStack(ModTubes.itemDustPlastic, ModTubes.instance.plasticYield * 4), ModTubes.itemBucketPlastic, new ItemStack(Item.coal, 1, OreDictionary.WILDCARD_VALUE)));
-		GameRegistry.addRecipe(new SpecialShapedRecipe(new ItemStack(ModTubes.itemDustPlastic, ModTubes.instance.plasticYield), " c ", "sCs", " c ", 'c', new ItemStack(Item.coal, 1, OreDictionary.WILDCARD_VALUE), 'C', Item.clay, 's', Block.sand));
+		GameRegistry.addSmelting(Items.PlasticDust.getItemID(), new ItemStack(Items.PlasticSheet.getItem()), 0);
+		GameRegistry.addSmelting(Item.bucketMilk.itemID, new ItemStack(Items.BucketMilkCurd.getItem()), 0);
+		GameRegistry.addRecipe(new SpecialShapelessRecipe(new ItemStack(Items.PlasticDust.getItem(), ModTubes.instance.plasticYield * 4), Items.BucketMilkCurd.getItem(), new ItemStack(Item.coal, 1, OreDictionary.WILDCARD_VALUE), Item.gunpowder, FluidRegistry.getFluid("water")));
+		GameRegistry.addRecipe(new SpecialShapelessRecipe(new ItemStack(Items.PlasticDust.getItem(), ModTubes.instance.plasticYield * 4), Items.BucketPlastic.getItem(), new ItemStack(Item.coal, 1, OreDictionary.WILDCARD_VALUE)));
+		GameRegistry.addRecipe(new SpecialShapedRecipe(new ItemStack(Items.PlasticDust.getItem(), ModTubes.instance.plasticYield), " c ", "sCs", " c ", 'c', new ItemStack(Item.coal, 1, OreDictionary.WILDCARD_VALUE), 'C', Item.clay, 's', Block.sand));
 		
 		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("basic", 8), "pgp", 'p', "sheetPlastic", 'g', Block.glass));
-		GameRegistry.addRecipe(new SpecialShapedRecipe(new ItemStack(ModTubes.blockPlastic), "pp","pp", 'p', "sheetPlastic"));
+		GameRegistry.addRecipe(new SpecialShapedRecipe(new ItemStack(Blocks.BlockPlastic.getBlock()), "pp","pp", 'p', "sheetPlastic"));
 		
 		GameRegistry.addRecipe(new SpecialShapelessRecipe(ModTubes.itemTube.createForType("restriction"), ModTubes.itemTube.createForType("basic"), Item.ingotIron));
 		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("compressor"), "ipi", "ptp", "ipi", 'i', Item.ingotIron, 'p', Block.pistonBase, 't', ModTubes.itemTube.createForType("basic")));
@@ -170,11 +172,11 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 		//GameRegistry.addRecipe(new SpecialShapelessRecipe(ModTubes.itemTube.createForType("injection"), ModTubes.itemTube.createForType("basic"), Block.chest));
 		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("extraction"), "h", "t", "p", 't', ModTubes.itemTube.createForType("basic"), 'h', Block.hopperBlock, 'p', Block.pistonStickyBase));
 		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("requesting"), "t", "e", "f", 't', ModTubes.itemTube.createForType("basic"), 'e', ModTubes.itemTube.createForType("extraction"), 'f', ModTubes.itemTube.createForType("filter")));
-		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("filter"), "ici", "ctc", "ici", 'i', Item.ingotIron, 't', ModTubes.itemTube.createForType("basic"), 'c', ModTubes.itemRedstoneCircuit));
+		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("filter"), "ici", "ctc", "ici", 'i', Item.ingotIron, 't', ModTubes.itemTube.createForType("basic"), 'c', Items.RedstoneCircuit.getItem()));
 		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("routing"), "iti", "tft", "iti", 'i', Item.ingotIron, 't', ModTubes.itemTube.createForType("basic"), 'f', ModTubes.itemTube.createForType("filter")));
 		GameRegistry.addRecipe(new SpecialShapelessRecipe(ModTubes.itemTube.createForType("ejection"), ModTubes.itemTube.createForType("basic"), Block.glass));
 		
-		GameRegistry.addShapedRecipe(new ItemStack(ModTubes.itemRedstoneCircuit, 4), "igi", "rrr", "igi", 'i', Item.ingotIron, 'g', Item.ingotGold, 'r', Item.redstone);
+		GameRegistry.addShapedRecipe(new ItemStack(Items.RedstoneCircuit.getItem(), 4), "igi", "rrr", "igi", 'i', Item.ingotIron, 'g', Item.ingotGold, 'r', Item.redstone);
 	}
 
 	public void registerOreRecipes()
