@@ -16,9 +16,9 @@ import schmoller.tubes.api.Position;
 import schmoller.tubes.api.TubeItem;
 import schmoller.tubes.api.helpers.InventoryHelper;
 import schmoller.tubes.api.helpers.TubeHelper;
+import schmoller.tubes.api.helpers.BaseRouter.PathLocation;
 import schmoller.tubes.definitions.TypeRoutingTube;
 import schmoller.tubes.routing.OutputRouter;
-import schmoller.tubes.routing.BaseRouter.PathLocation;
 
 public class RoutingTube extends BaseTube
 {

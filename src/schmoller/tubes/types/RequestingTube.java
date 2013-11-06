@@ -22,13 +22,13 @@ import schmoller.tubes.api.TubeItem;
 import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.api.helpers.InventoryHelper;
 import schmoller.tubes.api.helpers.TubeHelper;
+import schmoller.tubes.api.helpers.BaseRouter.PathLocation;
 import schmoller.tubes.api.interfaces.IInventoryHandler;
 import schmoller.tubes.api.interfaces.ITubeConnectable;
 import schmoller.tubes.api.interfaces.ITubeImportDest;
 import schmoller.tubes.api.interfaces.ITubeOverflowDestination;
 import schmoller.tubes.routing.ImportSourceFinder;
 import schmoller.tubes.routing.OutputRouter;
-import schmoller.tubes.routing.BaseRouter.PathLocation;
 
 public class RequestingTube extends DirectionalTube implements ITubeImportDest, IRedstonePart, ITubeOverflowDestination
 {

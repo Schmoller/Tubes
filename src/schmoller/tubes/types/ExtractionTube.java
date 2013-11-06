@@ -11,10 +11,10 @@ import schmoller.tubes.api.InventoryHandlerRegistry;
 import schmoller.tubes.api.OverflowBuffer;
 import schmoller.tubes.api.Position;
 import schmoller.tubes.api.TubeItem;
+import schmoller.tubes.api.helpers.BaseRouter.PathLocation;
 import schmoller.tubes.api.interfaces.IInventoryHandler;
 import schmoller.tubes.api.interfaces.ITubeConnectable;
 import schmoller.tubes.api.interfaces.ITubeOverflowDestination;
-import schmoller.tubes.routing.BaseRouter.PathLocation;
 import schmoller.tubes.routing.OutputRouter;
 
 public class ExtractionTube extends DirectionalBasicTube implements IRedstonePart, ITubeOverflowDestination

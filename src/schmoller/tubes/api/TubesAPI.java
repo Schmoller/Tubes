@@ -1,6 +1,8 @@
 package schmoller.tubes.api;
 
+import schmoller.tubes.api.helpers.BaseRouter;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.IBlockAccess;
 
 public abstract class TubesAPI
 {
@@ -44,4 +46,13 @@ public abstract class TubesAPI
 	 * Gets what type of tube the ItemStack holds, or null if it does not.
 	 */
 	public abstract String getTubeType(ItemStack item);
+	
+	
+	public abstract BaseRouter getOutputRouter(IBlockAccess world, Position position, TubeItem item);
+	public abstract BaseRouter getOutputRouter(IBlockAccess world, Position position, TubeItem item, int direction);
+	
+	public abstract BaseRouter getImportRouter(IBlockAccess world, Position position, TubeItem item);
+	public abstract BaseRouter getImportSourceRouter(IBlockAccess world, Position position, int startDirection, ItemStack filter);
+	
+	public abstract BaseRouter getOverflowRouter(IBlockAccess world, Position position, TubeItem item);
 }

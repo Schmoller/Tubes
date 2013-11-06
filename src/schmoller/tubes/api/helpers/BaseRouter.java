@@ -1,4 +1,4 @@
-package schmoller.tubes.routing;
+package schmoller.tubes.api.helpers;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 import schmoller.tubes.api.Position;
-import schmoller.tubes.api.helpers.TubeHelper;
 
 import net.minecraft.world.IBlockAccess;
 

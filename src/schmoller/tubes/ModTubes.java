@@ -4,8 +4,11 @@ import java.util.logging.Logger;
 
 import schmoller.tubes.api.Blocks;
 import schmoller.tubes.api.Items;
+import schmoller.tubes.api.Position;
+import schmoller.tubes.api.TubeItem;
 import schmoller.tubes.api.TubeRegistry;
 import schmoller.tubes.api.TubesAPI;
+import schmoller.tubes.api.helpers.BaseRouter;
 import schmoller.tubes.network.PacketManager;
 import schmoller.tubes.network.packets.ModPacketNEIDragDrop;
 import schmoller.tubes.network.packets.ModPacketSetColor;
@@ -13,7 +16,12 @@ import schmoller.tubes.network.packets.ModPacketSetFilterMode;
 import schmoller.tubes.network.packets.ModPacketSetPullMode;
 import schmoller.tubes.network.packets.ModPacketSetRoutingOptions;
 import schmoller.tubes.parts.ItemTubeBase;
+import schmoller.tubes.routing.BlockedRouter;
+import schmoller.tubes.routing.ImportSourceFinder;
+import schmoller.tubes.routing.InputRouter;
+import schmoller.tubes.routing.OutputRouter;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
@@ -149,4 +157,36 @@ public class ModTubes extends TubesAPI
 	{
 		return itemTube.getTubeType(item);
 	}
+
+	
+	@Override
+	public BaseRouter getOutputRouter( IBlockAccess world, Position position, TubeItem item )
+	{
+		return new OutputRouter(world, position, item);
+	}
+
+	@Override
+	public BaseRouter getOutputRouter( IBlockAccess world, Position position, TubeItem item, int direction )
+	{
+		return new OutputRouter(world, position, item, direction);
+	}
+
+	@Override
+	public BaseRouter getImportRouter( IBlockAccess world, Position position, TubeItem item )
+	{
+		return new InputRouter(world, position, item);
+	}
+
+	@Override
+	public BaseRouter getImportSourceRouter( IBlockAccess world, Position position, int startDirection, ItemStack filter )
+	{
+		return new ImportSourceFinder(world, position, startDirection, filter);
+	}
+
+	@Override
+	public BaseRouter getOverflowRouter( IBlockAccess world, Position position, TubeItem item )
+	{
+		return new BlockedRouter(world, position, item);
+	}
+	
 }

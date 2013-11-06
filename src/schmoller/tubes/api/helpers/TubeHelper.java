@@ -4,12 +4,9 @@ import java.util.Random;
 
 import schmoller.tubes.api.Position;
 import schmoller.tubes.api.TubeItem;
+import schmoller.tubes.api.TubesAPI;
 import schmoller.tubes.api.interfaces.ITube;
 import schmoller.tubes.api.interfaces.ITubeConnectable;
-import schmoller.tubes.routing.BaseRouter;
-import schmoller.tubes.routing.BlockedRouter;
-import schmoller.tubes.routing.InputRouter;
-import schmoller.tubes.routing.OutputRouter;
 
 import codechicken.multipart.TMultiPart;
 import codechicken.multipart.TileMultipart;
@@ -109,27 +106,31 @@ public class TubeHelper
 		return map;
 	}
 	
+	/**
+	 * Returns the next direction that the item must travel to reach its destination.
+	 * @return The direction or -1 if there is no path
+	 */
 	public static int findNextDirection(IBlockAccess world, int x, int y, int z, TubeItem item)
 	{
 		BaseRouter.PathLocation path = null;
 		
 		if(item.state == TubeItem.NORMAL)
-			path = new OutputRouter(world, new Position(x, y, z), item).route();
+			path = TubesAPI.instance.getOutputRouter(world, new Position(x, y, z), item).route();
 		else if(item.state == TubeItem.IMPORT)
 		{
-			path = new InputRouter(world, new Position(x, y, z), item).route();
+			path = TubesAPI.instance.getImportRouter(world, new Position(x, y, z), item).route();
 			if(path == null)
 			{
-				path = new OutputRouter(world, new Position(x, y, z), item).route();
+				path = TubesAPI.instance.getOutputRouter(world, new Position(x, y, z), item).route();
 				item.state = TubeItem.NORMAL;
 			}
 		}
 		else if(item.state == TubeItem.BLOCKED)
 		{
-			path = new OutputRouter(world, new Position(x,y,z), item).route();
+			path = TubesAPI.instance.getOutputRouter(world, new Position(x,y,z), item).route();
 			
 			if(path == null)
-				path = new BlockedRouter(world, new Position(x,y,z), item).route();
+				path = TubesAPI.instance.getOverflowRouter(world, new Position(x,y,z), item).route();
 			else
 				item.state = TubeItem.NORMAL;
 		}
