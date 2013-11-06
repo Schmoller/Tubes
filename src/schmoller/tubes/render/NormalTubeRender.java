@@ -12,6 +12,7 @@ import schmoller.tubes.AdvRender;
 import schmoller.tubes.api.TubeDefinition;
 import schmoller.tubes.api.client.ITubeRender;
 import schmoller.tubes.api.helpers.CommonHelper;
+import schmoller.tubes.api.helpers.RenderHelper;
 import schmoller.tubes.api.helpers.TubeHelper;
 import schmoller.tubes.api.interfaces.ITube;
 import schmoller.tubes.definitions.TypeEjectionTube;
@@ -22,10 +23,9 @@ public class NormalTubeRender implements ITubeRender
 	protected AdvRender mRender = new AdvRender();
 	
 	@Override
-	public boolean renderDynamic( TubeDefinition type, ITube tube, World world, int x, int y, int z )
+	public void renderDynamic( TubeDefinition type, ITube tube, World world, int x, int y, int z )
 	{
-		// Let the default rendering handle it
-		return false; 
+		RenderHelper.renderTubeItems(tube); 
 	}
 
 	@Override

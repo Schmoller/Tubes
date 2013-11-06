@@ -12,12 +12,6 @@ import schmoller.tubes.definitions.TypeInjectionTube;
 public class InjectionTubeRender extends NormalTubeRender
 {
 	@Override
-	public boolean renderDynamic( TubeDefinition type, ITube tube, World world, int x, int y, int z )
-	{
-		return false;
-	}
-	
-	@Override
 	public void renderStatic( TubeDefinition type, ITube tube, World world, int x, int y, int z )
 	{
 		super.renderStatic(type, tube, world, x, y, z);

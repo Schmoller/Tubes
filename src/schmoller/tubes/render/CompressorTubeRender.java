@@ -15,7 +15,7 @@ import schmoller.tubes.definitions.TypeFilterTube;
 public class CompressorTubeRender extends NormalTubeRender
 {
 	@Override
-	public boolean renderDynamic( TubeDefinition type, ITube tube, World world, int x, int y, int z )
+	public void renderDynamic( TubeDefinition type, ITube tube, World world, int x, int y, int z )
 	{
 		mRender.resetTransform();
 		mRender.enableNormals = false;
@@ -27,7 +27,7 @@ public class CompressorTubeRender extends NormalTubeRender
 		
 		renderPumps(tube.getConnections());
 		
-		return false;
+		super.renderDynamic(type, tube, world, x, y, z);
 	}
 	
 	private void renderPumps(int connections)

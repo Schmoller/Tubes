@@ -1,4 +1,4 @@
-package schmoller.tubes.render;
+package schmoller.tubes.api.client;
 
 import static net.minecraftforge.client.IItemRenderer.ItemRenderType.ENTITY;
 import static net.minecraftforge.client.IItemRenderer.ItemRendererHelper.BLOCK_3D;

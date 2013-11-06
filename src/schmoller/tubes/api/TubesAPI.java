@@ -26,8 +26,22 @@ public abstract class TubesAPI
 	 */
 	public abstract void registerShapelessRecipe(ItemStack output, Object... input);
 	
+	/**
+	 * Creates an ItemStack containing that tube type
+	 * @param type A type that was registered with the TubeRegistry
+	 * @return The ItemStack, or null if there wasn't one
+	 */
 	public abstract ItemStack createTubeForType(String type);
+	/**
+	 * Creates an ItemStack containing that tube type with the specified amount
+	 * @param type A type that was registered with the TubeRegistry
+	 * @param amount The stack size of the returned ItemStack
+	 * @return The ItemStack, or null if there wasn't one
+	 */
 	public abstract ItemStack createTubeForType(String type, int amount);
 	
+	/**
+	 * Gets what type of tube the ItemStack holds, or null if it does not.
+	 */
 	public abstract String getTubeType(ItemStack item);
 }

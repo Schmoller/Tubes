@@ -188,7 +188,7 @@ public class ExtractionTubeRender extends NormalTubeRender
 	
 	
 	@Override
-	public boolean renderDynamic( TubeDefinition type, ITube tube, World world, int x, int y, int z )
+	public void renderDynamic( TubeDefinition type, ITube tube, World world, int x, int y, int z )
 	{
 		int direction = ((IDirectionalTube)tube).getFacing();
 		
@@ -202,6 +202,6 @@ public class ExtractionTubeRender extends NormalTubeRender
 		
 		renderPump(direction);
 		
-		return false;
+		super.renderDynamic(type, tube, world, x, y, z);
 	}
 }

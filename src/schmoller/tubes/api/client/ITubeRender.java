@@ -19,8 +19,7 @@ public interface ITubeRender
 	 * @param y A shortcut to the y location
 	 * @param z A shortcut to the z location
 	 */
-	// TODO: Remove boolean return type
-	public boolean renderDynamic(TubeDefinition type, ITube tube, World world, int x, int y, int z);
+	public void renderDynamic(TubeDefinition type, ITube tube, World world, int x, int y, int z);
 	
 	/**
 	 * This is the same as an ISimpleBlockRenderingHandler 

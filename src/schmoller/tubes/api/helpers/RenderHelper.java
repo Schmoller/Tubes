@@ -6,9 +6,9 @@ import net.minecraftforge.common.ForgeDirection;
 import schmoller.tubes.api.TubeDefinition;
 import schmoller.tubes.api.TubeItem;
 import schmoller.tubes.api.TubeRegistry;
+import schmoller.tubes.api.client.CustomRenderItem;
 import schmoller.tubes.api.client.ITubeRender;
 import schmoller.tubes.api.interfaces.ITube;
-import schmoller.tubes.render.CustomRenderItem;
 
 import org.lwjgl.opengl.GL11;
 
@@ -35,8 +35,7 @@ public class RenderHelper
 		GL11.glPushMatrix();
 		GL11.glTranslated(pos.x, pos.y, pos.z);
 		
-		if(!render.renderDynamic(definition, tube, tube.world(), tube.x(), tube.y(), tube.z()))
-			renderTubeItems(tube);
+		render.renderDynamic(definition, tube, tube.world(), tube.x(), tube.y(), tube.z());
 		
 		GL11.glPopMatrix();
 	}
