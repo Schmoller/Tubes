@@ -2,8 +2,8 @@ package schmoller.tubes.types;
 
 import net.minecraft.entity.item.EntityItem;
 import net.minecraftforge.common.ForgeDirection;
-import schmoller.tubes.ITubeConnectable;
-import schmoller.tubes.TubeItem;
+import schmoller.tubes.api.TubeItem;
+import schmoller.tubes.api.interfaces.ITubeConnectable;
 
 public class EjectionTube extends DirectionalBasicTube
 {

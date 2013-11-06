@@ -3,7 +3,7 @@ package schmoller.tubes.nei;
 import java.util.List;
 
 import schmoller.tubes.ModTubes;
-import schmoller.tubes.gui.FakeSlot;
+import schmoller.tubes.api.gui.FakeSlot;
 import schmoller.tubes.gui.GuiExtContainer;
 import schmoller.tubes.network.packets.ModPacketNEIDragDrop;
 

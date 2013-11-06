@@ -1,7 +1,11 @@
-package schmoller.tubes.inventory;
+package schmoller.tubes.api.interfaces;
 
+import schmoller.tubes.api.SizeMode;
 import net.minecraft.item.ItemStack;
 
+/**
+ * Handlers allow you to specify how to interact with different types of objects that can handle items.
+ */
 public interface IInventoryHandler
 {
 	/**

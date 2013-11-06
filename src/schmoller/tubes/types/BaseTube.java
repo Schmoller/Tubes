@@ -16,12 +16,12 @@ import codechicken.multipart.TFacePart;
 import codechicken.multipart.TMultiPart;
 import codechicken.multipart.scalatraits.TSlottedTile;
 
-import schmoller.tubes.ITube;
-import schmoller.tubes.ITubeConnectable;
-import schmoller.tubes.TubeHelper;
-import schmoller.tubes.TubeItem;
-import schmoller.tubes.inventory.IInventoryHandler;
-import schmoller.tubes.inventory.InventoryHandlers;
+import schmoller.tubes.api.InventoryHandlerRegistry;
+import schmoller.tubes.api.TubeItem;
+import schmoller.tubes.api.helpers.TubeHelper;
+import schmoller.tubes.api.interfaces.IInventoryHandler;
+import schmoller.tubes.api.interfaces.ITube;
+import schmoller.tubes.api.interfaces.ITubeConnectable;
 import schmoller.tubes.parts.BaseTubePart;
 
 public abstract class BaseTube extends BaseTubePart implements ITube
@@ -454,7 +454,7 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 		if(world().isRemote)
 			return true;
 		
-		IInventoryHandler handler = InventoryHandlers.getHandler(ent);
+		IInventoryHandler handler = InventoryHandlerRegistry.getHandler(ent);
 		
 		if(handler != null)
 		{

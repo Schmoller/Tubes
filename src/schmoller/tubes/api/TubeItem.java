@@ -1,4 +1,4 @@
-package schmoller.tubes;
+package schmoller.tubes.api;
 
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;

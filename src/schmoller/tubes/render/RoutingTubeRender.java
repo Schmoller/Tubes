@@ -8,10 +8,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-import schmoller.tubes.CommonHelper;
-import schmoller.tubes.ITube;
-import schmoller.tubes.TubeHelper;
-import schmoller.tubes.definitions.TubeDefinition;
+import schmoller.tubes.api.TubeDefinition;
+import schmoller.tubes.api.helpers.CommonHelper;
+import schmoller.tubes.api.helpers.TubeHelper;
+import schmoller.tubes.api.interfaces.ITube;
 import schmoller.tubes.definitions.TypeFilterTube;
 import schmoller.tubes.definitions.TypeRoutingTube;
 

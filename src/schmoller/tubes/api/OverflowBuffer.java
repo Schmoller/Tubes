@@ -1,7 +1,8 @@
-package schmoller.tubes;
+package schmoller.tubes.api;
 
 import java.util.LinkedList;
 import java.util.List;
+
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;

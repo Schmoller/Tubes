@@ -1,5 +1,6 @@
 package schmoller.tubes.gui;
 
+import schmoller.tubes.api.gui.FakeSlot;
 import schmoller.tubes.types.FilterTube;
 import net.minecraft.item.ItemStack;
 

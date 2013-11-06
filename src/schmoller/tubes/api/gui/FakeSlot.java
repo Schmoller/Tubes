@@ -1,10 +1,14 @@
-package schmoller.tubes.gui;
+package schmoller.tubes.api.gui;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
+/**
+ * Should be used in an ExtContainer.
+ * A slot that does not take items, but ghosts them.
+ */
 public abstract class FakeSlot extends Slot
 {
 	private boolean mHidden = false;

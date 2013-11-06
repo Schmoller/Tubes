@@ -4,8 +4,8 @@ import java.util.Arrays;
 
 import org.lwjgl.opengl.GL11;
 
-import schmoller.tubes.CommonHelper;
 import schmoller.tubes.ModTubes;
+import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.definitions.TypeRoutingTube;
 import schmoller.tubes.network.packets.ModPacketSetRoutingOptions;
 import schmoller.tubes.types.RoutingTube;

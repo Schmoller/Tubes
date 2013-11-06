@@ -5,10 +5,10 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import schmoller.tubes.ITube;
+import schmoller.tubes.api.TubeDefinition;
+import schmoller.tubes.api.interfaces.ITube;
 import schmoller.tubes.definitions.TypeEjectionTube;
 import schmoller.tubes.definitions.TypeFilterTube;
-import schmoller.tubes.definitions.TubeDefinition;
 
 public class FilterTubeRender extends NormalTubeRender
 {

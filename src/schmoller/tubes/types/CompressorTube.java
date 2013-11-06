@@ -9,10 +9,10 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MovingObjectPosition;
-import schmoller.tubes.ITubeConnectable;
 import schmoller.tubes.ModTubes;
-import schmoller.tubes.TubeHelper;
-import schmoller.tubes.TubeItem;
+import schmoller.tubes.api.TubeItem;
+import schmoller.tubes.api.helpers.TubeHelper;
+import schmoller.tubes.api.interfaces.ITubeConnectable;
 
 public class CompressorTube extends BaseTube implements IInventory
 {

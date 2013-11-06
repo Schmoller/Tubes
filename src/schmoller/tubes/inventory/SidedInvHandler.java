@@ -1,5 +1,8 @@
 package schmoller.tubes.inventory;
 
+import schmoller.tubes.api.SizeMode;
+import schmoller.tubes.api.helpers.InventoryHelper;
+import schmoller.tubes.api.interfaces.IInventoryHandler;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 

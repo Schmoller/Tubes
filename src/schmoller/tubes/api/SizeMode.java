@@ -1,4 +1,4 @@
-package schmoller.tubes.inventory;
+package schmoller.tubes.api;
 
 public enum SizeMode
 {

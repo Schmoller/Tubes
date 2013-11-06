@@ -13,10 +13,10 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.MovingObjectPosition;
 import schmoller.tubes.ModTubes;
 import schmoller.tubes.Position;
-import schmoller.tubes.TubeHelper;
-import schmoller.tubes.TubeItem;
+import schmoller.tubes.api.TubeItem;
+import schmoller.tubes.api.helpers.InventoryHelper;
+import schmoller.tubes.api.helpers.TubeHelper;
 import schmoller.tubes.definitions.TypeRoutingTube;
-import schmoller.tubes.inventory.InventoryHelper;
 import schmoller.tubes.routing.OutputRouter;
 import schmoller.tubes.routing.BaseRouter.PathLocation;
 

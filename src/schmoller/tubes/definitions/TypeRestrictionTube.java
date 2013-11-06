@@ -1,5 +1,6 @@
 package schmoller.tubes.definitions;
 
+import schmoller.tubes.api.TubeDefinition;
 import schmoller.tubes.types.BaseTube;
 import schmoller.tubes.types.RestrictionTube;
 import net.minecraft.client.renderer.texture.IconRegister;

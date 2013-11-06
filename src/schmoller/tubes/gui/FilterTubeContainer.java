@@ -1,5 +1,6 @@
 package schmoller.tubes.gui;
 
+import schmoller.tubes.api.gui.ExtContainer;
 import schmoller.tubes.types.FilterTube;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;

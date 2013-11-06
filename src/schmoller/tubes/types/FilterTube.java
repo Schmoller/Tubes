@@ -7,9 +7,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.MovingObjectPosition;
-import schmoller.tubes.ITubeConnectable;
 import schmoller.tubes.ModTubes;
-import schmoller.tubes.TubeItem;
+import schmoller.tubes.api.TubeItem;
+import schmoller.tubes.api.interfaces.ITubeConnectable;
 
 public class FilterTube extends BaseTube
 {

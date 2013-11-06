@@ -12,20 +12,20 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
-import schmoller.tubes.CommonHelper;
-import schmoller.tubes.ITubeConnectable;
-import schmoller.tubes.ITubeImportDest;
-import schmoller.tubes.ITubeOverflowDestination;
 import schmoller.tubes.ModTubes;
-import schmoller.tubes.OverflowBuffer;
 import schmoller.tubes.Position;
 import schmoller.tubes.PullMode;
-import schmoller.tubes.TubeHelper;
-import schmoller.tubes.TubeItem;
-import schmoller.tubes.inventory.IInventoryHandler;
-import schmoller.tubes.inventory.InventoryHandlers;
-import schmoller.tubes.inventory.InventoryHelper;
-import schmoller.tubes.inventory.SizeMode;
+import schmoller.tubes.api.InventoryHandlerRegistry;
+import schmoller.tubes.api.OverflowBuffer;
+import schmoller.tubes.api.SizeMode;
+import schmoller.tubes.api.TubeItem;
+import schmoller.tubes.api.helpers.CommonHelper;
+import schmoller.tubes.api.helpers.InventoryHelper;
+import schmoller.tubes.api.helpers.TubeHelper;
+import schmoller.tubes.api.interfaces.IInventoryHandler;
+import schmoller.tubes.api.interfaces.ITubeConnectable;
+import schmoller.tubes.api.interfaces.ITubeImportDest;
+import schmoller.tubes.api.interfaces.ITubeOverflowDestination;
 import schmoller.tubes.routing.ImportSourceFinder;
 import schmoller.tubes.routing.OutputRouter;
 import schmoller.tubes.routing.BaseRouter.PathLocation;
@@ -112,7 +112,7 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 			
 			if(source != null)
 			{
-				IInventoryHandler handler = InventoryHandlers.getHandlerFor(world(), source.position);
+				IInventoryHandler handler = InventoryHandlerRegistry.getHandlerFor(world(), source.position);
 				if(handler != null)
 				{
 					ItemStack extracted;

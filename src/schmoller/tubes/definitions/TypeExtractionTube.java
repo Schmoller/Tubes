@@ -3,6 +3,7 @@ package schmoller.tubes.definitions;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.util.Icon;
 import net.minecraft.util.ResourceLocation;
+import schmoller.tubes.api.TubeDefinition;
 import schmoller.tubes.types.BaseTube;
 import schmoller.tubes.types.ExtractionTube;
 

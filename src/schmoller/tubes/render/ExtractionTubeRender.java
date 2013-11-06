@@ -8,12 +8,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-import schmoller.tubes.IDirectionalTube;
-import schmoller.tubes.ITube;
-import schmoller.tubes.TubeHelper;
+import schmoller.tubes.api.TubeDefinition;
+import schmoller.tubes.api.helpers.TubeHelper;
+import schmoller.tubes.api.interfaces.IDirectionalTube;
+import schmoller.tubes.api.interfaces.ITube;
 import schmoller.tubes.definitions.TypeEjectionTube;
 import schmoller.tubes.definitions.TypeExtractionTube;
-import schmoller.tubes.definitions.TubeDefinition;
 import org.lwjgl.opengl.GL11;
 
 public class ExtractionTubeRender extends NormalTubeRender

@@ -4,8 +4,8 @@ import java.util.Arrays;
 
 import org.lwjgl.opengl.GL11;
 
-import schmoller.tubes.CommonHelper;
 import schmoller.tubes.ModTubes;
+import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.definitions.TypeFilterTube;
 import schmoller.tubes.network.packets.ModPacketSetColor;
 import schmoller.tubes.network.packets.ModPacketSetFilterMode;

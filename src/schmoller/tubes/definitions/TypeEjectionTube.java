@@ -2,6 +2,7 @@ package schmoller.tubes.definitions;
 
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.util.Icon;
+import schmoller.tubes.api.TubeDefinition;
 import schmoller.tubes.types.BaseTube;
 import schmoller.tubes.types.EjectionTube;
 

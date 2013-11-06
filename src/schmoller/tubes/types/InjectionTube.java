@@ -2,12 +2,12 @@ package schmoller.tubes.types;
 
 import java.util.List;
 
-import schmoller.tubes.ITubeConnectable;
-import schmoller.tubes.ITubeOverflowDestination;
 import schmoller.tubes.ModTubes;
-import schmoller.tubes.OverflowBuffer;
 import schmoller.tubes.Position;
-import schmoller.tubes.TubeItem;
+import schmoller.tubes.api.OverflowBuffer;
+import schmoller.tubes.api.TubeItem;
+import schmoller.tubes.api.interfaces.ITubeConnectable;
+import schmoller.tubes.api.interfaces.ITubeOverflowDestination;
 import schmoller.tubes.routing.OutputRouter;
 import schmoller.tubes.routing.BaseRouter.PathLocation;
 import net.minecraft.entity.player.EntityPlayer;

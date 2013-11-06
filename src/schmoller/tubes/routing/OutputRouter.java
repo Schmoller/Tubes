@@ -1,12 +1,12 @@
 package schmoller.tubes.routing;
 
-import schmoller.tubes.CommonHelper;
-import schmoller.tubes.ITubeConnectable;
 import schmoller.tubes.Position;
-import schmoller.tubes.TubeHelper;
-import schmoller.tubes.TubeItem;
-import schmoller.tubes.inventory.IInventoryHandler;
-import schmoller.tubes.inventory.InventoryHandlers;
+import schmoller.tubes.api.InventoryHandlerRegistry;
+import schmoller.tubes.api.TubeItem;
+import schmoller.tubes.api.helpers.CommonHelper;
+import schmoller.tubes.api.helpers.TubeHelper;
+import schmoller.tubes.api.interfaces.IInventoryHandler;
+import schmoller.tubes.api.interfaces.ITubeConnectable;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
@@ -127,7 +127,7 @@ public class OutputRouter extends BaseRouter
 		
 		if(con == null)
 		{
-			IInventoryHandler handler = InventoryHandlers.getHandler(ent);
+			IInventoryHandler handler = InventoryHandlerRegistry.getHandler(ent);
 			if(handler != null)
 			{
 				ItemStack remaining = handler.insertItem(mItem.item, side ^ 1, false);

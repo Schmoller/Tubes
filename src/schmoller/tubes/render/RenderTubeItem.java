@@ -1,7 +1,8 @@
 package schmoller.tubes.render;
 
 import schmoller.tubes.ModTubes;
-import schmoller.tubes.TubeRegistry;
+import schmoller.tubes.api.TubeRegistry;
+import schmoller.tubes.api.helpers.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
 import org.lwjgl.opengl.GL11;

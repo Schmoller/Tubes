@@ -1,4 +1,4 @@
-package schmoller.tubes;
+package schmoller.tubes.api;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -10,8 +10,7 @@ import codechicken.multipart.MultiPartRegistry.IPartFactory;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IconRegister;
-import schmoller.tubes.definitions.TubeDefinition;
-import schmoller.tubes.render.ITubeRender;
+import schmoller.tubes.api.client.ITubeRender;
 
 public class TubeRegistry implements IPartFactory
 {

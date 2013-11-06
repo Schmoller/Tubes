@@ -1,5 +1,6 @@
 package schmoller.tubes.inventory.providers;
 
+import schmoller.tubes.api.interfaces.IInventoryProvider;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;

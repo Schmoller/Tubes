@@ -1,10 +1,13 @@
-package schmoller.tubes.inventory;
+package schmoller.tubes.api;
 
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
 import schmoller.tubes.Position;
+import schmoller.tubes.api.interfaces.IInventoryHandler;
+import schmoller.tubes.inventory.BasicInvHandler;
+import schmoller.tubes.inventory.SidedInvHandler;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -13,7 +16,7 @@ import net.minecraft.world.IBlockAccess;
 
 import com.google.common.base.Throwables;
 
-public class InventoryHandlers
+public class InventoryHandlerRegistry
 {
 	private static HashMap<Class<?>, Constructor<? extends IInventoryHandler>> mHandlers = new HashMap<Class<?>, Constructor<? extends IInventoryHandler>>();
 	
@@ -47,7 +50,7 @@ public class InventoryHandlers
 	
 	public static IInventoryHandler getHandler(Object object)
 	{
-		IInventory alternate = InventoryProvider.provideFor(object);
+		IInventory alternate = InventoryProviderRegistry.provideFor(object);
 		if(alternate != null)
 			object = alternate;
 		

@@ -1,4 +1,4 @@
-package schmoller.tubes.inventory;
+package schmoller.tubes.api.helpers;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;

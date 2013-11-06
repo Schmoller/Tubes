@@ -9,12 +9,13 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import schmoller.tubes.AdvRender;
-import schmoller.tubes.CommonHelper;
-import schmoller.tubes.ITube;
-import schmoller.tubes.TubeHelper;
+import schmoller.tubes.api.TubeDefinition;
+import schmoller.tubes.api.client.ITubeRender;
+import schmoller.tubes.api.helpers.CommonHelper;
+import schmoller.tubes.api.helpers.TubeHelper;
+import schmoller.tubes.api.interfaces.ITube;
 import schmoller.tubes.definitions.TypeEjectionTube;
 import schmoller.tubes.definitions.TypeNormalTube;
-import schmoller.tubes.definitions.TubeDefinition;
 
 public class NormalTubeRender implements ITubeRender
 {

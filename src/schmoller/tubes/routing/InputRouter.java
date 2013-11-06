@@ -1,11 +1,11 @@
 package schmoller.tubes.routing;
 
-import schmoller.tubes.CommonHelper;
-import schmoller.tubes.ITubeConnectable;
-import schmoller.tubes.ITubeImportDest;
 import schmoller.tubes.Position;
-import schmoller.tubes.TubeHelper;
-import schmoller.tubes.TubeItem;
+import schmoller.tubes.api.TubeItem;
+import schmoller.tubes.api.helpers.CommonHelper;
+import schmoller.tubes.api.helpers.TubeHelper;
+import schmoller.tubes.api.interfaces.ITubeConnectable;
+import schmoller.tubes.api.interfaces.ITubeImportDest;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 

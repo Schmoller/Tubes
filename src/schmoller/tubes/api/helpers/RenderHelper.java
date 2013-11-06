@@ -1,12 +1,15 @@
-package schmoller.tubes.render;
+package schmoller.tubes.api.helpers;
 
 import codechicken.lib.vec.Vector3;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeDirection;
-import schmoller.tubes.ITube;
-import schmoller.tubes.TubeItem;
-import schmoller.tubes.TubeRegistry;
-import schmoller.tubes.definitions.TubeDefinition;
+import schmoller.tubes.api.TubeDefinition;
+import schmoller.tubes.api.TubeItem;
+import schmoller.tubes.api.TubeRegistry;
+import schmoller.tubes.api.client.ITubeRender;
+import schmoller.tubes.api.interfaces.ITube;
+import schmoller.tubes.render.CustomRenderItem;
+
 import org.lwjgl.opengl.GL11;
 
 public class RenderHelper

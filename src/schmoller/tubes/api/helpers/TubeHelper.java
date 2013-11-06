@@ -1,7 +1,11 @@
-package schmoller.tubes;
+package schmoller.tubes.api.helpers;
 
 import java.util.Random;
 
+import schmoller.tubes.Position;
+import schmoller.tubes.api.TubeItem;
+import schmoller.tubes.api.interfaces.ITube;
+import schmoller.tubes.api.interfaces.ITubeConnectable;
 import schmoller.tubes.routing.BaseRouter;
 import schmoller.tubes.routing.BlockedRouter;
 import schmoller.tubes.routing.InputRouter;

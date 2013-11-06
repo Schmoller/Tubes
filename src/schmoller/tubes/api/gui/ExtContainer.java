@@ -1,9 +1,12 @@
-package schmoller.tubes.gui;
+package schmoller.tubes.api.gui;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 
+/**
+ * Extended container provides the ability to use fake slots
+ */
 public abstract class ExtContainer extends Container
 {
 	@Override

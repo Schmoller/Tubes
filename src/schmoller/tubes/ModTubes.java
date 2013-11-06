@@ -2,6 +2,7 @@ package schmoller.tubes;
 
 import java.util.logging.Logger;
 
+import schmoller.tubes.api.TubeRegistry;
 import schmoller.tubes.network.PacketManager;
 import schmoller.tubes.network.packets.ModPacketNEIDragDrop;
 import schmoller.tubes.network.packets.ModPacketSetColor;

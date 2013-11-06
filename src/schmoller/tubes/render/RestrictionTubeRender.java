@@ -6,8 +6,8 @@ import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
-import schmoller.tubes.CommonHelper;
-import schmoller.tubes.definitions.TubeDefinition;
+import schmoller.tubes.api.TubeDefinition;
+import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.definitions.TypeNormalTube;
 import schmoller.tubes.definitions.TypeRestrictionTube;
 

@@ -1,5 +1,7 @@
 package schmoller.tubes.gui;
 
+import schmoller.tubes.api.gui.ExtContainer;
+import schmoller.tubes.api.gui.FakeSlot;
 import schmoller.tubes.types.RoutingTube;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;

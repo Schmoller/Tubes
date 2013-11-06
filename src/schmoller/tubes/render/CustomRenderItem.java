@@ -24,8 +24,8 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import schmoller.tubes.AdvRender;
-import schmoller.tubes.CommonHelper;
-import schmoller.tubes.TubeItem;
+import schmoller.tubes.api.TubeItem;
+import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.definitions.TypeNormalTube;
 
 @SideOnly(Side.CLIENT)

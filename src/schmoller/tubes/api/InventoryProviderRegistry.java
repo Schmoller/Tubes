@@ -1,16 +1,16 @@
-package schmoller.tubes.inventory;
+package schmoller.tubes.api;
 
 import java.util.HashMap;
 
+import schmoller.tubes.api.interfaces.IInventoryProvider;
 import schmoller.tubes.inventory.providers.DoubleChestProvider;
 import schmoller.tubes.inventory.providers.FurnaceInventoryProvider;
-import schmoller.tubes.inventory.providers.IInventoryProvider;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.tileentity.TileEntityFurnace;
 
-public class InventoryProvider
+public class InventoryProviderRegistry
 {
 	private static HashMap<Class<?>, IInventoryProvider> mProviders = new HashMap<Class<?>, IInventoryProvider>();
 	

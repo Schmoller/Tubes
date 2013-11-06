@@ -9,9 +9,9 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import schmoller.tubes.CommonHelper;
-import schmoller.tubes.ITubeConnectable;
-import schmoller.tubes.TubeItem;
+import schmoller.tubes.api.TubeItem;
+import schmoller.tubes.api.helpers.CommonHelper;
+import schmoller.tubes.api.interfaces.ITubeConnectable;
 
 public class BasicTube extends BaseTube implements ITubeConnectable
 {
