@@ -13,6 +13,7 @@ import schmoller.tubes.gui.InjectionTubeGui;
 import schmoller.tubes.gui.RequestingTubeGui;
 import schmoller.tubes.gui.RoutingTubeGui;
 import schmoller.tubes.network.ModPacket;
+import schmoller.tubes.render.ColoringTubeRender;
 import schmoller.tubes.render.CompressorTubeRender;
 import schmoller.tubes.render.EjectionTubeRender;
 import schmoller.tubes.render.ExtractionTubeRender;
@@ -57,6 +58,7 @@ public class ClientProxy extends CommonProxy
 		TubeRegistry.registerRenderer("requesting", new RequestingTubeRender());
 		TubeRegistry.registerRenderer("routing", new RoutingTubeRender());
 		TubeRegistry.registerRenderer("valve", new ValveTubeRender());
+		TubeRegistry.registerRenderer("coloring", new ColoringTubeRender());
 	}
 	
 	@Override
