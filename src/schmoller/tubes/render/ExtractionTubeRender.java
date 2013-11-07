@@ -124,7 +124,7 @@ public class ExtractionTubeRender extends NormalTubeRender
 		
 		tes.startDrawingQuads();
 		
-		float amount = ((float)Math.sin(animTime * Math.PI * 2) / 2f + 0.5f) * 0.0625f;
+		float amount = ((float)Math.cos(animTime * Math.PI * 2) / 2f + 0.5f) * 0.0625f;
 		
 		mRender.resetTransform();
 		switch(side)
@@ -209,6 +209,12 @@ public class ExtractionTubeRender extends NormalTubeRender
 			((ExtractionTube)tube).animTime += frameTime / 60;
 			if(((ExtractionTube)tube).animTime > 1)
 				((ExtractionTube)tube).animTime -= 1;
+		}
+		else if(((ExtractionTube)tube).animTime > 0)
+		{
+			((ExtractionTube)tube).animTime += frameTime / 60;
+			if(((ExtractionTube)tube).animTime > 1)
+				((ExtractionTube)tube).animTime = 0;
 		}
 		
 		super.renderDynamic(type, tube, world, x, y, z, frameTime);

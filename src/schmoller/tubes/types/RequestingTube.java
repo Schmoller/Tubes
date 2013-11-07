@@ -42,6 +42,8 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 	private boolean mIsPowered;
 	
 	public static final int CHANNEL_PULSE = 2;
+	public static final int CHANNEL_MODE = 3;
+	public static final int CHANNEL_POWERED = 4;
 	
 	public float animTime = 0;
 	
@@ -140,6 +142,9 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 						--mPulses;
 						if(mPulses < 0)
 							mPulses = 0;
+						
+						if(mMode == PullMode.RedstoneSingle)
+							openChannel(CHANNEL_PULSE);
 					}
 				}
 			}
@@ -262,6 +267,9 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 		{
 			boolean state = getPower() > 0;
 			
+			if(state != mIsPowered)
+				openChannel(CHANNEL_POWERED).writeBoolean(state);
+			
 			if(!mIsPowered && state && mMode == PullMode.RedstoneSingle)
 				++mPulses;
 	
@@ -305,6 +313,8 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 	public void setMode(PullMode mode)
 	{
 		mMode = mode;
+		if(!world().isRemote)
+			openChannel(CHANNEL_MODE).writeByte(mode.ordinal());
 	}
 	
 	public short getColour()
@@ -317,6 +327,11 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 		mColor = colour;
 	}
 	
+	public boolean isPowered()
+	{
+		return mIsPowered;
+	}
+	
 	@Override
 	protected void onDropItems( List<ItemStack> itemsToDrop )
 	{
@@ -325,11 +340,25 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 	}
 	
 	@Override
+	protected void onRecieveDataClient( int channel, MCDataInput input )
+	{
+		if(channel == CHANNEL_MODE)
+			mMode = PullMode.values()[input.readByte()];
+		else if(channel == CHANNEL_PULSE)
+			animTime = 0.0001f;
+		else if(channel == CHANNEL_POWERED)
+			mIsPowered = input.readBoolean();
+		else
+			super.onRecieveDataClient(channel, input);
+	}
+	
+	@Override
 	public void readDesc( MCDataInput input )
 	{
 		super.readDesc(input);
 		mMode = PullMode.values()[input.readByte()];
 		mColor = input.readShort();
+		mIsPowered = input.readBoolean();
 	}
 	
 	@Override
@@ -338,6 +367,7 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 		super.writeDesc(output);
 		output.writeByte(mMode.ordinal());
 		output.writeShort(mColor);
+		output.writeBoolean(mIsPowered);
 	}
 	
 	@Override

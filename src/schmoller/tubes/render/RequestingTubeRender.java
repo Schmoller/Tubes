@@ -16,6 +16,8 @@ import schmoller.tubes.definitions.TypeEjectionTube;
 import schmoller.tubes.definitions.TypeExtractionTube;
 import schmoller.tubes.definitions.TypeFilterTube;
 import schmoller.tubes.definitions.TypeRequestingTube;
+import schmoller.tubes.types.RequestingTube;
+
 import org.lwjgl.opengl.GL11;
 
 public class RequestingTubeRender extends NormalTubeRender
@@ -113,7 +115,7 @@ public class RequestingTubeRender extends NormalTubeRender
 		mRender.resetTextureRotation();
 	}
 	
-	private void renderPump(int side)
+	private void renderPump(int side, float time)
 	{
 		FMLClientHandler.instance().getClient().renderGlobal.renderEngine.bindTexture(TypeExtractionTube.pumpTexture);
 		
@@ -125,7 +127,7 @@ public class RequestingTubeRender extends NormalTubeRender
 		
 		tes.startDrawingQuads();
 		
-		float amount = ((float)Math.sin(((System.currentTimeMillis() % 1000) / 1000.0f) * Math.PI * 2) / 2f + 0.5f) * 0.0625f;
+		float amount = ((float)Math.cos(time * Math.PI * 2) / 2f + 0.5f) * 0.0625f;
 		
 		mRender.resetTransform();
 		switch(side)
@@ -187,7 +189,7 @@ public class RequestingTubeRender extends NormalTubeRender
 		
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		
-		renderPump(3);
+		renderPump(3, ((System.currentTimeMillis() % 1000) / 1000.0f));
 	}
 	
 	
@@ -204,7 +206,43 @@ public class RequestingTubeRender extends NormalTubeRender
 		
 		mRender.setLocalLights(0.5f, 1.0f, 0.8f, 0.8f, 0.6f, 0.6f);
 		
-		renderPump(direction);
+		switch(((RequestingTube)tube).getMode())
+		{
+		case Constant:
+			((RequestingTube)tube).animTime += frameTime / 60;
+			
+			if(((RequestingTube)tube).animTime > 1)
+				((RequestingTube)tube).animTime -= 1;
+			break;
+		case RedstoneConstant:
+			if(((RequestingTube)tube).isPowered())
+			{
+				((RequestingTube)tube).animTime += frameTime / 60;
+				
+				if(((RequestingTube)tube).animTime > 1)
+					((RequestingTube)tube).animTime -= 1;
+			}
+			else if(((RequestingTube)tube).animTime > 0)
+			{
+				((RequestingTube)tube).animTime += frameTime / 60;
+				
+				if(((RequestingTube)tube).animTime > 1)
+					((RequestingTube)tube).animTime = 0;
+			}
+			
+			
+			
+			break;
+		case RedstoneSingle:
+			if(((RequestingTube)tube).animTime > 0)
+				((RequestingTube)tube).animTime += frameTime / 60;
+			
+			if(((RequestingTube)tube).animTime > 1)
+				((RequestingTube)tube).animTime = 0;
+			break;
+		}
+		
+		renderPump(direction, ((RequestingTube)tube).animTime);
 		
 		super.renderDynamic(type, tube, world, x, y, z, frameTime);
 	}
