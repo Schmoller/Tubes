@@ -212,4 +212,9 @@ public class ValveTube extends DirectionalBasicTube implements ITubeOverflowDest
 	{
 		return 0;
 	}
+
+	public boolean isOpen()
+	{
+		return mIsOpen;
+	}
 }

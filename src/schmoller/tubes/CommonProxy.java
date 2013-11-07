@@ -28,6 +28,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import schmoller.tubes.api.Blocks;
 import schmoller.tubes.api.Items;
 import schmoller.tubes.api.TubeRegistry;
+import schmoller.tubes.api.TubesAPI;
 import schmoller.tubes.api.gui.ExtContainer;
 import schmoller.tubes.api.gui.FakeSlot;
 import schmoller.tubes.api.helpers.CommonHelper;
@@ -181,6 +182,8 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("filter"), "ici", "ctc", "ici", 'i', Item.ingotIron, 't', ModTubes.itemTube.createForType("basic"), 'c', Items.RedstoneCircuit.getItem()));
 		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("routing"), "iti", "tft", "iti", 'i', Item.ingotIron, 't', ModTubes.itemTube.createForType("basic"), 'f', ModTubes.itemTube.createForType("filter")));
 		GameRegistry.addRecipe(new SpecialShapelessRecipe(ModTubes.itemTube.createForType("ejection"), ModTubes.itemTube.createForType("basic"), Block.glass));
+		
+		TubesAPI.instance.registerShapelessRecipe(ModTubes.itemTube.createForType("valve"), ModTubes.itemTube.createForType("basic"), Item.ingotIron, Block.lever);
 		
 		GameRegistry.addShapedRecipe(new ItemStack(Items.RedstoneCircuit.getItem(), 4), "igi", "rrr", "igi", 'i', Item.ingotIron, 'g', Item.ingotGold, 'r', Item.redstone);
 	}
