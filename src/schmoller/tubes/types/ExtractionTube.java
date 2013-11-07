@@ -2,6 +2,8 @@ package schmoller.tubes.types;
 
 import java.util.List;
 
+import codechicken.lib.data.MCDataInput;
+import codechicken.lib.data.MCDataOutput;
 import codechicken.multipart.IRedstonePart;
 import codechicken.multipart.RedstoneInteractions;
 import net.minecraft.item.ItemStack;
@@ -22,6 +24,9 @@ public class ExtractionTube extends DirectionalBasicTube implements IRedstonePar
 	private OverflowBuffer mOverflow;
 	
 	public static final int BLOCKED_TICKS = 10;
+	public static final int CHANNEL_POWERED = 2;
+	
+	public float animTime = 0;
 	
 	public ExtractionTube()
 	{
@@ -101,7 +106,12 @@ public class ExtractionTube extends DirectionalBasicTube implements IRedstonePar
 	@Override
 	public void update()
 	{
-		mIsPowered = getPower() > 0;
+		boolean powered = getPower() > 0;
+		
+		if(powered != mIsPowered && !world().isRemote)
+			openChannel(CHANNEL_POWERED).writeBoolean(powered);
+		
+		mIsPowered = powered;
 		super.update();
 	}
 	
@@ -155,5 +165,35 @@ public class ExtractionTube extends DirectionalBasicTube implements IRedstonePar
 		super.load(root);
 		
 		mOverflow.load(root);
+	}
+	
+	@Override
+	public void writeDesc( MCDataOutput packet )
+	{
+		super.writeDesc(packet);
+		
+		packet.writeBoolean(mIsPowered);
+	}
+	
+	@Override
+	public void readDesc( MCDataInput packet )
+	{
+		super.readDesc(packet);
+		
+		mIsPowered = packet.readBoolean();
+	}
+	
+	@Override
+	protected void onRecieveDataClient( int channel, MCDataInput input )
+	{
+		if(channel == CHANNEL_POWERED)
+			mIsPowered = input.readBoolean();
+		else
+			super.onRecieveDataClient(channel, input);
+	}
+	
+	public boolean isPowered()
+	{
+		return mIsPowered;
 	}
 }

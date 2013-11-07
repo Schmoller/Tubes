@@ -23,7 +23,7 @@ public class NormalTubeRender implements ITubeRender
 	protected AdvRender mRender = new AdvRender();
 	
 	@Override
-	public void renderDynamic( TubeDefinition type, ITube tube, World world, int x, int y, int z )
+	public void renderDynamic( TubeDefinition type, ITube tube, World world, int x, int y, int z, float frameTime)
 	{
 		RenderHelper.renderTubeItems(tube); 
 	}

@@ -41,6 +41,10 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 	private int mPulses = 0;
 	private boolean mIsPowered;
 	
+	public static final int CHANNEL_PULSE = 2;
+	
+	public float animTime = 0;
+	
 	public RequestingTube()
 	{
 		super("requesting");

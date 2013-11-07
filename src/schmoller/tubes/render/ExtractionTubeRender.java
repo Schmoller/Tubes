@@ -14,6 +14,8 @@ import schmoller.tubes.api.interfaces.IDirectionalTube;
 import schmoller.tubes.api.interfaces.ITube;
 import schmoller.tubes.definitions.TypeEjectionTube;
 import schmoller.tubes.definitions.TypeExtractionTube;
+import schmoller.tubes.types.ExtractionTube;
+
 import org.lwjgl.opengl.GL11;
 
 public class ExtractionTubeRender extends NormalTubeRender
@@ -110,7 +112,7 @@ public class ExtractionTubeRender extends NormalTubeRender
 		mRender.resetTextureRotation();
 	}
 	
-	private void renderPump(int side)
+	private void renderPump(int side, float animTime)
 	{
 		FMLClientHandler.instance().getClient().renderGlobal.renderEngine.bindTexture(TypeExtractionTube.pumpTexture);
 		
@@ -122,7 +124,7 @@ public class ExtractionTubeRender extends NormalTubeRender
 		
 		tes.startDrawingQuads();
 		
-		float amount = ((float)Math.sin(((System.currentTimeMillis() % 1000) / 1000.0f) * Math.PI * 2) / 2f + 0.5f) * 0.0625f;
+		float amount = ((float)Math.sin(animTime * Math.PI * 2) / 2f + 0.5f) * 0.0625f;
 		
 		mRender.resetTransform();
 		switch(side)
@@ -183,12 +185,12 @@ public class ExtractionTubeRender extends NormalTubeRender
 		
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		
-		renderPump(3);
+		renderPump(3, ((System.currentTimeMillis() % 1000) / 1000.0f));
 	}
 	
 	
 	@Override
-	public void renderDynamic( TubeDefinition type, ITube tube, World world, int x, int y, int z )
+	public void renderDynamic( TubeDefinition type, ITube tube, World world, int x, int y, int z, float frameTime )
 	{
 		int direction = ((IDirectionalTube)tube).getFacing();
 		
@@ -200,8 +202,15 @@ public class ExtractionTubeRender extends NormalTubeRender
 		
 		mRender.setLocalLights(0.5f, 1.0f, 0.8f, 0.8f, 0.6f, 0.6f);
 		
-		renderPump(direction);
+		renderPump(direction, ((ExtractionTube)tube).animTime);
 		
-		super.renderDynamic(type, tube, world, x, y, z);
+		if(!((ExtractionTube)tube).isPowered())
+		{
+			((ExtractionTube)tube).animTime += frameTime / 60;
+			if(((ExtractionTube)tube).animTime > 1)
+				((ExtractionTube)tube).animTime -= 1;
+		}
+		
+		super.renderDynamic(type, tube, world, x, y, z, frameTime);
 	}
 }

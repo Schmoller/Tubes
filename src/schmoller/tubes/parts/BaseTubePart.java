@@ -185,7 +185,7 @@ public abstract class BaseTubePart extends JCuboidPart implements ITube, JNormal
 	public final void renderDynamic( Vector3 pos, float frame, int pass )
 	{
 		if(pass == 0)
-			RenderHelper.renderDynamic(this, mDef, pos);
+			RenderHelper.renderDynamic(this, mDef, pos, frame);
 	}
 	
 	@Override

@@ -192,7 +192,7 @@ public class RequestingTubeRender extends NormalTubeRender
 	
 	
 	@Override
-	public void renderDynamic( TubeDefinition type, ITube tube, World world, int x, int y, int z )
+	public void renderDynamic( TubeDefinition type, ITube tube, World world, int x, int y, int z, float frameTime )
 	{
 		int direction = ((IDirectionalTube)tube).getFacing();
 		
@@ -206,6 +206,6 @@ public class RequestingTubeRender extends NormalTubeRender
 		
 		renderPump(direction);
 		
-		super.renderDynamic(type, tube, world, x, y, z);
+		super.renderDynamic(type, tube, world, x, y, z, frameTime);
 	}
 }

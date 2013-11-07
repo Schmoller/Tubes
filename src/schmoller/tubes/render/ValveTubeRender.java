@@ -14,7 +14,6 @@ import schmoller.tubes.api.TubeDefinition;
 import schmoller.tubes.api.helpers.TubeHelper;
 import schmoller.tubes.api.interfaces.IDirectionalTube;
 import schmoller.tubes.api.interfaces.ITube;
-import schmoller.tubes.definitions.TypeEjectionTube;
 import schmoller.tubes.definitions.TypeValveTube;
 import schmoller.tubes.types.ValveTube;
 

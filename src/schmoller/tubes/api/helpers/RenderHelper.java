@@ -29,13 +29,13 @@ public class RenderHelper
 		}
 	}
 
-	public static void renderDynamic( ITube tube, TubeDefinition definition, Vector3 pos )
+	public static void renderDynamic( ITube tube, TubeDefinition definition, Vector3 pos, float frameTime )
 	{
 		ITubeRender render = TubeRegistry.instance().getRender(definition);
 		GL11.glPushMatrix();
 		GL11.glTranslated(pos.x, pos.y, pos.z);
 		
-		render.renderDynamic(definition, tube, tube.world(), tube.x(), tube.y(), tube.z());
+		render.renderDynamic(definition, tube, tube.world(), tube.x(), tube.y(), tube.z(), frameTime);
 		
 		GL11.glPopMatrix();
 	}

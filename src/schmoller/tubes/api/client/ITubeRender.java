@@ -19,7 +19,7 @@ public interface ITubeRender
 	 * @param y A shortcut to the y location
 	 * @param z A shortcut to the z location
 	 */
-	public void renderDynamic(TubeDefinition type, ITube tube, World world, int x, int y, int z);
+	public void renderDynamic(TubeDefinition type, ITube tube, World world, int x, int y, int z, float frameTime);
 	
 	/**
 	 * This is the same as an ISimpleBlockRenderingHandler 
