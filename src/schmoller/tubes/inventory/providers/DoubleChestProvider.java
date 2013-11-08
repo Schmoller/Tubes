@@ -15,21 +15,33 @@ public class DoubleChestProvider implements IInventoryProvider
 			TileEntityChest chest = (TileEntityChest)object;
 			
 			TileEntityChest adjacent = null;
+			IInventory inventory = chest;
 			
 			if (chest.adjacentChestXNeg != null)
-				adjacent = chest.adjacentChestXNeg;  
+			{
+				adjacent = chest.adjacentChestXNeg;
+				inventory = new InventoryLargeChest("", adjacent, inventory);
+			}
 			
 			if (chest.adjacentChestXPos != null)
-				adjacent = chest.adjacentChestXPos;  
+			{
+				adjacent = chest.adjacentChestXPos;
+				inventory = new InventoryLargeChest("", inventory, adjacent);
+			}
 			
 			if (chest.adjacentChestZNeg != null)
-				adjacent = chest.adjacentChestZNeg;  
+			{
+				adjacent = chest.adjacentChestZNeg;
+				inventory = new InventoryLargeChest("", adjacent, inventory);
+			}
 			
 			if (chest.adjacentChestZPosition != null)
-				adjacent = chest.adjacentChestZPosition;  
+			{
+				adjacent = chest.adjacentChestZPosition;
+				inventory = new InventoryLargeChest("", inventory, adjacent);
+			}
 			
-			if (adjacent != null)
-				return new InventoryLargeChest("", chest, adjacent);
+			return inventory;
 		}
 		
 		return null;

@@ -108,6 +108,8 @@ public class FilterTubeGui extends GuiExtContainer
 					++i;
 				else if(button == 1)
 					--i;
+				else if(button == 2)
+					i = 0;
 				
 				if(i < 0)
 					i = Mode.values().length - 1;
@@ -125,6 +127,8 @@ public class FilterTubeGui extends GuiExtContainer
 					++i;
 				else if(button == 1)
 					--i;
+				else if(button == 2)
+					i = 0;
 				
 				if(i < 0)
 					i = Comparison.values().length - 1;

@@ -52,7 +52,7 @@ public abstract class TubesAPI
 	public abstract BaseRouter getOutputRouter(IBlockAccess world, Position position, TubeItem item, int direction);
 	
 	public abstract BaseRouter getImportRouter(IBlockAccess world, Position position, TubeItem item);
-	public abstract BaseRouter getImportSourceRouter(IBlockAccess world, Position position, int startDirection, ItemStack filter);
+	public abstract BaseRouter getImportSourceRouter(IBlockAccess world, Position position, int startDirection, ItemStack filter, SizeMode mode);
 	
 	public abstract BaseRouter getOverflowRouter(IBlockAccess world, Position position, TubeItem item);
 }

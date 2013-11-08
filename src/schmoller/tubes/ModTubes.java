@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import schmoller.tubes.api.Blocks;
 import schmoller.tubes.api.Items;
 import schmoller.tubes.api.Position;
+import schmoller.tubes.api.SizeMode;
 import schmoller.tubes.api.TubeItem;
 import schmoller.tubes.api.TubeRegistry;
 import schmoller.tubes.api.TubesAPI;
@@ -13,7 +14,7 @@ import schmoller.tubes.network.PacketManager;
 import schmoller.tubes.network.packets.ModPacketNEIDragDrop;
 import schmoller.tubes.network.packets.ModPacketSetColor;
 import schmoller.tubes.network.packets.ModPacketSetFilterMode;
-import schmoller.tubes.network.packets.ModPacketSetPullMode;
+import schmoller.tubes.network.packets.ModPacketSetRequestingModes;
 import schmoller.tubes.network.packets.ModPacketSetRoutingOptions;
 import schmoller.tubes.parts.ItemTubeBase;
 import schmoller.tubes.routing.BlockedRouter;
@@ -99,7 +100,7 @@ public class ModTubes extends TubesAPI
 		packetManager.initialize("tubes");
 		PacketManager.registerHandler(proxy);
 		PacketManager.registerPacket(ModPacketSetFilterMode.class);
-		PacketManager.registerPacket(ModPacketSetPullMode.class);
+		PacketManager.registerPacket(ModPacketSetRequestingModes.class);
 		PacketManager.registerPacket(ModPacketSetRoutingOptions.class);
 		PacketManager.registerPacket(ModPacketSetColor.class);
 		PacketManager.registerPacket(ModPacketNEIDragDrop.class);
@@ -178,9 +179,9 @@ public class ModTubes extends TubesAPI
 	}
 
 	@Override
-	public BaseRouter getImportSourceRouter( IBlockAccess world, Position position, int startDirection, ItemStack filter )
+	public BaseRouter getImportSourceRouter( IBlockAccess world, Position position, int startDirection, ItemStack filter, SizeMode mode)
 	{
-		return new ImportSourceFinder(world, position, startDirection, filter);
+		return new ImportSourceFinder(world, position, startDirection, filter, mode);
 	}
 
 	@Override

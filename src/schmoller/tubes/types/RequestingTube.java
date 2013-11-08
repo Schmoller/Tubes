@@ -35,6 +35,7 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 	private ItemStack[] mFilter = new ItemStack[16];
 	private int mNext = 0;
 	private PullMode mMode = PullMode.RedstoneConstant;
+	private SizeMode mSizeMode = SizeMode.Max;
 	private OverflowBuffer mOverflow;
 	private int mColor = -1;
 	
@@ -44,6 +45,7 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 	public static final int CHANNEL_PULSE = 2;
 	public static final int CHANNEL_MODE = 3;
 	public static final int CHANNEL_POWERED = 4;
+	public static final int CHANNEL_SIZEMODE = 5;
 	
 	public float animTime = 0;
 	
@@ -114,7 +116,7 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 			}
 			while(filterItem == null && mNext != start);
 			
-			PathLocation source = new ImportSourceFinder(world(), new Position(x(), y(), z()), getFacing(), filterItem).route();
+			PathLocation source = new ImportSourceFinder(world(), new Position(x(), y(), z()), getFacing(), filterItem, mSizeMode).route();
 			
 			if(source != null)
 			{
@@ -125,7 +127,7 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 					if(filterItem == null)
 						extracted = handler.extractItem(null, source.dir ^ 1, true);
 					else
-						extracted = handler.extractItem(filterItem, source.dir ^ 1, filterItem.stackSize, SizeMode.Exact, true);
+						extracted = handler.extractItem(filterItem, source.dir ^ 1, filterItem.stackSize, mSizeMode, true);
 					
 					if(extracted != null)
 					{
@@ -317,6 +319,18 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 			openChannel(CHANNEL_MODE).writeByte(mode.ordinal());
 	}
 	
+	public SizeMode getSizeMode()
+	{
+		return mSizeMode;
+	}
+	
+	public void setSizeMode(SizeMode mode)
+	{
+		mSizeMode = mode;
+		if(!world().isRemote)
+			openChannel(CHANNEL_SIZEMODE).writeByte(mode.ordinal());
+	}
+	
 	public short getColour()
 	{
 		return (short)mColor;
@@ -348,6 +362,8 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 			animTime = 0.0001f;
 		else if(channel == CHANNEL_POWERED)
 			mIsPowered = input.readBoolean();
+		else if(channel == CHANNEL_SIZEMODE)
+			mSizeMode = SizeMode.values()[input.readByte()];
 		else
 			super.onRecieveDataClient(channel, input);
 	}
@@ -357,6 +373,7 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 	{
 		super.readDesc(input);
 		mMode = PullMode.values()[input.readByte()];
+		mSizeMode = SizeMode.values()[input.readByte()];
 		mColor = input.readShort();
 		mIsPowered = input.readBoolean();
 	}
@@ -366,6 +383,7 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 	{
 		super.writeDesc(output);
 		output.writeByte(mMode.ordinal());
+		output.writeByte(mSizeMode.ordinal());
 		output.writeShort(mColor);
 		output.writeBoolean(mIsPowered);
 	}
@@ -390,6 +408,7 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 		root.setTag("Filter", filter);
 		
 		root.setString("PullMode", mMode.name());
+		root.setString("SizeMode", mSizeMode.name());
 		root.setInteger("Pulses", mPulses);
 		mOverflow.save(root);
 		
@@ -421,6 +440,11 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 		
 		if(root.hasKey("Color"))
 			mColor = root.getShort("Color");
+		
+		if(root.hasKey("SizeMode"))
+			mSizeMode = SizeMode.valueOf(root.getString("SizeMode"));
+		else
+			mSizeMode = SizeMode.Exact;
 	}
 	
 	@Override

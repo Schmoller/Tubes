@@ -16,11 +16,13 @@ public class ImportSourceFinder extends BaseRouter
 {
 	private ItemStack mItem;
 	private int mStartDir;
+	private SizeMode mMode;
 	
-	public ImportSourceFinder(IBlockAccess world, Position position, int startDirection, ItemStack filter)
+	public ImportSourceFinder(IBlockAccess world, Position position, int startDirection, ItemStack filter, SizeMode mode)
 	{
 		mItem = filter;
 		mStartDir = startDirection;
+		mMode = mode;
 		setup(world, position);
 	}
 	
@@ -95,7 +97,7 @@ public class ImportSourceFinder extends BaseRouter
 				if(mItem == null)
 					extracted = handler.extractItem(mItem, side ^ 1, false);
 				else
-					extracted = handler.extractItem(mItem, side ^ 1, mItem.stackSize, SizeMode.Exact, false);
+					extracted = handler.extractItem(mItem, side ^ 1, mItem.stackSize, mMode, false);
 				
 				if(extracted != null)
 					return true;

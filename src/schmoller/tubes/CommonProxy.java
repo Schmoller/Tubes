@@ -56,7 +56,7 @@ import schmoller.tubes.network.ModPacket;
 import schmoller.tubes.network.packets.ModPacketNEIDragDrop;
 import schmoller.tubes.network.packets.ModPacketSetColor;
 import schmoller.tubes.network.packets.ModPacketSetFilterMode;
-import schmoller.tubes.network.packets.ModPacketSetPullMode;
+import schmoller.tubes.network.packets.ModPacketSetRequestingModes;
 import schmoller.tubes.network.packets.ModPacketSetRoutingOptions;
 import schmoller.tubes.parts.ItemTubeBase;
 import schmoller.tubes.types.CompressorTube;
@@ -217,11 +217,14 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 				
 				return true;
 			}
-			else if(packet instanceof ModPacketSetPullMode && tube instanceof RequestingTube)
+			else if(packet instanceof ModPacketSetRequestingModes && tube instanceof RequestingTube)
 			{
-				PullMode mode = ((ModPacketSetPullMode)packet).mode;
+				ModPacketSetRequestingModes mpacket = (ModPacketSetRequestingModes)packet;
 				
-				((RequestingTube)tube).setMode(mode);
+				if(mpacket.mode != null)
+					((RequestingTube)tube).setMode(mpacket.mode);
+				else
+					((RequestingTube)tube).setSizeMode(mpacket.sizeMode);
 				
 				return true;
 			}
