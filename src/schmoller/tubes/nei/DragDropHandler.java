@@ -4,7 +4,7 @@ import java.util.List;
 
 import schmoller.tubes.ModTubes;
 import schmoller.tubes.api.gui.FakeSlot;
-import schmoller.tubes.gui.GuiExtContainer;
+import schmoller.tubes.api.gui.GuiExtContainer;
 import schmoller.tubes.network.packets.ModPacketNEIDragDrop;
 
 import net.minecraft.client.gui.inventory.GuiContainer;

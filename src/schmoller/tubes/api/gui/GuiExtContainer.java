@@ -1,6 +1,5 @@
-package schmoller.tubes.gui;
+package schmoller.tubes.api.gui;
 
-import schmoller.tubes.api.gui.ExtContainer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 
 public abstract class GuiExtContainer extends GuiContainer

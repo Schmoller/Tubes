@@ -5,6 +5,7 @@ import java.util.Arrays;
 import org.lwjgl.opengl.GL11;
 
 import schmoller.tubes.api.gui.FakeSlot;
+import schmoller.tubes.api.gui.GuiExtContainer;
 import schmoller.tubes.definitions.TypeCompressorTube;
 import schmoller.tubes.types.CompressorTube;
 

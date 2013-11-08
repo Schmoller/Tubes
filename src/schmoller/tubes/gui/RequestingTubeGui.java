@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL11;
 import schmoller.tubes.ModTubes;
 import schmoller.tubes.PullMode;
 import schmoller.tubes.api.SizeMode;
+import schmoller.tubes.api.gui.GuiExtContainer;
 import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.definitions.TypeRequestingTube;
 import schmoller.tubes.network.packets.ModPacketSetColor;
