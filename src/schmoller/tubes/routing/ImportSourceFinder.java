@@ -75,12 +75,6 @@ public class ImportSourceFinder extends BaseRouter
 			addSearchPoint(loc);
 		}
 	}
-	
-	@Override
-	protected void updateState( PathLocation current )
-	{
-		
-	}
 
 	@Override
 	protected boolean isTerminator( Position current, int side )

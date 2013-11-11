@@ -49,9 +49,9 @@ public interface ITubeConnectable
 	/**
 	 * This is used by routing to keep track of state changes to items.
 	 * If a tube sets the items color, this method should do that
-	 * @return false indicates that the item would have been removed
+	 * The direction the item would be traveling after (called after getRoutableDirections()) will be set
 	 */
-	public boolean simulateEffects(TubeItem item);
+	public void simulateEffects(TubeItem item);
 	
 	/**
 	 * This is used by routing to determine directions the routing can go. Only called if canPathThrough() is true

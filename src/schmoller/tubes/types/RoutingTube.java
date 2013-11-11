@@ -86,11 +86,76 @@ public class RoutingTube extends BaseTube
 	}
 	
 	@Override
-	public boolean simulateEffects( TubeItem item )
+	public void simulateEffects( TubeItem item )
 	{
-		item.direction = onDetermineDestination(item);
+		int[] matches = new int[9];
+		int highest = -1;
+		int conns = getConnections();
 		
-		return true;
+		for(int col = 0; col < 9; ++col)
+		{
+			if(mDir[col] != RouteDirection.Closed)
+			{
+				// There must be a connection to consider it
+				if (mDir[col] != RouteDirection.Any && ((conns & (1 << mDir[col].ordinal())) == 0))
+					continue;
+				
+				boolean empty = true;
+				boolean match = false;
+				int level = 0;
+				for(int i = 0; i < 4; ++i)
+				{
+					if(mFilters[col][i] == null)
+						continue;
+					
+					empty = false;
+					if(InventoryHelper.areItemsEqual(mFilters[col][i], item.item))
+					{
+						match = true;
+						level = i;
+						break;
+					}
+				}
+				
+				if(!match && !empty)
+					matches[col] = -1;
+				else if(empty)
+				{
+					matches[col] = 0;
+					if(mDir[col] != RouteDirection.Any)
+						matches[col] += 1;
+				}
+				else
+				{
+					matches[col] = (5 - level);
+					if(mDir[col] != RouteDirection.Any)
+						matches[col] += 1;
+				}
+				
+				if(matches[col] > highest)
+					highest = matches[col];
+			}
+			else
+				matches[col] = -1;
+		}
+	
+		int color = -1;
+		
+		for(int col = 0; col < 9; ++col)
+		{
+			if(matches[col] == highest && highest != -1)
+			{
+				if(color == -1)
+					color = mColours[col];
+				else
+				{
+					item.colour = -1;
+					return;
+				}
+			}
+		}
+		
+		item.colour = color;
 	}
 	
 	@Override
@@ -168,6 +233,8 @@ public class RoutingTube extends BaseTube
 		int[] matches = new int[9];
 		int highest = -1;
 		int conns = getConnections();
+		
+		int fromDir = item.direction;
 		
 		for(int col = 0; col < 9; ++col)
 		{
@@ -257,11 +324,13 @@ public class RoutingTube extends BaseTube
 					
 					++count;
 				}
+				else if(mDir[col] != RouteDirection.Closed)
+					fromDir = mDir[col].ordinal();
 			}
 		}
 		
 		if(count == 0)
-			return -1;
+			return fromDir;
 		
 		int route = smallest[TubeHelper.rand.nextInt(smallCount)];
 		

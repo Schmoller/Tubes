@@ -23,11 +23,9 @@ public class ColoringTube extends BasicTube
 	}
 	
 	@Override
-	public boolean simulateEffects( TubeItem item )
+	public void simulateEffects( TubeItem item )
 	{
 		item.colour = getColor();
-		
-		return true;
 	}
 	
 	@Override

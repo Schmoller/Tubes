@@ -166,12 +166,10 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 	}
 	
 	@Override
-	public boolean simulateEffects( TubeItem item )
+	public void simulateEffects( TubeItem item )
 	{
 		item.colour = mColor;
 		item.state = TubeItem.NORMAL;
-		
-		return true;
 	}
 	
 	@Override

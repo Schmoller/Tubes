@@ -140,10 +140,9 @@ public class FilterTube extends BaseTube
 	}
 	
 	@Override
-	public boolean simulateEffects( TubeItem item )
+	public void simulateEffects( TubeItem item )
 	{
 		item.colour = mColor;
-		return true;
 	}
 	
 	@Override

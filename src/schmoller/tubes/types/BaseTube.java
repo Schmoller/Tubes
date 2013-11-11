@@ -405,7 +405,7 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 	}
 	
 	@Override
-	public boolean simulateEffects( TubeItem item )	{ return true; }
+	public void simulateEffects( TubeItem item ) {}
 	
 	@Override
 	public int getRoutableDirections( TubeItem item ) { return 63; }

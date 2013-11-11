@@ -57,8 +57,6 @@ public abstract class BaseRouter
 		getNextLocations(new PathLocation(position.x, position.y, position.z, 0, 6, 6));
 	}
 	
-	protected abstract void updateState(PathLocation current);
-	
 	/**
 	 * Called to determine if routing is finished
 	 */
@@ -96,10 +94,7 @@ public abstract class BaseRouter
 				paths.add(path);
 			}
 			else
-			{
-				updateState(path);
 				getNextLocations(path);
-			}
 		}
 		
 		return paths;
