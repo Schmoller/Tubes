@@ -10,6 +10,9 @@ public abstract class TubesAPI
 	
 	/**
 	 * Registers an advanced shaped recipe. 
+	 * Advanced shaped recipes can handle fluid containers, 
+	 * ore dictionary items, and items that need NBT data to 
+	 * differentiate them (implement ISpecialItemCompare on the Item)
 	 * @param output The item that is resultant
 	 * @param input This is exactly the same as normal shaped recipes, 
 	 *              except you can put a char -> string mapping for an ore dictionary entry, 
@@ -20,6 +23,9 @@ public abstract class TubesAPI
 	
 	/**
 	 * Registers an advanced shapeless recipe.
+	 * Advanced shapeless recipes can handle fluid containers, 
+	 * ore dictionary items, and items that need NBT data to 
+	 * differentiate them (implement ISpecialItemCompare on the Item)
 	 * @param output The item that is resultant
 	 * @param input This is exactly the same as normal shapeless recipes, 
 	 *              except you can put a string for an ore dictionary entry, 

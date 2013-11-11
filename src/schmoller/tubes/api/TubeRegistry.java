@@ -28,6 +28,11 @@ public class TubeRegistry implements IPartFactory
 		return mInstance;
 	}
 	
+	/**
+	 * Register new types of tubes here
+	 * @param tube The definition the tubes are made from
+	 * @param name The name that you refer to this type with. Any lookup will use this value
+	 */
 	public static void registerTube(TubeDefinition tube, String name)
 	{
 		assert(instance().mCanAdd);
@@ -36,6 +41,11 @@ public class TubeRegistry implements IPartFactory
 	}
 	
 	@SideOnly(Side.CLIENT)
+	/**
+	 * Gives the tube type a special renderer
+	 * @param typeName The name of the tube type, same as used in registerTube
+	 * @param render The renderer
+	 */
 	public static void registerRenderer(String typeName, ITubeRender render)
 	{
 		assert(instance().mCanAdd);
