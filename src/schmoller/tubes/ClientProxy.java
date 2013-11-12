@@ -20,6 +20,7 @@ import schmoller.tubes.render.ExtractionTubeRender;
 import schmoller.tubes.render.FilterTubeRender;
 import schmoller.tubes.render.InjectionTubeRender;
 import schmoller.tubes.render.NormalTubeRender;
+import schmoller.tubes.render.RenderTubeCap;
 import schmoller.tubes.render.RenderTubeItem;
 import schmoller.tubes.render.RequestingTubeRender;
 import schmoller.tubes.render.RestrictionTubeRender;
@@ -47,6 +48,7 @@ public class ClientProxy extends CommonProxy
 	private void registerRenderers()
 	{
 		MinecraftForgeClient.registerItemRenderer(Items.Tube.getItemID(), new RenderTubeItem());
+		MinecraftForgeClient.registerItemRenderer(Items.TubeCap.getItemID(), new RenderTubeCap());
 		
 		TubeRegistry.registerRenderer("basic",new NormalTubeRender());
 		TubeRegistry.registerRenderer("restriction",new RestrictionTubeRender());

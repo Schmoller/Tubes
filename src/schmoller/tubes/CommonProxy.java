@@ -17,6 +17,9 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import codechicken.microblock.BlockMicroMaterial;
 import codechicken.microblock.MicroMaterialRegistry;
+import codechicken.multipart.MultiPartRegistry.IPartFactory;
+import codechicken.multipart.MultiPartRegistry;
+import codechicken.multipart.TMultiPart;
 //import codechicken.multipart.MultipartGenerator;
 
 import cpw.mods.fml.common.event.FMLInterModComms;
@@ -51,6 +54,7 @@ import schmoller.tubes.gui.RequestingTubeContainer;
 import schmoller.tubes.gui.RoutingTubeContainer;
 import schmoller.tubes.items.BasicItem;
 import schmoller.tubes.items.ItemTubeBase;
+import schmoller.tubes.items.ItemTubeCap;
 import schmoller.tubes.network.IModPacketHandler;
 import schmoller.tubes.network.ModBlockPacket;
 import schmoller.tubes.network.ModPacket;
@@ -59,13 +63,14 @@ import schmoller.tubes.network.packets.ModPacketSetColor;
 import schmoller.tubes.network.packets.ModPacketSetFilterMode;
 import schmoller.tubes.network.packets.ModPacketSetRequestingModes;
 import schmoller.tubes.network.packets.ModPacketSetRoutingOptions;
+import schmoller.tubes.parts.TubeCap;
 import schmoller.tubes.types.CompressorTube;
 import schmoller.tubes.types.FilterTube;
 import schmoller.tubes.types.InjectionTube;
 import schmoller.tubes.types.RequestingTube;
 import schmoller.tubes.types.RoutingTube;
 
-public class CommonProxy implements IModPacketHandler, IGuiHandler
+public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 {
 	public void initialize()
 	{
@@ -82,6 +87,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 		FMLInterModComms.sendMessage("BuildCraft|Transport", "add-facade", String.format("%d@%d", Blocks.BlockPlastic.getBlockID(), 0 ));
 		
 		NetworkRegistry.instance().registerGuiHandler(ModTubes.instance, this);
+		MultiPartRegistry.registerParts(this, new String[] {"tubeCap"});
 	}
 	
 	private void registerTubes()
@@ -119,6 +125,9 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 		GameRegistry.registerItem(Items.BucketPlastic.getItem(), "bucketOfPlastic");
 		GameRegistry.registerItem(Items.Tube.getItem(), "tubes:items:tube");
 		GameRegistry.registerItem(Items.RedstoneCircuit.getItem(), "redstoneCircuit");
+		
+		Items.TubeCap.initialize(Items.TubeCap.getItemID() + 256, new ItemTubeCap(Items.TubeCap.getItemID()).setUnlocalizedName("tubeCap").setCreativeTab(CreativeTabs.tabMisc));
+		GameRegistry.registerItem(Items.TubeCap.getItem(), "tubeCap");
 		
 		Blocks.BlockPlastic.initialize(Blocks.BlockPlastic.getBlockID(), new Block(Blocks.BlockPlastic.getBlockID(), Material.piston)
 			.setCreativeTab(CreativeTabs.tabBlock)
@@ -160,6 +169,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 		LanguageRegistry.addName(Items.BucketPlastic.getItem(), "Plastic");
 		LanguageRegistry.addName(Blocks.BlockPlastic.getBlock(), "Block Of Plastic");
 		LanguageRegistry.addName(Items.RedstoneCircuit.getItem(), "Redstone Circuit");
+		LanguageRegistry.addName(Items.TubeCap.getItem(), "Cap");
 	}
 	
 	private void registerRecipes()
@@ -284,6 +294,15 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler
 		case ModTubes.GUI_ROUTING_TUBE:
 			return new RoutingTubeContainer(CommonHelper.getMultiPart(world, x, y, z, RoutingTube.class), player);
 		}
+		
+		return null;
+	}
+
+	@Override
+	public TMultiPart createPart( String partType, boolean client )
+	{
+		if(partType.equals("tubeCap"))
+			return new TubeCap();
 		
 		return null;
 	}

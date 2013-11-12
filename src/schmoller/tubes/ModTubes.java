@@ -17,6 +17,7 @@ import schmoller.tubes.network.packets.ModPacketSetColor;
 import schmoller.tubes.network.packets.ModPacketSetFilterMode;
 import schmoller.tubes.network.packets.ModPacketSetRequestingModes;
 import schmoller.tubes.network.packets.ModPacketSetRoutingOptions;
+import schmoller.tubes.parts.TubeCap;
 import schmoller.tubes.routing.BlockedRouter;
 import schmoller.tubes.routing.ImportSourceFinder;
 import schmoller.tubes.routing.InputRouter;
@@ -126,6 +127,8 @@ public class ModTubes extends TubesAPI
 			TubeRegistry.instance().registerIcons(event.map);
 			if(fluidPlastic != null)
 				fluidPlastic.setIcons(event.map.registerIcon("tubes:fluidPlastic"));
+			
+			TubeCap.icon = event.map.registerIcon("tubes:tube-cap");
 		}
 	}
 
