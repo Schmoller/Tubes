@@ -10,6 +10,7 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import schmoller.tubes.api.TubeItem;
+import schmoller.tubes.api.helpers.BaseTube;
 import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.api.interfaces.ITubeConnectable;
 

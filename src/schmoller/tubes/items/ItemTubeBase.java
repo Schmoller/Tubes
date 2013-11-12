@@ -1,4 +1,4 @@
-package schmoller.tubes.parts;
+package schmoller.tubes.items;
 
 import java.util.List;
 

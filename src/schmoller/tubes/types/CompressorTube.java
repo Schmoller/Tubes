@@ -11,6 +11,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MovingObjectPosition;
 import schmoller.tubes.ModTubes;
 import schmoller.tubes.api.TubeItem;
+import schmoller.tubes.api.helpers.BaseTube;
 import schmoller.tubes.api.helpers.InventoryHelper;
 import schmoller.tubes.api.helpers.TubeHelper;
 import schmoller.tubes.api.interfaces.ITubeConnectable;

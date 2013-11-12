@@ -59,8 +59,14 @@ public class DragDropHandler implements INEIGuiHandler
 		
 		if(slot instanceof FakeSlot)
 		{
-			((FakeSlot)slot).putStack(item);
-			ModTubes.packetManager.sendPacketToServer(new ModPacketNEIDragDrop(index, item.copy()));
+			ItemStack itemCopy;
+			if(button != 1)
+				itemCopy = item.copy();
+			else
+				itemCopy = item.copy().splitStack(1);
+			
+			((FakeSlot)slot).putStack(itemCopy);
+			ModTubes.packetManager.sendPacketToServer(new ModPacketNEIDragDrop(index, itemCopy));
 			return true;
 		}
 

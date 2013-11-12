@@ -4,8 +4,10 @@
     <property name="src.dir" value="src"/>
     <property name="mcp.dir" value = "../.."/>
     <property name="obf.dir" value="${mcp.dir}/reobf/minecraft"/>
-    <property name="mod.version" value="1.0.5"/>
+    <property name="mod.version" value="1.1.0"/>
 	<property name="mc.version" value="1.6.4"/>
+	
+	<property name="build.dir" value="${mcp.dir}/bin/minecraft"/>
     
     <property name="mcsrc.dir" value="${mcp.dir}/src/minecraft/temp"/>
     <property name="python" value="${mcp.dir}/runtime/bin/python/python_mcp"/>
@@ -30,7 +32,7 @@
     </target>
     
     <target name="reobf" depends="recompile">
-    	<unzip src="${mcp.dir}/lib/ForgeMultipart-dev-1.6.4-1.0.0.193.jar" dest="${mcp.dir}/bin/minecraft">
+    	<unzip src="${mcp.dir}/lib/ForgeMultipart-dev-1.6.4-1.0.0.193.jar" dest="${build.dir}">
     		<patternset>
     			  <include name="codechicken/**"/>
     		</patternset>
@@ -56,6 +58,29 @@
         <replace token="@{mc.version}" value="${mc.version}">
             <fileset dir="${obf.dir}"/>
         </replace>
+    	
+    	<copy todir="${build.dir}">
+            <fileset dir="resources"/>
+        </copy>
+        <copy todir="${build.dir}/assets/tubes/">
+            <fileset dir="assets"/>
+        </copy>
+        
+        <replace token="@{mod.version}" value="${mod.version}">
+            <fileset dir="${build.dir}"/>
+        </replace>
+        <replace token="@{mc.version}" value="${mc.version}">
+            <fileset dir="${build.dir}"/>
+        </replace>
+    	
+    	<delete includeemptydirs="true">
+    	  <fileset dir="${build.dir}"  >
+    	    <and>
+    	      <size value="0"/>
+    	      <type type="dir"/>
+    	     </and>
+    	  </fileset>
+    	</delete>
     </target>
     
     <target name="package" depends="copyExtra">
@@ -66,6 +91,19 @@
         	<include name="**pack.mcmeta"/>
         	<include name="**assets/**"/>
     	</jar>
+    	
+    	<jar destfile="./dist/Tubes-${mod.version}-DEV.jar" compress="true">
+    		<fileset dir="${build.dir}">
+    			<include name="**schmoller/**"/>
+    		    <include name="**buildcraft/**"/>
+    		    <include name="**mcmod.info"/>
+    		    <include name="**pack.mcmeta"/>
+    		    <include name="**assets/**"/>
+    		</fileset>
+    		<fileset dir="${src.dir}">
+    		    <exclude name="**buildcraft/**"/>
+    		</fileset>
+        </jar>
     </target>
     
     <target name="cleanup" depends="package">

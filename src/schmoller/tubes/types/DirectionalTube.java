@@ -7,6 +7,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MovingObjectPosition;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
+import schmoller.tubes.api.helpers.BaseTube;
 import schmoller.tubes.api.interfaces.IDirectionalTube;
 
 public abstract class DirectionalTube extends BaseTube implements IDirectionalTube

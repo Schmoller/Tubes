@@ -1,4 +1,4 @@
-package schmoller.tubes.types;
+package schmoller.tubes.api.helpers;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -18,7 +18,6 @@ import codechicken.multipart.scalatraits.TSlottedTile;
 
 import schmoller.tubes.api.InventoryHandlerRegistry;
 import schmoller.tubes.api.TubeItem;
-import schmoller.tubes.api.helpers.TubeHelper;
 import schmoller.tubes.api.interfaces.IInventoryHandler;
 import schmoller.tubes.api.interfaces.ITube;
 import schmoller.tubes.api.interfaces.ITubeConnectable;

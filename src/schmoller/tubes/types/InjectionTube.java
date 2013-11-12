@@ -6,6 +6,7 @@ import schmoller.tubes.ModTubes;
 import schmoller.tubes.api.OverflowBuffer;
 import schmoller.tubes.api.Position;
 import schmoller.tubes.api.TubeItem;
+import schmoller.tubes.api.helpers.BaseTube;
 import schmoller.tubes.api.helpers.BaseRouter.PathLocation;
 import schmoller.tubes.api.interfaces.ITubeConnectable;
 import schmoller.tubes.api.interfaces.ITubeOverflowDestination;

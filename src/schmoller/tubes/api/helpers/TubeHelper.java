@@ -8,7 +8,6 @@ import schmoller.tubes.api.TubesAPI;
 import schmoller.tubes.api.interfaces.ITube;
 import schmoller.tubes.api.interfaces.ITubeConnectable;
 
-import codechicken.multipart.TMultiPart;
 import codechicken.multipart.TileMultipart;
 
 import net.minecraft.inventory.IInventory;
@@ -28,11 +27,8 @@ public class TubeHelper
 	{
 		if(entity instanceof TileMultipart)
 		{
-			for(TMultiPart part : ((TileMultipart)entity).jPartList())
-			{
-				if(part instanceof ITubeConnectable)
-					return ((ITubeConnectable)part);
-			}
+			if(((TileMultipart)entity).partMap(6) instanceof ITubeConnectable)
+					return ((ITubeConnectable)((TileMultipart)entity).partMap(6));
 		}
 		else if(entity instanceof ITubeConnectable)
 			return ((ITubeConnectable)entity);

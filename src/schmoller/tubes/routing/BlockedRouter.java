@@ -44,11 +44,14 @@ public class BlockedRouter extends BaseRouter
 				if(con != null)
 				{
 					mItem.direction = loc.dir;
-					con.simulateEffects(mItem);
-					loc.color = mItem.colour;
+					mItem.colour = loc.color;
+					mItem.state = TubeItem.BLOCKED;
 					
 					if(!con.canItemEnter(mItem))
 						continue;
+					
+					con.simulateEffects(mItem);
+					loc.color = mItem.colour;
 					
 					loc.dist += con.getRouteWeight() - 1;
 				}
@@ -80,11 +83,14 @@ public class BlockedRouter extends BaseRouter
 				if(con != null)
 				{
 					mItem.direction = loc.dir;
-					con.simulateEffects(mItem);
-					loc.color = mItem.colour;
+					mItem.colour = loc.color;
+					mItem.state = TubeItem.BLOCKED;
 					
 					if(!con.canItemEnter(mItem))
 						continue;
+					
+					con.simulateEffects(mItem);
+					loc.color = mItem.colour;
 					
 					loc.dist += con.getRouteWeight() - 1;
 				}

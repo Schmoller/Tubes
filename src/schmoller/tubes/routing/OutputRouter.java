@@ -57,11 +57,13 @@ public class OutputRouter extends BaseRouter
 				{
 					mItem.direction = loc.dir;
 					mItem.colour = loc.color;
-					con.simulateEffects(mItem);
-					loc.color = mItem.colour;
+					mItem.state = TubeItem.NORMAL;
 					
 					if(!con.canItemEnter(mItem))
 						continue;
+					
+					con.simulateEffects(mItem);
+					loc.color = mItem.colour;
 					
 					loc.dist += con.getRouteWeight() - 1;
 				}
@@ -97,11 +99,13 @@ public class OutputRouter extends BaseRouter
 				{
 					mItem.direction = loc.dir;
 					mItem.colour = loc.color;
-					con.simulateEffects(mItem);
-					loc.color = mItem.colour;
+					mItem.state = TubeItem.NORMAL;
 					
 					if(!con.canItemEnter(mItem))
 						continue;
+					
+					con.simulateEffects(mItem);
+					loc.color = mItem.colour;
 					
 					loc.dist += con.getRouteWeight() - 1;
 				}
