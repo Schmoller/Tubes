@@ -1,5 +1,6 @@
 package schmoller.tubes.definitions;
 
+import codechicken.lib.vec.Cuboid6;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.util.Icon;
 import net.minecraft.util.ResourceLocation;
@@ -35,6 +36,12 @@ public class TypeCompressorTube extends TubeDefinition
 	public BaseTube createTube()
 	{
 		return new CompressorTube();
+	}
+	
+	@Override
+	public Cuboid6 getSize()
+	{
+		return new Cuboid6(0.1875, 0.1875, 0.1875, 0.8125, 0.8125, 0.8125);
 	}
 
 }

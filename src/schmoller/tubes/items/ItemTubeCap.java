@@ -123,11 +123,7 @@ public class ItemTubeCap extends JItemMultiPart
 	        			if(!placeInternal(tile, slot))
 	        			{
 	        				if(!placeInternal(tile, oslot))
-	        				{
 	        					return false;
-	//        					if(!placeExternal(world, pos.copy().offset(side), slot))
-	//        						return false;
-	        				}
 	        			}
 	        		}
 	        		else

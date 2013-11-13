@@ -17,6 +17,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import codechicken.microblock.BlockMicroMaterial;
 import codechicken.microblock.MicroMaterialRegistry;
+import codechicken.microblock.handler.MicroblockProxy;
 import codechicken.multipart.MultiPartRegistry.IPartFactory;
 import codechicken.multipart.MultiPartRegistry;
 import codechicken.multipart.TMultiPart;
@@ -169,7 +170,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		LanguageRegistry.addName(Items.BucketPlastic.getItem(), "Plastic");
 		LanguageRegistry.addName(Blocks.BlockPlastic.getBlock(), "Block Of Plastic");
 		LanguageRegistry.addName(Items.RedstoneCircuit.getItem(), "Redstone Circuit");
-		LanguageRegistry.addName(Items.TubeCap.getItem(), "Cap");
+		LanguageRegistry.addName(Items.TubeCap.getItem(), "Tube Cap");
 	}
 	
 	private void registerRecipes()
@@ -197,6 +198,10 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		TubesAPI.instance.registerShapedRecipe(ModTubes.itemTube.createForType("coloring"), " d ", "dtd", " d ", 'd', new ItemStack(Item.dyePowder, 1, OreDictionary.WILDCARD_VALUE), 't', ModTubes.itemTube.createForType("basic"));
 		
 		GameRegistry.addShapedRecipe(new ItemStack(Items.RedstoneCircuit.getItem(), 4), "igi", "rrr", "igi", 'i', Item.ingotIron, 'g', Item.ingotGold, 'r', Item.redstone);
+		
+		TubesAPI.instance.registerShapelessRecipe(new ItemStack(Items.TubeCap.getItem(), 2, 0), TubesAPI.instance.createTubeForType("basic"), MicroblockProxy.sawStone());
+		TubesAPI.instance.registerShapelessRecipe(new ItemStack(Items.TubeCap.getItem(), 2, 0), TubesAPI.instance.createTubeForType("basic"), MicroblockProxy.sawIron());
+		TubesAPI.instance.registerShapelessRecipe(new ItemStack(Items.TubeCap.getItem(), 2, 0), TubesAPI.instance.createTubeForType("basic"), MicroblockProxy.sawDiamond());
 	}
 
 	public void registerOreRecipes()
