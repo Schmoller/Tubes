@@ -112,6 +112,23 @@ public class ExtractionTube extends DirectionalBasicTube implements IRedstonePar
 			openChannel(CHANNEL_POWERED).writeBoolean(powered);
 		
 		mIsPowered = powered;
+		
+		if(world().isRemote)
+		{
+			if(!isPowered())
+			{
+				animTime += 0.05;
+				if(animTime > 1)
+					animTime -= 1;
+			}
+			else if(animTime > 0)
+			{
+				animTime += 0.05;
+				if(animTime > 1)
+					animTime = 0;
+			}
+		}
+		
 		super.update();
 	}
 	

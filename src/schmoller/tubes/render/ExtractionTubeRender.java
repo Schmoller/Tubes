@@ -204,19 +204,6 @@ public class ExtractionTubeRender extends NormalTubeRender
 		
 		renderPump(direction, ((ExtractionTube)tube).animTime);
 		
-		if(!((ExtractionTube)tube).isPowered())
-		{
-			((ExtractionTube)tube).animTime += frameTime / 60;
-			if(((ExtractionTube)tube).animTime > 1)
-				((ExtractionTube)tube).animTime -= 1;
-		}
-		else if(((ExtractionTube)tube).animTime > 0)
-		{
-			((ExtractionTube)tube).animTime += frameTime / 60;
-			if(((ExtractionTube)tube).animTime > 1)
-				((ExtractionTube)tube).animTime = 0;
-		}
-		
 		super.renderDynamic(type, tube, world, x, y, z, frameTime);
 	}
 }

@@ -206,42 +206,6 @@ public class RequestingTubeRender extends NormalTubeRender
 		
 		mRender.setLocalLights(0.5f, 1.0f, 0.8f, 0.8f, 0.6f, 0.6f);
 		
-		switch(((RequestingTube)tube).getMode())
-		{
-		case Constant:
-			((RequestingTube)tube).animTime += frameTime / 60;
-			
-			if(((RequestingTube)tube).animTime > 1)
-				((RequestingTube)tube).animTime -= 1;
-			break;
-		case RedstoneConstant:
-			if(((RequestingTube)tube).isPowered())
-			{
-				((RequestingTube)tube).animTime += frameTime / 60;
-				
-				if(((RequestingTube)tube).animTime > 1)
-					((RequestingTube)tube).animTime -= 1;
-			}
-			else if(((RequestingTube)tube).animTime > 0)
-			{
-				((RequestingTube)tube).animTime += frameTime / 60;
-				
-				if(((RequestingTube)tube).animTime > 1)
-					((RequestingTube)tube).animTime = 0;
-			}
-			
-			
-			
-			break;
-		case RedstoneSingle:
-			if(((RequestingTube)tube).animTime > 0)
-				((RequestingTube)tube).animTime += frameTime / 60;
-			
-			if(((RequestingTube)tube).animTime > 1)
-				((RequestingTube)tube).animTime = 0;
-			break;
-		}
-		
 		renderPump(direction, ((RequestingTube)tube).animTime);
 		
 		super.renderDynamic(type, tube, world, x, y, z, frameTime);

@@ -275,6 +275,41 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 	
 			mIsPowered = state;
 		}
+		else
+		{
+			switch(getMode())
+			{
+			case Constant:
+				animTime += 0.05f;
+				
+				if(animTime > 1)
+					animTime -= 1;
+				break;
+			case RedstoneConstant:
+				if(isPowered())
+				{
+					animTime += 0.05f;
+					
+					if(animTime > 1)
+						animTime -= 1;
+				}
+				else if(animTime > 0)
+				{
+					animTime += 0.05f;
+					
+					if(animTime > 1)
+						animTime = 0;
+				}
+				break;
+			case RedstoneSingle:
+				if(animTime > 0)
+					animTime += 0.05f;
+				
+				if(animTime > 1)
+					animTime = 0;
+				break;
+			}
+		}
 		
 		super.update();
 	}
