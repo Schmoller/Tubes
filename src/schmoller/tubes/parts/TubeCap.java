@@ -29,7 +29,8 @@ public class TubeCap extends JCuboidPart implements TFacePart, JNormalOcclusion
 {
 	private int mSlot = 0;
 	public static Icon icon;
-	private AdvRender mRender = new AdvRender();
+	@SideOnly(Side.CLIENT)
+	private AdvRender mRender;
 	
 	private static Cuboid6[] boxes = new Cuboid6[6];
 	
@@ -93,6 +94,12 @@ public class TubeCap extends JCuboidPart implements TFacePart, JNormalOcclusion
 	}
 	
 	@Override
+	public ItemStack pickItem( MovingObjectPosition hit )
+	{
+		return new ItemStack(Items.TubeCap.getItem(),1, 0);
+	}
+	
+	@Override
 	public Iterable<ItemStack> getDrops()
 	{
 		ArrayList<ItemStack> items = new ArrayList<ItemStack>();
@@ -130,6 +137,9 @@ public class TubeCap extends JCuboidPart implements TFacePart, JNormalOcclusion
 	@SideOnly( Side.CLIENT )
 	public void renderStatic( final Vector3 pos, LazyLightMatrix olm, int pass )
 	{
+		if(mRender == null)
+			mRender = new AdvRender();
+		
 		mRender.resetTransform();
 		mRender.enableNormals = false;
 		mRender.setLightingFromBlock(world(), x(), y(), z());
