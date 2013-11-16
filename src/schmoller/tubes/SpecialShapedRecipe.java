@@ -3,6 +3,8 @@ package schmoller.tubes;
 import java.util.HashMap;
 import java.util.List;
 
+import codechicken.microblock.Saw;
+
 import schmoller.tubes.api.interfaces.ISpecialItemCompare;
 
 import net.minecraft.block.Block;
@@ -123,16 +125,24 @@ public class SpecialShapedRecipe implements IRecipe
                 {
                 	ItemStack toMatch = (ItemStack)obj;
                 	
-                	if(inSlot.itemID != toMatch.itemID)
-                		return false;
-                	
-                	if(inSlot.getItemDamage() != toMatch.getItemDamage() && toMatch.getItemDamage() != OreDictionary.WILDCARD_VALUE)
-                		return false;
-                	
-                	if(toMatch.getItem() instanceof ISpecialItemCompare)
+                	if(toMatch.getItem() instanceof Saw)
                 	{
-                		if(!((ISpecialItemCompare)toMatch.getItem()).areItemsEqual(inSlot, toMatch))
-                			return false;
+                		if(!(inSlot.getItem() instanceof Saw))
+                			continue;
+                	}
+                	else
+                	{
+	                	if(inSlot.itemID != toMatch.itemID)
+	                		continue;
+	                	
+	                	if(inSlot.getItemDamage() != toMatch.getItemDamage() && toMatch.getItemDamage() != OreDictionary.WILDCARD_VALUE)
+	                		continue;
+	                	
+	                	if(toMatch.getItem() instanceof ISpecialItemCompare)
+	                	{
+	                		if(!((ISpecialItemCompare)toMatch.getItem()).areItemsEqual(inSlot, toMatch))
+	                			continue;
+	                	}
                 	}
                 }
                 else if(obj instanceof String)
