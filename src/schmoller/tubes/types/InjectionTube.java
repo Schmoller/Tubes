@@ -12,12 +12,12 @@ import schmoller.tubes.api.interfaces.ITubeConnectable;
 import schmoller.tubes.api.interfaces.ITubeOverflowDestination;
 import schmoller.tubes.routing.OutputRouter;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MovingObjectPosition;
 
-public class InjectionTube extends BaseTube implements ISidedInventory, ITubeOverflowDestination
+public class InjectionTube extends BaseTube implements IInventory, ITubeOverflowDestination
 {
 	private OverflowBuffer mOverflow;
 	private ItemStack mItem;
@@ -112,24 +112,6 @@ public class InjectionTube extends BaseTube implements ISidedInventory, ITubeOve
 	public boolean isItemValidForSlot( int i, ItemStack itemstack )
 	{
 		return true;
-	}
-
-	@Override
-	public int[] getAccessibleSlotsFromSide( int var1 )
-	{
-		return new int[] {0};
-	}
-
-	@Override
-	public boolean canInsertItem( int i, ItemStack itemstack, int j )
-	{
-		return true;
-	}
-
-	@Override
-	public boolean canExtractItem( int i, ItemStack itemstack, int j )
-	{
-		return false;
 	}
 
 	@Override

@@ -5,7 +5,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-//import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -21,14 +20,19 @@ import codechicken.microblock.handler.MicroblockProxy;
 import codechicken.multipart.MultiPartRegistry.IPartFactory;
 import codechicken.multipart.MultiPartRegistry;
 import codechicken.multipart.TMultiPart;
-//import codechicken.multipart.MultipartGenerator;
+import codechicken.multipart.MultipartGenerator;
 
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
+import cpw.mods.fml.common.versioning.ArtifactVersion;
+import cpw.mods.fml.common.versioning.InvalidVersionSpecificationException;
+import cpw.mods.fml.common.versioning.VersionRange;
 import schmoller.tubes.api.Blocks;
 import schmoller.tubes.api.Items;
 import schmoller.tubes.api.TubeRegistry;
@@ -91,10 +95,29 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		MultiPartRegistry.registerParts(this, new String[] {"tubeCap"});
 	}
 	
+	private boolean canUseInjection()
+	{
+		try
+		{
+			return VersionRange.createFromVersionSpec("[1.0.0.207,)").containsVersion(getMultipartVersion());
+		}
+		catch ( InvalidVersionSpecificationException e )
+		{
+			e.printStackTrace();
+			return false;
+		} 
+	}
+	
+	private ArtifactVersion getMultipartVersion()
+	{
+		ModContainer mod = Loader.instance().getIndexedModList().get("ForgeMultipart");
+		return mod.getProcessedVersion();
+	}
+	
 	private void registerTubes()
 	{
-		// FIXME: This does not seem to work after obfuscation
-		//MultipartGenerator.registerPassThroughInterface(ISidedInventory.class.getName());
+		if(canUseInjection())
+			MultipartGenerator.registerPassThroughInterface("net/minecraft/inventory/IInventory");
 		
 		TubeRegistry.registerTube(new TypeNormalTube(), "basic");
 		TubeRegistry.registerTube(new TypeRestrictionTube(), "restriction");
@@ -186,8 +209,10 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		
 		GameRegistry.addRecipe(new SpecialShapelessRecipe(ModTubes.itemTube.createForType("restriction"), ModTubes.itemTube.createForType("basic"), Item.ingotIron));
 		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("compressor"), "ipi", "ptp", "ipi", 'i', Item.ingotIron, 'p', Block.pistonBase, 't', ModTubes.itemTube.createForType("basic")));
-		// TODO: Put this back in when the passthrough interface works again
-		//GameRegistry.addRecipe(new SpecialShapelessRecipe(ModTubes.itemTube.createForType("injection"), ModTubes.itemTube.createForType("basic"), Block.chest));
+		
+		if(canUseInjection())
+			GameRegistry.addRecipe(new SpecialShapelessRecipe(ModTubes.itemTube.createForType("injection"), ModTubes.itemTube.createForType("basic"), Block.chest));
+		
 		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("extraction"), "h", "t", "p", 't', ModTubes.itemTube.createForType("basic"), 'h', Block.hopperBlock, 'p', Block.pistonStickyBase));
 		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("requesting"), "t", "e", "f", 't', ModTubes.itemTube.createForType("basic"), 'e', ModTubes.itemTube.createForType("extraction"), 'f', ModTubes.itemTube.createForType("filter")));
 		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("filter"), "ici", "ctc", "ici", 'i', Item.ingotIron, 't', ModTubes.itemTube.createForType("basic"), 'c', Items.RedstoneCircuit.getItem()));
