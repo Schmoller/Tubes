@@ -128,20 +128,20 @@ public class SpecialShapedRecipe implements IRecipe
                 	if(toMatch.getItem() instanceof Saw)
                 	{
                 		if(!(inSlot.getItem() instanceof Saw))
-                			continue;
+                			return false;
                 	}
                 	else
                 	{
 	                	if(inSlot.itemID != toMatch.itemID)
-	                		continue;
+	                		return false;
 	                	
 	                	if(inSlot.getItemDamage() != toMatch.getItemDamage() && toMatch.getItemDamage() != OreDictionary.WILDCARD_VALUE)
-	                		continue;
+	                		return false;
 	                	
 	                	if(toMatch.getItem() instanceof ISpecialItemCompare)
 	                	{
 	                		if(!((ISpecialItemCompare)toMatch.getItem()).areItemsEqual(inSlot, toMatch))
-	                			continue;
+	                			return false;
 	                	}
                 	}
                 }
