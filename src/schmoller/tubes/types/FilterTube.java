@@ -8,6 +8,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.MovingObjectPosition;
 import schmoller.tubes.ModTubes;
+import schmoller.tubes.api.ItemPayload;
+import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.TubeItem;
 import schmoller.tubes.api.helpers.BaseTube;
 import schmoller.tubes.api.interfaces.ITubeConnectable;
@@ -73,8 +75,13 @@ public class FilterTube extends BaseTube
 		return mColor;
 	}
 
-	private boolean doesMatchFilter(ItemStack item, int index)
+	private boolean doesMatchFilter(Payload payload, int index)
 	{
+		if(!(payload instanceof ItemPayload))
+			return false;
+		
+		ItemStack item = (ItemStack)payload.get();
+		
 		int matchAmount = 0;
 		if(mFilterStacks[index] != null && (mFilterStacks[index].isItemEqual(item) && ItemStack.areItemStackTagsEqual(mFilterStacks[index], item)))
 		{
@@ -111,7 +118,7 @@ public class FilterTube extends BaseTube
 	}
 	
 	@Override
-	public boolean canAddItem( ItemStack item, int direction )
+	public boolean canAddItem( Payload item, int direction )
 	{
 		boolean empty = true;
 

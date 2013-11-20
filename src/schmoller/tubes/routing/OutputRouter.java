@@ -1,6 +1,7 @@
 package schmoller.tubes.routing;
 
 import schmoller.tubes.api.InventoryHandlerRegistry;
+import schmoller.tubes.api.ItemPayload;
 import schmoller.tubes.api.Position;
 import schmoller.tubes.api.TubeItem;
 import schmoller.tubes.api.helpers.BaseRouter;
@@ -124,14 +125,18 @@ public class OutputRouter extends BaseRouter
 		
 		if(con == null)
 		{
-			IInventoryHandler handler = InventoryHandlerRegistry.getHandler(ent);
-			if(handler != null)
+			if(mItem.item instanceof ItemPayload)
 			{
-				ItemStack remaining = handler.insertItem(mItem.item, side ^ 1, false);
-				
-				if(remaining == null || remaining.stackSize != mItem.item.stackSize)
-					return true;
+				IInventoryHandler handler = InventoryHandlerRegistry.getHandler(ent);
+				if(handler != null)
+				{
+					ItemStack remaining = handler.insertItem((ItemStack)mItem.item.get(), side ^ 1, false);
+					
+					if(remaining == null || remaining.stackSize != ((ItemStack)mItem.item.get()).stackSize)
+						return true;
+				}
 			}
+			// TODO: Handle fluid payload
 		}
 		else if(!con.canPathThrough() && con.canItemEnter(mItem))
 			return true;

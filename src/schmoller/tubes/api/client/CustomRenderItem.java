@@ -24,6 +24,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import schmoller.tubes.AdvRender;
+import schmoller.tubes.api.ItemPayload;
 import schmoller.tubes.api.TubeItem;
 import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.definitions.TypeNormalTube;
@@ -40,7 +41,10 @@ public class CustomRenderItem
 	
 	public void renderTubeItem(TubeItem item, double x, double y, double z)
 	{
-		renderItemStack(item.item, x, y, z);
+		if(item.item instanceof ItemPayload)
+			renderItemStack((ItemStack)item.item.get(), x, y, z);
+//		else if(item.item instanceof FluidPayload)
+//			renderFluidStack((FluidStack)item.item.get(), x, y, z);
 		
 		if(item.colour != -1)
 		{

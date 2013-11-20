@@ -1,5 +1,6 @@
 package schmoller.tubes.gui;
 
+import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.gui.ExtContainer;
 import schmoller.tubes.api.gui.FakeSlot;
 import schmoller.tubes.types.RoutingTube;
@@ -84,13 +85,13 @@ public class RoutingTubeContainer extends ExtContainer
 		}
 		
 		@Override
-		protected ItemStack getValue()
+		protected Payload getValue()
 		{
 			return mTube.getFilter(mColumn, mRow);
 		}
 		
 		@Override
-		protected void setValue( ItemStack item )
+		protected void setValue( Payload item )
 		{
 			mTube.setFilter(mColumn, mRow, item);
 		}
@@ -104,6 +105,12 @@ public class RoutingTubeContainer extends ExtContainer
 		public int getMaxSize()
 		{
 			return 1;
+		}
+		
+		@Override
+		public boolean canAcceptLiquid()
+		{
+			return true;
 		}
 	}
 

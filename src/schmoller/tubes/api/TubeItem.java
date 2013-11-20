@@ -2,7 +2,6 @@ package schmoller.tubes.api;
 
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.ForgeDirection;
 
@@ -12,12 +11,12 @@ public class TubeItem implements Cloneable
 	public static final int IMPORT = 1;
 	public static final int BLOCKED = 2;
 	
-	public TubeItem(ItemStack item)
+	public TubeItem(Payload item)
 	{
 		this.item = item;
 	}
 	
-	public ItemStack item;
+	public Payload item;
 	public int direction = 0;
 	public float progress = 0;
 	public boolean updated = false;
@@ -37,14 +36,14 @@ public class TubeItem implements Cloneable
 		tag.setFloat("P", progress);
 		tag.setInteger("S", state);
 		tag.setShort("C", (short)colour);
-		item.writeToNBT(tag);
+		item.write(tag);
 	}
 	
 	public void write(MCDataOutput output)
 	{
 		output.writeByte(direction | (updated ? 128 : 0));
 		output.writeFloat(progress);
-		output.writeItemStack(item);
+		item.write(output);
 		output.writeByte(state);
 		output.writeShort(colour);
 	}
@@ -56,7 +55,7 @@ public class TubeItem implements Cloneable
 		direction -= (direction & 128);
 		
 		float progress = input.readFloat();
-		TubeItem item = new TubeItem(input.readItemStack());
+		TubeItem item = new TubeItem(Payload.load(input));
 		item.direction = direction;
 		item.updated = updated;
 		item.progress = progress;
@@ -67,8 +66,7 @@ public class TubeItem implements Cloneable
 	}
 	public static TubeItem readFromNBT(NBTTagCompound tag)
 	{
-		ItemStack item = ItemStack.loadItemStackFromNBT(tag);
-		TubeItem tItem = new TubeItem(item);
+		TubeItem tItem = new TubeItem(Payload.load(tag));
 		
 		tItem.direction = tag.getInteger("D") & 0xFF;
 		tItem.updated = (tItem.direction & 128) != 0;

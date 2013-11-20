@@ -12,10 +12,10 @@ import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.MovingObjectPosition;
 import schmoller.tubes.ModTubes;
+import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.Position;
 import schmoller.tubes.api.TubeItem;
 import schmoller.tubes.api.helpers.BaseTube;
-import schmoller.tubes.api.helpers.InventoryHelper;
 import schmoller.tubes.api.helpers.TubeHelper;
 import schmoller.tubes.api.helpers.BaseRouter.PathLocation;
 import schmoller.tubes.definitions.TypeRoutingTube;
@@ -23,7 +23,7 @@ import schmoller.tubes.routing.OutputRouter;
 
 public class RoutingTube extends BaseTube
 {
-	private ItemStack[][] mFilters = new ItemStack[9][4];
+	private Payload[][] mFilters = new Payload[9][4];
 	private int[] mColours = new int[9];
 	private RouteDirection[] mDir = new RouteDirection[9]; 
 	
@@ -34,12 +34,12 @@ public class RoutingTube extends BaseTube
 		Arrays.fill(mColours, -1);
 	}
 	
-	public void setFilter(int column, int row, ItemStack item)
+	public void setFilter(int column, int row, Payload item)
 	{
 		mFilters[column][row] = item;
 	}
 	
-	public ItemStack getFilter(int column, int row)
+	public Payload getFilter(int column, int row)
 	{
 		return mFilters[column][row];
 	}
@@ -64,7 +64,7 @@ public class RoutingTube extends BaseTube
 		return mDir[column];
 	}
 	
-	private boolean doesItemMatchFilter(int column, ItemStack item)
+	private boolean doesItemMatchFilter(int column, Payload payload)
 	{
 		boolean empty = true;
 		for(int i = 0; i < 4; ++i)
@@ -73,7 +73,7 @@ public class RoutingTube extends BaseTube
 				continue;
 
 			empty = false;
-			if(InventoryHelper.areItemsEqual(mFilters[column][i], item))
+			if(mFilters[column][i].isPayloadTypeEqual(payload))
 				return true;
 		}
 		
@@ -110,7 +110,7 @@ public class RoutingTube extends BaseTube
 						continue;
 					
 					empty = false;
-					if(InventoryHelper.areItemsEqual(mFilters[col][i], item.item))
+					if(mFilters[col][i].isPayloadTypeEqual(item.item))
 					{
 						match = true;
 						level = i;
@@ -184,7 +184,7 @@ public class RoutingTube extends BaseTube
 						continue;
 					
 					empty = false;
-					if(InventoryHelper.areItemsEqual(mFilters[col][i], item.item))
+					if(mFilters[col][i].isPayloadTypeEqual(item.item))
 					{
 						match = true;
 						level = i;
@@ -254,7 +254,7 @@ public class RoutingTube extends BaseTube
 						continue;
 					
 					empty = false;
-					if(InventoryHelper.areItemsEqual(mFilters[col][i], item.item))
+					if(mFilters[col][i].isPayloadTypeEqual(item.item))
 					{
 						match = true;
 						level = i;
@@ -431,7 +431,7 @@ public class RoutingTube extends BaseTube
 				{
 					NBTTagCompound tag = new NBTTagCompound();
 					tag.setInteger("Slot", index);
-					mFilters[i][j].writeToNBT(tag);
+					mFilters[i][j].write(tag);
 					list.appendTag(tag);
 				}
 			}
@@ -466,7 +466,7 @@ public class RoutingTube extends BaseTube
 			int row = tag.getInteger("Slot") % 4;
 			int column = tag.getInteger("Slot") / 4;
 			
-			mFilters[column][row] = ItemStack.loadItemStackFromNBT(tag);
+			mFilters[column][row] = Payload.load(tag);
 		}
 		
 		for(int i = 0; i < 9; ++i)

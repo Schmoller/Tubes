@@ -15,7 +15,9 @@ import net.minecraft.util.MovingObjectPosition;
 import schmoller.tubes.ModTubes;
 import schmoller.tubes.PullMode;
 import schmoller.tubes.api.InventoryHandlerRegistry;
+import schmoller.tubes.api.ItemPayload;
 import schmoller.tubes.api.OverflowBuffer;
+import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.Position;
 import schmoller.tubes.api.SizeMode;
 import schmoller.tubes.api.TubeItem;
@@ -131,7 +133,7 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 					
 					if(extracted != null)
 					{
-						TubeItem item = new TubeItem(extracted);
+						TubeItem item = new TubeItem(new ItemPayload(extracted));
 						item.state = TubeItem.IMPORT;
 						item.direction = source.dir ^ 1;
 						
@@ -196,10 +198,15 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 	}
 	
 	@Override
-	public boolean canAddItem( ItemStack item, int direction )
+	public boolean canAddItem( Payload payload, int direction )
 	{
 		if(direction != (getFacing() ^ 1))
 			return false;
+		
+		if(!(payload instanceof ItemPayload))
+			return false;
+		
+		ItemStack item = (ItemStack)payload.get();
 		
 		boolean empty = true;
 		for(int i = 0; i < 16; ++i)

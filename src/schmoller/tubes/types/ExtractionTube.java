@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.ForgeDirection;
 import schmoller.tubes.api.InventoryHandlerRegistry;
+import schmoller.tubes.api.ItemPayload;
 import schmoller.tubes.api.OverflowBuffer;
 import schmoller.tubes.api.Position;
 import schmoller.tubes.api.TubeItem;
@@ -71,7 +72,7 @@ public class ExtractionTube extends DirectionalBasicTube implements IRedstonePar
 		{
 			ItemStack extracted = handler.extractItem(null, dir.ordinal() ^ 1, true);
 			if(extracted != null)
-				addItem(extracted, dir.ordinal() ^ 1);
+				addItem(new ItemPayload(extracted), dir.ordinal() ^ 1);
 		}
 	}
 	

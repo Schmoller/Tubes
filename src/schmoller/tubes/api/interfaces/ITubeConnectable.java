@@ -1,7 +1,7 @@
 package schmoller.tubes.api.interfaces;
 
+import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.TubeItem;
-import net.minecraft.item.ItemStack;
 
 /**
  * Implement this if you are making a tube connectable block. 
@@ -23,14 +23,14 @@ public interface ITubeConnectable
 	 * Checks if the item can enter this tube from the specified direction.
 	 * @param direction A direction from 0-5 or -1 for any direction
 	 */
-	public boolean canAddItem(ItemStack item, int direction);
+	public boolean canAddItem(Payload item, int direction);
 
 	/**
 	 * Adds the item to the tube from the specified side.
 	 * @param side The side 0-5 to add from, or -1 for any direction
 	 * @return True if the item was actually added
 	 */
-	public boolean addItem(ItemStack item, int side);
+	public boolean addItem(Payload item, int side);
 	/**
 	 * Adds the item to the tube.
 	 * The updated field of the item should be reset by this method.

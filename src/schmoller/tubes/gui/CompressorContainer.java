@@ -1,5 +1,7 @@
 package schmoller.tubes.gui;
 
+import schmoller.tubes.api.ItemPayload;
+import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.gui.ExtContainer;
 import schmoller.tubes.api.gui.FakeSlot;
 import schmoller.tubes.types.CompressorTube;
@@ -95,18 +97,18 @@ public class CompressorContainer extends ExtContainer
 		}
 		
 		@Override
-		protected ItemStack getValue()
+		protected Payload getValue()
 		{
 			return mTube.getTargetType();
 		}
 		
 		@Override
-		protected void setValue( ItemStack item )
+		protected void setValue( Payload item )
 		{
 			if(item == null)
 			{
-				item = new ItemStack(0, 64, 0);
-				putStack(item);
+				item = new ItemPayload(new ItemStack(0, 64, 0));
+				putStack((ItemStack)item.get());
 			}
 			else
 				mTube.setTargetType(item);
@@ -124,6 +126,12 @@ public class CompressorContainer extends ExtContainer
 		public int getMinSize()
 		{
 			return 2;
+		}
+		
+		@Override
+		public boolean canAcceptLiquid()
+		{
+			return true;
 		}
 	}
 

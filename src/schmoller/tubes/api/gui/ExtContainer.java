@@ -3,6 +3,7 @@ package schmoller.tubes.api.gui;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
 /**
  * Extended container provides the ability to use fake slots
@@ -17,57 +18,90 @@ public abstract class ExtContainer extends Container
 			if(inventorySlots.get(slotId) instanceof FakeSlot)
 			{
 				FakeSlot slot = (FakeSlot)inventorySlots.get(slotId);
+				ItemStack held = player.inventory.getItemStack();
 				
-				ItemStack existing = slot.getStack();
-				if(existing != null)
-					existing = existing.copy();
-				
-				if(mouseButton == 2) // Middle Click (Clear Slot)
-					slot.putStack(null);
-				else if(mouseButton == 0) // Left Click
+				if(slot.getStack() != null || held != null)
 				{
-					ItemStack held = player.inventory.getItemStack(); 
-					if(held != null && (existing == null || (!held.isItemEqual(slot.getStack()) || !ItemStack.areItemStackTagsEqual(held, slot.getStack())))) // Replace with this one
+					ItemStack existing = slot.getStack();
+					if(existing != null)
+						existing = existing.copy();
+					
+					if(mouseButton == 2) // Middle Click (Clear Slot)
+						slot.putStack(null);
+					else if(mouseButton == 0) // Left Click
 					{
-						ItemStack put = held.copy();
-						put.stackSize = Math.min(put.stackSize, slot.getSlotStackLimit());
-						slot.putStack(put);
+						if(held != null && (existing == null || (!held.isItemEqual(slot.getStack()) || !ItemStack.areItemStackTagsEqual(held, slot.getStack())))) // Replace with this one
+						{
+							ItemStack put = held.copy();
+							put.stackSize = Math.min(put.stackSize, slot.getSlotStackLimit());
+							slot.putStack(put);
+						}
+						else if(slot.getStack() != null) //  Decrease Slot
+						{
+							int amount = (modifier == 1 ? 10 : 1); // Shift?
+							ItemStack item = slot.getStack();
+							item.stackSize -= amount;
+							if(item.stackSize <= 0)
+								slot.putStack(null);
+							else
+								slot.putStack(item);
+						}
 					}
-					else if(slot.getStack() != null) //  Decrease Slot
+					else if(mouseButton == 1) // Right Click
 					{
-						int amount = (modifier == 1 ? 10 : 1); // Shift?
-						ItemStack item = slot.getStack();
-						item.stackSize -= amount;
-						if(item.stackSize <= 0)
+						if(held != null && (existing == null || (!held.isItemEqual(slot.getStack()) || !ItemStack.areItemStackTagsEqual(held, slot.getStack())))) // Replace with this one
+						{
+							held = held.copy();
+							held.stackSize = 1;
+							slot.putStack(held);
+						}
+						else if(slot.getStack() != null) //  Increase Slot
+						{
+							int amount = (modifier == 1 ? 10 : 1); // Shift?
+							ItemStack item = slot.getStack();
+							item.stackSize += amount;
+							if(item.stackSize >= slot.getSlotStackLimit())
+								item.stackSize = slot.getSlotStackLimit();
+							
+							slot.putStack(item);
+						}
+					}
+					
+					slot.onSlotChanged();
+					
+					return existing;
+				}
+				else if(slot.getFluidStack() != null)
+				{
+					FluidStack existing = slot.getFluidStack();
+					
+					if(mouseButton == 2) // Middle Click (Clear Slot)
+						slot.putStack(null);
+					else if(mouseButton == 0) // Left Click (Decrease Slot)
+					{
+						int amount = (modifier == 1 ? 250 : 125); // Shift?
+						FluidStack fluid = existing.copy();
+						fluid.amount -= amount;
+						if(fluid.amount <= 0)
 							slot.putStack(null);
 						else
-							slot.putStack(item);
+							slot.putFluidStack(fluid);
 					}
-				}
-				else if(mouseButton == 1) // Right Click
-				{
-					ItemStack held = player.inventory.getItemStack(); 
-					if(held != null && (existing == null || (!held.isItemEqual(slot.getStack()) || !ItemStack.areItemStackTagsEqual(held, slot.getStack())))) // Replace with this one
+					else if(mouseButton == 1) // Right Click (Increase Slot)
 					{
-						held = held.copy();
-						held.stackSize = 1;
-						slot.putStack(held);
-					}
-					else if(slot.getStack() != null) //  Increase Slot
-					{
-						int amount = (modifier == 1 ? 10 : 1); // Shift?
-						ItemStack item = slot.getStack();
-						item.stackSize += amount;
-						if(item.stackSize >= slot.getSlotStackLimit())
-							item.stackSize = slot.getSlotStackLimit();
+						int amount = (modifier == 1 ? 250 : 125); // Shift?
+						FluidStack fluid = existing.copy();
+						fluid.amount += amount;
+						if(fluid.amount >= 1000)
+							fluid.amount = 1000;
 						
-						slot.putStack(item);
+						slot.putFluidStack(fluid);
 					}
+					
+					slot.onSlotChanged();
+					
+					return null;
 				}
-				
-				slot.onSlotChanged();
-				
-				return existing;
 			}
 		}
 		

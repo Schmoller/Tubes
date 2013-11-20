@@ -17,6 +17,8 @@ import codechicken.multipart.TMultiPart;
 import codechicken.multipart.scalatraits.TSlottedTile;
 
 import schmoller.tubes.api.InventoryHandlerRegistry;
+import schmoller.tubes.api.ItemPayload;
+import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.TubeItem;
 import schmoller.tubes.api.interfaces.IInventoryHandler;
 import schmoller.tubes.api.interfaces.ITube;
@@ -47,7 +49,7 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 
 	
 	@Override
-	public boolean addItem(ItemStack item, int fromDir)
+	public boolean addItem(Payload item, int fromDir)
 	{
 		assert(fromDir >= -1 && fromDir < 6);
 		
@@ -400,7 +402,10 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 	protected void onDropItems( List<ItemStack> itemsToDrop )
 	{
 		for(TubeItem item : mItemsInTransit)
-			itemsToDrop.add(item.item);
+		{
+			if(item.item instanceof ItemPayload)
+				itemsToDrop.add((ItemStack)item.item.get());
+		}
 	}
 	
 	@Override
@@ -416,7 +421,7 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 	@Override
 	public boolean canItemEnter(TubeItem item) { return canAddItem(item.item, item.direction); }
 	@Override
-	public boolean canAddItem(ItemStack item, int direction) { return true; }
+	public boolean canAddItem(Payload item, int direction) { return true; }
 	
 	/**
 	 * Called when an item enters this tube either from another tube, or from something else
@@ -453,16 +458,20 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 		if(world().isRemote)
 			return true;
 		
-		IInventoryHandler handler = InventoryHandlerRegistry.getHandler(ent);
-		
-		if(handler != null)
+		if(item.item instanceof ItemPayload)
 		{
-			ItemStack remaining = handler.insertItem(item.item, item.direction ^ 1, true);
-			if(remaining == null)
-				return true;
+			IInventoryHandler handler = InventoryHandlerRegistry.getHandler(ent);
 			
-			item.item.stackSize = remaining.stackSize;
+			if(handler != null)
+			{
+				ItemStack remaining = handler.insertItem((ItemStack)item.item.get(), item.direction ^ 1, true);
+				if(remaining == null)
+					return true;
+				
+				((ItemPayload)item.item).item.stackSize = remaining.stackSize;
+			}
 		}
+		// TODO: Handle fluid payload
 		
 		return false;
 	}

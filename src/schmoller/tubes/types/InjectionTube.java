@@ -3,7 +3,9 @@ package schmoller.tubes.types;
 import java.util.List;
 
 import schmoller.tubes.ModTubes;
+import schmoller.tubes.api.ItemPayload;
 import schmoller.tubes.api.OverflowBuffer;
+import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.Position;
 import schmoller.tubes.api.TubeItem;
 import schmoller.tubes.api.helpers.BaseTube;
@@ -91,7 +93,7 @@ public class InjectionTube extends BaseTube implements ISidedInventory, ITubeOve
 	{
 		if(!world().isRemote && mOverflow.isEmpty() && mItem != null)
 		{
-			addItem(mItem, -1);
+			addItem(new ItemPayload(mItem), -1);
 			mItem = null;
 		}
 	}
@@ -139,7 +141,7 @@ public class InjectionTube extends BaseTube implements ISidedInventory, ITubeOve
 	}
 	
 	@Override
-	public boolean canAddItem( ItemStack item, int direction )
+	public boolean canAddItem( Payload item, int direction )
 	{
 		return false;
 	}
@@ -212,7 +214,7 @@ public class InjectionTube extends BaseTube implements ISidedInventory, ITubeOve
 		}
 		else if(mItem != null)
 		{
-			addItem(mItem, -1);
+			addItem(new ItemPayload(mItem), -1);
 			mItem = null;
 		}
 	}
