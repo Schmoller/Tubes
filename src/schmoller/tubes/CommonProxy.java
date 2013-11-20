@@ -99,7 +99,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 	{
 		try
 		{
-			return VersionRange.createFromVersionSpec("[1.0.0.207,)").containsVersion(getMultipartVersion());
+			return VersionRange.createFromVersionSpec("[1.0.0.208,)").containsVersion(getMultipartVersion());
 		}
 		catch ( InvalidVersionSpecificationException e )
 		{
@@ -117,7 +117,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 	private void registerTubes()
 	{
 		if(canUseInjection())
-			MultipartGenerator.registerPassThroughInterface("net/minecraft/inventory/IInventory");
+			MultipartGenerator.registerPassThroughInterface("net.minecraft.inventory.IInventory");
 		
 		TubeRegistry.registerTube(new TypeNormalTube(), "basic");
 		TubeRegistry.registerTube(new TypeRestrictionTube(), "restriction");

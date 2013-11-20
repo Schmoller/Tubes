@@ -115,24 +115,6 @@ public class InjectionTube extends BaseTube implements IInventory, ITubeOverflow
 	}
 
 	@Override
-	public boolean canPathThrough()
-	{
-		return false;
-	}
-	
-	@Override
-	public boolean canAddItem( ItemStack item, int direction )
-	{
-		return false;
-	}
-	
-	@Override
-	public boolean canItemEnter( TubeItem item )
-	{
-		return false;
-	}
-	
-	@Override
 	public boolean canConnectToInventories()
 	{
 		return false;
