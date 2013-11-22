@@ -1,10 +1,13 @@
 package schmoller.tubes.api.gui;
 
+import java.util.List;
+
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -70,12 +73,42 @@ public abstract class GuiExtContainer extends GuiContainer
 		{
 			FakeSlot fSlot = (FakeSlot)slot;
 			
-			if(fSlot.getStack() == null && fSlot.getFluidStack() != null)
+			if(fSlot.getFluidStack() != null)
 				drawFluidSlot(fSlot);
 			else
 				super.drawSlotInventory(slot);
 		}
 		else 
 			super.drawSlotInventory(slot);
+	}
+	
+	@Override
+	protected void drawItemStackTooltip( ItemStack item, int x, int y )
+	{
+		Slot slot = null;
+		
+		int rx = x - guiLeft;
+		int ry = y - guiTop;
+		
+		for(Slot s : (List<Slot>)inventorySlots.inventorySlots)
+		{
+			if(rx >= s.xDisplayPosition - 1 && rx <= s.xDisplayPosition + 16 && ry >= s.yDisplayPosition - 1 && ry <= s.yDisplayPosition + 16)
+			{
+				slot = s;
+				break;
+			}
+		}
+		
+		if(slot instanceof FakeSlot)
+		{
+			List<String> tooltip = ((FakeSlot)slot).getTooltip();
+			
+			if(tooltip != null)
+			{
+				drawHoveringText(tooltip, x, y, fontRenderer);
+				return;
+			}
+		}
+		super.drawItemStackTooltip(item, x, y);
 	}
 }

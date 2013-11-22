@@ -1,13 +1,19 @@
 package schmoller.tubes.gui;
 
+import java.util.Arrays;
+import java.util.List;
+
+import schmoller.tubes.api.FluidPayload;
 import schmoller.tubes.api.ItemPayload;
 import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.gui.ExtContainer;
 import schmoller.tubes.api.gui.FakeSlot;
 import schmoller.tubes.types.CompressorTube;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
 public class CompressorContainer extends ExtContainer
 {
@@ -132,6 +138,28 @@ public class CompressorContainer extends ExtContainer
 		public boolean canAcceptLiquid()
 		{
 			return true;
+		}
+		
+		@Override
+		public List<String> getTooltip()
+		{
+			Payload payload = getValue();
+			if(payload instanceof ItemPayload)
+			{
+				ItemStack item = (ItemStack)payload.get();
+				if(item.itemID == 0)
+					return Arrays.asList("Compressing any stack to " + item.stackSize + " items.");
+				else
+					return Arrays.asList("Compressing " + item.getDisplayName() + " to " + item.stackSize + " items.");
+			}
+			else if(payload instanceof FluidPayload)
+			{
+				FluidStack fluid = (FluidStack)payload.get();
+				
+				return Arrays.asList("Compressing " + I18n.getString(fluid.getFluid().getUnlocalizedName()) + " to " + fluid.amount + "MB.");
+			}
+			
+			return null;
 		}
 	}
 

@@ -1,14 +1,15 @@
 package schmoller.tubes.api.gui;
 
+import java.util.List;
+
 import schmoller.tubes.api.FluidPayload;
 import schmoller.tubes.api.ItemPayload;
 import schmoller.tubes.api.Payload;
-import schmoller.tubes.api.helpers.InventoryHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
 
 /**
@@ -47,7 +48,20 @@ public abstract class FakeSlot extends Slot
 		if(mHidden)
 			return null;
 		else
+		{
+			if(mFluid != null)
+			{
+				ItemStack item = new ItemStack(8,1,0);
+				NBTTagCompound tag = new NBTTagCompound();
+				NBTTagCompound fluid = new NBTTagCompound();
+				mFluid.writeToNBT(fluid);
+				tag.setTag("fluid", fluid);
+				item.setTagCompound(tag);
+				
+				return item;
+			}
 			return super.getStack();
+		}
 	}
 	
 	public FluidStack getFluidStack()
@@ -89,27 +103,31 @@ public abstract class FakeSlot extends Slot
 		if(canAcceptLiquid())
 		{
 			setValue(new FluidPayload(fluid));
+			mFluid = fluid;
 			inventory.setInventorySlotContents(0, null);
 		}
 	}
 	@Override
 	public void putStack( ItemStack item )
 	{
-		if(canAcceptLiquid() && FluidContainerRegistry.isContainer(item))
+		if(item != null && item.itemID == 8 && item.hasTagCompound())
 		{
-			ItemStack existing = getStack();
-			FluidStack fluid = FluidContainerRegistry.getFluidForFilledItem(item);
-			
-			// If the same container is put twice, convert to the fluid itself
-			if(existing != null && InventoryHelper.areItemsEqual(existing, item))
+			if(item.getTagCompound().hasKey("fluid"))
 			{
-				setValue(new FluidPayload(fluid));
+				mFluid = FluidStack.loadFluidStackFromNBT(item.getTagCompound().getCompoundTag("fluid"));
+				putFluidStack(mFluid);
 				inventory.setInventorySlotContents(0, null);
 				return;
 			}
 		}
+		
 		inventory.setInventorySlotContents(0, item);
-		setValue(new ItemPayload(item));
+		if(item == null)
+			setValue(null);
+		else
+			setValue(new ItemPayload(item));
+		
+		mFluid = null;
 	}
 	
 	protected abstract Payload getValue();
@@ -119,4 +137,9 @@ public abstract class FakeSlot extends Slot
 	public int getMinSize() { return 0; }
 	
 	public boolean canAcceptLiquid() { return false; }
+	
+	public List<String> getTooltip()
+	{
+		return null;
+	}
 }

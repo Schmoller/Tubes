@@ -1,8 +1,13 @@
 package schmoller.tubes.api.gui;
 
+import java.util.ArrayList;
+
+import schmoller.tubes.api.helpers.InventoryHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 /**
@@ -10,6 +15,15 @@ import net.minecraftforge.fluids.FluidStack;
  */
 public abstract class ExtContainer extends Container
 {
+	private ArrayList<FluidStack> inventoryFluidStacks = new ArrayList<FluidStack>();
+	
+	@Override
+	protected Slot addSlotToContainer( Slot par1Slot )
+	{
+		inventoryFluidStacks.add(null);
+		return super.addSlotToContainer(par1Slot);
+	}
+	
 	@Override
 	public ItemStack slotClick( int slotId, int mouseButton, int modifier, EntityPlayer player )
 	{
@@ -20,7 +34,7 @@ public abstract class ExtContainer extends Container
 				FakeSlot slot = (FakeSlot)inventorySlots.get(slotId);
 				ItemStack held = player.inventory.getItemStack();
 				
-				if(slot.getStack() != null || held != null)
+				if((slot.getStack() != null && slot.getFluidStack() == null) || held != null)
 				{
 					ItemStack existing = slot.getStack();
 					if(existing != null)
@@ -38,13 +52,22 @@ public abstract class ExtContainer extends Container
 						}
 						else if(slot.getStack() != null) //  Decrease Slot
 						{
-							int amount = (modifier == 1 ? 10 : 1); // Shift?
-							ItemStack item = slot.getStack();
-							item.stackSize -= amount;
-							if(item.stackSize <= 0)
-								slot.putStack(null);
+							// If the same container is put twice, convert to the fluid itself
+							if(InventoryHelper.areItemsEqual(held, existing) && slot.canAcceptLiquid() && FluidContainerRegistry.isContainer(held))
+							{
+								FluidStack fluid = FluidContainerRegistry.getFluidForFilledItem(held);
+								slot.putFluidStack(fluid);
+							}
 							else
-								slot.putStack(item);
+							{
+								int amount = (modifier == 1 ? 10 : 1); // Shift?
+								ItemStack item = slot.getStack();
+								item.stackSize -= amount;
+								if(item.stackSize <= 0)
+									slot.putStack(null);
+								else
+									slot.putStack(item);
+							}
 						}
 					}
 					else if(mouseButton == 1) // Right Click
@@ -57,13 +80,22 @@ public abstract class ExtContainer extends Container
 						}
 						else if(slot.getStack() != null) //  Increase Slot
 						{
-							int amount = (modifier == 1 ? 10 : 1); // Shift?
-							ItemStack item = slot.getStack();
-							item.stackSize += amount;
-							if(item.stackSize >= slot.getSlotStackLimit())
-								item.stackSize = slot.getSlotStackLimit();
-							
-							slot.putStack(item);
+							// If the same container is put twice, convert to the fluid itself
+							if(InventoryHelper.areItemsEqual(held, existing) && slot.canAcceptLiquid() && FluidContainerRegistry.isContainer(held))
+							{
+								FluidStack fluid = FluidContainerRegistry.getFluidForFilledItem(held);
+								slot.putFluidStack(fluid);
+							}
+							else
+							{
+								int amount = (modifier == 1 ? 10 : 1); // Shift?
+								ItemStack item = slot.getStack();
+								item.stackSize += amount;
+								if(item.stackSize >= slot.getSlotStackLimit())
+									item.stackSize = slot.getSlotStackLimit();
+								
+								slot.putStack(item);
+							}
 						}
 					}
 					

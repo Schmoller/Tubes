@@ -1,22 +1,17 @@
 package schmoller.tubes.gui;
 
-import java.util.Arrays;
-
 import org.lwjgl.opengl.GL11;
 
-import schmoller.tubes.api.FluidPayload;
 import schmoller.tubes.api.ItemPayload;
 import schmoller.tubes.api.gui.FakeSlot;
 import schmoller.tubes.api.gui.GuiExtContainer;
 import schmoller.tubes.definitions.TypeCompressorTube;
 import schmoller.tubes.types.CompressorTube;
 
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
-import net.minecraftforge.fluids.FluidStack;
 
 public class CompressorTubeGui extends GuiExtContainer
 {
@@ -38,33 +33,6 @@ public class CompressorTubeGui extends GuiExtContainer
         fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, this.ySize - 96 + 2, 0x404040);
         
 		super.drawGuiContainerForegroundLayer(curX, curY);
-		
-		int xx = curX - (width - xSize) / 2;
-		int yy = curY - (height - ySize) / 2;
-		
-		if(xx >= 116 && xx <= 132 && yy >= 25 && yy <= 41)
-		{
-			int old = width;
-			width -= (xx + curX);
-			
-			if(mTube.getTargetType() instanceof ItemPayload)
-			{
-				ItemStack item = (ItemStack)mTube.getTargetType().get();
-				
-				if(item.itemID == 0)
-					drawHoveringText(Arrays.asList("Compressing any stack to " + item.stackSize + " items."), xx, yy, fontRenderer);
-				else
-					drawHoveringText(Arrays.asList("Compressing " + item.getDisplayName() + " to " + item.stackSize + " items."), xx, yy, fontRenderer);
-			}
-			else if(mTube.getTargetType() instanceof FluidPayload)
-			{
-				FluidStack fluid = (FluidStack)mTube.getTargetType().get();
-				
-				drawHoveringText(Arrays.asList("Compressing " + fluid.getFluid().getLocalizedName() + " to " + fluid.amount + "MB."), xx, yy, fontRenderer);
-			}
-			RenderHelper.enableGUIStandardItemLighting();
-			width = old;
-		}
 	}
 	
 	@Override
@@ -79,12 +47,6 @@ public class CompressorTubeGui extends GuiExtContainer
 		
 		if(mTube.getTargetType() instanceof ItemPayload && ((ItemStack)mTube.getTargetType().get()).itemID == 0)
 			drawTexturedModalRect(x + 114, y + 23, 176, 0, 20, 20);
-	}
-	
-	@Override
-	protected void drawItemStackTooltip( ItemStack item, int x, int y )
-	{
-		super.drawItemStackTooltip(item, x, y);
 	}
 	
 	@Override
