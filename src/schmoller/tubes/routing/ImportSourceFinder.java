@@ -1,11 +1,13 @@
 package schmoller.tubes.routing;
 
+import schmoller.tubes.ItemFilter;
 import schmoller.tubes.api.InventoryHandlerRegistry;
 import schmoller.tubes.api.Position;
 import schmoller.tubes.api.SizeMode;
 import schmoller.tubes.api.helpers.BaseRouter;
 import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.api.helpers.TubeHelper;
+import schmoller.tubes.api.interfaces.IFilter;
 import schmoller.tubes.api.interfaces.IInventoryHandler;
 import schmoller.tubes.api.interfaces.ITubeConnectable;
 import net.minecraft.item.ItemStack;
@@ -14,13 +16,13 @@ import net.minecraft.world.IBlockAccess;
 
 public class ImportSourceFinder extends BaseRouter
 {
-	private ItemStack mItem;
+	private IFilter mItem;
 	private int mStartDir;
 	private SizeMode mMode;
 	
-	public ImportSourceFinder(IBlockAccess world, Position position, int startDirection, ItemStack filter, SizeMode mode)
+	public ImportSourceFinder(IBlockAccess world, Position position, int startDirection, IFilter filterItem, SizeMode mode)
 	{
-		mItem = filter;
+		mItem = filterItem;
 		mStartDir = startDirection;
 		mMode = mode;
 		setup(world, position);
@@ -84,17 +86,21 @@ public class ImportSourceFinder extends BaseRouter
 		
 		if(con == null)
 		{
-			IInventoryHandler handler = InventoryHandlerRegistry.getHandlerFor(getWorld(),current);
-			if(handler != null)
+			if(mItem == null || mItem instanceof ItemFilter)
 			{
-				ItemStack extracted;
-				if(mItem == null)
-					extracted = handler.extractItem(mItem, side ^ 1, false);
-				else
-					extracted = handler.extractItem(mItem, side ^ 1, mItem.stackSize, mMode, false);
-				
-				if(extracted != null)
-					return true;
+				ItemStack item = (mItem == null ? null : ((ItemFilter)mItem).getItem());
+				IInventoryHandler handler = InventoryHandlerRegistry.getHandlerFor(getWorld(),current);
+				if(handler != null)
+				{
+					ItemStack extracted;
+					if(item == null)
+						extracted = handler.extractItem(item, side ^ 1, false);
+					else
+						extracted = handler.extractItem(item, side ^ 1, item.stackSize, mMode, false);
+					
+					if(extracted != null)
+						return true;
+				}
 			}
 		}
 		return false;

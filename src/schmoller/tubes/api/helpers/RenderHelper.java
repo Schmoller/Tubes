@@ -1,7 +1,9 @@
 package schmoller.tubes.api.helpers;
 
 import codechicken.lib.vec.Vector3;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Icon;
 import net.minecraftforge.common.ForgeDirection;
 import schmoller.tubes.api.TubeDefinition;
 import schmoller.tubes.api.TubeItem;
@@ -50,5 +52,27 @@ public class RenderHelper
 	{
 		ITubeRender render = TubeRegistry.instance().getRender(definition);
 		render.renderItem(definition, item);
+	}
+	
+	public static void renderIcon( Icon icon, int x, int y, int width, int height)
+	{
+		Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawingQuads();
+        tessellator.addVertexWithUV(x, y + height, 100, icon.getMinU(), icon.getMaxV());
+        tessellator.addVertexWithUV(x + width, y + height, 100, icon.getMaxU(), icon.getMaxV());
+        tessellator.addVertexWithUV(x + width, y, 100, icon.getMaxU(), icon.getMinV());
+        tessellator.addVertexWithUV(x, y, 100, icon.getMinU(), icon.getMinV());
+        tessellator.draw();
+	}
+	
+	public static void renderRect( int x, int y, int width, int height, float u, float v, float tW, float tH)
+	{
+		Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawingQuads();
+        tessellator.addVertexWithUV(x, y + height, 100, u, v + tH);
+        tessellator.addVertexWithUV(x + width, y + height, 100, u + tW, v + tH);
+        tessellator.addVertexWithUV(x + width, y, 100, u + tW, v);
+        tessellator.addVertexWithUV(x, y, 100, u, v);
+        tessellator.draw();
 	}
 }

@@ -7,16 +7,19 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.MovingObjectPosition;
+import schmoller.tubes.ItemFilter;
 import schmoller.tubes.ModTubes;
-import schmoller.tubes.api.ItemPayload;
+import schmoller.tubes.api.FilterRegistry;
 import schmoller.tubes.api.Payload;
+import schmoller.tubes.api.SizeMode;
 import schmoller.tubes.api.TubeItem;
 import schmoller.tubes.api.helpers.BaseTube;
+import schmoller.tubes.api.interfaces.IFilter;
 import schmoller.tubes.api.interfaces.ITubeConnectable;
 
 public class FilterTube extends BaseTube
 {
-	private ItemStack[] mFilterStacks;
+	private IFilter[] mFilterStacks;
 	private Mode mCurrentMode = Mode.Allow;
 	private Comparison mCurrentComparison = Comparison.Any;
 	private int mColor = -1;
@@ -24,7 +27,7 @@ public class FilterTube extends BaseTube
 	public FilterTube()
 	{
 		super("filter");
-		mFilterStacks = new ItemStack[16];
+		mFilterStacks = new IFilter[16];
 	}
 	
 	@Override
@@ -35,12 +38,12 @@ public class FilterTube extends BaseTube
 		return true;
 	}
 	
-	public void setFilter(int index, ItemStack item)
+	public void setFilter(int index, IFilter filter)
 	{
-		mFilterStacks[index] = item;
+		mFilterStacks[index] = filter;
 	}
 	
-	public ItemStack getFilter(int index)
+	public IFilter getFilter(int index)
 	{
 		return mFilterStacks[index];
 	}
@@ -75,23 +78,10 @@ public class FilterTube extends BaseTube
 		return mColor;
 	}
 
-	private boolean doesMatchFilter(Payload payload, int index)
+	private boolean doesMatchFilter(Payload item, int index)
 	{
-		if(!(payload instanceof ItemPayload))
-			return false;
-		
-		ItemStack item = (ItemStack)payload.get();
-		
-		int matchAmount = 0;
-		if(mFilterStacks[index] != null && (mFilterStacks[index].isItemEqual(item) && ItemStack.areItemStackTagsEqual(mFilterStacks[index], item)))
-		{
-			matchAmount = mFilterStacks[index].stackSize;
-		}
-		else
+		if(mFilterStacks[index] == null || !mFilterStacks[index].matches(item, SizeMode.Max))
 			return mCurrentMode == Mode.Deny;
-		
-		if(matchAmount == 0 && mCurrentMode == Mode.Allow)
-			return false;
 		
 		boolean matches = false;
 		
@@ -101,13 +91,13 @@ public class FilterTube extends BaseTube
 			matches = true;
 			break;
 		case Exact:
-			matches = (matchAmount == item.stackSize);
+			matches = mFilterStacks[index].matches(item, SizeMode.Exact);
 			break;
 		case Greater:
-			matches = ( item.stackSize > matchAmount);
+			matches = !mFilterStacks[index].matches(item, SizeMode.LessEqual);
 			break;
 		case Less:
-			matches = (item.stackSize < matchAmount);
+			matches = !mFilterStacks[index].matches(item, SizeMode.GreaterEqual);
 			break;
 		}
 		
@@ -115,6 +105,65 @@ public class FilterTube extends BaseTube
 			matches = !matches;
 		
 		return matches;
+	}
+	
+	private boolean doesMatchFilter(TubeItem item, int index)
+	{
+		if(mFilterStacks[index] == null || !mFilterStacks[index].matches(item, SizeMode.Max))
+			return mCurrentMode == Mode.Deny;
+		
+		boolean matches = false;
+		
+		switch(mCurrentComparison)
+		{
+		case Any:
+			matches = true;
+			break;
+		case Exact:
+			matches = mFilterStacks[index].matches(item, SizeMode.Exact);
+			break;
+		case Greater:
+			matches = !mFilterStacks[index].matches(item, SizeMode.LessEqual);
+			break;
+		case Less:
+			matches = !mFilterStacks[index].matches(item, SizeMode.GreaterEqual);
+			break;
+		}
+		
+		if(mCurrentMode == Mode.Deny)
+			matches = !matches;
+		
+		return matches;
+	}
+	
+	@Override
+	public boolean canItemEnter( TubeItem item )
+	{
+		boolean empty = true;
+
+		for(int i = 0; i < mFilterStacks.length; ++i)
+		{
+			if(mFilterStacks[i] != null)
+			{
+				empty = false;
+				
+				if(mCurrentMode == Mode.Allow)
+				{
+					if(doesMatchFilter(item, i))
+						return true;
+				}
+				else
+				{
+					if(!doesMatchFilter(item, i))
+						return false;
+				}
+			}
+		}
+		
+		if(empty)
+			return true;
+		
+		return mCurrentMode == Mode.Deny;
 	}
 	
 	@Override
@@ -180,12 +229,12 @@ public class FilterTube extends BaseTube
 			{
 				NBTTagCompound tag = new NBTTagCompound();
 				tag.setInteger("Slot", i);
-				mFilterStacks[i].writeToNBT(tag);
+				mFilterStacks[i].write(tag);
 				items.appendTag(tag);
 			}
 		}
 		
-		root.setTag("filter", items);
+		root.setTag("NewFilter", items);
 		
 		root.setInteger("mode", mCurrentMode.ordinal());
 		root.setInteger("comp", mCurrentComparison.ordinal());
@@ -198,14 +247,29 @@ public class FilterTube extends BaseTube
 	{
 		super.load(root);
 		
-		NBTTagList items = root.getTagList("filter");
-		
-		for(int i = 0; i < items.tagCount(); ++i)
+		if(root.hasKey("filter"))
 		{
-			NBTTagCompound tag = (NBTTagCompound)items.tagAt(i);
-			int slot = tag.getInteger("Slot");
-			mFilterStacks[slot] = ItemStack.loadItemStackFromNBT(tag);
+			NBTTagList items = root.getTagList("filter");
+			
+			for(int i = 0; i < items.tagCount(); ++i)
+			{
+				NBTTagCompound tag = (NBTTagCompound)items.tagAt(i);
+				int slot = tag.getInteger("Slot");
+				mFilterStacks[slot] = new ItemFilter(ItemStack.loadItemStackFromNBT(tag), false);
+			}
 		}
+		else
+		{
+			NBTTagList filters = root.getTagList("NewFilter");
+			for(int i = 0; i < filters.tagCount(); ++i)
+			{
+				NBTTagCompound tag = (NBTTagCompound)filters.tagAt(i);
+				int slot = tag.getInteger("Slot");
+				mFilterStacks[slot] = FilterRegistry.getInstance().readFilter(tag);
+			}
+			
+		}
+		
 		
 		mCurrentMode = Mode.values()[root.getInteger("mode")];
 		mCurrentComparison = Comparison.values()[root.getInteger("comp")];
@@ -226,7 +290,7 @@ public class FilterTube extends BaseTube
 			if(mFilterStacks[i] != null)
 			{
 				output.writeBoolean(true);
-				output.writeItemStack(mFilterStacks[i]);
+				mFilterStacks[i].write(output);
 			}
 			else
 				output.writeBoolean(false);
@@ -246,7 +310,7 @@ public class FilterTube extends BaseTube
 		for(int i = 0; i < mFilterStacks.length; ++i)
 		{
 			if(input.readBoolean())
-				mFilterStacks[i] = input.readItemStack();
+				mFilterStacks[i] = FilterRegistry.getInstance().readFilter(input);
 		}
 		
 		mColor = input.readShort();

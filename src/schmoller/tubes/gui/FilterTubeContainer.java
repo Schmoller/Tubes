@@ -1,6 +1,8 @@
 package schmoller.tubes.gui;
 
 import schmoller.tubes.api.gui.ExtContainer;
+import schmoller.tubes.api.gui.FakeSlot;
+import schmoller.tubes.api.interfaces.IFilter;
 import schmoller.tubes.types.FilterTube;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
@@ -68,6 +70,28 @@ public class FilterTubeContainer extends ExtContainer
         return ret;
 	}
 	
-	
-
+	public class FilterSlot extends FakeSlot
+	{
+		private FilterTube mTube;
+		private int mIndex;
+		
+		public FilterSlot(FilterTube tube, int index, int x, int y)
+		{
+			super(tube.getFilter(index), x, y);
+			mTube = tube;
+			mIndex = index;
+		}
+		
+		@Override
+		protected void setValue( IFilter item )
+		{
+			mTube.setFilter(mIndex, item);
+		}
+		
+		@Override
+		public boolean shouldRespectSizes()
+		{
+			return true;
+		}
+	}
 }

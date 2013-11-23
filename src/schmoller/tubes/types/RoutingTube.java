@@ -11,19 +11,23 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.MovingObjectPosition;
+import schmoller.tubes.ItemFilter;
 import schmoller.tubes.ModTubes;
+import schmoller.tubes.api.FilterRegistry;
 import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.Position;
+import schmoller.tubes.api.SizeMode;
 import schmoller.tubes.api.TubeItem;
 import schmoller.tubes.api.helpers.BaseTube;
 import schmoller.tubes.api.helpers.TubeHelper;
 import schmoller.tubes.api.helpers.BaseRouter.PathLocation;
+import schmoller.tubes.api.interfaces.IFilter;
 import schmoller.tubes.definitions.TypeRoutingTube;
 import schmoller.tubes.routing.OutputRouter;
 
 public class RoutingTube extends BaseTube
 {
-	private Payload[][] mFilters = new Payload[9][4];
+	private IFilter[][] mFilters = new IFilter[9][4];
 	private int[] mColours = new int[9];
 	private RouteDirection[] mDir = new RouteDirection[9]; 
 	
@@ -34,12 +38,12 @@ public class RoutingTube extends BaseTube
 		Arrays.fill(mColours, -1);
 	}
 	
-	public void setFilter(int column, int row, Payload item)
+	public void setFilter(int column, int row, IFilter item)
 	{
 		mFilters[column][row] = item;
 	}
 	
-	public Payload getFilter(int column, int row)
+	public IFilter getFilter(int column, int row)
 	{
 		return mFilters[column][row];
 	}
@@ -73,7 +77,7 @@ public class RoutingTube extends BaseTube
 				continue;
 
 			empty = false;
-			if(mFilters[column][i].isPayloadTypeEqual(payload))
+			if(mFilters[column][i].matches(payload, SizeMode.Max))
 				return true;
 		}
 		
@@ -110,7 +114,7 @@ public class RoutingTube extends BaseTube
 						continue;
 					
 					empty = false;
-					if(mFilters[col][i].isPayloadTypeEqual(item.item))
+					if(mFilters[col][i].matches(item, SizeMode.Max))
 					{
 						match = true;
 						level = i;
@@ -184,7 +188,7 @@ public class RoutingTube extends BaseTube
 						continue;
 					
 					empty = false;
-					if(mFilters[col][i].isPayloadTypeEqual(item.item))
+					if(mFilters[col][i].matches(item, SizeMode.Max))
 					{
 						match = true;
 						level = i;
@@ -254,7 +258,7 @@ public class RoutingTube extends BaseTube
 						continue;
 					
 					empty = false;
-					if(mFilters[col][i].isPayloadTypeEqual(item.item))
+					if(mFilters[col][i].matches(item, SizeMode.Max))
 					{
 						match = true;
 						level = i;
@@ -455,18 +459,34 @@ public class RoutingTube extends BaseTube
 	{
 		super.load(root);
 		
-		NBTTagList filters = root.getTagList("Filter");
 		NBTTagList colours = root.getTagList("Colours");
 		NBTTagList directions = root.getTagList("Dirs");
-		
-		for(int i = 0; i < filters.tagCount(); ++i)
+
+		if(root.hasKey("Filter"))
 		{
-			NBTTagCompound tag = (NBTTagCompound)filters.tagAt(i);
-			
-			int row = tag.getInteger("Slot") % 4;
-			int column = tag.getInteger("Slot") / 4;
-			
-			mFilters[column][row] = Payload.load(tag);
+			NBTTagList filters = root.getTagList("Filter");
+			for(int i = 0; i < filters.tagCount(); ++i)
+			{
+				NBTTagCompound tag = (NBTTagCompound)filters.tagAt(i);
+				
+				int row = tag.getInteger("Slot") % 4;
+				int column = tag.getInteger("Slot") / 4;
+				
+				mFilters[column][row] = new ItemFilter(ItemStack.loadItemStackFromNBT(tag), false);
+			}
+		}
+		else
+		{
+			NBTTagList filters = root.getTagList("Filter");
+			for(int i = 0; i < filters.tagCount(); ++i)
+			{
+				NBTTagCompound tag = (NBTTagCompound)filters.tagAt(i);
+				
+				int row = tag.getInteger("Slot") % 4;
+				int column = tag.getInteger("Slot") / 4;
+				
+				mFilters[column][row] = FilterRegistry.getInstance().readFilter(tag);
+			}
 		}
 		
 		for(int i = 0; i < 9; ++i)

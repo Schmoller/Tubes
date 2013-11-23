@@ -1,17 +1,12 @@
 package schmoller.tubes.gui;
 
-import java.util.Arrays;
-import java.util.List;
-
-import schmoller.tubes.api.FluidPayload;
-import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.gui.ExtContainer;
 import schmoller.tubes.api.gui.FakeSlot;
+import schmoller.tubes.api.interfaces.IFilter;
 import schmoller.tubes.types.RoutingTube;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
 
 public class RoutingTubeContainer extends ExtContainer
 {
@@ -90,42 +85,15 @@ public class RoutingTubeContainer extends ExtContainer
 		}
 		
 		@Override
-		protected Payload getValue()
+		protected void setValue( IFilter filter )
 		{
-			return mTube.getFilter(mColumn, mRow);
-		}
-		
-		@Override
-		protected void setValue( Payload item )
-		{
-			mTube.setFilter(mColumn, mRow, item);
+			mTube.setFilter(mColumn, mRow, filter);
 		}
 		
 		@Override
 		public int getSlotStackLimit()
 		{
 			return 1;
-		}
-		@Override
-		public int getMaxSize()
-		{
-			return 1;
-		}
-		
-		@Override
-		public boolean canAcceptLiquid()
-		{
-			return true;
-		}
-		
-		@Override
-		public List<String> getTooltip()
-		{
-			Payload payload = getValue();
-			if(payload instanceof FluidPayload)
-				return Arrays.asList(((FluidStack)payload.get()).getFluid().getLocalizedName());
-
-			return super.getTooltip();
 		}
 	}
 

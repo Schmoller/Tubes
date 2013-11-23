@@ -3,17 +3,15 @@ package schmoller.tubes.gui;
 import java.util.Arrays;
 import java.util.List;
 
-import schmoller.tubes.api.FluidPayload;
-import schmoller.tubes.api.ItemPayload;
-import schmoller.tubes.api.Payload;
+import schmoller.tubes.AnyFilter;
 import schmoller.tubes.api.gui.ExtContainer;
 import schmoller.tubes.api.gui.FakeSlot;
+import schmoller.tubes.api.interfaces.IFilter;
 import schmoller.tubes.types.CompressorTube;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
+import net.minecraft.util.EnumChatFormatting;
 
 public class CompressorContainer extends ExtContainer
 {
@@ -103,63 +101,31 @@ public class CompressorContainer extends ExtContainer
 		}
 		
 		@Override
-		protected Payload getValue()
+		protected void setValue( IFilter filter )
 		{
-			return mTube.getTargetType();
-		}
-		
-		@Override
-		protected void setValue( Payload item )
-		{
-			if(item == null)
+			if(filter == null)
 			{
-				item = new ItemPayload(new ItemStack(0, 64, 0));
-				putStack((ItemStack)item.get());
+				filter = new AnyFilter(64, 64);
+				setFilter(filter);
 			}
 			else
-				mTube.setTargetType(item);
+				mTube.setTargetType(filter);
 		}
 		
 		@Override
-		public int getMaxSize()
+		public List<String> getTooltip(List<String> current)
 		{
-			if(getHasStack())
-				return getStack().getMaxStackSize();
-			return 64;
-		}
-		
-		@Override
-		public int getMinSize()
-		{
-			return 2;
-		}
-		
-		@Override
-		public boolean canAcceptLiquid()
-		{
-			return true;
-		}
-		
-		@Override
-		public List<String> getTooltip()
-		{
-			Payload payload = getValue();
-			if(payload instanceof ItemPayload)
-			{
-				ItemStack item = (ItemStack)payload.get();
-				if(item.itemID == 0)
-					return Arrays.asList("Compressing any stack to " + item.stackSize + " items.");
-				else
-					return Arrays.asList("Compressing " + item.getDisplayName() + " to " + item.stackSize + " items.");
-			}
-			else if(payload instanceof FluidPayload)
-			{
-				FluidStack fluid = (FluidStack)payload.get();
-				
-				return Arrays.asList("Compressing " + I18n.getString(fluid.getFluid().getUnlocalizedName()) + " to " + fluid.amount + "MB.");
-			}
+			String name = null;
+			if(current != null && !current.isEmpty())
+				name = current.get(0);
+			else
+				name = "Something";
 			
-			return null;
+			int count = 64;
+			if(getFilter() != null)
+				count = getFilter().size();
+			
+			return Arrays.asList("Compressing " + name + EnumChatFormatting.RESET + " to " + count);
 		}
 	}
 

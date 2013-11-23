@@ -1,5 +1,6 @@
 package schmoller.tubes.nei;
 
+import java.util.Collections;
 import java.util.List;
 
 import schmoller.tubes.api.gui.FakeSlot;
@@ -33,13 +34,20 @@ public class ExtContainerTooltipHandler implements IContainerTooltipHandler
 		
 		if(slot instanceof FakeSlot)
 		{
-			List<String> tooltip = ((FakeSlot)slot).getTooltip();
+			List<String> tooltip = null;
+			
+			if(((FakeSlot)slot).getFilter() != null)
+				tooltip = ((FakeSlot)slot).getFilter().getTooltip(null);
+			
+			tooltip = ((FakeSlot)slot).getTooltip(tooltip);
 			
 			if(tooltip != null)
 				return tooltip;
+			else
+				return Collections.EMPTY_LIST;
 		}
-		
-		return current;
+		else
+			return current;
 	}
 
 	@Override

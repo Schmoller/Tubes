@@ -12,8 +12,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
+import schmoller.tubes.ItemFilter;
 import schmoller.tubes.ModTubes;
 import schmoller.tubes.PullMode;
+import schmoller.tubes.api.FilterRegistry;
 import schmoller.tubes.api.InventoryHandlerRegistry;
 import schmoller.tubes.api.ItemPayload;
 import schmoller.tubes.api.OverflowBuffer;
@@ -22,9 +24,9 @@ import schmoller.tubes.api.Position;
 import schmoller.tubes.api.SizeMode;
 import schmoller.tubes.api.TubeItem;
 import schmoller.tubes.api.helpers.CommonHelper;
-import schmoller.tubes.api.helpers.InventoryHelper;
 import schmoller.tubes.api.helpers.TubeHelper;
 import schmoller.tubes.api.helpers.BaseRouter.PathLocation;
+import schmoller.tubes.api.interfaces.IFilter;
 import schmoller.tubes.api.interfaces.IInventoryHandler;
 import schmoller.tubes.api.interfaces.ITubeConnectable;
 import schmoller.tubes.api.interfaces.ITubeImportDest;
@@ -34,7 +36,7 @@ import schmoller.tubes.routing.OutputRouter;
 
 public class RequestingTube extends DirectionalTube implements ITubeImportDest, IRedstonePart, ITubeOverflowDestination
 {
-	private ItemStack[] mFilter = new ItemStack[16];
+	private IFilter[] mFilter = new IFilter[16];
 	private int mNext = 0;
 	private PullMode mMode = PullMode.RedstoneConstant;
 	private SizeMode mSizeMode = SizeMode.Max;
@@ -108,7 +110,7 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 		}
 		else if(mMode == PullMode.Constant || (mMode == PullMode.RedstoneConstant && mIsPowered) || (mMode == PullMode.RedstoneSingle && mPulses > 0))
 		{
-			ItemStack filterItem = null;
+			IFilter filterItem = null;
 			int start = mNext;
 			do
 			{
@@ -120,28 +122,29 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 			
 			PathLocation source = new ImportSourceFinder(world(), new Position(x(), y(), z()), getFacing(), filterItem, mSizeMode).route();
 			
-			if(source != null)
+			if(source != null && (filterItem == null || filterItem.getType().equals("item")))
 			{
 				IInventoryHandler handler = InventoryHandlerRegistry.getHandlerFor(world(), source.position);
+				ItemStack item = (filterItem == null ? null : ((ItemFilter)filterItem).getItem());
 				if(handler != null)
 				{
 					ItemStack extracted;
-					if(filterItem == null)
+					if(item == null)
 						extracted = handler.extractItem(null, source.dir ^ 1, true);
 					else
-						extracted = handler.extractItem(filterItem, source.dir ^ 1, filterItem.stackSize, mSizeMode, true);
+						extracted = handler.extractItem(item, source.dir ^ 1, item.stackSize, mSizeMode, true);
 					
 					if(extracted != null)
 					{
-						TubeItem item = new TubeItem(new ItemPayload(extracted));
-						item.state = TubeItem.IMPORT;
-						item.direction = source.dir ^ 1;
+						TubeItem tItem = new TubeItem(new ItemPayload(extracted));
+						tItem.state = TubeItem.IMPORT;
+						tItem.direction = source.dir ^ 1;
 						
 						PathLocation tubeLoc = new PathLocation(source, source.dir ^ 1);
 						TileEntity tile = CommonHelper.getTileEntity(world(), tubeLoc.position);
 						ITubeConnectable con = TubeHelper.getTubeConnectable(tile);
 						if(con != null)
-							con.addItem(item, true);
+							con.addItem(tItem, true);
 						
 						--mPulses;
 						if(mPulses < 0)
@@ -194,19 +197,8 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 		else if(item.state != TubeItem.IMPORT)
 			return false;
 		
-		return canAddItem(item.item, item.direction);
-	}
-	
-	@Override
-	public boolean canAddItem( Payload payload, int direction )
-	{
-		if(direction != (getFacing() ^ 1))
+		if(item.direction != (getFacing() ^ 1))
 			return false;
-		
-		if(!(payload instanceof ItemPayload))
-			return false;
-		
-		ItemStack item = (ItemStack)payload.get();
 		
 		boolean empty = true;
 		for(int i = 0; i < 16; ++i)
@@ -216,7 +208,28 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 			
 			empty = false;
 			
-			if(InventoryHelper.areItemsEqual(mFilter[i], item))
+			if(mFilter[i].matches(item, SizeMode.Max))
+				return true;
+		}
+		
+		return empty;
+	}
+	
+	@Override
+	public boolean canAddItem( Payload payload, int direction )
+	{
+		if(direction != (getFacing() ^ 1))
+			return false;
+		
+		boolean empty = true;
+		for(int i = 0; i < 16; ++i)
+		{
+			if(mFilter[i] == null)
+				continue;
+			
+			empty = false;
+			
+			if(mFilter[i].matches(payload, SizeMode.Max))
 				return true;
 		}
 		
@@ -337,14 +350,14 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 		return side == (getFacing() ^ 1);
 	}
 
-	public ItemStack getFilter(int slot)
+	public IFilter getFilter(int slot)
 	{
 		return mFilter[slot];
 	}
 	
-	public void setFilter(int slot, ItemStack item)
+	public void setFilter(int slot, IFilter filter)
 	{
-		mFilter[slot] = item;
+		mFilter[slot] = filter;
 	}
 	
 	public PullMode getMode()
@@ -440,12 +453,12 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 			{
 				NBTTagCompound tag = new NBTTagCompound();
 				tag.setInteger("Slot", i);
-				mFilter[i].writeToNBT(tag);
+				mFilter[i].write(tag);
 				filter.appendTag(tag);
 			}
 		}
 
-		root.setTag("Filter", filter);
+		root.setTag("NewFilter", filter);
 		
 		root.setString("PullMode", mMode.name());
 		root.setString("SizeMode", mSizeMode.name());
@@ -460,19 +473,36 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 	{
 		super.load(root);
 		
-		NBTTagList filter = root.getTagList("Filter");
-		
-		if(filter == null)
-			return;
-		
-		for(int i = 0; i < filter.tagCount(); ++i)
+		if(root.hasKey("Filter"))
 		{
-			NBTTagCompound tag = (NBTTagCompound)filter.tagAt(i);
+			NBTTagList filter = root.getTagList("Filter");
 			
-			int slot = tag.getInteger("Slot");
-			mFilter[slot] = ItemStack.loadItemStackFromNBT(tag);
+			if(filter == null)
+				return;
+			
+			for(int i = 0; i < filter.tagCount(); ++i)
+			{
+				NBTTagCompound tag = (NBTTagCompound)filter.tagAt(i);
+				
+				int slot = tag.getInteger("Slot");
+				mFilter[slot] = new ItemFilter(ItemStack.loadItemStackFromNBT(tag), false);
+			}
 		}
-		
+		else
+		{
+			NBTTagList filter = root.getTagList("NewFilter");
+			
+			if(filter == null)
+				return;
+			
+			for(int i = 0; i < filter.tagCount(); ++i)
+			{
+				NBTTagCompound tag = (NBTTagCompound)filter.tagAt(i);
+				
+				int slot = tag.getInteger("Slot");
+				mFilter[slot] = FilterRegistry.getInstance().readFilter(tag);
+			}
+		}
 		mMode = PullMode.valueOf(root.getString("PullMode"));
 		
 		mPulses = root.getInteger("Pulses");

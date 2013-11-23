@@ -2,15 +2,13 @@ package schmoller.tubes.api.gui;
 
 import java.util.List;
 
-import schmoller.tubes.api.FluidPayload;
-import schmoller.tubes.api.ItemPayload;
-import schmoller.tubes.api.Payload;
+import schmoller.tubes.api.FilterRegistry;
+import schmoller.tubes.api.interfaces.IFilter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fluids.FluidStack;
 
 /**
  * Should be used in an ExtContainer.
@@ -18,62 +16,62 @@ import net.minecraftforge.fluids.FluidStack;
  */
 public abstract class FakeSlot extends Slot
 {
-	private boolean mHidden = false;
-	private FluidStack mFluid;
+	private IFilter mFilter;
 	
-	public FakeSlot(Payload initial, int x, int y)
+	public FakeSlot(IFilter initial, int x, int y)
 	{
 		super(new InventoryBasic("", false, 1), 0, x, y);
 		
-		if(initial instanceof ItemPayload)
-			inventory.setInventorySlotContents(0, (ItemStack)initial.get());
-		else if(initial instanceof FluidPayload)
-			mFluid = (FluidStack)initial.get();
+		inventory.setInventorySlotContents(0, toItem(initial));
+	}
+	
+	private static ItemStack toItem(IFilter filter)
+	{
+		if(filter == null)
+			return null;
+		
+		ItemStack item = new ItemStack(1, 1, 0);
+		NBTTagCompound tag = new NBTTagCompound();
+		NBTTagCompound data = new NBTTagCompound();
+		
+		FilterRegistry.getInstance().writeFilter(filter, data);
+		tag.setTag("Filter", data);
+		item.setTagCompound(tag);
+		
+		return item;
+	}
+	
+	private static IFilter fromItem(ItemStack item)
+	{
+		if(item == null || !item.hasTagCompound())
+			return null;
+		
+		if(!item.getTagCompound().hasKey("Filter"))
+			return null;
+		
+		return FilterRegistry.getInstance().readFilter(item.getTagCompound().getCompoundTag("Filter"));
 	}
 	
 	@Override
-	public boolean canTakeStack( EntityPlayer player )
+	public final boolean canTakeStack( EntityPlayer player )
 	{
 		return false;
 	}
 	
-	public void setHidden(boolean hidden)
+	public final IFilter getFilter()
 	{
-		mHidden = hidden;
+		return mFilter;
+	}
+	
+	public final void setFilter(IFilter filter)
+	{
+		mFilter = filter;
+		inventory.setInventorySlotContents(0, toItem(filter));
+		setValue(filter);
 	}
 	
 	@Override
-	public ItemStack getStack() 
-	{
-		if(mHidden)
-			return null;
-		else
-		{
-			if(mFluid != null)
-			{
-				ItemStack item = new ItemStack(8,1,0);
-				NBTTagCompound tag = new NBTTagCompound();
-				NBTTagCompound fluid = new NBTTagCompound();
-				mFluid.writeToNBT(fluid);
-				tag.setTag("fluid", fluid);
-				item.setTagCompound(tag);
-				
-				return item;
-			}
-			return super.getStack();
-		}
-	}
-	
-	public FluidStack getFluidStack()
-	{
-		if(mHidden)
-			return null;
-		else
-			return mFluid;
-	}
-	
-	@Override
-	public ItemStack decrStackSize( int amount )
+	public final ItemStack decrStackSize( int amount )
 	{
 		return super.decrStackSize(amount);
 	}
@@ -81,65 +79,44 @@ public abstract class FakeSlot extends Slot
 	@Override
 	public int getSlotStackLimit()
 	{
-		if(getHasStack() && getStack().itemID != 0)
-			return getStack().getMaxStackSize();
-		return 64;
+		return Integer.MAX_VALUE;
 	}
 	
 	@Override
-	public boolean isItemValid( ItemStack par1ItemStack )
+	public void onSlotChanged()
 	{
+		inventory.setInventorySlotContents(0, toItem(mFilter));
+	}
+	
+	@Override
+	public final boolean isItemValid( ItemStack par1ItemStack ) { return true; }
+	
+	@Override
+	public final void onPickupFromSlot( EntityPlayer player, ItemStack stack ) {}
+	
+	@Override
+	public final void putStack( ItemStack item )
+	{
+		mFilter = fromItem(item);
+		inventory.setInventorySlotContents(0, (mFilter == null ? null : item));
+		
+		setValue(mFilter);
+	}
+	
+	protected abstract void setValue(IFilter filter);
+
+	public List<String> getTooltip(List<String> existing)
+	{
+		return existing;
+	}
+	
+	public boolean resetFilter() 
+	{ 
+		setFilter(null);
 		return true;
 	}
+	public boolean shouldRespectSizes() { return true; }
 	
-	@Override
-	public void onPickupFromSlot( EntityPlayer player, ItemStack stack )
-	{
-		
-	}
 	
-	public void putFluidStack( FluidStack fluid)
-	{
-		if(canAcceptLiquid())
-		{
-			setValue(new FluidPayload(fluid));
-			mFluid = fluid;
-			inventory.setInventorySlotContents(0, null);
-		}
-	}
-	@Override
-	public void putStack( ItemStack item )
-	{
-		if(item != null && item.itemID == 8 && item.hasTagCompound())
-		{
-			if(item.getTagCompound().hasKey("fluid"))
-			{
-				mFluid = FluidStack.loadFluidStackFromNBT(item.getTagCompound().getCompoundTag("fluid"));
-				putFluidStack(mFluid);
-				inventory.setInventorySlotContents(0, null);
-				return;
-			}
-		}
-		
-		inventory.setInventorySlotContents(0, item);
-		if(item == null)
-			setValue(null);
-		else
-			setValue(new ItemPayload(item));
-		
-		mFluid = null;
-	}
 	
-	protected abstract Payload getValue();
-	protected abstract void setValue(Payload item);
-
-	public int getMaxSize() { return 64; }
-	public int getMinSize() { return 0; }
-	
-	public boolean canAcceptLiquid() { return false; }
-	
-	public List<String> getTooltip()
-	{
-		return null;
-	}
 }
