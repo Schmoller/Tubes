@@ -117,6 +117,6 @@ public abstract class FakeSlot extends Slot
 	}
 	public boolean shouldRespectSizes() { return true; }
 	
-	
+	public boolean filterNeedsPayload() { return true; }
 	
 }

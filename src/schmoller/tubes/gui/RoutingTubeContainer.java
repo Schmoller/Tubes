@@ -95,6 +95,9 @@ public class RoutingTubeContainer extends ExtContainer
 		{
 			return 1;
 		}
+		
+		@Override
+		public boolean filterNeedsPayload() { return false; }
 	}
 
 }

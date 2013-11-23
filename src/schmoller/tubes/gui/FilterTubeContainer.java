@@ -93,5 +93,8 @@ public class FilterTubeContainer extends ExtContainer
 		{
 			return true;
 		}
+		
+		@Override
+		public boolean filterNeedsPayload() { return false; }
 	}
 }

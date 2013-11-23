@@ -49,6 +49,9 @@ public class OutputRouter extends BaseRouter
 		{
 			if((conns & (1 << i)) != 0)
 			{
+				mItem.colour = current.color;
+				mItem.direction = current.dir;
+				
 				PathLocation loc = new PathLocation(current, i);
 				
 				TileEntity ent = CommonHelper.getTileEntity(getWorld(), loc.position);
@@ -63,7 +66,7 @@ public class OutputRouter extends BaseRouter
 					if(!con.canItemEnter(mItem))
 						continue;
 					
-					con.simulateEffects(mItem);
+					myCon.simulateEffects(mItem);
 					loc.color = mItem.colour;
 					
 					loc.dist += con.getRouteWeight() - 1;
@@ -83,6 +86,9 @@ public class OutputRouter extends BaseRouter
 		
 		conns &= allowed;
 		
+		int initialColor = mItem.colour;
+		int initialDir = mItem.direction;
+		
 		for(int i = 0; i < 6; ++i)
 		{
 			if(mDirection != -1 && mDirection != i)
@@ -90,6 +96,9 @@ public class OutputRouter extends BaseRouter
 			
 			if((conns & (1 << i)) != 0)
 			{
+				mItem.colour = initialColor;
+				mItem.direction = initialDir;
+				
 				PathLocation loc = new PathLocation(position, i);
 				loc.color = mItem.colour;
 				
@@ -105,7 +114,7 @@ public class OutputRouter extends BaseRouter
 					if(!con.canItemEnter(mItem))
 						continue;
 					
-					con.simulateEffects(mItem);
+					myCon.simulateEffects(mItem);
 					loc.color = mItem.colour;
 					
 					loc.dist += con.getRouteWeight() - 1;

@@ -860,4 +860,9 @@ public class AdvRender
 	{
 		transform = mStackTransforms.pop();
 	}
+
+	public void resetLighting()
+	{
+		resetLighting(15728880);
+	}
 }

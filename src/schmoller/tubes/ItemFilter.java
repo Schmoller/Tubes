@@ -34,7 +34,7 @@ public class ItemFilter implements IFilter
 	{
 		assert(template != null);
 		
-		mTemplate = template;
+		mTemplate = template.copy();
 		mFuzzy = fuzzy;
 	}
 	
@@ -129,7 +129,7 @@ public class ItemFilter implements IFilter
         	font = Minecraft.getMinecraft().fontRenderer;
         
         itemRenderer.renderItemAndEffectIntoGUI(font, Minecraft.getMinecraft().getTextureManager(), mTemplate, x, y);
-        itemRenderer.renderItemOverlayIntoGUI(font, Minecraft.getMinecraft().getTextureManager(), mTemplate, x, y, "");
+        itemRenderer.renderItemOverlayIntoGUI(font, Minecraft.getMinecraft().getTextureManager(), mTemplate, x, y, null);
 
         itemRenderer.zLevel = 0.0F;
 	}

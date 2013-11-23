@@ -13,9 +13,10 @@ public interface IFilterFactory
 	 * @param button The mouse button used (0 = left, 1 = right, 2 = middle)
 	 * @param shift Whether the shift key was pressed
 	 * @param ctrl Whether the ctrl (command) key was pressed
+	 * @param mustHavePayload When true, the returned filter must have a corresponding payload type
 	 * @return A new filter, or null if none would have been created
 	 */
-	public IFilter getFilterFrom(ItemStack heldItem, IFilter existing, int button, boolean shift, boolean ctrl);
+	public IFilter getFilterFrom(ItemStack heldItem, IFilter existing, int button, boolean shift, boolean ctrl, boolean mustHavePayload);
 	
 	/**
 	 * Load a filter from an NBTTagCompound

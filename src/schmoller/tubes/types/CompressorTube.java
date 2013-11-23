@@ -294,7 +294,7 @@ public class CompressorTube extends BaseTube implements IInventory
 		super.save(root);
 		
 		NBTTagCompound target = new NBTTagCompound();
-		mTarget.write(target);
+		FilterRegistry.getInstance().writeFilter(mTarget, target);
 		root.setTag("Target", target);
 		
 		if(mCurrent != null)

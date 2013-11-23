@@ -229,7 +229,7 @@ public class FilterTube extends BaseTube
 			{
 				NBTTagCompound tag = new NBTTagCompound();
 				tag.setInteger("Slot", i);
-				mFilterStacks[i].write(tag);
+				FilterRegistry.getInstance().writeFilter(mFilterStacks[i],tag);
 				items.appendTag(tag);
 			}
 		}
@@ -290,7 +290,7 @@ public class FilterTube extends BaseTube
 			if(mFilterStacks[i] != null)
 			{
 				output.writeBoolean(true);
-				mFilterStacks[i].write(output);
+				FilterRegistry.getInstance().writeFilter(mFilterStacks[i],output);
 			}
 			else
 				output.writeBoolean(false);

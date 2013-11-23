@@ -14,7 +14,6 @@ import net.minecraft.util.MovingObjectPosition;
 import schmoller.tubes.ItemFilter;
 import schmoller.tubes.ModTubes;
 import schmoller.tubes.api.FilterRegistry;
-import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.Position;
 import schmoller.tubes.api.SizeMode;
 import schmoller.tubes.api.TubeItem;
@@ -68,7 +67,7 @@ public class RoutingTube extends BaseTube
 		return mDir[column];
 	}
 	
-	private boolean doesItemMatchFilter(int column, Payload payload)
+	private boolean doesItemMatchFilter(int column, TubeItem item)
 	{
 		boolean empty = true;
 		for(int i = 0; i < 4; ++i)
@@ -77,7 +76,7 @@ public class RoutingTube extends BaseTube
 				continue;
 
 			empty = false;
-			if(mFilters[column][i].matches(payload, SizeMode.Max))
+			if(mFilters[column][i].matches(item, SizeMode.Max))
 				return true;
 		}
 		
@@ -413,7 +412,7 @@ public class RoutingTube extends BaseTube
 		
 		for(int col = 0; col < 9; ++col)
 		{
-			if(mDir[col] != RouteDirection.Closed && (mDir[col] == RouteDirection.Any || ((conns & (1 << mDir[col].ordinal())) != 0)) && doesItemMatchFilter(col, item.item))
+			if(mDir[col] != RouteDirection.Closed && (mDir[col] == RouteDirection.Any || ((conns & (1 << mDir[col].ordinal())) != 0)) && doesItemMatchFilter(col, item))
 				return true;
 		}
 		
@@ -435,13 +434,13 @@ public class RoutingTube extends BaseTube
 				{
 					NBTTagCompound tag = new NBTTagCompound();
 					tag.setInteger("Slot", index);
-					mFilters[i][j].write(tag);
+					FilterRegistry.getInstance().writeFilter(mFilters[i][j], tag);
 					list.appendTag(tag);
 				}
 			}
 		}
 		
-		root.setTag("Filter", list);
+		root.setTag("NewFilter", list);
 		
 		list = new NBTTagList();
 		for(int i = 0; i < 9; ++i)
@@ -477,7 +476,7 @@ public class RoutingTube extends BaseTube
 		}
 		else
 		{
-			NBTTagList filters = root.getTagList("Filter");
+			NBTTagList filters = root.getTagList("NewFilter");
 			for(int i = 0; i < filters.tagCount(); ++i)
 			{
 				NBTTagCompound tag = (NBTTagCompound)filters.tagAt(i);

@@ -453,7 +453,7 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 			{
 				NBTTagCompound tag = new NBTTagCompound();
 				tag.setInteger("Slot", i);
-				mFilter[i].write(tag);
+				FilterRegistry.getInstance().writeFilter(mFilter[i], tag);
 				filter.appendTag(tag);
 			}
 		}

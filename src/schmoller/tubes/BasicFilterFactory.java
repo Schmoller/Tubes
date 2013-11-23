@@ -12,9 +12,15 @@ import schmoller.tubes.api.interfaces.IFilterFactory;
 public class BasicFilterFactory implements IFilterFactory
 {
 	@Override
-	public IFilter getFilterFrom( ItemStack heldItem, IFilter existing, int button, boolean shift, boolean ctrl )
+	public IFilter getFilterFrom( ItemStack heldItem, IFilter existing, int button, boolean shift, boolean ctrl, boolean mustHavePayload )
 	{
-		if(existing instanceof ItemFilter)
+		if(button == 1 && heldItem != null)
+		{
+			heldItem = heldItem.copy();
+			heldItem.stackSize = 1;
+		}
+		
+		if(existing instanceof ItemFilter && heldItem != null)
 		{
 			ItemStack stack = ((ItemFilter)existing).getItem();
 			
@@ -22,7 +28,7 @@ public class BasicFilterFactory implements IFilterFactory
 			{
 				if (FluidContainerRegistry.isContainer(heldItem))
 					return new FluidFilter(FluidContainerRegistry.getFluidForFilledItem(heldItem));
-				if (CommonHelper.getDyeIndex(heldItem) != -1)
+				if (!mustHavePayload && CommonHelper.getDyeIndex(heldItem) != -1)
 					return new ColorFilter(CommonHelper.getDyeIndex(heldItem));
 				
 				return null;

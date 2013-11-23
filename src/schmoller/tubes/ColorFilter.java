@@ -3,19 +3,28 @@ package schmoller.tubes;
 import java.util.Arrays;
 import java.util.List;
 
+import org.lwjgl.opengl.GL11;
+
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.SizeMode;
 import schmoller.tubes.api.TubeItem;
 import schmoller.tubes.api.helpers.CommonHelper;
+import schmoller.tubes.api.helpers.RenderHelper;
 import schmoller.tubes.api.interfaces.IFilter;
 
 public class ColorFilter implements IFilter
 {
+	public static ResourceLocation baseTexture = new ResourceLocation("tubes", "textures/gui/iconColorPallet.png");
+	public static ResourceLocation centerTexture = new ResourceLocation("tubes", "textures/gui/iconColorPalletCenter.png");
+	
 	private int mColor;
 	
 	public ColorFilter(int color)
@@ -63,8 +72,19 @@ public class ColorFilter implements IFilter
 	@SideOnly(Side.CLIENT)
 	public void renderFilter( int x, int y )
 	{
-		// TODO Auto-generated method stub
-
+		Minecraft.getMinecraft().getTextureManager().bindTexture(baseTexture);
+		RenderHelper.renderRect(x, y, 16, 16, 0, 0, 1, 1);
+		
+		if(mColor != -1)
+		{
+			Minecraft.getMinecraft().getTextureManager().bindTexture(centerTexture);
+			Tessellator.instance.setColorOpaque_I(CommonHelper.getDyeColor(mColor));
+			int color = CommonHelper.getDyeColor(mColor);
+			
+			GL11.glColor3f(((color >> 16) & 255) / 255f, ((color >> 8) & 255) / 255f, (color & 255) / 255f);
+			RenderHelper.renderRect(x, y, 16, 16, 0, 0, 1, 1);
+			GL11.glColor3f(1, 1, 1);
+		}
 	}
 
 	@Override

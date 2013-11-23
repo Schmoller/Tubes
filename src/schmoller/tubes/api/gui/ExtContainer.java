@@ -26,6 +26,15 @@ public abstract class ExtContainer extends Container
 	}
 	
 	@Override
+	public boolean canDragIntoSlot( Slot slot )
+	{
+		if(slot instanceof FakeSlot)
+			return false;
+
+		return super.canDragIntoSlot(slot);
+	}
+	
+	@Override
 	public ItemStack slotClick( int slotId, int mouseButton, int modifier, EntityPlayer player )
 	{
 		if(slotId >= 0 && slotId < inventorySlots.size())
@@ -42,7 +51,7 @@ public abstract class ExtContainer extends Container
 				if(mouseButton != 2 || !slot.resetFilter())
 				{
 					IFilter existing = slot.getFilter();
-					IFilter newFilter = FilterRegistry.getInstance().createFilter(held, existing, mouseButton, GuiScreen.isShiftKeyDown(), GuiScreen.isCtrlKeyDown());
+					IFilter newFilter = FilterRegistry.getInstance().createFilter(held, existing, mouseButton, GuiScreen.isShiftKeyDown(), GuiScreen.isCtrlKeyDown(), slot.filterNeedsPayload());
 					
 					if(newFilter == null && existing != null)
 					{

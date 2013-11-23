@@ -97,7 +97,7 @@ public class AnyFilter implements IFilter
 	public void renderFilter( int x, int y )
 	{
 		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
-		RenderHelper.renderRect(x, y, 16, 16, 0, 0, 16, 16);
+		RenderHelper.renderRect(x, y, 16, 16, 0, 0, 1, 1);
 	}
 
 	@Override

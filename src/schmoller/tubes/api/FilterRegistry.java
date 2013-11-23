@@ -31,11 +31,11 @@ public class FilterRegistry
 	}
 	
 	
-	public IFilter createFilter( ItemStack heldItem, IFilter existing, int button, boolean shift, boolean ctrl )
+	public IFilter createFilter( ItemStack heldItem, IFilter existing, int button, boolean shift, boolean ctrl, boolean mustHavePayload )
 	{
 		for(IFilterFactory factory : mFactories)
 		{
-			IFilter filter = factory.getFilterFrom(heldItem, existing, button, shift, ctrl);
+			IFilter filter = factory.getFilterFrom(heldItem, existing, button, shift, ctrl, mustHavePayload);
 			if(filter != null)
 				return filter;
 		}
