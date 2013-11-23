@@ -1,5 +1,9 @@
 package schmoller.tubes.gui;
 
+import java.util.Arrays;
+import java.util.List;
+
+import schmoller.tubes.api.FluidPayload;
 import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.gui.ExtContainer;
 import schmoller.tubes.api.gui.FakeSlot;
@@ -7,6 +11,7 @@ import schmoller.tubes.types.RoutingTube;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
 public class RoutingTubeContainer extends ExtContainer
 {
@@ -111,6 +116,16 @@ public class RoutingTubeContainer extends ExtContainer
 		public boolean canAcceptLiquid()
 		{
 			return true;
+		}
+		
+		@Override
+		public List<String> getTooltip()
+		{
+			Payload payload = getValue();
+			if(payload instanceof FluidPayload)
+				return Arrays.asList(((FluidStack)payload.get()).getFluid().getLocalizedName());
+
+			return super.getTooltip();
 		}
 	}
 

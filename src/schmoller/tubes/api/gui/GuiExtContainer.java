@@ -58,8 +58,25 @@ public abstract class GuiExtContainer extends GuiContainer
             
             drawTexturedModelRectFromIcon(i, j, icon, 16, 16);
             
-            // TODO: Draw amount
+            String text = String.valueOf(fluid.amount);
+            int fwidth = fontRenderer.getStringWidth(text);
             
+            GL11.glPushMatrix();
+            
+            GL11.glTranslated(i + 19 - 2 - fwidth, j + 6 + 3, 0);
+            if(fwidth > 16)
+            {
+            	GL11.glTranslatef(fwidth / 2 - 1, fontRenderer.FONT_HEIGHT / 2f - 1, 0);
+            	GL11.glScalef(0.5f, 0.5f, 0.5f);
+            }
+            
+            GL11.glDisable(GL11.GL_LIGHTING);
+            GL11.glDisable(GL11.GL_DEPTH_TEST);
+            fontRenderer.drawStringWithShadow(text, 0, 0, 16777215);
+            GL11.glEnable(GL11.GL_LIGHTING);
+            GL11.glEnable(GL11.GL_DEPTH_TEST);
+            
+            GL11.glPopMatrix();
         }
 
         itemRenderer.zLevel = 0.0F;
