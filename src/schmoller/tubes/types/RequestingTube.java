@@ -16,7 +16,7 @@ import schmoller.tubes.ItemFilter;
 import schmoller.tubes.ModTubes;
 import schmoller.tubes.PullMode;
 import schmoller.tubes.api.FilterRegistry;
-import schmoller.tubes.api.InventoryHandlerRegistry;
+import schmoller.tubes.api.InteractionHandler;
 import schmoller.tubes.api.ItemPayload;
 import schmoller.tubes.api.OverflowBuffer;
 import schmoller.tubes.api.Payload;
@@ -124,7 +124,7 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 			
 			if(source != null && (filterItem == null || filterItem.getType().equals("item")))
 			{
-				IInventoryHandler handler = InventoryHandlerRegistry.getHandlerFor(world(), source.position);
+				IInventoryHandler handler = InteractionHandler.getInventoryHandler(world(), source.position);
 				ItemStack item = (filterItem == null ? null : ((ItemFilter)filterItem).getItem());
 				if(handler != null)
 				{

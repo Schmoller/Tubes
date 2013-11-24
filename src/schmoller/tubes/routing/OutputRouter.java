@@ -1,6 +1,7 @@
 package schmoller.tubes.routing;
 
-import schmoller.tubes.api.InventoryHandlerRegistry;
+import schmoller.tubes.api.FluidPayload;
+import schmoller.tubes.api.InteractionHandler;
 import schmoller.tubes.api.ItemPayload;
 import schmoller.tubes.api.Position;
 import schmoller.tubes.api.TubeItem;
@@ -12,6 +13,9 @@ import schmoller.tubes.api.interfaces.ITubeConnectable;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidHandler;
 
 public class OutputRouter extends BaseRouter
 {
@@ -136,7 +140,7 @@ public class OutputRouter extends BaseRouter
 		{
 			if(mItem.item instanceof ItemPayload)
 			{
-				IInventoryHandler handler = InventoryHandlerRegistry.getHandler(ent);
+				IInventoryHandler handler = InteractionHandler.getInventoryHandler(getWorld(), current);
 				if(handler != null)
 				{
 					ItemStack remaining = handler.insertItem((ItemStack)mItem.item.get(), side ^ 1, false);
@@ -145,7 +149,17 @@ public class OutputRouter extends BaseRouter
 						return true;
 				}
 			}
-			// TODO: Handle fluid payload
+			else if(mItem.item instanceof FluidPayload)
+			{
+				IFluidHandler handler = InteractionHandler.getFluidHandler(getWorld(), current);
+				if(handler != null)
+				{
+					int filled = handler.fill(ForgeDirection.getOrientation(side), (FluidStack)mItem.item.get(), false);
+					
+					if(filled > 0)
+						return true;
+				}
+			}
 		}
 		else if(!con.canPathThrough() && con.canItemEnter(mItem))
 			return true;

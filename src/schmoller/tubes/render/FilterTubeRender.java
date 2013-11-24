@@ -4,20 +4,12 @@ import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
 import schmoller.tubes.api.TubeDefinition;
-import schmoller.tubes.api.interfaces.ITube;
 import schmoller.tubes.definitions.TypeEjectionTube;
 import schmoller.tubes.definitions.TypeFilterTube;
 
 public class FilterTubeRender extends NormalTubeRender
 {
-	@Override
-	public void renderStatic( TubeDefinition type, ITube tube, World world, int x, int y, int z )
-	{
-		super.renderStatic(type, tube, world, x, y, z);
-	}
-	
 	@Override
 	protected void renderCore( int connections, TubeDefinition def, int col )
 	{

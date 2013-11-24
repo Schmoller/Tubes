@@ -10,9 +10,6 @@ import schmoller.tubes.inventory.SidedInvHandler;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.IBlockAccess;
-
 import com.google.common.base.Throwables;
 
 public class InventoryHandlerRegistry
@@ -33,33 +30,15 @@ public class InventoryHandlerRegistry
 		}
 	}
 	
-	public static IInventoryHandler getHandlerFor(IBlockAccess world, int x, int y, int z)
+	public static IInventoryHandler getHandler(IInventory inventory)
 	{
-		TileEntity ent = world.getBlockTileEntity(x, y, z);
-		
-		return getHandler(ent);
-	}
-	
-	public static IInventoryHandler getHandlerFor(IBlockAccess world, Position position)
-	{
-		TileEntity ent = world.getBlockTileEntity(position.x, position.y, position.z);
-		
-		return getHandler(ent);
-	}
-	
-	public static IInventoryHandler getHandler(Object object)
-	{
-		IInventory alternate = InventoryProviderRegistry.provideFor(object);
-		if(alternate != null)
-			object = alternate;
-		
 		for(Entry<Class<?>, Constructor<? extends IInventoryHandler>> entry : mHandlers.entrySet())
 		{
-			if(entry.getKey().isInstance(object))
+			if(entry.getKey().isInstance(inventory))
 			{
 				try
 				{
-					return entry.getValue().newInstance(object);
+					return entry.getValue().newInstance(inventory);
 				}
 				catch(Exception e)
 				{
@@ -70,10 +49,7 @@ public class InventoryHandlerRegistry
 		}
 		
 		// This one is hard coded so that it does not get accidently tested first preventing a more relevant one to be used 
-		if(object instanceof IInventory)
-			return new BasicInvHandler((IInventory)object);
-		
-		return null;
+		return new BasicInvHandler(inventory);
 	}
 	
 	static

@@ -3,11 +3,10 @@ package schmoller.tubes.render;
 import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import schmoller.tubes.api.InteractionHandler;
 import schmoller.tubes.api.TubeDefinition;
 import schmoller.tubes.api.helpers.TubeHelper;
 import schmoller.tubes.api.interfaces.IDirectionalTube;
@@ -44,9 +43,8 @@ public class ExtractionTubeRender extends NormalTubeRender
 		{
 			if((connections & (1 << i)) != 0)
 			{
-				TileEntity tile = world.getBlockTileEntity(x + ForgeDirection.getOrientation(i).offsetX, y + ForgeDirection.getOrientation(i).offsetY, z + ForgeDirection.getOrientation(i).offsetZ);
-				
-				if(tile instanceof IInventory && TubeHelper.getTubeConnectable(tile) == null)
+				if(InteractionHandler.isInteractable(world, x + ForgeDirection.getOrientation(i).offsetX, y + ForgeDirection.getOrientation(i).offsetY, z + ForgeDirection.getOrientation(i).offsetZ, i) 
+					&& TubeHelper.getTubeConnectable(world, x + ForgeDirection.getOrientation(i).offsetX, y + ForgeDirection.getOrientation(i).offsetY, z + ForgeDirection.getOrientation(i).offsetZ) == null)
 					invCons |= (1 << i);
 			}
 		}

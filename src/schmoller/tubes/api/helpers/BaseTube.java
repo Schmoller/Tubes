@@ -9,6 +9,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidHandler;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import codechicken.microblock.HollowMicroblock;
@@ -16,7 +18,8 @@ import codechicken.multipart.TFacePart;
 import codechicken.multipart.TMultiPart;
 import codechicken.multipart.scalatraits.TSlottedTile;
 
-import schmoller.tubes.api.InventoryHandlerRegistry;
+import schmoller.tubes.api.FluidPayload;
+import schmoller.tubes.api.InteractionHandler;
 import schmoller.tubes.api.ItemPayload;
 import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.TubeItem;
@@ -460,8 +463,8 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 		
 		if(item.item instanceof ItemPayload)
 		{
-			IInventoryHandler handler = InventoryHandlerRegistry.getHandler(ent);
-			
+			IInventoryHandler handler = InteractionHandler.getInventoryHandler(world(), x() + dir.offsetX, y() + dir.offsetY, z() + dir.offsetZ);
+	
 			if(handler != null)
 			{
 				ItemStack remaining = handler.insertItem((ItemStack)item.item.get(), item.direction ^ 1, true);
@@ -471,7 +474,21 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 				((ItemPayload)item.item).item.stackSize = remaining.stackSize;
 			}
 		}
-		// TODO: Handle fluid payload
+		else if(item.item instanceof FluidPayload)
+		{
+			IFluidHandler handler = InteractionHandler.getFluidHandler(world(), x() + dir.offsetX, y() + dir.offsetY, z() + dir.offsetZ);
+			if(handler == null)
+				return false;
+			
+			FluidStack fluid = (FluidStack)item.item.get();
+			
+			int amount = handler.fill(ForgeDirection.getOrientation(item.direction), fluid, true);
+			
+			fluid.amount -= amount;
+			
+			if(fluid.amount <= 0)
+				return true;
+		}
 		
 		return false;
 	}
