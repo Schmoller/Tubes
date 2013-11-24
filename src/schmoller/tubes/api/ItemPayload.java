@@ -1,12 +1,19 @@
 package schmoller.tubes.api;
 
+import schmoller.tubes.api.client.IPayloadRender;
+import schmoller.tubes.render.ItemPayloadRender;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class ItemPayload extends Payload
 {
+	@SideOnly(Side.CLIENT)
+	private static ItemPayloadRender mRender;
+	
 	public ItemStack item;
 	
 	public ItemPayload() {}
@@ -93,5 +100,15 @@ public class ItemPayload extends Payload
 	public String toString()
 	{
 		return item.toString();
+	}
+	
+	@Override
+	@SideOnly( Side.CLIENT )
+	public IPayloadRender getRenderer()
+	{
+		if(mRender == null)
+			mRender = new ItemPayloadRender();
+		
+		return mRender;
 	}
 }

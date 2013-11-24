@@ -1,12 +1,19 @@
 package schmoller.tubes.api;
 
+import schmoller.tubes.api.client.IPayloadRender;
+import schmoller.tubes.render.FluidPayloadRender;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class FluidPayload extends Payload
 {
+	@SideOnly(Side.CLIENT)
+	private static FluidPayloadRender mRender;
+	
 	public FluidStack fluid;
 	
 	public FluidPayload() {}
@@ -95,5 +102,13 @@ public class FluidPayload extends Payload
 		return fluid.toString();
 	}
 	
-	
+	@Override
+	@SideOnly( Side.CLIENT )
+	public IPayloadRender getRenderer()
+	{
+		if(mRender == null)
+			mRender = new FluidPayloadRender();
+		
+		return mRender;
+	}
 }

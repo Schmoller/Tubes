@@ -64,7 +64,7 @@ public class ProviderRegistry
 			return provider.provide(object);
 		else
 		{
-			for(Class<?> clazz : mProviders.keySet())
+			for(Class<?> clazz : mFluidProviders.keySet())
 			{
 				if(clazz.isAssignableFrom(object.getClass()))
 					return mFluidProviders.get(object.getClass()).provide(object);

@@ -12,10 +12,15 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidHandler;
+import schmoller.tubes.FluidFilter;
 import schmoller.tubes.ItemFilter;
 import schmoller.tubes.ModTubes;
 import schmoller.tubes.PullMode;
 import schmoller.tubes.api.FilterRegistry;
+import schmoller.tubes.api.FluidPayload;
 import schmoller.tubes.api.InteractionHandler;
 import schmoller.tubes.api.ItemPayload;
 import schmoller.tubes.api.OverflowBuffer;
@@ -152,9 +157,48 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 						
 						if(mMode == PullMode.RedstoneSingle)
 							openChannel(CHANNEL_PULSE);
+						
+						return;
 					}
 				}
 			}
+			
+			if(source != null && (filterItem == null || filterItem.getType().equals("fluid")))
+			{
+				IFluidHandler handler = InteractionHandler.getFluidHandler(world(), source.position);
+				FluidStack fluid = (filterItem == null ? null : ((FluidFilter)filterItem).getFluid());
+				if(handler != null)
+				{
+					FluidStack drained = null;
+					if(fluid == null)
+						drained = handler.drain(ForgeDirection.getOrientation(source.dir), 1000, true);
+					else
+						drained = handler.drain(ForgeDirection.getOrientation(source.dir), fluid, true);
+					
+					if(drained != null)
+					{
+						TubeItem tItem = new TubeItem(new FluidPayload(drained));
+						tItem.state = TubeItem.IMPORT;
+						tItem.direction = source.dir ^ 1;
+						
+						PathLocation tubeLoc = new PathLocation(source, source.dir ^ 1);
+						TileEntity tile = CommonHelper.getTileEntity(world(), tubeLoc.position);
+						ITubeConnectable con = TubeHelper.getTubeConnectable(tile);
+						if(con != null)
+							con.addItem(tItem, true);
+						
+						--mPulses;
+						if(mPulses < 0)
+							mPulses = 0;
+						
+						if(mMode == PullMode.RedstoneSingle)
+							openChannel(CHANNEL_PULSE);
+						
+						return;
+					}
+				}
+			}
+			
 		}
 	}
 	

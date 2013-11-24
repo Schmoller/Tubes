@@ -8,7 +8,6 @@ import net.minecraftforge.common.ForgeDirection;
 import schmoller.tubes.api.TubeDefinition;
 import schmoller.tubes.api.TubeItem;
 import schmoller.tubes.api.TubeRegistry;
-import schmoller.tubes.api.client.CustomRenderItem;
 import schmoller.tubes.api.client.ITubeRender;
 import schmoller.tubes.api.interfaces.ITube;
 
@@ -16,8 +15,6 @@ import org.lwjgl.opengl.GL11;
 
 public class RenderHelper
 {
-	private static CustomRenderItem mRenderer = new CustomRenderItem();
-	
 	public static void initialize()
 	{
 	}
@@ -27,7 +24,7 @@ public class RenderHelper
 		for(TubeItem item : tube.getItems())
 		{
 			ForgeDirection dir = ForgeDirection.getOrientation(item.direction);
-			mRenderer.renderTubeItem(item, 0.5 + (item.progress - 0.5) * dir.offsetX, 0.5 + (item.progress - 0.5) * dir.offsetY, 0.5 + (item.progress - 0.5) * dir.offsetZ);
+			item.item.getRenderer().render(item.item, item.colour, 0.5 + (item.progress - 0.5) * dir.offsetX, 0.5 + (item.progress - 0.5) * dir.offsetY, 0.5 + (item.progress - 0.5) * dir.offsetZ, item.direction, item.progress);
 		}
 	}
 

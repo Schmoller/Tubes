@@ -1,7 +1,10 @@
 package schmoller.tubes.api;
 
+import schmoller.tubes.api.client.IPayloadRender;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
 
 public abstract class Payload
@@ -67,4 +70,7 @@ public abstract class Payload
 	
 	public abstract boolean isPayloadTypeEqual(Payload other);
 	public abstract boolean isPayloadEqual(Payload other);
+	
+	@SideOnly(Side.CLIENT)
+	public abstract IPayloadRender getRenderer();
 }
