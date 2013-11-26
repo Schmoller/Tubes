@@ -44,6 +44,12 @@ public class ItemFilter implements IFilter
 		return "item";
 	}
 	
+	@Override
+	public Class<? extends Payload> getPayloadType()
+	{
+		return ItemPayload.class;
+	}
+	
 	public ItemStack getItem()
 	{
 		return mTemplate;
@@ -157,6 +163,12 @@ public class ItemFilter implements IFilter
 	{
 		return new ItemFilter(input.readItemStack(), input.readBoolean());
 	}
+	
+	@Override
+	public IFilter copy()
+	{
+		return new ItemFilter(mTemplate, mFuzzy);
+	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -173,5 +185,16 @@ public class ItemFilter implements IFilter
         }
         
         return list;
+	}
+	
+	@Override
+	public boolean equals( Object obj )
+	{
+		if(!(obj instanceof ItemFilter))
+			return false;
+		
+		ItemFilter other = (ItemFilter)obj;
+		
+		return InventoryHelper.areItemsEqual(mTemplate, other.mTemplate) && mFuzzy == other.mFuzzy;
 	}
 }

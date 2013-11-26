@@ -39,6 +39,12 @@ public class ColorFilter implements IFilter
 	}
 	
 	@Override
+	public Class<? extends Payload> getPayloadType()
+	{
+		return null;
+	}
+	
+	@Override
 	public boolean matches( Payload payload, SizeMode mode )
 	{
 		return true;
@@ -110,9 +116,24 @@ public class ColorFilter implements IFilter
 	}
 	
 	@Override
+	public IFilter copy()
+	{
+		return new ColorFilter(mColor);
+	}
+	
+	@Override
 	@SideOnly(Side.CLIENT)
 	public List<String> getTooltip( List<String> current )
 	{
 		return Arrays.asList((mColor == -1 ? "Any Color" : CommonHelper.getDyeName(mColor)));
+	}
+	
+	@Override
+	public boolean equals( Object obj )
+	{
+		if(!(obj instanceof ColorFilter))
+			return false;
+		
+		return mColor == ((ColorFilter)obj).mColor;
 	}
 }

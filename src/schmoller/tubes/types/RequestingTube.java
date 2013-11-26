@@ -12,17 +12,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidHandler;
-import schmoller.tubes.FluidFilter;
+import schmoller.tubes.AnyFilter;
 import schmoller.tubes.ItemFilter;
 import schmoller.tubes.ModTubes;
 import schmoller.tubes.PullMode;
 import schmoller.tubes.api.FilterRegistry;
-import schmoller.tubes.api.FluidPayload;
 import schmoller.tubes.api.InteractionHandler;
-import schmoller.tubes.api.ItemPayload;
 import schmoller.tubes.api.OverflowBuffer;
 import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.Position;
@@ -32,7 +27,7 @@ import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.api.helpers.TubeHelper;
 import schmoller.tubes.api.helpers.BaseRouter.PathLocation;
 import schmoller.tubes.api.interfaces.IFilter;
-import schmoller.tubes.api.interfaces.IInventoryHandler;
+import schmoller.tubes.api.interfaces.IPayloadHandler;
 import schmoller.tubes.api.interfaces.ITubeConnectable;
 import schmoller.tubes.api.interfaces.ITubeImportDest;
 import schmoller.tubes.api.interfaces.ITubeOverflowDestination;
@@ -127,21 +122,20 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 			
 			PathLocation source = new ImportSourceFinder(world(), new Position(x(), y(), z()), getFacing(), filterItem, mSizeMode).route();
 			
-			if(source != null && (filterItem == null || filterItem.getType().equals("item")))
+			if(source != null)
 			{
-				IInventoryHandler handler = InteractionHandler.getInventoryHandler(world(), source.position);
-				ItemStack item = (filterItem == null ? null : ((ItemFilter)filterItem).getItem());
+				IPayloadHandler handler = InteractionHandler.getHandler((filterItem == null ? null : filterItem.getPayloadType()), world(), source.position);
 				if(handler != null)
 				{
-					ItemStack extracted;
-					if(item == null)
-						extracted = handler.extractItem(null, source.dir ^ 1, true);
+					Payload extracted;
+					if(filterItem == null)
+						extracted = handler.extract(new AnyFilter(0), source.dir ^ 1, true);
 					else
-						extracted = handler.extractItem(item, source.dir ^ 1, item.stackSize, mSizeMode, true);
+						extracted = handler.extract(filterItem, source.dir ^ 1, filterItem.size(), mSizeMode, true);
 					
 					if(extracted != null)
 					{
-						TubeItem tItem = new TubeItem(new ItemPayload(extracted));
+						TubeItem tItem = new TubeItem(extracted);
 						tItem.state = TubeItem.IMPORT;
 						tItem.direction = source.dir ^ 1;
 						
@@ -162,43 +156,6 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 					}
 				}
 			}
-			
-			if(source != null && (filterItem == null || filterItem.getType().equals("fluid")))
-			{
-				IFluidHandler handler = InteractionHandler.getFluidHandler(world(), source.position);
-				FluidStack fluid = (filterItem == null ? null : ((FluidFilter)filterItem).getFluid());
-				if(handler != null)
-				{
-					FluidStack drained = null;
-					if(fluid == null)
-						drained = handler.drain(ForgeDirection.getOrientation(source.dir), 1000, true);
-					else
-						drained = handler.drain(ForgeDirection.getOrientation(source.dir), fluid, true);
-					
-					if(drained != null)
-					{
-						TubeItem tItem = new TubeItem(new FluidPayload(drained));
-						tItem.state = TubeItem.IMPORT;
-						tItem.direction = source.dir ^ 1;
-						
-						PathLocation tubeLoc = new PathLocation(source, source.dir ^ 1);
-						TileEntity tile = CommonHelper.getTileEntity(world(), tubeLoc.position);
-						ITubeConnectable con = TubeHelper.getTubeConnectable(tile);
-						if(con != null)
-							con.addItem(tItem, true);
-						
-						--mPulses;
-						if(mPulses < 0)
-							mPulses = 0;
-						
-						if(mMode == PullMode.RedstoneSingle)
-							openChannel(CHANNEL_PULSE);
-						
-						return;
-					}
-				}
-			}
-			
 		}
 	}
 	

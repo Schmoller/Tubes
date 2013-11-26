@@ -9,13 +9,15 @@ import codechicken.multipart.RedstoneInteractions;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.ForgeDirection;
+import schmoller.tubes.AnyFilter;
 import schmoller.tubes.api.InteractionHandler;
 import schmoller.tubes.api.ItemPayload;
 import schmoller.tubes.api.OverflowBuffer;
+import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.Position;
 import schmoller.tubes.api.TubeItem;
 import schmoller.tubes.api.helpers.BaseRouter.PathLocation;
-import schmoller.tubes.api.interfaces.IInventoryHandler;
+import schmoller.tubes.api.interfaces.IPayloadHandler;
 import schmoller.tubes.api.interfaces.ITubeOverflowDestination;
 import schmoller.tubes.routing.OutputRouter;
 
@@ -67,12 +69,12 @@ public class ExtractionTube extends DirectionalBasicTube implements IRedstonePar
 		
 		ForgeDirection dir = ForgeDirection.getOrientation(getFacing());
 		
-		IInventoryHandler handler = InteractionHandler.getInventoryHandler(world(), x() + dir.offsetX, y() + dir.offsetY, z() + dir.offsetZ);
+		IPayloadHandler handler = InteractionHandler.getHandler(ItemPayload.class, world(), x() + dir.offsetX, y() + dir.offsetY, z() + dir.offsetZ);
 		if(handler != null)
 		{
-			ItemStack extracted = handler.extractItem(null, dir.ordinal() ^ 1, true);
+			Payload extracted = handler.extract(new AnyFilter(0), dir.ordinal() ^ 1, true);
 			if(extracted != null)
-				addItem(new ItemPayload(extracted), dir.ordinal() ^ 1);
+				addItem(extracted, dir.ordinal() ^ 1);
 		}
 	}
 	

@@ -38,6 +38,12 @@ public class AnyFilter implements IFilter
 	}
 	
 	@Override
+	public Class<? extends Payload> getPayloadType()
+	{
+		return null;
+	}
+	
+	@Override
 	public boolean matches( Payload payload, SizeMode mode )
 	{
 		if(mValue > payload.maxSize() && payload.size() == payload.maxSize())
@@ -125,10 +131,26 @@ public class AnyFilter implements IFilter
 	}
 	
 	@Override
+	public IFilter copy()
+	{
+		return new AnyFilter(mValue, mMax);
+	}
+	
+	@Override
 	@SideOnly(Side.CLIENT)
 	public List<String> getTooltip( List<String> current )
 	{
 		return Arrays.asList("Any");
 	}
 
+	@Override
+	public boolean equals( Object obj )
+	{
+		if(!(obj instanceof AnyFilter))
+			return false;
+		
+		AnyFilter other = (AnyFilter)obj;
+		
+		return mValue == other.mValue && mMax == other.mMax;
+	}
 }

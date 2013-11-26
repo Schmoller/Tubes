@@ -17,15 +17,17 @@ import net.minecraft.nbt.NBTTagCompound;
 public abstract class FakeSlot extends Slot
 {
 	private IFilter mFilter;
+	private IFilter mLast;
 	
 	public FakeSlot(IFilter initial, int x, int y)
 	{
 		super(new InventoryBasic("", false, 1), 0, x, y);
-		
+		mFilter = initial;
+		mLast = initial;
 		inventory.setInventorySlotContents(0, toItem(initial));
 	}
 	
-	private static ItemStack toItem(IFilter filter)
+	public static ItemStack toItem(IFilter filter)
 	{
 		if(filter == null)
 			return null;
@@ -41,7 +43,7 @@ public abstract class FakeSlot extends Slot
 		return item;
 	}
 	
-	private static IFilter fromItem(ItemStack item)
+	public static IFilter fromItem(ItemStack item)
 	{
 		if(item == null || !item.hasTagCompound())
 			return null;
@@ -67,7 +69,7 @@ public abstract class FakeSlot extends Slot
 	{
 		mFilter = filter;
 		inventory.setInventorySlotContents(0, toItem(filter));
-		setValue(filter);
+		setIfChanged();
 	}
 	
 	@Override
@@ -81,11 +83,22 @@ public abstract class FakeSlot extends Slot
 	{
 		return Integer.MAX_VALUE;
 	}
+
+	private void setIfChanged()
+	{
+		if((mFilter != null && (mLast == null || !mFilter.equals(mLast))) || (mFilter == null && mLast != null))
+		{
+			setValue(mFilter);
+			mLast = (mFilter == null ? null : mFilter.copy());
+		}
+	}
+	
 	
 	@Override
 	public void onSlotChanged()
 	{
 		inventory.setInventorySlotContents(0, toItem(mFilter));
+		setIfChanged();
 	}
 	
 	@Override

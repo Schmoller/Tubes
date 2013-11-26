@@ -40,6 +40,12 @@ public class FluidFilter implements IFilter
 		return "fluid";
 	}
 	
+	@Override
+	public Class<? extends Payload> getPayloadType()
+	{
+		return FluidPayload.class;
+	}
+	
 	public FluidStack getFluid()
 	{
 		return mTemplate;
@@ -191,9 +197,24 @@ public class FluidFilter implements IFilter
 	}
 	
 	@Override
+	public IFilter copy()
+	{
+		return new FluidFilter(mTemplate);
+	}
+	
+	@Override
 	@SideOnly(Side.CLIENT)
 	public List<String> getTooltip( List<String> current )
 	{
 		return Arrays.asList("\u00a7" + Integer.toHexString(mTemplate.getFluid().getRarity(mTemplate).rarityColor) + mTemplate.getFluid().getLocalizedName());
+	}
+	
+	@Override
+	public boolean equals( Object obj )
+	{
+		if(!(obj instanceof FluidFilter))
+			return false;
+		
+		return mTemplate.isFluidStackIdentical(((FluidFilter)obj).mTemplate);
 	}
 }

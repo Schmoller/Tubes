@@ -107,6 +107,5 @@ public class TubeRegistry implements IPartFactory
 		TubeDefinition def = getDefinition(actualName);
 		return def.createTube();
 	}
-	
-	
+
 }

@@ -7,6 +7,7 @@ import schmoller.tubes.api.interfaces.IFilter;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
@@ -76,5 +77,37 @@ public abstract class ExtContainer extends Container
 		}
 		
 		return super.slotClick(slotId, mouseButton, modifier, player);
+	}
+	
+	@Override
+	public void detectAndSendChanges()
+	{
+		for (int i = 0; i < inventorySlots.size(); ++i)
+        {
+			Slot rawSlot = (Slot)this.inventorySlots.get(i);
+            ItemStack current = rawSlot.getStack();
+            ItemStack old = (ItemStack)this.inventoryItemStacks.get(i);
+
+            boolean changed = false;
+            if(rawSlot instanceof FakeSlot)
+            {
+            	IFilter oldFilter = FakeSlot.fromItem(old);
+            	IFilter currentFilter = ((FakeSlot)rawSlot).getFilter();
+            	
+            	if((currentFilter != null && (oldFilter == null || !currentFilter.equals(oldFilter))) || (currentFilter == null && oldFilter != null))
+            		changed = true;
+            }
+            
+            if (changed || !ItemStack.areItemStacksEqual(old, current))
+            {
+                old = current == null ? null : current.copy();
+                inventoryItemStacks.set(i, old);
+
+                for (int j = 0; j < crafters.size(); ++j)
+                {
+                    ((ICrafting)crafters.get(j)).sendSlotContents(this, i, old);
+                }
+            }
+        }
 	}
 }

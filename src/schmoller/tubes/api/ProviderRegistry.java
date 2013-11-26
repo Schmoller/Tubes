@@ -2,48 +2,56 @@ package schmoller.tubes.api;
 
 import java.util.HashMap;
 
-import schmoller.tubes.api.interfaces.IFluidHandlerProvider;
-import schmoller.tubes.api.interfaces.IInventoryProvider;
+import schmoller.tubes.api.interfaces.IInterfaceProvider;
 import schmoller.tubes.inventory.providers.DoubleChestProvider;
 import schmoller.tubes.inventory.providers.FurnaceInventoryProvider;
 
+import net.minecraft.block.Block;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraftforge.fluids.IFluidHandler;
 
 public class ProviderRegistry
 {
-	private static HashMap<Class<?>, IInventoryProvider> mProviders = new HashMap<Class<?>, IInventoryProvider>();
-	private static HashMap<Class<?>, IFluidHandlerProvider> mFluidProviders = new HashMap<Class<?>, IFluidHandlerProvider>();
+	private static HashMap<Class<?>, HashMap<Object, IInterfaceProvider>> mProviders = new HashMap<Class<?>, HashMap<Object,IInterfaceProvider>>();
 	
 	static
 	{
 		// Alters the furnace behaviour so you can extract smartly from any side except top which extracts from all
-		registerProvider(TileEntityFurnace.class, new FurnaceInventoryProvider());
+		registerProvider(IInventory.class, TileEntityFurnace.class, new FurnaceInventoryProvider());
 		
 		// Allows double chests to be treated as one
-		registerProvider(TileEntityChest.class, new DoubleChestProvider());
+		registerProvider(IInventory.class, TileEntityChest.class, new DoubleChestProvider());
 	}
 	
 	/**
-	 * Gets any alternative inventories registered for this object
+	 * Gets any interfaces registered for this object
 	 */
-	public static IInventory provideFor(Object object)
+	public static Object provideFor(Class<?> interfaceClass, Object object)
 	{
 		if(object == null)
 			return null;
 		
-		IInventoryProvider provider = mProviders.get(object.getClass());
+		HashMap<Object, IInterfaceProvider> providers = mProviders.get(interfaceClass);
+		
+		if(providers == null)
+			return null;
+		
+		IInterfaceProvider provider = null;
+		
+		if(object instanceof BlockInstance)
+			provider = providers.get(((BlockInstance)object).getBlock());
+		else
+			provider = providers.get(object.getClass());
 		
 		if(provider != null)
 			return provider.provide(object);
-		else
+		else if(!(object instanceof BlockInstance))
 		{
-			for(Class<?> clazz : mProviders.keySet())
+			for(Object clazz : providers.keySet())
 			{
-				if(clazz.isAssignableFrom(object.getClass()))
-					return mProviders.get(object.getClass()).provide(object);
+				if(((Class<?>)clazz).isAssignableFrom(object.getClass()))
+					return providers.get(object.getClass()).provide(object);
 			}
 		}
 			
@@ -51,49 +59,25 @@ public class ProviderRegistry
 	}
 	
 	/**
-	 * Gets any alternative fluid handlers registered for this object
+	 * Sometimes blocks,parts, or entities have different interfaces than you want. In these cases you can register an interface provider
+	 * that provides an alternate interface than the one present on it normally.
+	 * @param interfaceClass The base interface being provided. Eg. IInventory for inventories, IFluidHandler for tanks
+	 * @param classOrBlock The class or block instance to be provided for
+	 * @param provider The class that provides interfaces to use
 	 */
-	public static IFluidHandler provideFluidHandlerFor(Object object)
+	public static void registerProvider(Class<?> interfaceClass, Object classOrBlock, IInterfaceProvider provider)
 	{
-		if(object == null)
-			return null;
+		if(!(classOrBlock instanceof Class) && !(classOrBlock instanceof Block))
+			throw new IllegalArgumentException();
 		
-		IFluidHandlerProvider provider = mFluidProviders.get(object.getClass());
+		HashMap<Object, IInterfaceProvider> providers = mProviders.get(interfaceClass);
 		
-		if(provider != null)
-			return provider.provide(object);
-		else
+		if(providers == null)
 		{
-			for(Class<?> clazz : mFluidProviders.keySet())
-			{
-				if(clazz.isAssignableFrom(object.getClass()))
-					return mFluidProviders.get(object.getClass()).provide(object);
-			}
+			providers = new HashMap<Object, IInterfaceProvider>();
+			mProviders.put(interfaceClass, providers);
 		}
-			
-		return null;
+		
+		providers.put(classOrBlock, provider);
 	}
-	
-	/**
-	 * Sometimes blocks,parts, or entities have different interfaces than you want. In these cases you can register an inventory provider
-	 * that is used instead of the one present on it normally.
-	 * @param clazz The class of the object to be provided for
-	 * @param provider The class that provides inventories to use
-	 */
-	public static void registerProvider(Class<?> clazz, IInventoryProvider provider)
-	{
-		mProviders.put(clazz, provider);
-	}
-	
-	/**
-	 * Sometimes blocks,parts, or entities have different interfaces than you want. In these cases you can register a fluid handler provider
-	 * that is used instead of the one present on it normally.
-	 * @param clazz The class of the object to be provided for
-	 * @param provider The class that provides fluid handler to use
-	 */
-	public static void registerProvider(Class<?> clazz, IFluidHandlerProvider provider)
-	{
-		mFluidProviders.put(clazz, provider);
-	}
-	
 }

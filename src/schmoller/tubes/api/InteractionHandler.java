@@ -1,14 +1,15 @@
 package schmoller.tubes.api;
 
-import schmoller.tubes.api.interfaces.IInventoryHandler;
+import java.util.ArrayList;
+
+import schmoller.tubes.api.interfaces.IPayloadHandler;
+import schmoller.tubes.inventory.AnyHandler;
 import codechicken.multipart.TMultiPart;
 import codechicken.multipart.TileMultipart;
 import net.minecraft.block.Block;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.fluids.IFluidHandler;
 
 public class InteractionHandler
 {
@@ -20,38 +21,36 @@ public class InteractionHandler
 	{
 		Block block = Block.blocksList[world.getBlockId(x, y, z)];
 		
-		if(block != null)
+		for(Class<? extends Payload> payloadClass : PayloadRegistry.instance().getPayloadTypes())
 		{
-			BlockInstance object = new BlockInstance(world, x, z, y);
-			if(canAccess(ProviderRegistry.provideFor(object), side))
-				return true;
-			if(canAccess(ProviderRegistry.provideFluidHandlerFor(object), side))
-				return true;
-		}
-		
-		TileEntity ent = world.getBlockTileEntity(x, y, z);
-		
-		if(canAccess(ProviderRegistry.provideFor(ent), side))
-			return true;
-		if(canAccess(ProviderRegistry.provideFluidHandlerFor(ent), side))
-			return true;
-		
-		if(ent instanceof TileMultipart)
-		{
-			TMultiPart part = ((TileMultipart)ent).partMap(6);
+			Class<?> interfaceClass = PayloadRegistry.instance().getPayload(payloadClass).interfaceClass;
 			
-			if(part != null)
+			if(block != null)
 			{
-				if(canAccess(ProviderRegistry.provideFor(part), side))
-					return true;
-				if(canAccess(ProviderRegistry.provideFluidHandlerFor(part), side))
+				BlockInstance object = new BlockInstance(world, x, z, y);
+				if(canAccess(ProviderRegistry.provideFor(interfaceClass, object), side))
 					return true;
 			}
+			
+			TileEntity ent = world.getBlockTileEntity(x, y, z);
+			
+			if(canAccess(ProviderRegistry.provideFor(interfaceClass, ent), side))
+				return true;
+			
+			if(ent instanceof TileMultipart)
+			{
+				TMultiPart part = ((TileMultipart)ent).partMap(6);
+				
+				if(part != null)
+				{
+					if(canAccess(ProviderRegistry.provideFor(interfaceClass, part), side))
+						return true;
+				}
+			}
+			
+			if(interfaceClass.isInstance(ent))
+				return true;
 		}
-		
-		if(ent instanceof IInventory || ent instanceof IFluidHandler)
-			return true;
-		
 		return false;
 	}
 	
@@ -63,69 +62,47 @@ public class InteractionHandler
 		return object != null;
 	}
 	
-	public static IInventoryHandler getInventoryHandler( IBlockAccess world, Position position )
+	private static IPayloadHandler buildMultiHandler(IBlockAccess world, int x, int y, int z)
 	{
-		return getInventoryHandler(world, position.x, position.y, position.z);
-	}
-	public static IInventoryHandler getInventoryHandler(IBlockAccess world, int x, int y, int z)
-	{
-		Block block = Block.blocksList[world.getBlockId(x, y, z)];
-		
-		IInventory inv;
-		if(block != null)
+		ArrayList<IPayloadHandler> handlers = new ArrayList<IPayloadHandler>();
+		for(Class<? extends Payload> payloadClass : PayloadRegistry.instance().getPayloadTypes())
 		{
-			BlockInstance object = new BlockInstance(world, x, z, y);
-			inv = ProviderRegistry.provideFor(object);
-			if(inv != null)
-				return InventoryHandlerRegistry.getHandler(inv);
-		}
-		
-		TileEntity ent = world.getBlockTileEntity(x, y, z);
-		
-		inv = ProviderRegistry.provideFor(ent);
-		if(inv != null)
-			return InventoryHandlerRegistry.getHandler(inv);
-		
-		if(ent instanceof TileMultipart)
-		{
-			TMultiPart part = ((TileMultipart)ent).partMap(6);
-			
-			if(part != null)
-			{
-				inv = ProviderRegistry.provideFor(part);
-				if(inv != null)
-					return InventoryHandlerRegistry.getHandler(inv);
-			}
-		}
-		
-		if(ent instanceof IInventory)
-			return InventoryHandlerRegistry.getHandler((IInventory)ent);
-		
-		return null;
-	}
-	
-	public static IFluidHandler getFluidHandler( IBlockAccess world, Position position )
-	{
-		return getFluidHandler(world, position.x, position.y, position.z);
-	}
-	public static IFluidHandler getFluidHandler(IBlockAccess world, int x, int y, int z)
-	{
-		Block block = Block.blocksList[world.getBlockId(x, y, z)];
-		
-		IFluidHandler handler;
-		if(block != null)
-		{
-			BlockInstance object = new BlockInstance(world, x, z, y);
-			handler = ProviderRegistry.provideFluidHandlerFor(object);
+			IPayloadHandler handler = getHandler(payloadClass, world, x, y, z);
 			if(handler != null)
-				return handler;
+				handlers.add(handler);
+		}
+		
+		return new AnyHandler(handlers);
+	}
+	
+	public static IPayloadHandler getHandler(Class<? extends Payload> payloadClass, IBlockAccess world, Position position )
+	{
+		return getHandler(payloadClass, world, position.x, position.y, position.z);
+	}
+	
+	public static IPayloadHandler getHandler(Class<? extends Payload> payloadClass, IBlockAccess world, int x, int y, int z)
+	{
+		if(payloadClass == null)
+			return buildMultiHandler(world, x, y, z);
+		
+		Block block = Block.blocksList[world.getBlockId(x, y, z)];
+		
+		Class<?> interfaceClass = PayloadRegistry.instance().getPayload(payloadClass).interfaceClass;
+		
+		Object interfaceObject;
+		if(block != null)
+		{
+			BlockInstance object = new BlockInstance(world, x, z, y);
+			interfaceObject = ProviderRegistry.provideFor(interfaceClass, object);
+			if(interfaceObject != null)
+				return HandlerRegistry.getHandler(payloadClass, interfaceObject);
 		}
 		
 		TileEntity ent = world.getBlockTileEntity(x, y, z);
 		
-		handler = ProviderRegistry.provideFluidHandlerFor(ent);
-		if(handler != null)
-			return handler;
+		interfaceObject = ProviderRegistry.provideFor(interfaceClass, ent);
+		if(interfaceObject != null)
+			return HandlerRegistry.getHandler(payloadClass, interfaceObject);
 		
 		if(ent instanceof TileMultipart)
 		{
@@ -133,17 +110,15 @@ public class InteractionHandler
 			
 			if(part != null)
 			{
-				handler = ProviderRegistry.provideFluidHandlerFor(part);
-				if(handler != null)
-					return handler;
+				interfaceObject = ProviderRegistry.provideFor(interfaceClass, part);
+				if(interfaceObject != null)
+					return HandlerRegistry.getHandler(payloadClass, interfaceObject);
 			}
 		}
 		
-		if(ent instanceof IFluidHandler)
-			return (IFluidHandler)ent;
+		if(interfaceClass.isInstance(ent))
+			return HandlerRegistry.getHandler(payloadClass, ent);
 		
 		return null;
 	}
-
-	
 }

@@ -1,6 +1,6 @@
 package schmoller.tubes.inventory.providers;
 
-import schmoller.tubes.api.interfaces.IInventoryProvider;
+import schmoller.tubes.api.interfaces.IInterfaceProvider;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.tileentity.TileEntityFurnace;
 
-public class FurnaceInventoryProvider implements IInventoryProvider
+public class FurnaceInventoryProvider implements IInterfaceProvider
 {
 	@Override
 	public IInventory provide( Object object )

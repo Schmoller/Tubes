@@ -14,6 +14,11 @@ public interface IFilter
 {
 	public String getType();
 	
+	/**
+	 * Gets the corresponding payload class if there is one
+	 */
+	public Class<? extends Payload> getPayloadType();
+	
 	public boolean matches(Payload payload, SizeMode mode);
 	public boolean matches(TubeItem item, SizeMode mode);
 	
@@ -25,6 +30,8 @@ public interface IFilter
 	
 	public void write(NBTTagCompound tag);
 	public void write(MCDataOutput output);
+	
+	public IFilter copy();
 	
 	@SideOnly(Side.CLIENT)
 	public List<String> getTooltip(List<String> current);

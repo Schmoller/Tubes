@@ -1,6 +1,5 @@
 package schmoller.tubes.api;
 
-import schmoller.tubes.api.client.IPayloadRender;
 import schmoller.tubes.render.FluidPayloadRender;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
@@ -37,7 +36,7 @@ public class FluidPayload extends Payload
 	@Override
 	public void write( NBTTagCompound tag )
 	{
-		tag.setInteger("Type", 1);
+		super.write(tag);
 		fluid.writeToNBT(tag);
 	}
 
@@ -50,7 +49,7 @@ public class FluidPayload extends Payload
 	@Override
 	public void write( MCDataOutput output )
 	{
-		output.writeByte(1);
+		super.write(output);
 		output.writeFluidStack(fluid);
 	}
 
@@ -100,15 +99,5 @@ public class FluidPayload extends Payload
 	public String toString()
 	{
 		return fluid.toString();
-	}
-	
-	@Override
-	@SideOnly( Side.CLIENT )
-	public IPayloadRender getRenderer()
-	{
-		if(mRender == null)
-			mRender = new FluidPayloadRender();
-		
-		return mRender;
 	}
 }

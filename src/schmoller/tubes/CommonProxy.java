@@ -5,6 +5,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 //import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
@@ -14,6 +15,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.oredict.OreDictionary;
 import codechicken.microblock.BlockMicroMaterial;
 import codechicken.microblock.MicroMaterialRegistry;
@@ -30,7 +32,10 @@ import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import schmoller.tubes.api.Blocks;
+import schmoller.tubes.api.FluidPayload;
+import schmoller.tubes.api.ItemPayload;
 import schmoller.tubes.api.Items;
+import schmoller.tubes.api.PayloadRegistry;
 import schmoller.tubes.api.TubeRegistry;
 import schmoller.tubes.api.TubesAPI;
 import schmoller.tubes.api.gui.ExtContainer;
@@ -107,6 +112,9 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		TubeRegistry.registerTube(new TypeRoutingTube(), "routing");
 		TubeRegistry.registerTube(new TypeValveTube(), "valve");
 		TubeRegistry.registerTube(new TypeColoringTube(), "coloring");
+		
+		PayloadRegistry.registerPayload(ItemPayload.class, "item", IInventory.class);
+		PayloadRegistry.registerPayload(FluidPayload.class, "fluid", IFluidHandler.class);
 	}
 	
 	private void registerItems()

@@ -1,22 +1,18 @@
 package schmoller.tubes.routing;
 
-import schmoller.tubes.FluidFilter;
-import schmoller.tubes.ItemFilter;
+import schmoller.tubes.AnyFilter;
 import schmoller.tubes.api.InteractionHandler;
+import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.Position;
 import schmoller.tubes.api.SizeMode;
 import schmoller.tubes.api.helpers.BaseRouter;
 import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.api.helpers.TubeHelper;
 import schmoller.tubes.api.interfaces.IFilter;
-import schmoller.tubes.api.interfaces.IInventoryHandler;
+import schmoller.tubes.api.interfaces.IPayloadHandler;
 import schmoller.tubes.api.interfaces.ITubeConnectable;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidHandler;
 
 public class ImportSourceFinder extends BaseRouter
 {
@@ -90,38 +86,17 @@ public class ImportSourceFinder extends BaseRouter
 		
 		if(con == null)
 		{
-			if(mItem == null || mItem instanceof ItemFilter)
+			IPayloadHandler handler = InteractionHandler.getHandler((mItem == null ? null : mItem.getPayloadType()), getWorld(),current);
+			if(handler != null)
 			{
-				ItemStack item = (mItem == null ? null : ((ItemFilter)mItem).getItem());
-				IInventoryHandler handler = InteractionHandler.getInventoryHandler(getWorld(),current);
-				if(handler != null)
-				{
-					ItemStack extracted;
-					if(item == null)
-						extracted = handler.extractItem(item, side ^ 1, false);
-					else
-						extracted = handler.extractItem(item, side ^ 1, item.stackSize, mMode, false);
-					
-					if(extracted != null)
-						return true;
-				}
-			}
-			
-			if(mItem == null || mItem instanceof FluidFilter)
-			{
-				FluidStack fluid = (mItem == null ? null : ((FluidFilter)mItem).getFluid());
-				IFluidHandler handler = InteractionHandler.getFluidHandler(getWorld(), current);
-				if(handler != null)
-				{
-					FluidStack drained = null;
-					if(fluid == null)
-						drained = handler.drain(ForgeDirection.getOrientation(side), 1000, false);
-					else
-						drained = handler.drain(ForgeDirection.getOrientation(side), fluid, false);
-					
-					if(drained != null)
-						return true;
-				}
+				Payload extracted;
+				if(mItem == null)
+					extracted = handler.extract(new AnyFilter(0), side ^ 1, false);
+				else
+					extracted = handler.extract(mItem, side ^ 1, mItem.size(), mMode, false);
+				
+				if(extracted != null)
+					return true;
 			}
 		}
 		return false;

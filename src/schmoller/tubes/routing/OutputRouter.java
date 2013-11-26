@@ -1,21 +1,16 @@
 package schmoller.tubes.routing;
 
-import schmoller.tubes.api.FluidPayload;
 import schmoller.tubes.api.InteractionHandler;
-import schmoller.tubes.api.ItemPayload;
+import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.Position;
 import schmoller.tubes.api.TubeItem;
 import schmoller.tubes.api.helpers.BaseRouter;
 import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.api.helpers.TubeHelper;
-import schmoller.tubes.api.interfaces.IInventoryHandler;
+import schmoller.tubes.api.interfaces.IPayloadHandler;
 import schmoller.tubes.api.interfaces.ITubeConnectable;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidHandler;
 
 public class OutputRouter extends BaseRouter
 {
@@ -138,27 +133,13 @@ public class OutputRouter extends BaseRouter
 		
 		if(con == null)
 		{
-			if(mItem.item instanceof ItemPayload)
+			IPayloadHandler handler = InteractionHandler.getHandler(mItem.item.getClass(), getWorld(), current);
+			if(handler != null)
 			{
-				IInventoryHandler handler = InteractionHandler.getInventoryHandler(getWorld(), current);
-				if(handler != null)
-				{
-					ItemStack remaining = handler.insertItem((ItemStack)mItem.item.get(), side ^ 1, false);
-					
-					if(remaining == null || remaining.stackSize != ((ItemStack)mItem.item.get()).stackSize)
-						return true;
-				}
-			}
-			else if(mItem.item instanceof FluidPayload)
-			{
-				IFluidHandler handler = InteractionHandler.getFluidHandler(getWorld(), current);
-				if(handler != null)
-				{
-					int filled = handler.fill(ForgeDirection.getOrientation(side), (FluidStack)mItem.item.get(), false);
-					
-					if(filled > 0)
-						return true;
-				}
+				Payload remaining = handler.insert(mItem.item, side ^ 1, false);
+				
+				if(remaining == null || remaining.size() != mItem.item.size())
+					return true;
 			}
 		}
 		else if(!con.canPathThrough() && con.canItemEnter(mItem))

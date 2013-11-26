@@ -9,8 +9,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidHandler;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import codechicken.microblock.HollowMicroblock;
@@ -18,12 +16,11 @@ import codechicken.multipart.TFacePart;
 import codechicken.multipart.TMultiPart;
 import codechicken.multipart.scalatraits.TSlottedTile;
 
-import schmoller.tubes.api.FluidPayload;
 import schmoller.tubes.api.InteractionHandler;
 import schmoller.tubes.api.ItemPayload;
 import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.TubeItem;
-import schmoller.tubes.api.interfaces.IInventoryHandler;
+import schmoller.tubes.api.interfaces.IPayloadHandler;
 import schmoller.tubes.api.interfaces.ITube;
 import schmoller.tubes.api.interfaces.ITubeConnectable;
 import schmoller.tubes.parts.BaseTubePart;
@@ -461,33 +458,15 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 		if(world().isRemote)
 			return true;
 		
-		if(item.item instanceof ItemPayload)
-		{
-			IInventoryHandler handler = InteractionHandler.getInventoryHandler(world(), x() + dir.offsetX, y() + dir.offsetY, z() + dir.offsetZ);
+		IPayloadHandler handler = InteractionHandler.getHandler(item.item.getClass(), world(), x() + dir.offsetX, y() + dir.offsetY, z() + dir.offsetZ);
 	
-			if(handler != null)
-			{
-				ItemStack remaining = handler.insertItem((ItemStack)item.item.get(), item.direction ^ 1, true);
-				if(remaining == null)
-					return true;
-				
-				((ItemPayload)item.item).item.stackSize = remaining.stackSize;
-			}
-		}
-		else if(item.item instanceof FluidPayload)
+		if(handler != null)
 		{
-			IFluidHandler handler = InteractionHandler.getFluidHandler(world(), x() + dir.offsetX, y() + dir.offsetY, z() + dir.offsetZ);
-			if(handler == null)
-				return false;
-			
-			FluidStack fluid = (FluidStack)item.item.get();
-			
-			int amount = handler.fill(ForgeDirection.getOrientation(item.direction), fluid, true);
-			
-			fluid.amount -= amount;
-			
-			if(fluid.amount <= 0)
+			Payload remaining = handler.insert(item.item, item.direction ^ 1, true);
+			if(remaining == null)
 				return true;
+			
+			item.item = remaining;
 		}
 		
 		return false;
