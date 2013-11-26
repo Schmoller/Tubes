@@ -30,6 +30,14 @@ public class ValveTube extends DirectionalBasicTube implements ITubeOverflowDest
 	}
 	
 	@Override
+	public int getHollowSize( int side )
+	{
+		if(side == getFacing())
+			return 10;
+		return super.getHollowSize(side);
+	}
+	
+	@Override
 	protected int getConnectableSides()
 	{
 		return 63;
@@ -87,7 +95,7 @@ public class ValveTube extends DirectionalBasicTube implements ITubeOverflowDest
 				item.state = TubeItem.NORMAL;
 				item.direction = loc.initialDir;
 				item.updated = true;
-				item.progress = 0.5f;
+				item.setProgress(0.5f);
 				addItem(item, true);
 			}
 		}

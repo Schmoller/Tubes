@@ -24,7 +24,7 @@ public class NormalTubeRender implements ITubeRender
 	@Override
 	public void renderDynamic( TubeDefinition type, ITube tube, World world, int x, int y, int z, float frameTime)
 	{
-		RenderHelper.renderTubeItems(tube); 
+		RenderHelper.renderTubeItems(tube, frameTime); 
 	}
 
 	@Override

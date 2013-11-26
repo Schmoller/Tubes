@@ -58,12 +58,12 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 		if(fromDir == -1)
 		{
 			tItem.direction = 6;
-			tItem.progress = 0.5f;
+			tItem.setProgress(0.5f);
 		}
 		else
 		{
 			tItem.direction = fromDir;
-			tItem.progress = 0;
+			tItem.setProgress(0);
 		}
 		
 		onItemEnter(tItem);
@@ -226,6 +226,7 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 					addToClient(item);
 			}
 			
+			item.lastProgress = item.progress;
 			item.progress += 0.1;
 			
 			if(!item.updated && item.progress >= 0.5)
@@ -246,6 +247,7 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 				{
 					item.state = TubeItem.BLOCKED;
 					item.progress -= 1;
+					item.lastProgress -= 1;
 					item.updated = false;
 					item.direction ^= 1;
 					
@@ -446,6 +448,7 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 			if(con.canItemEnter(item))
 			{
 				item.progress -= 1;
+				item.lastProgress -= 1;
 				item.updated = false;
 				
 				

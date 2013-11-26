@@ -60,6 +60,13 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 		mOverflow = new OverflowBuffer();
 	}
 	
+	@Override
+	public int getHollowSize( int side )
+	{
+		if(side == getFacing())
+			return 10;
+		return super.getHollowSize(side);
+	}
 	
 	@Override
 	public boolean canConnectTo( ITubeConnectable con )
@@ -104,7 +111,7 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 				item.state = TubeItem.NORMAL;
 				item.direction = getFacing() ^ 1;
 				item.updated = true;
-				item.progress = 0.5f;
+				item.setProgress(0.5f);
 				addItem(item, true);
 			}
 		}

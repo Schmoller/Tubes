@@ -197,7 +197,7 @@ public class CompressorTube extends BaseTube implements IInventory
 		{
 			mCurrent = new TubeItem(new ItemPayload(item));
 			mCurrent.direction = 6;
-			mCurrent.progress = 0.5f;
+			mCurrent.setProgress(0.5f);
 		}
 		else
 			mCurrent.item = new ItemPayload(item);

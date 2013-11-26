@@ -47,6 +47,7 @@ import schmoller.tubes.definitions.TypeCompressorTube;
 import schmoller.tubes.definitions.TypeEjectionTube;
 import schmoller.tubes.definitions.TypeExtractionTube;
 import schmoller.tubes.definitions.TypeFilterTube;
+import schmoller.tubes.definitions.TypeFluidExtractionTube;
 import schmoller.tubes.definitions.TypeInjectionTube;
 import schmoller.tubes.definitions.TypeNormalTube;
 import schmoller.tubes.definitions.TypeRequestingTube;
@@ -112,6 +113,8 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		TubeRegistry.registerTube(new TypeRoutingTube(), "routing");
 		TubeRegistry.registerTube(new TypeValveTube(), "valve");
 		TubeRegistry.registerTube(new TypeColoringTube(), "coloring");
+		TubeRegistry.registerTube(new TypeFluidExtractionTube(), "fluidExtraction");
+		
 		
 		PayloadRegistry.registerPayload(ItemPayload.class, "item", IInventory.class);
 		PayloadRegistry.registerPayload(FluidPayload.class, "fluid", IFluidHandler.class);

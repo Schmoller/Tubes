@@ -15,6 +15,14 @@ public class EjectionTube extends DirectionalBasicTube
 	}
 	
 	@Override
+	public int getHollowSize( int side )
+	{
+		if(side == getFacing())
+			return 10;
+		return super.getHollowSize(side);
+	}
+	
+	@Override
 	public boolean canPathThrough()
 	{
 		return false;

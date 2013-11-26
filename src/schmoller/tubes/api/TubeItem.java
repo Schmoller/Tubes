@@ -19,10 +19,16 @@ public class TubeItem implements Cloneable
 	public Payload item;
 	public int direction = 0;
 	public float progress = 0;
+	public float lastProgress = 0;
 	public boolean updated = false;
 	public int state = NORMAL;
 	public int colour = -1;
 	
+	
+	public void setProgress(float progress)
+	{
+		this.progress = lastProgress = progress;
+	}
 	
 	@Override
 	public String toString()
@@ -61,6 +67,7 @@ public class TubeItem implements Cloneable
 		item.progress = progress;
 		item.state = input.readByte();
 		item.colour = input.readShort();
+		item.lastProgress = progress;
 		
 		return item;
 	}
@@ -72,7 +79,7 @@ public class TubeItem implements Cloneable
 		tItem.updated = (tItem.direction & 128) != 0;
 		tItem.direction -= (tItem.direction & 128);
 		
-		tItem.progress = tag.getFloat("P");
+		tItem.lastProgress = tItem.progress = tag.getFloat("P");
 		tItem.state = tag.getInteger("S");
 		
 		tItem.colour = tag.getShort("C");
@@ -86,6 +93,7 @@ public class TubeItem implements Cloneable
 		item.direction = direction;
 		item.state = state;
 		item.progress = progress;
+		item.lastProgress = lastProgress;
 		item.updated = updated;
 		item.colour = colour;
 		

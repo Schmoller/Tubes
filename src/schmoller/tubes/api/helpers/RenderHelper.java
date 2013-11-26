@@ -20,12 +20,13 @@ public class RenderHelper
 	{
 	}
 	
-	public static void renderTubeItems(ITube tube)
+	public static void renderTubeItems(ITube tube, float partialTick)
 	{
 		for(TubeItem item : tube.getItems())
 		{
 			ForgeDirection dir = ForgeDirection.getOrientation(item.direction);
-			PayloadRegistry.instance().getPayloadRender(item.item.getClass()).render(item.item, item.colour, 0.5 + (item.progress - 0.5) * dir.offsetX, 0.5 + (item.progress - 0.5) * dir.offsetY, 0.5 + (item.progress - 0.5) * dir.offsetZ, item.direction, item.progress);
+			float progress = item.lastProgress + (item.progress - item.lastProgress) * partialTick;
+			PayloadRegistry.instance().getPayloadRender(item.item.getClass()).render(item.item, item.colour, 0.5 + (progress - 0.5) * dir.offsetX, 0.5 + (progress - 0.5) * dir.offsetY, 0.5 + (progress - 0.5) * dir.offsetZ, item.direction, progress);
 		}
 	}
 
