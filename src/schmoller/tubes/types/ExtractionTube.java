@@ -9,12 +9,15 @@ import codechicken.multipart.RedstoneInteractions;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.ForgeDirection;
-import schmoller.tubes.api.InventoryHandlerRegistry;
+import schmoller.tubes.AnyFilter;
+import schmoller.tubes.api.InteractionHandler;
+import schmoller.tubes.api.ItemPayload;
 import schmoller.tubes.api.OverflowBuffer;
+import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.Position;
 import schmoller.tubes.api.TubeItem;
 import schmoller.tubes.api.helpers.BaseRouter.PathLocation;
-import schmoller.tubes.api.interfaces.IInventoryHandler;
+import schmoller.tubes.api.interfaces.IPayloadHandler;
 import schmoller.tubes.api.interfaces.ITubeOverflowDestination;
 import schmoller.tubes.routing.OutputRouter;
 
@@ -30,9 +33,22 @@ public class ExtractionTube extends DirectionalBasicTube implements IRedstonePar
 	
 	public ExtractionTube()
 	{
-		super("extraction");
+		this("extraction");
+	}
+	
+	protected ExtractionTube(String type)
+	{
+		super(type);
 		mIsPowered = false;
 		mOverflow = new OverflowBuffer();
+	}
+	
+	@Override
+	public int getHollowSize( int side )
+	{
+		if(side == getFacing())
+			return 10;
+		return super.getHollowSize(side);
 	}
 
 	@Override
@@ -55,7 +71,7 @@ public class ExtractionTube extends DirectionalBasicTube implements IRedstonePar
 				item.state = TubeItem.NORMAL;
 				item.direction = getFacing() ^ 1;
 				item.updated = false;
-				item.progress = 0;
+				item.setProgress(0);
 				addItem(item, true);
 			}
 			
@@ -66,13 +82,18 @@ public class ExtractionTube extends DirectionalBasicTube implements IRedstonePar
 		
 		ForgeDirection dir = ForgeDirection.getOrientation(getFacing());
 		
-		IInventoryHandler handler = InventoryHandlerRegistry.getHandlerFor(world(), x() + dir.offsetX, y() + dir.offsetY, z() + dir.offsetZ);
+		Payload extracted = doExtract(x() + dir.offsetX, y() + dir.offsetY, z() + dir.offsetZ, dir.ordinal() ^ 1);
+		if(extracted != null)
+			addItem(extracted, dir.ordinal() ^ 1);
+	}
+	
+	protected Payload doExtract(int x, int y, int z, int side)
+	{
+		IPayloadHandler handler = InteractionHandler.getHandler(ItemPayload.class, world(), x, y, z);
 		if(handler != null)
-		{
-			ItemStack extracted = handler.extractItem(null, dir.ordinal() ^ 1, true);
-			if(extracted != null)
-				addItem(extracted, dir.ordinal() ^ 1);
-		}
+			return handler.extract(new AnyFilter(0), side, true);
+
+		return null;
 	}
 	
 	@Override

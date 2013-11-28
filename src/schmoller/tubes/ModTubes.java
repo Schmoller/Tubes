@@ -3,6 +3,7 @@ package schmoller.tubes;
 import java.util.logging.Logger;
 
 import schmoller.tubes.api.Blocks;
+import schmoller.tubes.api.FilterRegistry;
 import schmoller.tubes.api.Items;
 import schmoller.tubes.api.Position;
 import schmoller.tubes.api.SizeMode;
@@ -10,6 +11,7 @@ import schmoller.tubes.api.TubeItem;
 import schmoller.tubes.api.TubeRegistry;
 import schmoller.tubes.api.TubesAPI;
 import schmoller.tubes.api.helpers.BaseRouter;
+import schmoller.tubes.api.interfaces.IFilter;
 import schmoller.tubes.items.ItemTubeBase;
 import schmoller.tubes.network.PacketManager;
 import schmoller.tubes.network.packets.ModPacketNEIDragDrop;
@@ -92,6 +94,7 @@ public class ModTubes extends TubesAPI
 		config.save();
 		
 		MinecraftForge.EVENT_BUS.register(this);
+		FilterRegistry.registerFilterFactory(new BasicFilterFactory());
 	}
 	
 	@SuppressWarnings( "unchecked" )
@@ -182,7 +185,7 @@ public class ModTubes extends TubesAPI
 	}
 
 	@Override
-	public BaseRouter getImportSourceRouter( IBlockAccess world, Position position, int startDirection, ItemStack filter, SizeMode mode)
+	public BaseRouter getImportSourceRouter( IBlockAccess world, Position position, int startDirection, IFilter filter, SizeMode mode)
 	{
 		return new ImportSourceFinder(world, position, startDirection, filter, mode);
 	}

@@ -9,10 +9,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraftforge.common.ForgeDirection;
 import schmoller.tubes.api.TubeDefinition;
 import schmoller.tubes.api.TubeRegistry;
 import schmoller.tubes.api.TubesAPI;
 import schmoller.tubes.api.helpers.RenderHelper;
+import schmoller.tubes.api.helpers.TubeHelper;
 import schmoller.tubes.api.interfaces.ITube;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
@@ -20,6 +22,7 @@ import codechicken.lib.lighting.LazyLightMatrix;
 import codechicken.lib.raytracer.IndexedCuboid6;
 import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Vector3;
+import codechicken.microblock.ISidedHollowConnect;
 import codechicken.multipart.IconHitEffects;
 import codechicken.multipart.JCuboidPart;
 import codechicken.multipart.JIconHitEffects;
@@ -31,7 +34,7 @@ import codechicken.multipart.TileMultipart;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public abstract class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion, JIconHitEffects, TSlottedPart
+public abstract class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion, JIconHitEffects, TSlottedPart, ISidedHollowConnect
 {
 	private String mType;
 	private TubeDefinition mDef;
@@ -131,6 +134,18 @@ public abstract class BaseTubePart extends JCuboidPart implements ITube, JNormal
 	}
 	
 	@Override
+	public int getHollowSize( int side )
+	{
+		int cons = getConnections();
+		if((cons & (1 << side)) != 0)
+		{
+			if(TubeHelper.getTubeConnectable(world(), x() + ForgeDirection.getOrientation(side).offsetX, y() + ForgeDirection.getOrientation(side).offsetY, z() + ForgeDirection.getOrientation(side).offsetZ) == null)
+				return 10;
+		}
+		return 8;
+	}
+	
+	@Override
 	public ItemStack pickItem( MovingObjectPosition hit )
 	{
 		return TubesAPI.instance.createTubeForType(mType);
@@ -156,7 +171,7 @@ public abstract class BaseTubePart extends JCuboidPart implements ITube, JNormal
 		if(tile() != null && tile() != t)
 		{
 			world().loadedTileEntityList.remove(tile());
-			world().addTileEntity(t);
+			world().loadedTileEntityList.add(t);
 		}
 		
 		super.bind(t);

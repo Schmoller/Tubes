@@ -2,6 +2,7 @@ package schmoller.tubes.nei;
 
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
+import codechicken.nei.forge.GuiContainerManager;
 
 public class NEITubesConfig implements IConfigureNEI
 {
@@ -27,5 +28,7 @@ public class NEITubesConfig implements IConfigureNEI
 		API.registerRecipeHandler(new SpecialShapelessRecipeHandler());
 		
 		API.registerNEIGuiHandler(new DragDropHandler());
+		
+		GuiContainerManager.addTooltipHandler(new ExtContainerTooltipHandler());
 	}
 }

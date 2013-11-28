@@ -11,19 +11,22 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.MovingObjectPosition;
+import schmoller.tubes.ItemFilter;
 import schmoller.tubes.ModTubes;
+import schmoller.tubes.api.FilterRegistry;
 import schmoller.tubes.api.Position;
+import schmoller.tubes.api.SizeMode;
 import schmoller.tubes.api.TubeItem;
 import schmoller.tubes.api.helpers.BaseTube;
-import schmoller.tubes.api.helpers.InventoryHelper;
 import schmoller.tubes.api.helpers.TubeHelper;
 import schmoller.tubes.api.helpers.BaseRouter.PathLocation;
+import schmoller.tubes.api.interfaces.IFilter;
 import schmoller.tubes.definitions.TypeRoutingTube;
 import schmoller.tubes.routing.OutputRouter;
 
 public class RoutingTube extends BaseTube
 {
-	private ItemStack[][] mFilters = new ItemStack[9][4];
+	private IFilter[][] mFilters = new IFilter[9][4];
 	private int[] mColours = new int[9];
 	private RouteDirection[] mDir = new RouteDirection[9]; 
 	
@@ -34,12 +37,12 @@ public class RoutingTube extends BaseTube
 		Arrays.fill(mColours, -1);
 	}
 	
-	public void setFilter(int column, int row, ItemStack item)
+	public void setFilter(int column, int row, IFilter item)
 	{
 		mFilters[column][row] = item;
 	}
 	
-	public ItemStack getFilter(int column, int row)
+	public IFilter getFilter(int column, int row)
 	{
 		return mFilters[column][row];
 	}
@@ -64,7 +67,7 @@ public class RoutingTube extends BaseTube
 		return mDir[column];
 	}
 	
-	private boolean doesItemMatchFilter(int column, ItemStack item)
+	private boolean doesItemMatchFilter(int column, TubeItem item)
 	{
 		boolean empty = true;
 		for(int i = 0; i < 4; ++i)
@@ -73,7 +76,7 @@ public class RoutingTube extends BaseTube
 				continue;
 
 			empty = false;
-			if(InventoryHelper.areItemsEqual(mFilters[column][i], item))
+			if(mFilters[column][i].matches(item, SizeMode.Max))
 				return true;
 		}
 		
@@ -110,7 +113,7 @@ public class RoutingTube extends BaseTube
 						continue;
 					
 					empty = false;
-					if(InventoryHelper.areItemsEqual(mFilters[col][i], item.item))
+					if(mFilters[col][i].matches(item, SizeMode.Max))
 					{
 						match = true;
 						level = i;
@@ -184,7 +187,7 @@ public class RoutingTube extends BaseTube
 						continue;
 					
 					empty = false;
-					if(InventoryHelper.areItemsEqual(mFilters[col][i], item.item))
+					if(mFilters[col][i].matches(item, SizeMode.Max))
 					{
 						match = true;
 						level = i;
@@ -254,7 +257,7 @@ public class RoutingTube extends BaseTube
 						continue;
 					
 					empty = false;
-					if(InventoryHelper.areItemsEqual(mFilters[col][i], item.item))
+					if(mFilters[col][i].matches(item, SizeMode.Max))
 					{
 						match = true;
 						level = i;
@@ -409,7 +412,7 @@ public class RoutingTube extends BaseTube
 		
 		for(int col = 0; col < 9; ++col)
 		{
-			if(mDir[col] != RouteDirection.Closed && (mDir[col] == RouteDirection.Any || ((conns & (1 << mDir[col].ordinal())) != 0)) && doesItemMatchFilter(col, item.item))
+			if(mDir[col] != RouteDirection.Closed && (mDir[col] == RouteDirection.Any || ((conns & (1 << mDir[col].ordinal())) != 0)) && doesItemMatchFilter(col, item))
 				return true;
 		}
 		
@@ -431,13 +434,13 @@ public class RoutingTube extends BaseTube
 				{
 					NBTTagCompound tag = new NBTTagCompound();
 					tag.setInteger("Slot", index);
-					mFilters[i][j].writeToNBT(tag);
+					FilterRegistry.getInstance().writeFilter(mFilters[i][j], tag);
 					list.appendTag(tag);
 				}
 			}
 		}
 		
-		root.setTag("Filter", list);
+		root.setTag("NewFilter", list);
 		
 		list = new NBTTagList();
 		for(int i = 0; i < 9; ++i)
@@ -455,18 +458,34 @@ public class RoutingTube extends BaseTube
 	{
 		super.load(root);
 		
-		NBTTagList filters = root.getTagList("Filter");
 		NBTTagList colours = root.getTagList("Colours");
 		NBTTagList directions = root.getTagList("Dirs");
-		
-		for(int i = 0; i < filters.tagCount(); ++i)
+
+		if(root.hasKey("Filter"))
 		{
-			NBTTagCompound tag = (NBTTagCompound)filters.tagAt(i);
-			
-			int row = tag.getInteger("Slot") % 4;
-			int column = tag.getInteger("Slot") / 4;
-			
-			mFilters[column][row] = ItemStack.loadItemStackFromNBT(tag);
+			NBTTagList filters = root.getTagList("Filter");
+			for(int i = 0; i < filters.tagCount(); ++i)
+			{
+				NBTTagCompound tag = (NBTTagCompound)filters.tagAt(i);
+				
+				int row = tag.getInteger("Slot") % 4;
+				int column = tag.getInteger("Slot") / 4;
+				
+				mFilters[column][row] = new ItemFilter(ItemStack.loadItemStackFromNBT(tag), false);
+			}
+		}
+		else
+		{
+			NBTTagList filters = root.getTagList("NewFilter");
+			for(int i = 0; i < filters.tagCount(); ++i)
+			{
+				NBTTagCompound tag = (NBTTagCompound)filters.tagAt(i);
+				
+				int row = tag.getInteger("Slot") % 4;
+				int column = tag.getInteger("Slot") / 4;
+				
+				mFilters[column][row] = FilterRegistry.getInstance().readFilter(tag);
+			}
 		}
 		
 		for(int i = 0; i < 9; ++i)

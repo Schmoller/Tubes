@@ -9,31 +9,38 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MovingObjectPosition;
+import schmoller.tubes.AnyFilter;
+import schmoller.tubes.ItemFilter;
 import schmoller.tubes.ModTubes;
+import schmoller.tubes.api.FilterRegistry;
+import schmoller.tubes.api.ItemPayload;
+import schmoller.tubes.api.Payload;
+import schmoller.tubes.api.SizeMode;
 import schmoller.tubes.api.TubeItem;
 import schmoller.tubes.api.helpers.BaseTube;
 import schmoller.tubes.api.helpers.InventoryHelper;
 import schmoller.tubes.api.helpers.TubeHelper;
+import schmoller.tubes.api.interfaces.IFilter;
 import schmoller.tubes.api.interfaces.ITubeConnectable;
 
 public class CompressorTube extends BaseTube implements IInventory
 {
 	private TubeItem mCurrent;
-	private ItemStack mTarget;
+	private IFilter mTarget;
 	
 	public CompressorTube()
 	{
 		super("compressor");
 		
-		mTarget = new ItemStack(0, 64, 0);
+		mTarget = new AnyFilter(64, 64);
 		mCurrent = null;
 	}
 	
 	@Override
-	public boolean canAddItem( ItemStack item, int direction )
+	public boolean canAddItem( Payload item, int direction )
 	{
 		if(mCurrent != null)
-			return (item.isItemEqual(mCurrent.item) && ItemStack.areItemStackTagsEqual(item, mCurrent.item));
+			return mCurrent.item.isPayloadTypeEqual(item);
 		
 		return true;
 	}
@@ -49,28 +56,28 @@ public class CompressorTube extends BaseTube implements IInventory
 	{
 		if(mCurrent != null)
 		{
-			if(!item.item.isItemEqual(mCurrent.item) || !ItemStack.areItemStackTagsEqual(item.item, mCurrent.item))
+			if(!item.item.isPayloadTypeEqual(item.item))
 				return item.direction ^ 1;
 			
-			int amt = Math.min(item.item.stackSize, Math.min(mTarget.stackSize, mCurrent.item.getMaxStackSize()) - mCurrent.item.stackSize);
-			mCurrent.item.stackSize += amt;
-			item.item.stackSize -= amt;
+			int amt = Math.min(item.item.size(), Math.min(mTarget.size(), mCurrent.item.maxSize()) - mCurrent.item.size());
+			mCurrent.item.setSize(mCurrent.item.size() + amt);
+			item.item.setSize(item.item.size() - amt);
 			
-			if(mCurrent.item.stackSize == mTarget.stackSize || mCurrent.item.stackSize == mCurrent.item.getMaxStackSize())
+			if(mCurrent.item.size() == mTarget.size() || mCurrent.item.size() == mCurrent.item.maxSize())
 			{
 				mCurrent.updated = true;
 				addItem(mCurrent, true);
 				mCurrent = null;
 				
-				if(item.item.stackSize > 0)
+				if(item.item.size() > 0)
 					mCurrent = item.clone();
 			}
 			
 			return -2;
 		}
-		else if(mTarget.itemID == 0 || (item.item.isItemEqual(mTarget) && ItemStack.areItemStackTagsEqual(item.item, mTarget)))
+		else if(mTarget.matches(item.item, SizeMode.LessEqual))
 		{
-			if(item.item.stackSize < mTarget.stackSize && item.item.stackSize < item.item.getMaxStackSize())
+			if(item.item.size() < mTarget.size() && item.item.maxSize() != item.item.size())
 			{
 				mCurrent = item.clone();
 				return -2;
@@ -104,21 +111,21 @@ public class CompressorTube extends BaseTube implements IInventory
 		return !(con instanceof CompressorTube);
 	}
 	
-	public ItemStack getTargetType()
+	public IFilter getTargetType()
 	{
 		return mTarget;
 	}
 	
-	public void setTargetType(ItemStack item)
+	public void setTargetType(IFilter item)
 	{
 		if(item == null)
-			mTarget = new ItemStack(0, 64, 0);
+			mTarget = new AnyFilter(64, 64);
 		else
 			mTarget = item;
 
 		if(mCurrent != null)
 		{
-			if(mCurrent.item.stackSize >= mTarget.stackSize || mCurrent.item.stackSize >= mCurrent.item.getMaxStackSize() || (mTarget.itemID != 0 && !InventoryHelper.areItemsEqual(mCurrent.item, mTarget)))
+			if( !mTarget.matches(mCurrent, SizeMode.LessEqual) || mCurrent.item.size() >= mTarget.size() || mCurrent.item.size() >= mCurrent.item.maxSize())
 			{
 				addItem(mCurrent, true);
 				mCurrent = null;
@@ -135,29 +142,29 @@ public class CompressorTube extends BaseTube implements IInventory
 	@Override
 	public ItemStack getStackInSlot( int i )
 	{
-		if(mCurrent != null)
-			return mCurrent.item;
+		if(mCurrent != null && mCurrent.item instanceof ItemPayload)
+			return (ItemStack)mCurrent.item.get();
 		return null;
 	}
 
 	@Override
 	public ItemStack decrStackSize( int slot, int count )
 	{
-		if(mCurrent == null)
+		if(mCurrent == null || !(mCurrent.item instanceof ItemPayload))
 			return null;
 		
         ItemStack itemstack;
 
-        if (mCurrent.item.stackSize <= count)
+        if (mCurrent.item.size() <= count)
         {
-            itemstack = mCurrent.item;
+            itemstack = (ItemStack)mCurrent.item.get();
             mCurrent = null;
         }
         else
         {
-            itemstack = mCurrent.item.splitStack(count);
+            itemstack = ((ItemStack)mCurrent.item.get()).splitStack(count);
 
-            if (mCurrent.item.stackSize == 0)
+            if (mCurrent.item.size() == 0)
             	mCurrent = null;
         }
         
@@ -168,10 +175,10 @@ public class CompressorTube extends BaseTube implements IInventory
 	@Override
 	public ItemStack getStackInSlotOnClosing( int i )
 	{
-		if(mCurrent == null)
+		if(mCurrent == null || !(mCurrent.item instanceof ItemPayload))
 			return null;
 		
-		ItemStack item = mCurrent.item;
+		ItemStack item = (ItemStack)mCurrent.item.get();
 		mCurrent = null;
 		
 		return item;
@@ -188,14 +195,14 @@ public class CompressorTube extends BaseTube implements IInventory
 		
 		if(mCurrent == null)
 		{
-			mCurrent = new TubeItem(item);
+			mCurrent = new TubeItem(new ItemPayload(item));
 			mCurrent.direction = 6;
-			mCurrent.progress = 0.5f;
+			mCurrent.setProgress(0.5f);
 		}
 		else
-			mCurrent.item = item;
+			mCurrent.item = new ItemPayload(item);
 		
-		if(mCurrent.item.stackSize >= mTarget.stackSize || mCurrent.item.stackSize >= mCurrent.item.getMaxStackSize())
+		if(mCurrent.item.size() >= mTarget.size() || mCurrent.item.size() >= mCurrent.item.maxSize())
 		{
 			addItem(mCurrent, true);
 			mCurrent = null;
@@ -217,7 +224,7 @@ public class CompressorTube extends BaseTube implements IInventory
 	@Override
 	public int getInventoryStackLimit()
 	{
-		return mTarget.stackSize;
+		return mTarget.size();
 	}
 
 	@Override
@@ -241,15 +248,20 @@ public class CompressorTube extends BaseTube implements IInventory
 	@Override
 	public boolean isItemValidForSlot( int i, ItemStack item )
 	{
-		return (mTarget.itemID == 0 || (item.isItemEqual(mTarget) && ItemStack.areItemStackTagsEqual(item, mTarget)));
+		if(mTarget.getType().equals("any"))
+			return true;
+		if(mTarget.getType().equals("item"))
+			return (InventoryHelper.areItemsEqual(((ItemFilter)mTarget).getItem(), item));
+		
+		return false;
 	}
 	
 	@Override
 	protected void onDropItems( List<ItemStack> itemsToDrop )
 	{
 		super.onDropItems(itemsToDrop);
-		if(mCurrent != null && mCurrent.item != null)
-			itemsToDrop.add(mCurrent.item);
+		if(mCurrent != null && mCurrent.item instanceof ItemPayload)
+			itemsToDrop.add((ItemStack)mCurrent.item.get());
 	}
 	
 	@Override
@@ -267,9 +279,7 @@ public class CompressorTube extends BaseTube implements IInventory
 		super.load(root);
 		
 		NBTTagCompound target = (NBTTagCompound)root.getTag("Target");
-		mTarget = new ItemStack(0,0,0);
-		mTarget.readFromNBT(target);
-		
+		mTarget = FilterRegistry.getInstance().readFilter(target);
 		
 		if(root.hasKey("Current"))
 		{
@@ -284,7 +294,7 @@ public class CompressorTube extends BaseTube implements IInventory
 		super.save(root);
 		
 		NBTTagCompound target = new NBTTagCompound();
-		mTarget.writeToNBT(target);
+		FilterRegistry.getInstance().writeFilter(mTarget, target);
 		root.setTag("Target", target);
 		
 		if(mCurrent != null)

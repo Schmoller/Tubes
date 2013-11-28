@@ -4,6 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import schmoller.tubes.api.Items;
+import schmoller.tubes.api.PayloadRegistry;
 import schmoller.tubes.api.TubeRegistry;
 import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.api.helpers.RenderHelper;
@@ -18,7 +19,10 @@ import schmoller.tubes.render.CompressorTubeRender;
 import schmoller.tubes.render.EjectionTubeRender;
 import schmoller.tubes.render.ExtractionTubeRender;
 import schmoller.tubes.render.FilterTubeRender;
+import schmoller.tubes.render.FluidExtractionTubeRender;
+import schmoller.tubes.render.FluidPayloadRender;
 import schmoller.tubes.render.InjectionTubeRender;
+import schmoller.tubes.render.ItemPayloadRender;
 import schmoller.tubes.render.NormalTubeRender;
 import schmoller.tubes.render.RenderTubeCap;
 import schmoller.tubes.render.RenderTubeItem;
@@ -61,6 +65,10 @@ public class ClientProxy extends CommonProxy
 		TubeRegistry.registerRenderer("routing", new RoutingTubeRender());
 		TubeRegistry.registerRenderer("valve", new ValveTubeRender());
 		TubeRegistry.registerRenderer("coloring", new ColoringTubeRender());
+		TubeRegistry.registerRenderer("fluidExtraction", new FluidExtractionTubeRender());
+		
+		PayloadRegistry.registerPayloadRenderer("item", new ItemPayloadRender());
+		PayloadRegistry.registerPayloadRenderer("fluid", new FluidPayloadRender());
 	}
 	
 	@Override

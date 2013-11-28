@@ -2,6 +2,7 @@ package schmoller.tubes.api.helpers;
 
 import java.util.Random;
 
+import schmoller.tubes.api.InteractionHandler;
 import schmoller.tubes.api.Position;
 import schmoller.tubes.api.TubeItem;
 import schmoller.tubes.api.TubesAPI;
@@ -10,8 +11,6 @@ import schmoller.tubes.api.interfaces.ITubeConnectable;
 
 import codechicken.multipart.TileMultipart;
 
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.ForgeDirection;
@@ -39,8 +38,6 @@ public class TubeHelper
 	public static boolean isTubeConnectable(ITubeConnectable other, IBlockAccess world, int x, int y, int z, int side)
 	{
 		TileEntity ent = world.getBlockTileEntity(x, y, z);
-		if(ent == null)
-			return false;
 
 		ITubeConnectable con = getTubeConnectable(ent);
 		if(con != null)
@@ -70,13 +67,8 @@ public class TubeHelper
 					return false;
 			}
 			
-			if(ent instanceof ISidedInventory)
-				return ((ISidedInventory)ent).getAccessibleSlotsFromSide(side).length != 0;
-			else if (ent instanceof IInventory)
-				return true;
+			return InteractionHandler.isInteractable(world, x, y, z, side);
 		}
-		
-		return false;
 	}
 	
 	public static int getConnectivity(IBlockAccess world, Position position)

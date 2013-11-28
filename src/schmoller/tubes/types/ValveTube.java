@@ -10,6 +10,7 @@ import codechicken.multipart.RedstoneInteractions;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import schmoller.tubes.api.OverflowBuffer;
+import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.Position;
 import schmoller.tubes.api.TubeItem;
 import schmoller.tubes.api.TubesAPI;
@@ -26,6 +27,14 @@ public class ValveTube extends DirectionalBasicTube implements ITubeOverflowDest
 	public ValveTube()
 	{
 		super("valve");
+	}
+	
+	@Override
+	public int getHollowSize( int side )
+	{
+		if(side == getFacing())
+			return 10;
+		return super.getHollowSize(side);
 	}
 	
 	@Override
@@ -50,7 +59,7 @@ public class ValveTube extends DirectionalBasicTube implements ITubeOverflowDest
 	}
 	
 	@Override
-	public boolean canAddItem( ItemStack item, int direction )
+	public boolean canAddItem( Payload item, int direction )
 	{
 		if(!mOverflow.isEmpty())
 			return false;
@@ -86,7 +95,7 @@ public class ValveTube extends DirectionalBasicTube implements ITubeOverflowDest
 				item.state = TubeItem.NORMAL;
 				item.direction = loc.initialDir;
 				item.updated = true;
-				item.progress = 0.5f;
+				item.setProgress(0.5f);
 				addItem(item, true);
 			}
 		}

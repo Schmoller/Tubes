@@ -1,14 +1,40 @@
 package schmoller.tubes.api.gui;
 
+import java.util.ArrayList;
+
+import schmoller.tubes.api.FilterRegistry;
+import schmoller.tubes.api.interfaces.IFilter;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ICrafting;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
 /**
  * Extended container provides the ability to use fake slots
  */
 public abstract class ExtContainer extends Container
 {
+	private ArrayList<FluidStack> inventoryFluidStacks = new ArrayList<FluidStack>();
+	
+	@Override
+	protected Slot addSlotToContainer( Slot par1Slot )
+	{
+		inventoryFluidStacks.add(null);
+		return super.addSlotToContainer(par1Slot);
+	}
+	
+	@Override
+	public boolean canDragIntoSlot( Slot slot )
+	{
+		if(slot instanceof FakeSlot)
+			return false;
+
+		return super.canDragIntoSlot(slot);
+	}
+	
 	@Override
 	public ItemStack slotClick( int slotId, int mouseButton, int modifier, EntityPlayer player )
 	{
@@ -17,60 +43,71 @@ public abstract class ExtContainer extends Container
 			if(inventorySlots.get(slotId) instanceof FakeSlot)
 			{
 				FakeSlot slot = (FakeSlot)inventorySlots.get(slotId);
+				ItemStack held = player.inventory.getItemStack();
 				
-				ItemStack existing = slot.getStack();
-				if(existing != null)
-					existing = existing.copy();
+				ItemStack existingItem = slot.getStack();
+				if(existingItem != null)
+					existingItem = existingItem.copy();
 				
-				if(mouseButton == 2) // Middle Click (Clear Slot)
-					slot.putStack(null);
-				else if(mouseButton == 0) // Left Click
+				if(mouseButton != 2 || !slot.resetFilter())
 				{
-					ItemStack held = player.inventory.getItemStack(); 
-					if(held != null && (existing == null || (!held.isItemEqual(slot.getStack()) || !ItemStack.areItemStackTagsEqual(held, slot.getStack())))) // Replace with this one
+					IFilter existing = slot.getFilter();
+					IFilter newFilter = FilterRegistry.getInstance().createFilter(held, existing, mouseButton, GuiScreen.isShiftKeyDown(), GuiScreen.isCtrlKeyDown(), slot.filterNeedsPayload());
+					
+					if(newFilter == null && existing != null)
 					{
-						ItemStack put = held.copy();
-						put.stackSize = Math.min(put.stackSize, slot.getSlotStackLimit());
-						slot.putStack(put);
-					}
-					else if(slot.getStack() != null) //  Decrease Slot
-					{
-						int amount = (modifier == 1 ? 10 : 1); // Shift?
-						ItemStack item = slot.getStack();
-						item.stackSize -= amount;
-						if(item.stackSize <= 0)
-							slot.putStack(null);
-						else
-							slot.putStack(item);
-					}
-				}
-				else if(mouseButton == 1) // Right Click
-				{
-					ItemStack held = player.inventory.getItemStack(); 
-					if(held != null && (existing == null || (!held.isItemEqual(slot.getStack()) || !ItemStack.areItemStackTagsEqual(held, slot.getStack())))) // Replace with this one
-					{
-						held = held.copy();
-						held.stackSize = 1;
-						slot.putStack(held);
-					}
-					else if(slot.getStack() != null) //  Increase Slot
-					{
-						int amount = (modifier == 1 ? 10 : 1); // Shift?
-						ItemStack item = slot.getStack();
-						item.stackSize += amount;
-						if(item.stackSize >= slot.getSlotStackLimit())
-							item.stackSize = slot.getSlotStackLimit();
+						if(mouseButton == 0) // Decrease
+							existing.decrease(GuiScreen.isShiftKeyDown());
+						else if(mouseButton == 1) // Increase
+							existing.increase(slot.shouldRespectSizes(), GuiScreen.isShiftKeyDown());
 						
-						slot.putStack(item);
+						if(existing.size() == 0)
+						{
+							if(!slot.resetFilter())
+								slot.setFilter(null);
+						}
 					}
+					else if(newFilter != null)
+						slot.setFilter(newFilter);
+					
+					slot.onSlotChanged();
 				}
-				
-				slot.onSlotChanged();
-				
-				return existing;
+				return existingItem;
 			}
 		}
 		
 		return super.slotClick(slotId, mouseButton, modifier, player);
+	}
+	
+	@Override
+	public void detectAndSendChanges()
+	{
+		for (int i = 0; i < inventorySlots.size(); ++i)
+        {
+			Slot rawSlot = (Slot)this.inventorySlots.get(i);
+            ItemStack current = rawSlot.getStack();
+            ItemStack old = (ItemStack)this.inventoryItemStacks.get(i);
+
+            boolean changed = false;
+            if(rawSlot instanceof FakeSlot)
+            {
+            	IFilter oldFilter = FakeSlot.fromItem(old);
+            	IFilter currentFilter = ((FakeSlot)rawSlot).getFilter();
+            	
+            	if((currentFilter != null && (oldFilter == null || !currentFilter.equals(oldFilter))) || (currentFilter == null && oldFilter != null))
+            		changed = true;
+            }
+            
+            if (changed || !ItemStack.areItemStacksEqual(old, current))
+            {
+                old = current == null ? null : current.copy();
+                inventoryItemStacks.set(i, old);
+
+                for (int j = 0; j < crafters.size(); ++j)
+                {
+                    ((ICrafting)crafters.get(j)).sendSlotContents(this, i, old);
+                }
+            }
+        }
 	}
 }

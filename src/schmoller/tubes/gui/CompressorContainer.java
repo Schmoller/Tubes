@@ -1,11 +1,17 @@
 package schmoller.tubes.gui;
 
+import java.util.Arrays;
+import java.util.List;
+
+import schmoller.tubes.AnyFilter;
 import schmoller.tubes.api.gui.ExtContainer;
 import schmoller.tubes.api.gui.FakeSlot;
+import schmoller.tubes.api.interfaces.IFilter;
 import schmoller.tubes.types.CompressorTube;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 
 public class CompressorContainer extends ExtContainer
 {
@@ -95,35 +101,31 @@ public class CompressorContainer extends ExtContainer
 		}
 		
 		@Override
-		protected ItemStack getValue()
+		protected void setValue( IFilter filter )
 		{
-			return mTube.getTargetType();
-		}
-		
-		@Override
-		protected void setValue( ItemStack item )
-		{
-			if(item == null)
+			if(filter == null)
 			{
-				item = new ItemStack(0, 64, 0);
-				putStack(item);
+				filter = new AnyFilter(64, 64);
+				setFilter(filter);
 			}
 			else
-				mTube.setTargetType(item);
+				mTube.setTargetType(filter);
 		}
 		
 		@Override
-		public int getMaxSize()
+		public List<String> getTooltip(List<String> current)
 		{
-			if(getHasStack())
-				return getStack().getMaxStackSize();
-			return 64;
-		}
-		
-		@Override
-		public int getMinSize()
-		{
-			return 2;
+			String name = null;
+			if(current != null && !current.isEmpty())
+				name = current.get(0);
+			else
+				name = "Something";
+			
+			int count = 64;
+			if(getFilter() != null)
+				count = getFilter().size();
+			
+			return Arrays.asList("Compressing " + name + EnumChatFormatting.RESET + " to " + count);
 		}
 	}
 

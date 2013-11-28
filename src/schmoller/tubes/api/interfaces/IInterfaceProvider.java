@@ -7,7 +7,7 @@ import net.minecraft.inventory.IInventory;
  * This can be used to remap slots, make an inventory smart,
  * give an inventory to something that didn't have one, etc.
  */
-public interface IInventoryProvider
+public interface IInterfaceProvider
 {
 	/**
 	 * Returns an inventory object for the specified object, or null

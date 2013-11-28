@@ -65,6 +65,9 @@ public class OverflowBuffer
 	public void onDropItems( List<ItemStack> itemsToDrop )
 	{
 		for(TubeItem item : mBuffer)
-			itemsToDrop.add(item.item);
+		{
+			if(item.item instanceof ItemPayload)
+				itemsToDrop.add((ItemStack)item.item.get());
+		}
 	}
 }

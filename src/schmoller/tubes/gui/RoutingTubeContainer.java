@@ -2,6 +2,7 @@ package schmoller.tubes.gui;
 
 import schmoller.tubes.api.gui.ExtContainer;
 import schmoller.tubes.api.gui.FakeSlot;
+import schmoller.tubes.api.interfaces.IFilter;
 import schmoller.tubes.types.RoutingTube;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
@@ -84,15 +85,9 @@ public class RoutingTubeContainer extends ExtContainer
 		}
 		
 		@Override
-		protected ItemStack getValue()
+		protected void setValue( IFilter filter )
 		{
-			return mTube.getFilter(mColumn, mRow);
-		}
-		
-		@Override
-		protected void setValue( ItemStack item )
-		{
-			mTube.setFilter(mColumn, mRow, item);
+			mTube.setFilter(mColumn, mRow, filter);
 		}
 		
 		@Override
@@ -100,11 +95,9 @@ public class RoutingTubeContainer extends ExtContainer
 		{
 			return 1;
 		}
+		
 		@Override
-		public int getMaxSize()
-		{
-			return 1;
-		}
+		public boolean filterNeedsPayload() { return false; }
 	}
 
 }

@@ -1,11 +1,11 @@
 package schmoller.tubes.inventory.providers;
 
-import schmoller.tubes.api.interfaces.IInventoryProvider;
+import schmoller.tubes.api.interfaces.IInterfaceProvider;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryLargeChest;
 import net.minecraft.tileentity.TileEntityChest;
 
-public class DoubleChestProvider implements IInventoryProvider
+public class DoubleChestProvider implements IInterfaceProvider
 {
 	@Override
 	public IInventory provide( Object object )

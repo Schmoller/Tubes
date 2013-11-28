@@ -1,7 +1,12 @@
-package schmoller.tubes.api.client;
+package schmoller.tubes.render;
 
 import static net.minecraftforge.client.IItemRenderer.ItemRenderType.ENTITY;
 import static net.minecraftforge.client.IItemRenderer.ItemRendererHelper.BLOCK_3D;
+
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+
+import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemRenderer;
@@ -17,32 +22,28 @@ import net.minecraft.util.Icon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.MinecraftForgeClient;
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
 import schmoller.tubes.AdvRender;
-import schmoller.tubes.api.TubeItem;
+import schmoller.tubes.api.Payload;
+import schmoller.tubes.api.client.IPayloadRender;
 import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.definitions.TypeNormalTube;
 
-@SideOnly(Side.CLIENT)
-public class CustomRenderItem
+public class ItemPayloadRender implements IPayloadRender
 {
 	public static ResourceLocation itemGlint = new ResourceLocation("textures/misc/enchanted_item_glint.png");
+	
 	private RenderBlocks itemRenderBlocks = new RenderBlocks();
 	private AdvRender mAdv = new AdvRender();
 	private EntityItem mDummy = new EntityItem(null);
 	
 	private TextureManager mRender;
 	
-	public void renderTubeItem(TubeItem item, double x, double y, double z)
+	@Override
+	public void render( Payload payload, int color, double x, double y, double z, int direction, float progress )
 	{
-		renderItemStack(item.item, x, y, z);
+		renderItemStack((ItemStack)payload.get(), x, y, z);
 		
-		if(item.colour != -1)
+		if(color != -1)
 		{
 			mRender.bindTexture(TextureMap.locationBlocksTexture);
 			
@@ -53,7 +54,7 @@ public class CustomRenderItem
 			mAdv.setLocalLights(1f, 1f, 1f, 1f, 1f, 1f);
 			mAdv.resetTransform();
 
-			mAdv.setColorRGB(CommonHelper.getDyeColor(item.colour));
+			mAdv.setColorRGB(CommonHelper.getDyeColor(color));
 			
 			mAdv.translate(-0.5f, -0.5f, -0.5f);
 			
@@ -68,8 +69,8 @@ public class CustomRenderItem
 			mAdv.drawBox(63, 0f, 0f, 0f, 1f, 1f, 1f);
 			tes.draw();
 		}
-		
 	}
+
 	public void renderItemStack(ItemStack item, double x, double y, double z)
 	{
 		if(mRender == null)
@@ -248,28 +249,13 @@ public class CustomRenderItem
         return true;
 	}
 	
-	public byte getMiniBlockCount(ItemStack stack)
+	private byte getMiniBlockCount(ItemStack stack)
     {
         byte ret = 1;
         if (stack.stackSize > 1 ) ret = 2;
         if (stack.stackSize > 5 ) ret = 3;
         if (stack.stackSize > 20) ret = 4;
         if (stack.stackSize > 40) ret = 5;
-        return ret;
-    }
-
-    /**
-     * Allows for a subclass to override how many rendered items appear in a
-     * "mini item 3d stack"
-     * @param stack
-     * @return
-     */
-    public byte getMiniItemCount(ItemStack stack)
-    {
-        byte ret = 1;
-        if (stack.stackSize > 1) ret = 2;
-        if (stack.stackSize > 15) ret = 3;
-        if (stack.stackSize > 31) ret = 4;
         return ret;
     }
 }

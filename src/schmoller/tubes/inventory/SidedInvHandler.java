@@ -1,12 +1,16 @@
 package schmoller.tubes.inventory;
 
+import schmoller.tubes.AnyFilter;
+import schmoller.tubes.ItemFilter;
+import schmoller.tubes.api.ItemPayload;
 import schmoller.tubes.api.SizeMode;
 import schmoller.tubes.api.helpers.InventoryHelper;
-import schmoller.tubes.api.interfaces.IInventoryHandler;
+import schmoller.tubes.api.interfaces.IFilter;
+import schmoller.tubes.api.interfaces.IPayloadHandler;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 
-public class SidedInvHandler implements IInventoryHandler
+public class SidedInvHandler implements IPayloadHandler<ItemPayload>
 {
 	private ISidedInventory mInv;
 	
@@ -16,9 +20,9 @@ public class SidedInvHandler implements IInventoryHandler
 	}
 	
 	@Override
-	public ItemStack insertItem( ItemStack item, int side, boolean doAdd )
+	public ItemPayload insert( ItemPayload payload, int side, boolean doAdd )
 	{
-		ItemStack remaining = item.copy();
+		ItemStack remaining = ((ItemStack)payload.get()).copy();
 		int[] slots = mInv.getAccessibleSlotsFromSide(side);
 		
 		// Try merge
@@ -57,7 +61,7 @@ public class SidedInvHandler implements IInventoryHandler
 			if(existing != null)
 				continue;
 			
-			if(mInv.canInsertItem(i, item, side) && mInv.isItemValidForSlot(i, remaining))
+			if(mInv.canInsertItem(i, (ItemStack)payload.get(), side) && mInv.isItemValidForSlot(i, remaining))
 			{
 				int toAdd = Math.min(remaining.stackSize, mInv.getInventoryStackLimit());
 				
@@ -81,29 +85,31 @@ public class SidedInvHandler implements IInventoryHandler
 			}
 		}
 		
-		if(remaining.stackSize != item.stackSize && doAdd)
+		if(remaining.stackSize != payload.size() && doAdd)
 			mInv.onInventoryChanged();
 			
 		
 		// Some was left over
-		return remaining;
+		return new ItemPayload(remaining);
 	}
 
 	@Override
-	public ItemStack extractItem( ItemStack template, int side, boolean doExtract )
+	public ItemPayload extract( IFilter template, int side, boolean doExtract )
 	{
-		return extractItem(template, side, 0, SizeMode.Max, doExtract);
+		return extract(template, side, 0, SizeMode.Max, doExtract);
 	}
 
 	@Override
-	public ItemStack extractItem( ItemStack template, int side, int count, SizeMode mode, boolean doExtract )
+	public ItemPayload extract( IFilter template, int side, int count, SizeMode mode, boolean doExtract )
 	{
+		assert(template != null);
+		assert(template instanceof AnyFilter || template instanceof ItemFilter);
 		ItemStack pulled = null;
 		
 		// We just use ourself to test whether the extract would have been successful before we start doing it so we dont need to track state
 		if(doExtract)
 		{
-			if(extractItem(template, side, count, mode, false) == null)
+			if(extract(template, side, count, mode, false) == null)
 				return null;
 		}
 		
@@ -119,7 +125,7 @@ public class SidedInvHandler implements IInventoryHandler
 			if(pulled != null && !InventoryHelper.areItemsEqual(pulled, existing))
 				continue;
 			
-			if(template == null || InventoryHelper.areItemsEqual(template, existing))
+			if(template instanceof AnyFilter || template.matches(new ItemPayload(existing), SizeMode.Max))
 			{
 				int toGrab = 0;
 				
@@ -171,7 +177,7 @@ public class SidedInvHandler implements IInventoryHandler
 		if(pulled != null && doExtract)
 			mInv.onInventoryChanged();
 
-		return pulled;
+		return (pulled == null ? null : new ItemPayload(pulled));
 	}
 
 }

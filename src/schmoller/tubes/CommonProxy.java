@@ -5,6 +5,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -13,6 +14,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.oredict.OreDictionary;
 import codechicken.microblock.BlockMicroMaterial;
 import codechicken.microblock.MicroMaterialRegistry;
@@ -34,7 +36,10 @@ import cpw.mods.fml.common.versioning.ArtifactVersion;
 import cpw.mods.fml.common.versioning.InvalidVersionSpecificationException;
 import cpw.mods.fml.common.versioning.VersionRange;
 import schmoller.tubes.api.Blocks;
+import schmoller.tubes.api.FluidPayload;
+import schmoller.tubes.api.ItemPayload;
 import schmoller.tubes.api.Items;
+import schmoller.tubes.api.PayloadRegistry;
 import schmoller.tubes.api.TubeRegistry;
 import schmoller.tubes.api.TubesAPI;
 import schmoller.tubes.api.gui.ExtContainer;
@@ -46,6 +51,7 @@ import schmoller.tubes.definitions.TypeCompressorTube;
 import schmoller.tubes.definitions.TypeEjectionTube;
 import schmoller.tubes.definitions.TypeExtractionTube;
 import schmoller.tubes.definitions.TypeFilterTube;
+import schmoller.tubes.definitions.TypeFluidExtractionTube;
 import schmoller.tubes.definitions.TypeInjectionTube;
 import schmoller.tubes.definitions.TypeNormalTube;
 import schmoller.tubes.definitions.TypeRequestingTube;
@@ -99,7 +105,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 	{
 		try
 		{
-			return VersionRange.createFromVersionSpec("[1.0.0.208,)").containsVersion(getMultipartVersion());
+			return VersionRange.createFromVersionSpec("[1.0.0.211,)").containsVersion(getMultipartVersion());
 		}
 		catch ( InvalidVersionSpecificationException e )
 		{
@@ -130,6 +136,11 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		TubeRegistry.registerTube(new TypeRoutingTube(), "routing");
 		TubeRegistry.registerTube(new TypeValveTube(), "valve");
 		TubeRegistry.registerTube(new TypeColoringTube(), "coloring");
+		TubeRegistry.registerTube(new TypeFluidExtractionTube(), "fluidExtraction");
+		
+		
+		PayloadRegistry.registerPayload(ItemPayload.class, "item", IInventory.class);
+		PayloadRegistry.registerPayload(FluidPayload.class, "fluid", IFluidHandler.class);
 	}
 	
 	private void registerItems()

@@ -50,7 +50,7 @@ public class BlockedRouter extends BaseRouter
 					if(!con.canItemEnter(mItem))
 						continue;
 					
-					con.simulateEffects(mItem);
+					myCon.simulateEffects(mItem);
 					loc.color = mItem.colour;
 					
 					loc.dist += con.getRouteWeight() - 1;
@@ -89,7 +89,7 @@ public class BlockedRouter extends BaseRouter
 					if(!con.canItemEnter(mItem))
 						continue;
 					
-					con.simulateEffects(mItem);
+					myCon.simulateEffects(mItem);
 					loc.color = mItem.colour;
 					
 					loc.dist += con.getRouteWeight() - 1;

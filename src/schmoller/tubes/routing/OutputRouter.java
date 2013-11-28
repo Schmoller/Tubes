@@ -1,14 +1,14 @@
 package schmoller.tubes.routing;
 
-import schmoller.tubes.api.InventoryHandlerRegistry;
+import schmoller.tubes.api.InteractionHandler;
+import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.Position;
 import schmoller.tubes.api.TubeItem;
 import schmoller.tubes.api.helpers.BaseRouter;
 import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.api.helpers.TubeHelper;
-import schmoller.tubes.api.interfaces.IInventoryHandler;
+import schmoller.tubes.api.interfaces.IPayloadHandler;
 import schmoller.tubes.api.interfaces.ITubeConnectable;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 
@@ -48,6 +48,9 @@ public class OutputRouter extends BaseRouter
 		{
 			if((conns & (1 << i)) != 0)
 			{
+				mItem.colour = current.color;
+				mItem.direction = current.dir;
+				
 				PathLocation loc = new PathLocation(current, i);
 				
 				TileEntity ent = CommonHelper.getTileEntity(getWorld(), loc.position);
@@ -62,7 +65,7 @@ public class OutputRouter extends BaseRouter
 					if(!con.canItemEnter(mItem))
 						continue;
 					
-					con.simulateEffects(mItem);
+					myCon.simulateEffects(mItem);
 					loc.color = mItem.colour;
 					
 					loc.dist += con.getRouteWeight() - 1;
@@ -82,6 +85,9 @@ public class OutputRouter extends BaseRouter
 		
 		conns &= allowed;
 		
+		int initialColor = mItem.colour;
+		int initialDir = mItem.direction;
+		
 		for(int i = 0; i < 6; ++i)
 		{
 			if(mDirection != -1 && mDirection != i)
@@ -89,6 +95,9 @@ public class OutputRouter extends BaseRouter
 			
 			if((conns & (1 << i)) != 0)
 			{
+				mItem.colour = initialColor;
+				mItem.direction = initialDir;
+				
 				PathLocation loc = new PathLocation(position, i);
 				loc.color = mItem.colour;
 				
@@ -104,7 +113,7 @@ public class OutputRouter extends BaseRouter
 					if(!con.canItemEnter(mItem))
 						continue;
 					
-					con.simulateEffects(mItem);
+					myCon.simulateEffects(mItem);
 					loc.color = mItem.colour;
 					
 					loc.dist += con.getRouteWeight() - 1;
@@ -124,12 +133,12 @@ public class OutputRouter extends BaseRouter
 		
 		if(con == null)
 		{
-			IInventoryHandler handler = InventoryHandlerRegistry.getHandler(ent);
+			IPayloadHandler handler = InteractionHandler.getHandler(mItem.item.getClass(), getWorld(), current);
 			if(handler != null)
 			{
-				ItemStack remaining = handler.insertItem(mItem.item, side ^ 1, false);
+				Payload remaining = handler.insert(mItem.item, side ^ 1, false);
 				
-				if(remaining == null || remaining.stackSize != mItem.item.stackSize)
+				if(remaining == null || remaining.size() != mItem.item.size())
 					return true;
 			}
 		}

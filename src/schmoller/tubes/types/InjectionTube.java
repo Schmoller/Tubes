@@ -3,6 +3,7 @@ package schmoller.tubes.types;
 import java.util.List;
 
 import schmoller.tubes.ModTubes;
+import schmoller.tubes.api.ItemPayload;
 import schmoller.tubes.api.OverflowBuffer;
 import schmoller.tubes.api.Position;
 import schmoller.tubes.api.TubeItem;
@@ -91,7 +92,7 @@ public class InjectionTube extends BaseTube implements IInventory, ITubeOverflow
 	{
 		if(!world().isRemote && mOverflow.isEmpty() && mItem != null)
 		{
-			addItem(mItem, -1);
+			addItem(new ItemPayload(mItem), -1);
 			mItem = null;
 		}
 	}
@@ -170,13 +171,13 @@ public class InjectionTube extends BaseTube implements IInventory, ITubeOverflow
 				item.state = TubeItem.NORMAL;
 				item.direction = 6;
 				item.updated = false;
-				item.progress = 0;
+				item.setProgress(0);
 				addItem(item, false);
 			}
 		}
 		else if(mItem != null)
 		{
-			addItem(mItem, -1);
+			addItem(new ItemPayload(mItem), -1);
 			mItem = null;
 		}
 	}

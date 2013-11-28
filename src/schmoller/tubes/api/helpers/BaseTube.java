@@ -16,9 +16,11 @@ import codechicken.multipart.TFacePart;
 import codechicken.multipart.TMultiPart;
 import codechicken.multipart.scalatraits.TSlottedTile;
 
-import schmoller.tubes.api.InventoryHandlerRegistry;
+import schmoller.tubes.api.InteractionHandler;
+import schmoller.tubes.api.ItemPayload;
+import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.TubeItem;
-import schmoller.tubes.api.interfaces.IInventoryHandler;
+import schmoller.tubes.api.interfaces.IPayloadHandler;
 import schmoller.tubes.api.interfaces.ITube;
 import schmoller.tubes.api.interfaces.ITubeConnectable;
 import schmoller.tubes.parts.BaseTubePart;
@@ -47,7 +49,7 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 
 	
 	@Override
-	public boolean addItem(ItemStack item, int fromDir)
+	public boolean addItem(Payload item, int fromDir)
 	{
 		assert(fromDir >= -1 && fromDir < 6);
 		
@@ -56,12 +58,12 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 		if(fromDir == -1)
 		{
 			tItem.direction = 6;
-			tItem.progress = 0.5f;
+			tItem.setProgress(0.5f);
 		}
 		else
 		{
 			tItem.direction = fromDir;
-			tItem.progress = 0;
+			tItem.setProgress(0);
 		}
 		
 		onItemEnter(tItem);
@@ -224,6 +226,7 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 					addToClient(item);
 			}
 			
+			item.lastProgress = item.progress;
 			item.progress += 0.1;
 			
 			if(!item.updated && item.progress >= 0.5)
@@ -244,6 +247,7 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 				{
 					item.state = TubeItem.BLOCKED;
 					item.progress -= 1;
+					item.lastProgress -= 1;
 					item.updated = false;
 					item.direction ^= 1;
 					
@@ -400,7 +404,10 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 	protected void onDropItems( List<ItemStack> itemsToDrop )
 	{
 		for(TubeItem item : mItemsInTransit)
-			itemsToDrop.add(item.item);
+		{
+			if(item.item instanceof ItemPayload)
+				itemsToDrop.add((ItemStack)item.item.get());
+		}
 	}
 	
 	@Override
@@ -416,7 +423,7 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 	@Override
 	public boolean canItemEnter(TubeItem item) { return canAddItem(item.item, item.direction); }
 	@Override
-	public boolean canAddItem(ItemStack item, int direction) { return true; }
+	public boolean canAddItem(Payload item, int direction) { return true; }
 	
 	/**
 	 * Called when an item enters this tube either from another tube, or from something else
@@ -441,6 +448,7 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 			if(con.canItemEnter(item))
 			{
 				item.progress -= 1;
+				item.lastProgress -= 1;
 				item.updated = false;
 				
 				
@@ -453,15 +461,15 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 		if(world().isRemote)
 			return true;
 		
-		IInventoryHandler handler = InventoryHandlerRegistry.getHandler(ent);
-		
+		IPayloadHandler handler = InteractionHandler.getHandler(item.item.getClass(), world(), x() + dir.offsetX, y() + dir.offsetY, z() + dir.offsetZ);
+	
 		if(handler != null)
 		{
-			ItemStack remaining = handler.insertItem(item.item, item.direction ^ 1, true);
+			Payload remaining = handler.insert(item.item, item.direction ^ 1, true);
 			if(remaining == null)
 				return true;
 			
-			item.item.stackSize = remaining.stackSize;
+			item.item = remaining;
 		}
 		
 		return false;
