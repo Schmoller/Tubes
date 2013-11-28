@@ -301,14 +301,13 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		else if(packet instanceof ModPacketNEIDragDrop)
 		{
 			EntityPlayer player = (EntityPlayer)sender;
-			ItemStack item = ((ModPacketNEIDragDrop)packet).item;
-			int slotId = ((ModPacketNEIDragDrop)packet).slot;
+			ModPacketNEIDragDrop drop = (ModPacketNEIDragDrop)packet;
 			
-			if(player.openContainer instanceof ExtContainer && slotId >= 0 && slotId < player.openContainer.inventorySlots.size())
+			if(player.openContainer instanceof ExtContainer && player.openContainer.windowId == drop.windowId && drop.slot >= 0 && drop.slot < player.openContainer.inventorySlots.size())
 			{
-				Slot slot = (Slot)player.openContainer.inventorySlots.get(slotId);
+				Slot slot = (Slot)player.openContainer.inventorySlots.get(drop.slot);
 				if(slot instanceof FakeSlot)
-					slot.putStack(item);
+					((ExtContainer)player.openContainer).dropItem(drop.slot, drop.button, drop.modifiers, drop.item);
 			}
 		}
 		return false;

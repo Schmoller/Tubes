@@ -11,31 +11,43 @@ import schmoller.tubes.network.ModPacket;
 
 public class ModPacketNEIDragDrop extends ModPacket
 {
+	public int windowId;
 	public ItemStack item;
 	public int slot;
+	public int button;
+	public int modifiers;
 	
 	public ModPacketNEIDragDrop()
 	{
 		
 	}
 	
-	public ModPacketNEIDragDrop(int slot, ItemStack item)
+	public ModPacketNEIDragDrop(int windowId, int slot, int button, int modifiers, ItemStack item)
 	{
-		this.item = item;
+		this.windowId = windowId;
 		this.slot = slot;
+		this.button = button;
+		this.modifiers = modifiers;
+		this.item = item;
 	}
 	
 	@Override
 	public void write( DataOutput output ) throws IOException
 	{
+		output.writeInt(windowId);
 		output.writeShort(slot);
+		output.writeShort(button);
+		output.writeShort(modifiers);
 		Packet.writeItemStack(item, output);
 	}
 
 	@Override
 	public void read( DataInput input ) throws IOException
 	{
+		windowId = input.readInt();
 		slot = input.readShort();
+		button = input.readShort();
+		modifiers = input.readShort();
 		item = Packet.readItemStack(input);
 	}
 

@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL11;
 
 import schmoller.tubes.api.interfaces.IFilter;
 
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.inventory.Slot;
@@ -27,6 +28,21 @@ public abstract class GuiExtContainer extends GuiContainer
 	public int getTop()
 	{
 		return guiTop;
+	}
+	
+	@Override
+	protected void handleMouseClick( Slot slot, int par2, int par3, int modifiers )
+	{
+		if(slot instanceof FakeSlot)
+		{
+			modifiers = 0;
+			if(GuiScreen.isShiftKeyDown())
+				modifiers |= 1;
+			if(GuiScreen.isCtrlKeyDown())
+				modifiers |= 2;
+		}
+
+		super.handleMouseClick(slot, par2, par3, modifiers);
 	}
 	
 	@Override

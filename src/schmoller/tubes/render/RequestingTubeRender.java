@@ -204,7 +204,7 @@ public class RequestingTubeRender extends NormalTubeRender
 		
 		mRender.setLocalLights(0.5f, 1.0f, 0.8f, 0.8f, 0.6f, 0.6f);
 		
-		renderPump(direction, ((RequestingTube)tube).animTime);
+		renderPump(direction, ((RequestingTube)tube).animTime + 0.05f * frameTime);
 		
 		super.renderDynamic(type, tube, world, x, y, z, frameTime);
 	}

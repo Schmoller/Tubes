@@ -7,6 +7,7 @@ import schmoller.tubes.api.gui.FakeSlot;
 import schmoller.tubes.api.gui.GuiExtContainer;
 import schmoller.tubes.network.packets.ModPacketNEIDragDrop;
 
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -49,7 +50,7 @@ public class DragDropHandler implements INEIGuiHandler
 		int index = 0;
 		for(Slot s : (List<Slot>)gui.inventorySlots.inventorySlots)
 		{
-			if(x >= s.xDisplayPosition && x < s.xDisplayPosition + 16 && y >= s.yDisplayPosition && y < s.yDisplayPosition + 16)
+			if(x >= s.xDisplayPosition - 1 && x <= s.xDisplayPosition + 16 && y >= s.yDisplayPosition - 1 && y <= s.yDisplayPosition + 16)
 			{
 				slot = s;
 				break;
@@ -59,14 +60,13 @@ public class DragDropHandler implements INEIGuiHandler
 		
 		if(slot instanceof FakeSlot)
 		{
-			ItemStack itemCopy;
-			if(button != 1)
-				itemCopy = item.copy();
-			else
-				itemCopy = item.copy().splitStack(1);
+			int modifiers = 0;
+			if(GuiScreen.isShiftKeyDown())
+				modifiers = 1;
+			if(GuiScreen.isCtrlKeyDown())
+				modifiers |= 2;
 			
-			((FakeSlot)slot).putStack(itemCopy);
-			ModTubes.packetManager.sendPacketToServer(new ModPacketNEIDragDrop(index, itemCopy));
+			ModTubes.packetManager.sendPacketToServer(new ModPacketNEIDragDrop(gui.inventorySlots.windowId, index, button, modifiers, item.copy()));
 			return true;
 		}
 

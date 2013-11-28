@@ -1,10 +1,8 @@
 package schmoller.tubes.api.gui;
 
 import java.util.ArrayList;
-
 import schmoller.tubes.api.FilterRegistry;
 import schmoller.tubes.api.interfaces.IFilter;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ICrafting;
@@ -35,6 +33,47 @@ public abstract class ExtContainer extends Container
 		return super.canDragIntoSlot(slot);
 	}
 	
+	public void dropItem( int slotId, int mouseButton, int modifier, ItemStack held )
+	{
+		if(slotId >= 0 && slotId < inventorySlots.size())
+		{
+			if(inventorySlots.get(slotId) instanceof FakeSlot)
+				handleFakeSlot((FakeSlot)inventorySlots.get(slotId), mouseButton, modifier, held);
+		}
+		
+		detectAndSendChanges();
+	}
+	
+	private void handleFakeSlot( FakeSlot slot, int mouseButton, int modifier, ItemStack held)
+	{
+		if(mouseButton != 2 || !slot.resetFilter())
+		{
+			boolean shift = (modifier & 1) != 0;
+			boolean ctrl = (modifier & 2) != 0;
+			
+			IFilter existing = slot.getFilter();
+			IFilter newFilter = FilterRegistry.getInstance().createFilter(held, existing, mouseButton, shift, ctrl, slot.filterNeedsPayload());
+			
+			if(newFilter == null && existing != null)
+			{
+				if(mouseButton == 0) // Decrease
+					existing.decrease(shift);
+				else if(mouseButton == 1) // Increase
+					existing.increase(slot.shouldRespectSizes(), shift);
+				
+				if(existing.size() == 0)
+				{
+					if(!slot.resetFilter())
+						slot.setFilter(null);
+				}
+			}
+			else if(newFilter != null)
+				slot.setFilter(newFilter);
+			
+			slot.onSlotChanged();
+		}
+	}
+	
 	@Override
 	public ItemStack slotClick( int slotId, int mouseButton, int modifier, EntityPlayer player )
 	{
@@ -42,36 +81,12 @@ public abstract class ExtContainer extends Container
 		{
 			if(inventorySlots.get(slotId) instanceof FakeSlot)
 			{
-				FakeSlot slot = (FakeSlot)inventorySlots.get(slotId);
-				ItemStack held = player.inventory.getItemStack();
-				
-				ItemStack existingItem = slot.getStack();
+				ItemStack existingItem = ((Slot)inventorySlots.get(slotId)).getStack();
 				if(existingItem != null)
 					existingItem = existingItem.copy();
 				
-				if(mouseButton != 2 || !slot.resetFilter())
-				{
-					IFilter existing = slot.getFilter();
-					IFilter newFilter = FilterRegistry.getInstance().createFilter(held, existing, mouseButton, GuiScreen.isShiftKeyDown(), GuiScreen.isCtrlKeyDown(), slot.filterNeedsPayload());
-					
-					if(newFilter == null && existing != null)
-					{
-						if(mouseButton == 0) // Decrease
-							existing.decrease(GuiScreen.isShiftKeyDown());
-						else if(mouseButton == 1) // Increase
-							existing.increase(slot.shouldRespectSizes(), GuiScreen.isShiftKeyDown());
-						
-						if(existing.size() == 0)
-						{
-							if(!slot.resetFilter())
-								slot.setFilter(null);
-						}
-					}
-					else if(newFilter != null)
-						slot.setFilter(newFilter);
-					
-					slot.onSlotChanged();
-				}
+				handleFakeSlot((FakeSlot)inventorySlots.get(slotId), mouseButton, modifier, player.inventory.getItemStack());
+				
 				return existingItem;
 			}
 		}

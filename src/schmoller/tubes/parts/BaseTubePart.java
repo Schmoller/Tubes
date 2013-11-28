@@ -16,6 +16,7 @@ import schmoller.tubes.api.TubesAPI;
 import schmoller.tubes.api.helpers.RenderHelper;
 import schmoller.tubes.api.helpers.TubeHelper;
 import schmoller.tubes.api.interfaces.ITube;
+import codechicken.core.asm.InterfaceDependancies;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import codechicken.lib.lighting.LazyLightMatrix;
@@ -34,6 +35,7 @@ import codechicken.multipart.TileMultipart;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+@InterfaceDependancies
 public abstract class BaseTubePart extends JCuboidPart implements ITube, JNormalOcclusion, JIconHitEffects, TSlottedPart, ISidedHollowConnect
 {
 	private String mType;
