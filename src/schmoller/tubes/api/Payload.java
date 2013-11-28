@@ -4,6 +4,7 @@ import schmoller.tubes.api.PayloadRegistry.PayloadType;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 
 public abstract class Payload
 {
@@ -61,4 +62,7 @@ public abstract class Payload
 	
 	public abstract boolean isPayloadTypeEqual(Payload other);
 	public abstract boolean isPayloadEqual(Payload other);
+	
+	public boolean canSpawnInWorld() { return false; }
+	public void spawnInWorld(World world, double x, double y, double z, float velX, float velY, float velZ) {}
 }

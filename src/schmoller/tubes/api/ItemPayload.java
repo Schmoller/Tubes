@@ -4,8 +4,10 @@ import org.apache.commons.lang3.Validate;
 
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 
 public class ItemPayload extends Payload
 {
@@ -96,5 +98,23 @@ public class ItemPayload extends Payload
 	public String toString()
 	{
 		return item.toString();
+	}
+	
+	@Override
+	public boolean canSpawnInWorld()
+	{
+		return true;
+	}
+	
+	@Override
+	public void spawnInWorld( World world, double x, double y, double z, float velX, float velY, float velZ )
+	{
+		EntityItem entity = new EntityItem(world, x, y, z, item);
+		
+		entity.motionX = velX;
+		entity.motionY = velY;
+		entity.motionZ = velZ;
+		
+		world.spawnEntityInWorld(entity);
 	}
 }
