@@ -109,7 +109,7 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 			{
 				mOverflow.getNext();
 				item.state = TubeItem.NORMAL;
-				item.direction = getFacing() ^ 1;
+				item.direction = item.lastDirection = getFacing() ^ 1;
 				item.updated = true;
 				item.setProgress(0.5f);
 				addItem(item, true);
@@ -257,6 +257,7 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 
 		if(item.direction == getFacing())
 		{
+			item.lastDirection = item.direction;
 			item.direction = getFacing() ^ 1;
 			item.updated = true;
 			

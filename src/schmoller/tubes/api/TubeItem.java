@@ -18,12 +18,17 @@ public class TubeItem implements Cloneable
 	
 	public Payload item;
 	public int direction = 0;
+	public int lastDirection = 0;
 	public float progress = 0;
 	public float lastProgress = 0;
 	public boolean updated = false;
 	public int state = NORMAL;
 	public int colour = -1;
 	
+	public int speed = 1;
+	
+	// Used to ensure items only get ticked once per tick when passing from one tube to another
+	public int tickNo = 0;
 	
 	public void setProgress(float progress)
 	{
@@ -68,6 +73,7 @@ public class TubeItem implements Cloneable
 		item.state = input.readByte();
 		item.colour = input.readShort();
 		item.lastProgress = progress;
+		item.lastDirection = direction;
 		
 		return item;
 	}
@@ -91,6 +97,7 @@ public class TubeItem implements Cloneable
 	{
 		TubeItem item = new TubeItem(this.item.copy());
 		item.direction = direction;
+		item.lastDirection = lastDirection;
 		item.state = state;
 		item.progress = progress;
 		item.lastProgress = lastProgress;

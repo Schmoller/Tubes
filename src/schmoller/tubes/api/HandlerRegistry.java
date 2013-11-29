@@ -1,6 +1,8 @@
 package schmoller.tubes.api;
 
 import java.lang.reflect.Constructor;
+import java.util.AbstractMap;
+import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -42,21 +44,26 @@ public class HandlerRegistry
 	
 	private static int getDistance(Class<?> from, Class<?> to)
 	{
-		int dist = 0;
+		ArrayDeque<Entry<Class<?>, Integer>> toSearch = new ArrayDeque<Entry<Class<?>,Integer>>();
+		toSearch.add(new AbstractMap.SimpleEntry(from, 0));
 		
-		while(from != null && from != Object.class)
+		while(!toSearch.isEmpty())
 		{
-			if(from.equals(to))
+			Entry<Class<?>, Integer> entry = toSearch.poll();
+			int dist = entry.getValue();
+			if(entry.getKey().equals(to))
 				return dist;
 			
-			for(Class<?> clazz : from.getInterfaces())
+			for(Class<?> clazz : entry.getKey().getInterfaces())
 			{
 				if(clazz.equals(to))
 					return dist;
+				
+				toSearch.add(new AbstractMap.SimpleEntry(clazz, dist + 1));
 			}
 			
-			from = from.getSuperclass();
-			++dist;
+			if(entry.getKey().getSuperclass() != null && !entry.getKey().getSuperclass().equals(Object.class))
+				toSearch.add(new AbstractMap.SimpleEntry(entry.getKey().getSuperclass(), dist + 1));
 		}
 		
 		return -1;

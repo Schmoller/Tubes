@@ -69,7 +69,7 @@ public class ExtractionTube extends DirectionalBasicTube implements IRedstonePar
 			{
 				mOverflow.getNext();
 				item.state = TubeItem.NORMAL;
-				item.direction = getFacing() ^ 1;
+				item.direction = item.lastDirection = getFacing() ^ 1;
 				item.updated = false;
 				item.setProgress(0);
 				addItem(item, true);
@@ -167,6 +167,7 @@ public class ExtractionTube extends DirectionalBasicTube implements IRedstonePar
 	{
 		if(item.state == TubeItem.BLOCKED)
 		{
+			item.lastDirection = item.direction; 
 			item.direction = getFacing();
 			item.updated = true;
 			return true;

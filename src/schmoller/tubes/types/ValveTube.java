@@ -93,7 +93,7 @@ public class ValveTube extends DirectionalBasicTube implements ITubeOverflowDest
 			{
 				mOverflow.getNext();
 				item.state = TubeItem.NORMAL;
-				item.direction = loc.initialDir;
+				item.direction = item.lastDirection = loc.initialDir;
 				item.updated = true;
 				item.setProgress(0.5f);
 				addItem(item, true);

@@ -15,7 +15,9 @@ import codechicken.microblock.HollowMicroblock;
 import codechicken.multipart.TFacePart;
 import codechicken.multipart.TMultiPart;
 import codechicken.multipart.scalatraits.TSlottedTile;
+import cpw.mods.fml.common.FMLCommonHandler;
 
+import schmoller.tubes.CompoundList;
 import schmoller.tubes.api.InteractionHandler;
 import schmoller.tubes.api.ItemPayload;
 import schmoller.tubes.api.Payload;
@@ -57,12 +59,12 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 		TubeItem tItem = new TubeItem(item);
 		if(fromDir == -1)
 		{
-			tItem.direction = 6;
+			tItem.direction = tItem.lastDirection = 6;
 			tItem.setProgress(0.5f);
 		}
 		else
 		{
-			tItem.direction = fromDir;
+			tItem.direction = tItem.lastDirection  = fromDir;
 			tItem.setProgress(0);
 		}
 		
@@ -211,9 +213,15 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 		mIsUpdating = true;
 		Iterator<TubeItem> it = mItemsInTransit.iterator();
 		
+		int tickNo = FMLCommonHandler.instance().getMinecraftServerInstance().getTickCounter();
+		
 		while(it.hasNext())
 		{
 			TubeItem item = it.next();
+			
+			if(item.tickNo == tickNo)
+				continue; // Dont update, it has already been updated this tick
+			item.tickNo = tickNo;
 			
 			if(item.direction == 6) // It needs a path right away
 			{
@@ -227,7 +235,7 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 			}
 			
 			item.lastProgress = item.progress;
-			item.progress += 0.1;
+			item.progress += 0.1 * item.speed;
 			
 			if(!item.updated && item.progress >= 0.5)
 			{
@@ -277,7 +285,9 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 	
 	public List<TubeItem> getItems()
 	{
-		return mItemsInTransit;
+		if(mWaitingToAdd.isEmpty())
+			return mItemsInTransit;
+		return new CompoundList<TubeItem>(mItemsInTransit, mWaitingToAdd);
 	}
 	
 	private int randDirection(int fromDir)
@@ -310,6 +320,7 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 	private boolean handleJunction(TubeItem item)
 	{
 		int lastDir = item.direction;
+		item.lastDirection = lastDir; 
 		item.direction = getNextDirection(item);
 		item.updated = true;
 		if(item.direction == NO_ROUTE)
@@ -449,6 +460,7 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 			{
 				item.progress -= 1;
 				item.lastProgress -= 1;
+				
 				item.updated = false;
 				
 				

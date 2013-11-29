@@ -354,6 +354,7 @@ public class RoutingTube extends BaseTube
 		if(item.state == TubeItem.BLOCKED)
 		{
 			int fromDir = item.direction;
+			item.lastDirection = item.direction;
 			item.state = TubeItem.BLOCKED;
 			item.direction = TubeHelper.findNextDirection(world(), x(), y(), z(), item);
 			if(item.direction == NO_ROUTE)

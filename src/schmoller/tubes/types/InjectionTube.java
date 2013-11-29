@@ -169,7 +169,7 @@ public class InjectionTube extends BaseTube implements IInventory, ITubeOverflow
 			{
 				mOverflow.getNext();
 				item.state = TubeItem.NORMAL;
-				item.direction = 6;
+				item.direction = item.lastDirection = 6;
 				item.updated = false;
 				item.setProgress(0);
 				addItem(item, false);
