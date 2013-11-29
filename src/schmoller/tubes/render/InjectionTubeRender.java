@@ -14,11 +14,35 @@ public class InjectionTubeRender extends NormalTubeRender
 	@Override
 	public void renderStatic( TubeDefinition type, ITube tube, World world, int x, int y, int z )
 	{
-		super.renderStatic(type, tube, world, x, y, z);
+		int connections = tube.getConnections();
 		
-		mRender.setIcon(TypeInjectionTube.coreIcon);
-		mRender.drawBox(63, 0.1875f, 0.1875f, 0.1875f, 0.8125f, 0.8125f, 0.8125f);
+		mRender.resetTransform();
+		mRender.enableNormals = false;
+		mRender.setLightingFromBlock(world, x, y, z);
+		mRender.resetTextureFlip();
+		mRender.resetTextureRotation();
+		mRender.resetColor();
+		
+		mRender.setLocalLights(0.5f, 1.0f, 0.8f, 0.8f, 0.6f, 0.6f);
+		
+		mRender.translate(x, y, z);
+		
+		renderCore(connections, type, -1);
+		
+		renderConnections(connections, type);
 	}
+	
+	
+	@Override
+	protected void renderCore( int connections, TubeDefinition def, int col )
+	{
+		mRender.setIcon(TypeInjectionTube.coreIcon);
+		mRender.drawBox(~connections, 0.1875f, 0.1875f, 0.1875f, 0.8125f, 0.8125f, 0.8125f);
+		
+		mRender.setIcon(TypeInjectionTube.coreOpenIcon);
+		mRender.drawBox(connections, 0.1875f, 0.1875f, 0.1875f, 0.8125f, 0.8125f, 0.8125f);
+	}
+	
 	
 	@Override
 	public void renderItem( TubeDefinition type, ItemStack item )
@@ -36,8 +60,7 @@ public class InjectionTubeRender extends NormalTubeRender
 		FMLClientHandler.instance().getClient().renderGlobal.renderEngine.bindTexture(TextureMap.locationBlocksTexture);
 		tes.startDrawingQuads();
 		
-		mRender.setIcon(TypeInjectionTube.coreIcon);
-		mRender.drawBox(63, 0.1875f, 0.1875f, 0.1875f, 0.8125f, 0.8125f, 0.8125f);
+		renderCore(0, type, -1);
 		
 		tes.draw();
 	}

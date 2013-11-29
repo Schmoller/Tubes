@@ -10,30 +10,27 @@ import schmoller.tubes.types.InjectionTube;
 
 public class TypeInjectionTube extends TubeDefinition
 {
-	public Icon centerIcon;
-	public Icon straightIcon;
-	
 	public static Icon coreIcon;
+	public static Icon coreOpenIcon;
 	
 	public static ResourceLocation gui = new ResourceLocation("tubes", "textures/gui/injectionTube.png");
 	
 	@Override
 	public void registerIcons( IconRegister register )
 	{
-		centerIcon = register.registerIcon("Tubes:tube-center");
-		straightIcon = register.registerIcon("Tubes:tube");
-		coreIcon = register.registerIcon("Tubes:injection-core");
+		coreIcon = register.registerIcon("Tubes:tube-injection");
+		coreOpenIcon = register.registerIcon("Tubes:tube-injection-open");
 	}
 	
 	@Override
 	public Icon getCenterIcon()
 	{
-		return centerIcon;
+		return coreIcon;
 	}
 	
 	public Icon getStraightIcon() 
 	{
-		return straightIcon;
+		return TypeNormalTube.straightIcon;
 	}
 	
 	@Override

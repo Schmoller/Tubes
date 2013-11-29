@@ -9,7 +9,6 @@ import schmoller.tubes.api.Position;
 import schmoller.tubes.api.TubeItem;
 import schmoller.tubes.api.helpers.BaseTube;
 import schmoller.tubes.api.helpers.BaseRouter.PathLocation;
-import schmoller.tubes.api.interfaces.ITubeConnectable;
 import schmoller.tubes.api.interfaces.ITubeOverflowDestination;
 import schmoller.tubes.routing.OutputRouter;
 import net.minecraft.entity.player.EntityPlayer;
@@ -122,12 +121,6 @@ public class InjectionTube extends BaseTube implements IInventory, ITubeOverflow
 	}
 	
 	@Override
-	public boolean canConnectTo( ITubeConnectable con )
-	{
-		return !(con instanceof InjectionTube);
-	}
-	
-	@Override
 	public boolean activate( EntityPlayer player, MovingObjectPosition part, ItemStack item )
 	{
 		player.openGui(ModTubes.instance, ModTubes.GUI_INJECTION_TUBE, world(), x(), y(), z());
@@ -171,7 +164,7 @@ public class InjectionTube extends BaseTube implements IInventory, ITubeOverflow
 				item.state = TubeItem.NORMAL;
 				item.direction = item.lastDirection = 6;
 				item.updated = false;
-				item.setProgress(0);
+				item.setProgress(0.5f);
 				addItem(item, false);
 			}
 		}
