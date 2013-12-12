@@ -2,6 +2,7 @@ package schmoller.tubes.api;
 
 import schmoller.tubes.api.helpers.BaseRouter;
 import schmoller.tubes.api.interfaces.IFilter;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
 
@@ -62,4 +63,6 @@ public abstract class TubesAPI
 	public abstract BaseRouter getImportSourceRouter(IBlockAccess world, Position position, int startDirection, IFilter filter, SizeMode mode);
 	
 	public abstract BaseRouter getOverflowRouter(IBlockAccess world, Position position, TubeItem item);
+	
+	public abstract CreativeTabs getCreativeTab();
 }

@@ -38,6 +38,12 @@ public class BasicFilterFactory implements IFilterFactory
 		}
 		else if(heldItem != null)
 			return new ItemFilter(heldItem, ctrl);
+		else if(existing instanceof ItemFilter && ctrl)
+		{
+			((ItemFilter)existing).toggleFuzzy();
+			return existing;
+		}
+			
 		
 		return null;
 	}

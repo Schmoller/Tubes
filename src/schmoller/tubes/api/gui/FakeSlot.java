@@ -102,7 +102,7 @@ public abstract class FakeSlot extends Slot
 	}
 	
 	@Override
-	public final boolean isItemValid( ItemStack par1ItemStack ) { return true; }
+	public final boolean isItemValid( ItemStack par1ItemStack ) { return false; }
 	
 	@Override
 	public final void onPickupFromSlot( EntityPlayer player, ItemStack stack ) {}

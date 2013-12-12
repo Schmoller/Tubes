@@ -59,6 +59,8 @@ public abstract class GuiExtContainer extends GuiContainer
 
 	        zLevel = 100.0F;
 	        itemRenderer.zLevel = 100.0F;
+	        
+	        GL11.glEnable(GL11.GL_DEPTH_TEST);
 
 	        if(filter == null)
 	        {

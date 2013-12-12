@@ -1,9 +1,9 @@
 package schmoller.tubes.items;
 
+import schmoller.tubes.ModTubes;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 
 public class BasicItem extends Item
@@ -12,7 +12,7 @@ public class BasicItem extends Item
 	public BasicItem(int id)
 	{
 		super(id);
-		setCreativeTab(CreativeTabs.tabMaterials);
+		setCreativeTab(ModTubes.creativeTab);
 	}
 	
 	@Override

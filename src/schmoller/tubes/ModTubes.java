@@ -24,6 +24,7 @@ import schmoller.tubes.routing.BlockedRouter;
 import schmoller.tubes.routing.ImportSourceFinder;
 import schmoller.tubes.routing.InputRouter;
 import schmoller.tubes.routing.OutputRouter;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -32,6 +33,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Property;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.oredict.OreDictionary;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -74,6 +76,8 @@ public class ModTubes extends TubesAPI
 	public static final int GUI_REQUESTING_TUBE = 3;
 	public static final int GUI_ROUTING_TUBE = 4;
 	
+	public static TubeCreativeTab creativeTab;
+	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
@@ -95,6 +99,8 @@ public class ModTubes extends TubesAPI
 		
 		MinecraftForge.EVENT_BUS.register(this);
 		FilterRegistry.registerFilterFactory(new BasicFilterFactory());
+		
+		creativeTab = new TubeCreativeTab();
 	}
 	
 	@SuppressWarnings( "unchecked" )
@@ -115,6 +121,15 @@ public class ModTubes extends TubesAPI
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event)
 	{
+		// Compile all dyes into one name for recipes
+		String[] dyes = { "dyeBlack", "dyeRed", "dyeGreen", "dyeBrown", "dyeBlue", "dyePurple", "dyeCyan", "dyeLightGray", "dyeGray", "dyePink", "dyeLime", "dyeYellow", "dyeLightBlue", "dyeMagenta", "dyeOrange", "dyeWhite" };
+		
+		for(String name : dyes)
+		{
+			for(ItemStack item : OreDictionary.getOres(name))
+				OreDictionary.registerOre("Tubes$anyDye", item);
+		}
+		
 		proxy.registerOreRecipes();
 		TubeRegistry.instance().finalizeTubes();
 		
@@ -196,4 +211,9 @@ public class ModTubes extends TubesAPI
 		return new BlockedRouter(world, position, item);
 	}
 	
+	@Override
+	public CreativeTabs getCreativeTab()
+	{
+		return creativeTab;
+	}
 }

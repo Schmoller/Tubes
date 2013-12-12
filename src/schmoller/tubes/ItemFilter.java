@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL11;
 
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
+import codechicken.lib.render.CCRenderState;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
@@ -14,16 +15,20 @@ import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
 import schmoller.tubes.api.ItemPayload;
 import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.SizeMode;
 import schmoller.tubes.api.TubeItem;
 import schmoller.tubes.api.helpers.InventoryHelper;
+import schmoller.tubes.api.helpers.RenderHelper;
 import schmoller.tubes.api.interfaces.IFilter;
 
 public class ItemFilter implements IFilter
 {
+	public static ResourceLocation oreDict = new ResourceLocation("tubes", "textures/gui/oreDictHighlight.png"); 
+	
 	private ItemStack mTemplate;
 	private boolean mFuzzy;
 	
@@ -53,6 +58,11 @@ public class ItemFilter implements IFilter
 	public ItemStack getItem()
 	{
 		return mTemplate;
+	}
+	
+	public void toggleFuzzy()
+	{
+		mFuzzy = !mFuzzy;
 	}
 	
 	@Override
@@ -128,6 +138,7 @@ public class ItemFilter implements IFilter
 		if(itemRenderer == null)
 			itemRenderer = new RenderItem();
 		
+		GL11.glPushMatrix();
 		GL11.glTranslatef(0.0F, 0.0F, 32.0F);
         itemRenderer.zLevel = 200.0F;
         FontRenderer font = mTemplate.getItem().getFontRenderer(mTemplate);
@@ -135,8 +146,32 @@ public class ItemFilter implements IFilter
         	font = Minecraft.getMinecraft().fontRenderer;
         
         itemRenderer.renderItemAndEffectIntoGUI(font, Minecraft.getMinecraft().getTextureManager(), mTemplate, x, y);
+        if(mFuzzy)
+        {
+        	int frame = (int)((System.currentTimeMillis() / 50) % 32);
+        	float offset = frame * 1/32f;
+        	GL11.glDepthFunc(GL11.GL_GREATER);
+            GL11.glDisable(GL11.GL_LIGHTING);
+            GL11.glDepthMask(false);
+            CCRenderState.changeTexture(oreDict);
+            GL11.glTranslatef(0, 0, -50);
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glBlendFunc(GL11.GL_DST_COLOR, GL11.GL_DST_COLOR);
+            GL11.glColor4f(1.0F, 0.0F, 0.0F, 1.0F);
+            RenderHelper.renderRect(x, y, 16, 16, 0, offset, 1, 1/32f);
+            GL11.glDisable(GL11.GL_BLEND);
+            GL11.glDepthMask(true);
+            GL11.glTranslatef(0, 0, 50);
+            GL11.glEnable(GL11.GL_LIGHTING);
+            GL11.glDepthFunc(GL11.GL_LEQUAL);
+        }
+        
         itemRenderer.renderItemOverlayIntoGUI(font, Minecraft.getMinecraft().getTextureManager(), mTemplate, x, y, null);
 
+        
+        
+        GL11.glPopMatrix();
+        
         itemRenderer.zLevel = 0.0F;
 	}
 
@@ -183,6 +218,9 @@ public class ItemFilter implements IFilter
             else
                 list.set(k, EnumChatFormatting.GRAY + (String)list.get(k));
         }
+        
+        if(mFuzzy)
+        	list.add(EnumChatFormatting.YELLOW + "Using ore dictionary");
         
         return list;
 	}

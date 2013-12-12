@@ -3,7 +3,6 @@ package schmoller.tubes;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
@@ -147,9 +146,9 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 	{
 		Items.PlasticDust.initialize(Items.PlasticDust.getItemID() + 256, new BasicItem(Items.PlasticDust.getItemID()).setUnlocalizedName("dustPlastic"));
 		Items.PlasticSheet.initialize(Items.PlasticSheet.getItemID() + 256, new BasicItem(Items.PlasticSheet.getItemID()).setUnlocalizedName("sheetPlastic"));
-		Items.BucketMilkCurd.initialize(Items.BucketMilkCurd.getItemID() + 256, new BasicItem(Items.BucketMilkCurd.getItemID()).setUnlocalizedName("milkCurd").setContainerItem(Item.bucketEmpty).setCreativeTab(CreativeTabs.tabMisc).setMaxStackSize(1));
-		Items.BucketPlastic.initialize(Items.BucketPlastic.getItemID() + 256, new BasicItem(Items.BucketPlastic.getItemID()).setUnlocalizedName("bucketOfPlastic").setContainerItem(Item.bucketEmpty).setCreativeTab(CreativeTabs.tabMisc).setMaxStackSize(1));
-		Items.RedstoneCircuit.initialize(Items.RedstoneCircuit.getItemID() + 256, new BasicItem(Items.RedstoneCircuit.getItemID()).setUnlocalizedName("redstoneCircuit").setCreativeTab(CreativeTabs.tabMisc));
+		Items.BucketMilkCurd.initialize(Items.BucketMilkCurd.getItemID() + 256, new BasicItem(Items.BucketMilkCurd.getItemID()).setUnlocalizedName("milkCurd").setContainerItem(Item.bucketEmpty).setCreativeTab(ModTubes.creativeTab).setMaxStackSize(1));
+		Items.BucketPlastic.initialize(Items.BucketPlastic.getItemID() + 256, new BasicItem(Items.BucketPlastic.getItemID()).setUnlocalizedName("bucketOfPlastic").setContainerItem(Item.bucketEmpty).setCreativeTab(ModTubes.creativeTab).setMaxStackSize(1));
+		Items.RedstoneCircuit.initialize(Items.RedstoneCircuit.getItemID() + 256, new BasicItem(Items.RedstoneCircuit.getItemID()).setUnlocalizedName("redstoneCircuit").setCreativeTab(ModTubes.creativeTab));
 		
 		ModTubes.itemTube = new ItemTubeBase(Items.Tube.getItemID());
 		Items.Tube.initialize(Items.Tube.getItemID() + 256, ModTubes.itemTube);
@@ -161,11 +160,11 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		GameRegistry.registerItem(Items.Tube.getItem(), "tubes:items:tube");
 		GameRegistry.registerItem(Items.RedstoneCircuit.getItem(), "redstoneCircuit");
 		
-		Items.TubeCap.initialize(Items.TubeCap.getItemID() + 256, new ItemTubeCap(Items.TubeCap.getItemID()).setUnlocalizedName("tubeCap").setCreativeTab(CreativeTabs.tabMisc));
+		Items.TubeCap.initialize(Items.TubeCap.getItemID() + 256, new ItemTubeCap(Items.TubeCap.getItemID()).setUnlocalizedName("tubeCap").setCreativeTab(ModTubes.creativeTab));
 		GameRegistry.registerItem(Items.TubeCap.getItem(), "tubeCap");
 		
 		Blocks.BlockPlastic.initialize(Blocks.BlockPlastic.getBlockID(), new Block(Blocks.BlockPlastic.getBlockID(), Material.piston)
-			.setCreativeTab(CreativeTabs.tabBlock)
+			.setCreativeTab(ModTubes.creativeTab)
 			.setUnlocalizedName("Tubes:blockPlastic")
 			.setTextureName("tubes:blockPlastic")
 			.setHardness(2.5f));
@@ -197,6 +196,8 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		LanguageRegistry.instance().addStringLocalization("tubes.coloring.name", "Coloring Tube");
 		
 		LanguageRegistry.instance().addStringLocalization("fluid.plastic", "Plastic");
+		
+		LanguageRegistry.instance().addStringLocalization("itemGroup.tubes", "Tubes");
 		
 		LanguageRegistry.addName(Items.PlasticDust.getItem(), "Plastic Pellets");
 		LanguageRegistry.addName(Items.PlasticSheet.getItem(), "Plastic");
@@ -231,7 +232,6 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		GameRegistry.addRecipe(new SpecialShapelessRecipe(ModTubes.itemTube.createForType("ejection"), ModTubes.itemTube.createForType("basic"), Block.glass));
 		
 		TubesAPI.instance.registerShapelessRecipe(ModTubes.itemTube.createForType("valve"), ModTubes.itemTube.createForType("basic"), Item.ingotIron, Block.lever);
-		TubesAPI.instance.registerShapedRecipe(ModTubes.itemTube.createForType("coloring"), " d ", "dtd", " d ", 'd', new ItemStack(Item.dyePowder, 1, OreDictionary.WILDCARD_VALUE), 't', ModTubes.itemTube.createForType("basic"));
 		
 		GameRegistry.addShapedRecipe(new ItemStack(Items.RedstoneCircuit.getItem(), 4), "igi", "rrr", "igi", 'i', Item.ingotIron, 'g', Item.ingotGold, 'r', Item.redstone);
 		
@@ -240,7 +240,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 
 	public void registerOreRecipes()
 	{
-		
+		TubesAPI.instance.registerShapedRecipe(ModTubes.itemTube.createForType("coloring"), " d ", "dtd", " d ", 'd', "Tubes$anyDye", 't', ModTubes.itemTube.createForType("basic"));
 	}
 	
 	

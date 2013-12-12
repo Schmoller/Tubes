@@ -2,6 +2,7 @@ package schmoller.tubes.items;
 
 import java.util.List;
 
+import schmoller.tubes.ModTubes;
 import schmoller.tubes.api.TubeRegistry;
 import schmoller.tubes.api.interfaces.IDirectionalTube;
 import schmoller.tubes.api.interfaces.ISpecialItemCompare;
@@ -28,7 +29,7 @@ public class ItemTubeBase extends JItemMultiPart implements ISpecialItemCompare
 	{
 		super(id);
 		setHasSubtypes(true);
-		setCreativeTab(CreativeTabs.tabTransport);
+		setCreativeTab(ModTubes.creativeTab);
 	}
 
 	@Override
