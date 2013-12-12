@@ -202,9 +202,14 @@ public class RequestingTubeRender extends NormalTubeRender
 		mRender.resetTextureFlip();
 		mRender.resetTextureRotation();
 		
+		GL11.glPushMatrix();
+		GL11.glTranslatef(x, y, z);
+		
 		mRender.setLocalLights(0.5f, 1.0f, 0.8f, 0.8f, 0.6f, 0.6f);
 		
 		renderPump(direction, ((RequestingTube)tube).animTime + 0.05f * frameTime);
+		
+		GL11.glPopMatrix();
 		
 		super.renderDynamic(type, tube, world, x, y, z, frameTime);
 	}

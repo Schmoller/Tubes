@@ -23,9 +23,14 @@ public class CompressorTubeRender extends NormalTubeRender
 		mRender.resetTextureFlip();
 		mRender.resetTextureRotation();
 		
+		GL11.glPushMatrix();
+		GL11.glTranslatef(x, y, z);
+		
 		mRender.setLocalLights(0.5f, 1.0f, 0.8f, 0.8f, 0.6f, 0.6f);
 		
 		renderPumps(tube.getConnections());
+		
+		GL11.glPopMatrix();
 		
 		super.renderDynamic(type, tube, world, x, y, z, frameTime);
 	}

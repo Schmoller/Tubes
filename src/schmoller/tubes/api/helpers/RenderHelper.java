@@ -20,7 +20,7 @@ public class RenderHelper
 	{
 	}
 	
-	public static void renderTubeItems(ITube tube, float partialTick)
+	public static void renderTubeItems(ITube tube, int x, int y, int z, float partialTick)
 	{
 		for(TubeItem item : tube.getItems())
 		{
@@ -31,7 +31,7 @@ public class RenderHelper
 				dir = ForgeDirection.getOrientation(item.lastDirection);
 
 			progress -= 0.5f;
-			PayloadRegistry.instance().getPayloadRender(item.item.getClass()).render(item.item, item.colour, 0.5 + progress * dir.offsetX, 0.5 + progress * dir.offsetY, 0.5 + progress * dir.offsetZ, item.direction, progress);
+			PayloadRegistry.instance().getPayloadRender(item.item.getClass()).render(item.item, item.colour, x + 0.5 + progress * dir.offsetX, y + 0.5 + progress * dir.offsetY, z + 0.5 + progress * dir.offsetZ, item.direction, progress + 0.5f);
 		}
 	}
 
@@ -39,7 +39,8 @@ public class RenderHelper
 	{
 		ITubeRender render = TubeRegistry.instance().getRender(definition);
 		GL11.glPushMatrix();
-		GL11.glTranslated(pos.x, pos.y, pos.z);
+		//GL11.glTranslated(pos.x, pos.y, pos.z);
+		GL11.glTranslated(pos.x - tube.x(), pos.y - tube.y(), pos.z - tube.z());
 		
 		render.renderDynamic(definition, tube, tube.world(), tube.x(), tube.y(), tube.z(), frameTime);
 		

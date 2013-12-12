@@ -1,19 +1,24 @@
 package schmoller.tubes.api;
 
-import schmoller.tubes.render.FluidPayloadRender;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class FluidPayload extends Payload
 {
-	@SideOnly(Side.CLIENT)
-	private static FluidPayloadRender mRender;
-	
 	public FluidStack fluid;
+	
+	// Rendering aids
+	public int lastDirection;
+	public float lastProgress;
+	
+	public static final int maxLastCount = 4;
+	
+	public int lastCount = 0;
+	public double[] lastX = new double[maxLastCount];
+	public double[] lastY = new double[maxLastCount];
+	public double[] lastZ = new double[maxLastCount];
 	
 	public FluidPayload() {}
 	public FluidPayload(FluidStack fluid)

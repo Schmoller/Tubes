@@ -127,6 +127,7 @@ public class ItemPayloadRender implements IPayloadRender
 
                 for (int pass = 0; pass < item.getItem().getRenderPasses(item.getItemDamage()); ++pass)
                 {
+                	GL11.glPushMatrix();
                     Icon icon = item.getItem().getIcon(item, pass);
 
                     int color = Item.itemsList[item.itemID].getColorFromItemStack(item, pass);
@@ -135,6 +136,7 @@ public class ItemPayloadRender implements IPayloadRender
                     float red = (float)(color & 255) / 255.0F;
                     GL11.glColor4f(red, green, blue, 1.0F);
                     renderDroppedItem(item, icon, red, green, blue);
+                    GL11.glPopMatrix();
                 }
             }
             else

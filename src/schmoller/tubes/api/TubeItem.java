@@ -2,6 +2,7 @@ package schmoller.tubes.api;
 
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.ForgeDirection;
 
@@ -79,7 +80,14 @@ public class TubeItem implements Cloneable
 	}
 	public static TubeItem readFromNBT(NBTTagCompound tag)
 	{
-		TubeItem tItem = new TubeItem(Payload.load(tag));
+		Payload payload = null;
+		
+		if(tag.hasKey("Type"))
+			payload = Payload.load(tag);
+		else
+			payload = new ItemPayload(ItemStack.loadItemStackFromNBT(tag));
+		
+		TubeItem tItem = new TubeItem(payload);
 		
 		tItem.direction = tag.getInteger("D") & 0xFF;
 		tItem.updated = (tItem.direction & 128) != 0;

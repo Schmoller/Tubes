@@ -170,11 +170,11 @@ public abstract class BaseTubePart extends JCuboidPart implements ITube, JNormal
 	public void bind( TileMultipart t )
 	{
 		// Workaround: if the tile changes, value doesTick() is ignored. This makes sure it continues to tick 
-		if(tile() != null && tile() != t)
-		{
-			world().loadedTileEntityList.remove(tile());
-			world().loadedTileEntityList.add(t);
-		}
+//		if(tile() != null && tile() != t)
+//		{
+//			world().loadedTileEntityList.remove(tile());
+//			world().loadedTileEntityList.add(t);
+//		}
 		
 		super.bind(t);
 	}

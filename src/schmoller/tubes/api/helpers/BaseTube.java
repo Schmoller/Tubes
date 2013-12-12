@@ -329,13 +329,14 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 				item.direction = lastDir ^ 1;
 			else
 			{
-				item.state = TubeItem.BLOCKED;
 				item.direction = TubeHelper.findNextDirection(world(), x(), y(), z(), item);
 				if(item.direction == NO_ROUTE)
 					item.direction = randDirection(lastDir);
-				
-				addToClient(item); // Client will have deleted it
 			}
+			item.state = TubeItem.BLOCKED;
+
+			if(getNumConnections() != 1)
+				addToClient(item); // Client will have deleted it
 		}
 		else if(item.direction == ROUTE_TERM)
 			return false;
