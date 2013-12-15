@@ -15,9 +15,8 @@ import codechicken.microblock.HollowMicroblock;
 import codechicken.multipart.TFacePart;
 import codechicken.multipart.TMultiPart;
 import codechicken.multipart.scalatraits.TSlottedTile;
-import cpw.mods.fml.common.FMLCommonHandler;
-
 import schmoller.tubes.CompoundList;
+import schmoller.tubes.ModTubes;
 import schmoller.tubes.api.InteractionHandler;
 import schmoller.tubes.api.ItemPayload;
 import schmoller.tubes.api.Payload;
@@ -213,7 +212,7 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 		mIsUpdating = true;
 		Iterator<TubeItem> it = mItemsInTransit.iterator();
 		
-		int tickNo = FMLCommonHandler.instance().getMinecraftServerInstance().getTickCounter();
+		int tickNo = ModTubes.instance.getCurrentTick();
 		
 		while(it.hasNext())
 		{

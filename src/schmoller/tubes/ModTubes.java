@@ -1,5 +1,6 @@
 package schmoller.tubes;
 
+import java.util.EnumSet;
 import java.util.logging.Logger;
 
 import schmoller.tubes.api.Blocks;
@@ -26,6 +27,11 @@ import schmoller.tubes.routing.InputRouter;
 import schmoller.tubes.routing.OutputRouter;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.INetworkManager;
+import net.minecraft.network.NetLoginHandler;
+import net.minecraft.network.packet.NetHandler;
+import net.minecraft.network.packet.Packet1Login;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.Configuration;
@@ -39,19 +45,26 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.TickType;
 
+import cpw.mods.fml.common.network.IConnectionHandler;
 import cpw.mods.fml.common.network.NetworkMod;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @Mod(name="Tubes", version="@{mod.version}", modid = "Tubes", dependencies="required-after:Forge; required-before:ForgeMultipart")
 @NetworkMod(clientSideRequired=true, serverSideRequired=true)
-public class ModTubes extends TubesAPI
+public class ModTubes extends TubesAPI implements ITickHandler
 {
 	@Instance("Tubes")
     public static ModTubes instance;
@@ -77,6 +90,8 @@ public class ModTubes extends TubesAPI
 	public static final int GUI_ROUTING_TUBE = 4;
 	
 	public static TubeCreativeTab creativeTab;
+	
+	private int mClientTickCounter;
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
@@ -134,6 +149,8 @@ public class ModTubes extends TubesAPI
 		TubeRegistry.instance().finalizeTubes();
 		
 		event.buildSoftDependProxy("BuildCraft|Core", BuildcraftProxy.class.getName());
+		
+		TickRegistry.registerTickHandler(this, Side.CLIENT);
 	}
 
 	@ForgeSubscribe
@@ -215,5 +232,36 @@ public class ModTubes extends TubesAPI
 	public CreativeTabs getCreativeTab()
 	{
 		return creativeTab;
+	}
+	
+	public int getCurrentTick()
+	{
+		if(FMLCommonHandler.instance().getMinecraftServerInstance() != null)
+			return FMLCommonHandler.instance().getMinecraftServerInstance().getTickCounter();
+		else
+			return mClientTickCounter;
+	}
+
+	@Override
+	public void tickStart( EnumSet<TickType> type, Object... tickData )
+	{
+		++mClientTickCounter;
+	}
+
+	@Override
+	public void tickEnd( EnumSet<TickType> type, Object... tickData )
+	{
+	}
+
+	@Override
+	public EnumSet<TickType> ticks()
+	{
+		return EnumSet.of(TickType.CLIENT);
+	}
+
+	@Override
+	public String getLabel()
+	{
+		return "ClientTickCounter";
 	}
 }

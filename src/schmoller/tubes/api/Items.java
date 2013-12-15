@@ -10,7 +10,8 @@ public enum Items
 	BucketMilkCurd(5003, "MilkCurd"),
 	BucketPlastic(5004, "BucketOfPlastic"),
 	RedstoneCircuit(5005, "redstoneCircuit"),
-	TubeCap(5006, "TubeCap");
+	TubeCap(5006, "TubeCap"),
+	FluidCircuit(5007, "FluidCircuit");
 	
 	private int mItemId;
 	private Item mItem = null;
