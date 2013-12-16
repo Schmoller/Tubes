@@ -36,6 +36,14 @@ public class TubeHelper
 		return null;
 	}
 	
+	private static boolean isNullOrEmpty(int[] array)
+	{
+		if(array == null)
+			return true;
+		
+		return array.length == 0;
+	}
+	
 	public static boolean isTubeConnectable(ITubeConnectable other, IBlockAccess world, int x, int y, int z, int side)
 	{
 		TileEntity ent = world.getBlockTileEntity(x, y, z);
@@ -71,7 +79,7 @@ public class TubeHelper
 			}
 			
 			if(ent instanceof ISidedInventory)
-				return ((ISidedInventory)ent).getAccessibleSlotsFromSide(side).length != 0;
+				return !isNullOrEmpty(((ISidedInventory)ent).getAccessibleSlotsFromSide(side));
 			else if (ent instanceof IInventory)
 				return true;
 		}
