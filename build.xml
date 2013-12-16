@@ -4,7 +4,7 @@
     <property name="src.dir" value="src"/>
     <property name="mcp.dir" value = "../.."/>
     <property name="obf.dir" value="${mcp.dir}/reobf/minecraft"/>
-    <property name="mod.version" value="1.1.2"/>
+    <property name="mod.version" value="1.1.3"/>
 	<property name="mc.version" value="1.6.4"/>
 	
 	<property name="build.dir" value="${mcp.dir}/bin/minecraft"/>
@@ -32,7 +32,8 @@
     </target>
     
     <target name="reobf" depends="recompile">
-    	<unzip src="${mcp.dir}/lib/ForgeMultipart-dev-1.6.4-1.0.0.193.jar" dest="${build.dir}">
+    	<unzip dest="${build.dir}">
+    		<fileset file="${mcp.dir}/lib/ForgeMultipart-dev-1.6.4-*.jar"/>
     		<patternset>
     			  <include name="codechicken/**"/>
     		</patternset>

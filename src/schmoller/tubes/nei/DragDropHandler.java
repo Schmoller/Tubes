@@ -73,4 +73,9 @@ public class DragDropHandler implements INEIGuiHandler
 		return false;
 	}
 
+	@Override
+	public boolean hideItemPanelSlot( GuiContainer gui, int x, int y, int w, int h )
+	{
+		return false;
+	}
 }
