@@ -118,7 +118,7 @@ public class SpecialShapedRecipe implements IRecipe
                 
                 ItemStack inSlot = inv.getStackInRowAndColumn(x, y);
 
-                if(inSlot == null && obj != null)
+                if((inSlot == null && obj != null) || (obj == null && inSlot != null))
                 	return false;
                 
                 if(obj instanceof ItemStack)

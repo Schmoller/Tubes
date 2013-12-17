@@ -33,7 +33,7 @@
     
     <target name="reobf" depends="recompile">
     	<unzip dest="${build.dir}">
-    		<fileset file="${mcp.dir}/lib/ForgeMultipart-dev*.jar"/>
+    		<fileset file="${mcp.dir}/lib/ForgeMultipart-dev-1.6.4-*.jar"/>
     		<patternset>
     			  <include name="codechicken/**"/>
     		</patternset>

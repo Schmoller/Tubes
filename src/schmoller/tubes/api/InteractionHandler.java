@@ -54,10 +54,18 @@ public class InteractionHandler
 		return false;
 	}
 	
+	private static boolean isNullOrEmpty(int[] array)
+	{
+		if(array == null)
+			return true;
+		
+		return array.length == 0;
+	}
+	
 	public static boolean canAccess(Object object, int side)
 	{
 		if(object instanceof ISidedInventory)
-			return ((ISidedInventory)object).getAccessibleSlotsFromSide(side).length > 0;
+			return !isNullOrEmpty(((ISidedInventory)object).getAccessibleSlotsFromSide(side));
 		
 		return object != null;
 	}

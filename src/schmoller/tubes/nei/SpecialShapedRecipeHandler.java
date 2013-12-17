@@ -8,6 +8,7 @@ import schmoller.tubes.api.interfaces.ISpecialItemCompare;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiCrafting;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
@@ -17,6 +18,11 @@ import net.minecraftforge.fluids.FluidContainerRegistry.FluidContainerData;
 import net.minecraftforge.oredict.OreDictionary;
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
+import codechicken.nei.api.DefaultOverlayRenderer;
+import codechicken.nei.api.IOverlayHandler;
+import codechicken.nei.api.IRecipeOverlayRenderer;
+import codechicken.nei.api.IStackPositioner;
+import codechicken.nei.recipe.RecipeInfo;
 import codechicken.nei.recipe.TemplateRecipeHandler;
 
 public class SpecialShapedRecipeHandler extends TemplateRecipeHandler
@@ -87,6 +93,18 @@ public class SpecialShapedRecipeHandler extends TemplateRecipeHandler
 	{
 		return "textures/gui/container/crafting_table.png";
 	}
+	
+	@Override
+	public String getOverlayIdentifier()
+	{
+		return "crafting";
+	}
+	
+	public boolean hasOverlay(GuiContainer gui, Container container, int recipe)
+    {
+        return super.hasOverlay(gui, container, recipe) || 
+                isRecipe2x2(recipe) && RecipeInfo.hasDefaultOverlay(gui, "crafting2x2");
+    }
 	
 	@Override
 	public Class<? extends GuiContainer> getGuiClass()
@@ -193,5 +211,35 @@ public class SpecialShapedRecipeHandler extends TemplateRecipeHandler
 		}
 	}
 	
+	@Override
+    public IRecipeOverlayRenderer getOverlayRenderer(GuiContainer gui, int recipe)
+    {
+        IRecipeOverlayRenderer renderer = super.getOverlayRenderer(gui, recipe);
+        if(renderer != null)
+            return renderer;
+        
+        IStackPositioner positioner = RecipeInfo.getStackPositioner(gui, "crafting2x2");
+        if(positioner == null)
+            return null;
+        return new DefaultOverlayRenderer(getIngredientStacks(recipe), positioner);
+    }
+    
+    @Override
+    public IOverlayHandler getOverlayHandler(GuiContainer gui, int recipe)
+    {
+        IOverlayHandler handler = super.getOverlayHandler(gui, recipe);
+        if(handler != null)
+            return handler;
+        
+        return RecipeInfo.getOverlayHandler(gui, "crafting2x2");
+    }
 	
+	public boolean isRecipe2x2(int recipe)
+    {
+        for(PositionedStack stack : getIngredientStacks(recipe))
+            if(stack.relx > 43 || stack.rely > 24)
+                return false;
+        
+        return true;
+    }
 }
