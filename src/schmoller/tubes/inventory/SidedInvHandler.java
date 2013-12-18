@@ -180,4 +180,17 @@ public class SidedInvHandler implements IPayloadHandler<ItemPayload>
 		return (pulled == null ? null : new ItemPayload(pulled));
 	}
 
+	private static boolean isNullOrEmpty(int[] array)
+	{
+		if(array == null)
+			return true;
+		
+		return array.length == 0;
+	}
+	
+	@Override
+	public boolean isSideAccessable( int side )
+	{
+		return !isNullOrEmpty(mInv.getAccessibleSlotsFromSide(side));
+	}
 }

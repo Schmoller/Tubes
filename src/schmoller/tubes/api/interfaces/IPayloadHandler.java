@@ -35,4 +35,10 @@ public interface IPayloadHandler<T extends Payload>
 	 * @return The item that was extracted
 	 */
 	public T extract(IFilter template, int side, int count, SizeMode mode, boolean doExtract);
+	
+	/**
+	 * Checks if a side can be accessed (either insert or extract)
+	 * @return True if it can
+	 */
+	public boolean isSideAccessable(int side);
 }

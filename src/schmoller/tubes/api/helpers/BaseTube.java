@@ -124,7 +124,7 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 		return TubeHelper.getConnectivity(world(), x(), y(), z());
 	}
 	
-	private int getNumConnections()
+	protected int getNumConnections()
 	{
 		int count = 0;
 		int con = getConnections();
@@ -230,7 +230,15 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 					continue;
 				}
 				else
-					addToClient(item);
+				{
+					if(item.direction == 6) // No where to go at all
+					{
+						continue;
+					}
+					else
+						addToClient(item);
+				}
+					
 			}
 			
 			item.lastProgress = item.progress;
@@ -325,7 +333,10 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 		if(item.direction == NO_ROUTE)
 		{
 			if(getNumConnections() == 1)
-				item.direction = lastDir ^ 1;
+			{
+				if(item.direction != 6)
+					item.direction = lastDir ^ 1;
+			}
 			else
 			{
 				item.direction = TubeHelper.findNextDirection(world(), x(), y(), z(), item);

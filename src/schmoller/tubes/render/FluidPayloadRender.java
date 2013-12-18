@@ -1,5 +1,7 @@
 package schmoller.tubes.render;
 
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -25,6 +27,9 @@ public class FluidPayloadRender implements IPayloadRender
 		// TODO: Still really unsure about this one
 		FluidPayload payload = (FluidPayload)rawPayload;
 		FluidStack fluid = payload.fluid;
+		
+		
+		GL11.glDisable(GL11.GL_LIGHTING);
 		
 		Icon icon = fluid.getFluid().getIcon(fluid);
         
@@ -106,6 +111,8 @@ public class FluidPayloadRender implements IPayloadRender
         
         payload.lastProgress = progress;
 		
+        GL11.glEnable(GL11.GL_LIGHTING);
+        
 //        GL11.glPushMatrix();
 //        GL11.glTranslated(x, y, z);
         

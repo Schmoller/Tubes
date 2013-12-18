@@ -56,6 +56,7 @@ import schmoller.tubes.definitions.TypeNormalTube;
 import schmoller.tubes.definitions.TypeRequestingTube;
 import schmoller.tubes.definitions.TypeRestrictionTube;
 import schmoller.tubes.definitions.TypeRoutingTube;
+import schmoller.tubes.definitions.TypeTankTube;
 import schmoller.tubes.definitions.TypeValveTube;
 import schmoller.tubes.gui.CompressorContainer;
 import schmoller.tubes.gui.FilterTubeContainer;
@@ -136,6 +137,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		TubeRegistry.registerTube(new TypeValveTube(), "valve");
 		TubeRegistry.registerTube(new TypeColoringTube(), "coloring");
 		TubeRegistry.registerTube(new TypeFluidExtractionTube(), "fluidExtraction");
+		TubeRegistry.registerTube(new TypeTankTube(), "tank");
 		
 		
 		PayloadRegistry.registerPayload(ItemPayload.class, "item", IInventory.class);
@@ -195,6 +197,8 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		LanguageRegistry.instance().addStringLocalization("tubes.requesting.name", "Requesting Tube");
 		LanguageRegistry.instance().addStringLocalization("tubes.valve.name", "Valve Tube");
 		LanguageRegistry.instance().addStringLocalization("tubes.coloring.name", "Coloring Tube");
+		LanguageRegistry.instance().addStringLocalization("tubes.fluidExtraction.name", "Fluid Extraction Tube");
+		LanguageRegistry.instance().addStringLocalization("tubes.tank.name", "Tank Tube");
 		
 		LanguageRegistry.instance().addStringLocalization("fluid.plastic", "Plastic");
 		
@@ -241,6 +245,8 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		TubesAPI.instance.registerShapelessRecipe(new ItemStack(Items.TubeCap.getItem(), 2, 0), TubesAPI.instance.createTubeForType("basic"), MicroblockProxy.sawStone());
 		
 		TubesAPI.instance.registerShapelessRecipe(new ItemStack(Items.FluidCircuit.getItem(), 1, 0), new ItemStack(Items.RedstoneCircuit.getItem(), 1, 0), Item.bucketEmpty);
+		
+		TubesAPI.instance.registerShapedRecipe(TubesAPI.instance.createTubeForType("tank", 1), " g ", "gtg", " g ", 'g', Block.glass, 't', TubesAPI.instance.createTubeForType("basic"));
 		
 		
 	}

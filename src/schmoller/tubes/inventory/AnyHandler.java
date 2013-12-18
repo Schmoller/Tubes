@@ -47,4 +47,14 @@ public class AnyHandler implements IPayloadHandler<Payload>
 		return null;
 	}
 
+	@Override
+	public boolean isSideAccessable( int side )
+	{
+		for(IPayloadHandler handler : mHandlers)
+		{
+			if(handler.isSideAccessable(side))
+				return true;
+		}
+		return false;
+	}
 }

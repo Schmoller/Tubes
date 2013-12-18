@@ -176,4 +176,10 @@ public class BasicInvHandler implements IPayloadHandler<ItemPayload>
 
 		return (pulled == null ? null : new ItemPayload(pulled));
 	}
+	
+	@Override
+	public boolean isSideAccessable( int side )
+	{
+		return true;
+	}
 }

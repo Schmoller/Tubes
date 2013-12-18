@@ -128,6 +128,12 @@ public class InjectionTube extends BaseTube implements IInventory, ITubeOverflow
 	}
 	
 	@Override
+	public boolean canItemEnter( TubeItem item )
+	{
+		return item.state == TubeItem.BLOCKED;
+	}
+	
+	@Override
 	public boolean activate( EntityPlayer player, MovingObjectPosition part, ItemStack item )
 	{
 		player.openGui(ModTubes.instance, ModTubes.GUI_INJECTION_TUBE, world(), x(), y(), z());
@@ -177,8 +183,11 @@ public class InjectionTube extends BaseTube implements IInventory, ITubeOverflow
 		}
 		else if(mItem != null)
 		{
-			addItem(new ItemPayload(mItem), -1);
-			mItem = null;
+			if(getNumConnections() > 0)
+			{
+				addItem(new ItemPayload(mItem), -1);
+				mItem = null;
+			}
 		}
 	}
 	

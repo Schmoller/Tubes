@@ -7,7 +7,6 @@ import schmoller.tubes.inventory.AnyHandler;
 import codechicken.multipart.TMultiPart;
 import codechicken.multipart.TileMultipart;
 import net.minecraft.block.Block;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 
@@ -19,57 +18,14 @@ public class InteractionHandler
 	 */
 	public static boolean isInteractable(IBlockAccess world, int x, int y, int z, int side)
 	{
-		Block block = Block.blocksList[world.getBlockId(x, y, z)];
+		IPayloadHandler handler = getHandler(null, world, x, y, z);
 		
-		for(Class<? extends Payload> payloadClass : PayloadRegistry.instance().getPayloadTypes())
-		{
-			Class<?> interfaceClass = PayloadRegistry.instance().getPayload(payloadClass).interfaceClass;
-			
-			if(block != null)
-			{
-				BlockInstance object = new BlockInstance(world, x, z, y);
-				if(canAccess(ProviderRegistry.provideFor(interfaceClass, object), side))
-					return true;
-			}
-			
-			TileEntity ent = world.getBlockTileEntity(x, y, z);
-			
-			if(canAccess(ProviderRegistry.provideFor(interfaceClass, ent), side))
-				return true;
-			
-			if(ent instanceof TileMultipart)
-			{
-				TMultiPart part = ((TileMultipart)ent).partMap(6);
-				
-				if(part != null)
-				{
-					if(canAccess(ProviderRegistry.provideFor(interfaceClass, part), side))
-						return true;
-				}
-			}
-			
-			if(interfaceClass.isInstance(ent) && canAccess(ent, side))
-				return true;
-		}
-		return false;
-	}
-	
-	private static boolean isNullOrEmpty(int[] array)
-	{
-		if(array == null)
-			return true;
+		if(handler == null)
+			return false;
 		
-		return array.length == 0;
+		return handler.isSideAccessable(side ^ 1);
 	}
-	
-	public static boolean canAccess(Object object, int side)
-	{
-		if(object instanceof ISidedInventory)
-			return !isNullOrEmpty(((ISidedInventory)object).getAccessibleSlotsFromSide(side ^ 1));
-		
-		return object != null;
-	}
-	
+
 	private static IPayloadHandler buildMultiHandler(IBlockAccess world, int x, int y, int z)
 	{
 		ArrayList<IPayloadHandler> handlers = new ArrayList<IPayloadHandler>();

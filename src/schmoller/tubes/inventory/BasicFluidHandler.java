@@ -84,5 +84,11 @@ public class BasicFluidHandler implements IPayloadHandler<FluidPayload>
 		
 		return new FluidPayload(fluid);
 	}
+	
+	@Override
+	public boolean isSideAccessable( int side )
+	{
+		return true;
+	}
 
 }
