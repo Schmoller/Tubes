@@ -35,6 +35,16 @@ public class TubeHelper
 		return null;
 	}
 	
+	/**
+	 * Checks if the block at x,y,z in world can connect with other
+	 * @param other
+	 * @param world
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param side This is the direction you're attempting to connect to from other. 
+	 * @return
+	 */
 	public static boolean isTubeConnectable(ITubeConnectable other, IBlockAccess world, int x, int y, int z, int side)
 	{
 		TileEntity ent = world.getBlockTileEntity(x, y, z);
@@ -67,7 +77,7 @@ public class TubeHelper
 					return false;
 			}
 			
-			return InteractionHandler.isInteractable(world, x, y, z, side);
+			return InteractionHandler.isInteractable(world, x, y, z, side ^ 1);
 		}
 	}
 	

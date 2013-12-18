@@ -48,7 +48,7 @@ public class InteractionHandler
 				}
 			}
 			
-			if(interfaceClass.isInstance(ent))
+			if(interfaceClass.isInstance(ent) && canAccess(ent, side))
 				return true;
 		}
 		return false;
@@ -65,7 +65,7 @@ public class InteractionHandler
 	public static boolean canAccess(Object object, int side)
 	{
 		if(object instanceof ISidedInventory)
-			return !isNullOrEmpty(((ISidedInventory)object).getAccessibleSlotsFromSide(side));
+			return !isNullOrEmpty(((ISidedInventory)object).getAccessibleSlotsFromSide(side ^ 1));
 		
 		return object != null;
 	}

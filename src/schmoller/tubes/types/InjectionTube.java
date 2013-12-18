@@ -9,6 +9,7 @@ import schmoller.tubes.api.Position;
 import schmoller.tubes.api.TubeItem;
 import schmoller.tubes.api.helpers.BaseTube;
 import schmoller.tubes.api.helpers.BaseRouter.PathLocation;
+import schmoller.tubes.api.interfaces.ITubeConnectable;
 import schmoller.tubes.api.interfaces.ITubeOverflowDestination;
 import schmoller.tubes.routing.OutputRouter;
 import net.minecraft.entity.player.EntityPlayer;
@@ -114,6 +115,12 @@ public class InjectionTube extends BaseTube implements IInventory, ITubeOverflow
 		return true;
 	}
 
+	@Override
+	public boolean canConnectTo( ITubeConnectable con )
+	{
+		return (!(con instanceof InjectionTube));
+	}
+	
 	@Override
 	public boolean canConnectToInventories()
 	{
