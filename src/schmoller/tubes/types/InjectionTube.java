@@ -90,11 +90,6 @@ public class InjectionTube extends BaseTube implements IInventory, ITubeOverflow
 	@Override
 	public void onInventoryChanged()
 	{
-		if(!world().isRemote && mOverflow.isEmpty() && mItem != null)
-		{
-			addItem(new ItemPayload(mItem), -1);
-			mItem = null;
-		}
 	}
 
 	@Override
