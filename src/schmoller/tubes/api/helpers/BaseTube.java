@@ -508,6 +508,9 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 	}
 	
 	@Override
+	public boolean showInventoryConnection( int side ) { return false; }
+	
+	@Override
 	public boolean canConnectToInventories() { return true; }
 	@Override
 	public boolean canConnectTo(ITubeConnectable con) { return true; }

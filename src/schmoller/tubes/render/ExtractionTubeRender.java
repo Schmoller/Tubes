@@ -5,8 +5,6 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
-import schmoller.tubes.api.InteractionHandler;
 import schmoller.tubes.api.TubeDefinition;
 import schmoller.tubes.api.helpers.TubeHelper;
 import schmoller.tubes.api.interfaces.IDirectionalTube;
@@ -43,8 +41,7 @@ public class ExtractionTubeRender extends NormalTubeRender
 		{
 			if((connections & (1 << i)) != 0)
 			{
-				if(InteractionHandler.isInteractable(world, x + ForgeDirection.getOrientation(i).offsetX, y + ForgeDirection.getOrientation(i).offsetY, z + ForgeDirection.getOrientation(i).offsetZ, i) 
-					&& TubeHelper.getTubeConnectable(world, x + ForgeDirection.getOrientation(i).offsetX, y + ForgeDirection.getOrientation(i).offsetY, z + ForgeDirection.getOrientation(i).offsetZ) == null)
+				if(TubeHelper.renderAsInventoryConnection(world, x, y, z, i))
 					invCons |= (1 << i);
 			}
 		}

@@ -14,6 +14,12 @@ public interface ITubeConnectable
 	 * Each bit from 0-5 represents a side where the 0th bit is down.
 	 */
 	public int getConnectableMask();
+	
+	/**
+	 * Used during rendering. If you want to have a connection to this that shows as an inventory connection return true for that side.
+	 * @return True to render sides connection as inventory connection
+	 */
+	public boolean showInventoryConnection(int side);
 
 	/**
 	 * Checks if the item can enter this tube.

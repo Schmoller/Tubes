@@ -14,7 +14,7 @@ public class InteractionHandler
 {
 	/**
 	 * Can a tube do something with this block?
-	 * @param side 
+	 * @param side The side from a block to the specified one
 	 */
 	public static boolean isInteractable(IBlockAccess world, int x, int y, int z, int side)
 	{

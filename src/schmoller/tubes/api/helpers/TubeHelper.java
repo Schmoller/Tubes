@@ -137,4 +137,18 @@ public class TubeHelper
 			return path.initialDir;
 		return -1;
 	}
+	
+	/**
+	 * Returns whether to render the specified connection has an inventory connection
+	 * NOTE: You should not offset the x,y,z coords to the specified side
+	 */
+	public static boolean renderAsInventoryConnection(IBlockAccess world, int x, int y, int z, int side)
+	{
+		ITubeConnectable con = getTubeConnectable(world, x + ForgeDirection.getOrientation(side).offsetX, y + ForgeDirection.getOrientation(side).offsetY, z + ForgeDirection.getOrientation(side).offsetZ);
+		
+		if(con != null)
+			return con.showInventoryConnection(side ^ 1);
+		
+		return InteractionHandler.isInteractable(world, x + ForgeDirection.getOrientation(side).offsetX, y + ForgeDirection.getOrientation(side).offsetY, z + ForgeDirection.getOrientation(side).offsetZ, side);
+	}
 }
