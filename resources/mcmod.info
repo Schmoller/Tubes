@@ -13,5 +13,20 @@
   "parent": "",
   "screenshots": [],
   "dependencies": []
+},
+{
+  "modid": "TubesCore",
+  "name": "Tubes Core",
+  "description": "",
+  "version": "@{mod.version}",
+  "mcversion": "@{mc.version}",
+  "logoFile": "",
+  "url": "",
+  "updateUrl": "",
+  "authors": ["Schmoller"],
+  "credits": "",
+  "parent": "Tubes",
+  "screenshots": [],
+  "dependencies": []
 }
 ]
