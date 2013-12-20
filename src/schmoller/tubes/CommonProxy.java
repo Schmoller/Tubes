@@ -45,6 +45,7 @@ import schmoller.tubes.api.gui.ExtContainer;
 import schmoller.tubes.api.gui.FakeSlot;
 import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.api.interfaces.ITube;
+import schmoller.tubes.definitions.TypeBufferTube;
 import schmoller.tubes.definitions.TypeColoringTube;
 import schmoller.tubes.definitions.TypeCompressorTube;
 import schmoller.tubes.definitions.TypeEjectionTube;
@@ -58,6 +59,7 @@ import schmoller.tubes.definitions.TypeRestrictionTube;
 import schmoller.tubes.definitions.TypeRoutingTube;
 import schmoller.tubes.definitions.TypeTankTube;
 import schmoller.tubes.definitions.TypeValveTube;
+import schmoller.tubes.gui.BufferTubeContainer;
 import schmoller.tubes.gui.CompressorContainer;
 import schmoller.tubes.gui.FilterTubeContainer;
 import schmoller.tubes.gui.InjectionTubeContainer;
@@ -75,6 +77,7 @@ import schmoller.tubes.network.packets.ModPacketSetFilterMode;
 import schmoller.tubes.network.packets.ModPacketSetRequestingModes;
 import schmoller.tubes.network.packets.ModPacketSetRoutingOptions;
 import schmoller.tubes.parts.TubeCap;
+import schmoller.tubes.types.BufferTube;
 import schmoller.tubes.types.CompressorTube;
 import schmoller.tubes.types.FilterTube;
 import schmoller.tubes.types.InjectionTube;
@@ -138,6 +141,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		TubeRegistry.registerTube(new TypeColoringTube(), "coloring");
 		TubeRegistry.registerTube(new TypeFluidExtractionTube(), "fluidExtraction");
 		TubeRegistry.registerTube(new TypeTankTube(), "tank");
+		TubeRegistry.registerTube(new TypeBufferTube(), "buffer");
 		
 		
 		PayloadRegistry.registerPayload(ItemPayload.class, "item", IInventory.class);
@@ -199,6 +203,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		LanguageRegistry.instance().addStringLocalization("tubes.coloring.name", "Coloring Tube");
 		LanguageRegistry.instance().addStringLocalization("tubes.fluidExtraction.name", "Fluid Extraction Tube");
 		LanguageRegistry.instance().addStringLocalization("tubes.tank.name", "Tank Tube");
+		LanguageRegistry.instance().addStringLocalization("tubes.buffer.name", "Buffer Tube");
 		
 		LanguageRegistry.instance().addStringLocalization("fluid.plastic", "Plastic");
 		
@@ -247,7 +252,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		TubesAPI.instance.registerShapelessRecipe(new ItemStack(Items.FluidCircuit.getItem(), 1, 0), new ItemStack(Items.RedstoneCircuit.getItem(), 1, 0), Item.bucketEmpty);
 		
 		TubesAPI.instance.registerShapedRecipe(TubesAPI.instance.createTubeForType("tank", 1), " g ", "gtg", " g ", 'g', Block.glass, 't', TubesAPI.instance.createTubeForType("basic"));
-		
+		TubesAPI.instance.registerShapedRecipe(TubesAPI.instance.createTubeForType("buffer", 1), "t", "c", "t", 't', TubesAPI.instance.createTubeForType("basic"), 'c', Block.chest);
 		
 	}
 
@@ -344,6 +349,8 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 			return new RequestingTubeContainer(CommonHelper.getMultiPart(world, x, y, z, RequestingTube.class), player);
 		case ModTubes.GUI_ROUTING_TUBE:
 			return new RoutingTubeContainer(CommonHelper.getMultiPart(world, x, y, z, RoutingTube.class), player);
+		case ModTubes.GUI_BUFFER_TUBE:
+			return new BufferTubeContainer(player.inventory, CommonHelper.getMultiPart(world, x, y, z, BufferTube.class));
 		}
 		
 		return null;

@@ -8,12 +8,14 @@ import schmoller.tubes.api.PayloadRegistry;
 import schmoller.tubes.api.TubeRegistry;
 import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.api.helpers.RenderHelper;
+import schmoller.tubes.gui.BufferTubeGui;
 import schmoller.tubes.gui.CompressorTubeGui;
 import schmoller.tubes.gui.FilterTubeGui;
 import schmoller.tubes.gui.InjectionTubeGui;
 import schmoller.tubes.gui.RequestingTubeGui;
 import schmoller.tubes.gui.RoutingTubeGui;
 import schmoller.tubes.network.ModPacket;
+import schmoller.tubes.render.BufferTubeRender;
 import schmoller.tubes.render.ColoringTubeRender;
 import schmoller.tubes.render.CompressorTubeRender;
 import schmoller.tubes.render.EjectionTubeRender;
@@ -31,6 +33,7 @@ import schmoller.tubes.render.RestrictionTubeRender;
 import schmoller.tubes.render.RoutingTubeRender;
 import schmoller.tubes.render.TankTubeRender;
 import schmoller.tubes.render.ValveTubeRender;
+import schmoller.tubes.types.BufferTube;
 import schmoller.tubes.types.CompressorTube;
 import schmoller.tubes.types.FilterTube;
 import schmoller.tubes.types.InjectionTube;
@@ -68,6 +71,7 @@ public class ClientProxy extends CommonProxy
 		TubeRegistry.registerRenderer("coloring", new ColoringTubeRender());
 		TubeRegistry.registerRenderer("fluidExtraction", new FluidExtractionTubeRender());
 		TubeRegistry.registerRenderer("tank",new TankTubeRender());
+		TubeRegistry.registerRenderer("buffer", new BufferTubeRender());
 		
 		PayloadRegistry.registerPayloadRenderer("item", new ItemPayloadRender());
 		PayloadRegistry.registerPayloadRenderer("fluid", new FluidPayloadRender());
@@ -94,6 +98,8 @@ public class ClientProxy extends CommonProxy
 			return new RequestingTubeGui(CommonHelper.getMultiPart(world, x, y, z, RequestingTube.class), player);
 		case ModTubes.GUI_ROUTING_TUBE:
 			return new RoutingTubeGui(CommonHelper.getMultiPart(world, x, y, z, RoutingTube.class), player);
+		case ModTubes.GUI_BUFFER_TUBE:
+			return new BufferTubeGui(player.inventory, CommonHelper.getMultiPart(world, x, y, z, BufferTube.class));
 		}
 		
 		return null;

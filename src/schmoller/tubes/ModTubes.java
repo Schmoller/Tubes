@@ -80,6 +80,7 @@ public class ModTubes extends TubesAPI implements ITickHandler
 	public static final int GUI_COMPRESSOR_TUBE = 2;
 	public static final int GUI_REQUESTING_TUBE = 3;
 	public static final int GUI_ROUTING_TUBE = 4;
+	public static final int GUI_BUFFER_TUBE = 5;
 	
 	public static TubeCreativeTab creativeTab;
 	
