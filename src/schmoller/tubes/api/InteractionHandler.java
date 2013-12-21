@@ -56,7 +56,7 @@ public class InteractionHandler
 		Object interfaceObject;
 		if(block != null)
 		{
-			BlockInstance object = new BlockInstance(world, x, z, y);
+			BlockInstance object = new BlockInstance(world, x, y, z);
 			interfaceObject = ProviderRegistry.provideFor(interfaceClass, object);
 			if(interfaceObject != null)
 				return HandlerRegistry.getHandler(payloadClass, interfaceObject);

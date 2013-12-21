@@ -3,6 +3,7 @@ package schmoller.tubes.api;
 import java.util.HashMap;
 
 import schmoller.tubes.api.interfaces.IInterfaceProvider;
+import schmoller.tubes.inventory.providers.CauldronProvider;
 import schmoller.tubes.inventory.providers.DoubleChestProvider;
 import schmoller.tubes.inventory.providers.FurnaceInventoryProvider;
 import schmoller.tubes.inventory.providers.JukeboxProvider;
@@ -12,6 +13,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.tileentity.TileEntityRecordPlayer;
+import net.minecraftforge.fluids.IFluidHandler;
 
 public class ProviderRegistry
 {
@@ -27,6 +29,8 @@ public class ProviderRegistry
 		
 		// Allows jukeboxes to be interacted with tubes
 		registerProvider(IInventory.class, TileEntityRecordPlayer.class, new JukeboxProvider());
+		
+		registerProvider(IFluidHandler.class, Block.cauldron, new CauldronProvider());
 	}
 	
 	/**
@@ -55,6 +59,9 @@ public class ProviderRegistry
 		{
 			for(Object clazz : providers.keySet())
 			{
+				if(!(clazz instanceof Class))
+					continue;
+				
 				if(((Class<?>)clazz).isAssignableFrom(object.getClass()))
 					return providers.get(object.getClass()).provide(object);
 			}
