@@ -5,11 +5,13 @@ import java.util.HashMap;
 import schmoller.tubes.api.interfaces.IInterfaceProvider;
 import schmoller.tubes.inventory.providers.DoubleChestProvider;
 import schmoller.tubes.inventory.providers.FurnaceInventoryProvider;
+import schmoller.tubes.inventory.providers.JukeboxProvider;
 
 import net.minecraft.block.Block;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraft.tileentity.TileEntityRecordPlayer;
 
 public class ProviderRegistry
 {
@@ -22,6 +24,9 @@ public class ProviderRegistry
 		
 		// Allows double chests to be treated as one
 		registerProvider(IInventory.class, TileEntityChest.class, new DoubleChestProvider());
+		
+		// Allows jukeboxes to be interacted with tubes
+		registerProvider(IInventory.class, TileEntityRecordPlayer.class, new JukeboxProvider());
 	}
 	
 	/**
