@@ -1,5 +1,7 @@
 package schmoller.tubes.api.helpers;
 
+import org.lwjgl.input.Keyboard;
+
 import schmoller.tubes.api.Position;
 import codechicken.multipart.TMultiPart;
 import codechicken.multipart.TileMultipart;
@@ -82,5 +84,10 @@ public class CommonHelper
 	public static String getDyeName(int index)
 	{
 		return colourNames[index];
+	}
+	
+	public static boolean isCtrlPressed()
+	{
+		return Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL);
 	}
 }

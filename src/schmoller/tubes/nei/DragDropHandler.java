@@ -5,6 +5,7 @@ import java.util.List;
 import schmoller.tubes.ModTubes;
 import schmoller.tubes.api.gui.FakeSlot;
 import schmoller.tubes.api.gui.GuiExtContainer;
+import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.network.packets.ModPacketNEIDragDrop;
 
 import net.minecraft.client.gui.GuiScreen;
@@ -63,7 +64,7 @@ public class DragDropHandler implements INEIGuiHandler
 			int modifiers = 0;
 			if(GuiScreen.isShiftKeyDown())
 				modifiers = 1;
-			if(GuiScreen.isCtrlKeyDown())
+			if(CommonHelper.isCtrlPressed())
 				modifiers |= 2;
 			
 			ModTubes.packetManager.sendPacketToServer(new ModPacketNEIDragDrop(gui.inventorySlots.windowId, index, button, modifiers, item.copy()));

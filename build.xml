@@ -4,7 +4,7 @@
     <property name="src.dir" value="src"/>
     <property name="mcp.dir" value = "../.."/>
     <property name="obf.dir" value="${mcp.dir}/reobf/minecraft"/>
-    <property name="mod.version" value="2.0.0.1"/>
+    <property name="mod.version" value="2.0.0.2"/>
 	<property name="mc.version" value="1.6.4"/>
 	
 	<property name="build.dir" value="${mcp.dir}/bin/minecraft"/>
@@ -26,11 +26,17 @@
     </target>
     
     <target name="recompile" depends="prepare">
+    	<move todir="${mcp.dir}/temp">
+    	    <fileset file="${mcsrc.dir}/../net/minecraft/tileentity/TileEntityHopper.java"/>
+    	</move>
         <exec executable="${python}" dir="${mcp.dir}">
             <arg value="runtime/recompile.py"/>
         </exec>
+    	<move todir="${mcsrc.dir}/../net/minecraft/tileentity/">
+            <fileset file="${mcp.dir}/temp/TileEntityHopper.java"/>
+        </move>
     </target>
-    
+	
     <target name="reobf" depends="recompile">
     	<unzip dest="${build.dir}">
     		<fileset file="${mcp.dir}/lib/ForgeMultipart-dev-1.6.4-*.jar"/>
@@ -91,6 +97,7 @@
         	<include name="**mcmod.info"/>
         	<include name="**pack.mcmeta"/>
         	<include name="**assets/**"/>
+        	<include name="**net/minecraft/tileentity/TileEntityHopper*"/>
     	</jar>
     	
     	<jar destfile="./dist/Tubes-${mod.version}-DEV.jar" compress="true" manifest="resources/MANIFEST.MF">
@@ -100,6 +107,7 @@
     		    <include name="**mcmod.info"/>
     		    <include name="**pack.mcmeta"/>
     		    <include name="**assets/**"/>
+    			<include name="**net/minecraft/tileentity/TileEntityHopper*"/>
     		</fileset>
     		<fileset dir="${src.dir}">
     		    <exclude name="**buildcraft/**"/>

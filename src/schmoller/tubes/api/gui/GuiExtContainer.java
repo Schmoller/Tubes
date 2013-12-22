@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
+import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.api.interfaces.IFilter;
 
 import net.minecraft.client.gui.GuiScreen;
@@ -43,7 +44,7 @@ public abstract class GuiExtContainer extends GuiContainer
 			modifiers = 0;
 			if(GuiScreen.isShiftKeyDown())
 				modifiers |= 1;
-			if(GuiScreen.isCtrlKeyDown())
+			if(CommonHelper.isCtrlPressed())
 				modifiers |= 2;
 		}
 

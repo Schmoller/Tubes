@@ -9,6 +9,9 @@ public class MinecraftTransformer implements IClassTransformer
 	@Override
 	public byte[] transform( String className, String arg1, byte[] bytes )
 	{
-		return ClassOverrider.overrideBytes(className, bytes, new ObfMapping("net/minecraft/tileentity/TileEntityHopper"), TubesPlugin.location);
+		if(className.equals(TubesPlugin.getHopperClass().replace('/', '.')))
+			System.err.println("************************ Found it ****************");
+		
+		return ClassOverrider.overrideBytes(className, bytes, new ObfMapping(TubesPlugin.getHopperClass()), TubesPlugin.location);
 	}
 }
