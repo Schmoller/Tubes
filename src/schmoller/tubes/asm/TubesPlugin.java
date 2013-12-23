@@ -32,7 +32,7 @@ public class TubesPlugin implements IFMLLoadingPlugin
         {
 			if(((LaunchClassLoader)TubesPlugin.class.getClassLoader()).getClassBytes("net.minecraft.world.World") != null)
 			{
-				hopperClassName = "net/minecraft/tileentity/TileEntityHopper";
+				hopperClassName = "net.minecraft.tileentity.TileEntityHopper";
 				return hopperClassName;
 			}
         }
