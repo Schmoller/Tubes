@@ -44,6 +44,9 @@ public class ExtractionTube extends DirectionalBasicTube implements IRedstonePar
 	@Override
 	public void onTick()
 	{
+                if(world().isRemote)
+                        return;
+                
 		if(!mOverflow.isEmpty())
 		{
 			TubeItem item = mOverflow.peekNext();
