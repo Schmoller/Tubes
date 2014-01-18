@@ -9,14 +9,18 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
 
+import codechicken.lib.asm.ObfMapping;
+
 import net.minecraft.launchwrapper.IClassTransformer;
 
 public class MinecraftTransformer implements IClassTransformer, Opcodes
 {
+	private ObfMapping mHopperClass = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper");
+	
 	@Override
-	public byte[] transform( String className, String arg1, byte[] bytes )
+	public byte[] transform( String className, String transformedName, byte[] bytes )
 	{
-		if(className.equals("net.minecraft.tileentity.TileEntityHopper"))
+		if(mHopperClass.javaClass().equals(className))
 		{
 			ClassNode classNode = new ClassNode();
 	        ClassReader classReader = new ClassReader(bytes);
@@ -26,6 +30,36 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
 	        
 	        classNode.interfaces.add("schmoller/tubes/api/interfaces/ITubeConnectable");
 	        
+	        ObfMapping worldField = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "worldObj", "Lnet/minecraft/world/World;");
+	        ObfMapping isRemote = NameHelper.getMapping("net/minecraft/world/World", "isRemote", "Z");
+	        ObfMapping isCoolingDown = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "isCoolingDown", "()Z");
+	        ObfMapping getBlockMetadata = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "getBlockMetadata", "()I");
+	        ObfMapping getIsBlockNotPoweredFromMetadata = NameHelper.getMapping("net/minecraft/block/BlockHopper", "getIsBlockNotPoweredFromMetadata", "(I)Z");
+	        ObfMapping insertItemToTube = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "insertItemToTube", "()Z");
+	        ObfMapping insertItemToInventory = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "insertItemToInventory", "()Z");
+	        ObfMapping suckItemsIntoHopper = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "suckItemsIntoHopper", "(Lnet/minecraft/tileentity/Hopper;)Z");
+	        ObfMapping setTransferCooldown = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "setTransferCooldown", "(I)V");
+	        ObfMapping onInventoryChanged = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "onInventoryChanged", "()V");
+	        ObfMapping hopperClass = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "this", "Lnet/minecraft/tileentity/TileEntityHopper;");
+	        ObfMapping getDirectionFromMetadata = NameHelper.getMapping("net/minecraft/block/BlockHopper", "getDirectionFromMetadata", "(I)I");
+	        ObfMapping getWorldObj = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "getWorldObj", "()Lnet/minecraft/world/World;");
+	        ObfMapping xCoord = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "xCoord", "I");
+	        ObfMapping yCoord = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "yCoord", "I");
+	        ObfMapping zCoord = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "zCoord", "I");
+	        ObfMapping offsetsXForSide = NameHelper.getMapping("net/minecraft/util/Facing", "offsetsXForSide", "[I");
+	        ObfMapping offsetsYForSide = NameHelper.getMapping("net/minecraft/util/Facing", "offsetsYForSide", "[I");
+	        ObfMapping offsetsZForSide = NameHelper.getMapping("net/minecraft/util/Facing", "offsetsZForSide", "[I");
+	        ObfMapping getTubeConnectable = NameHelper.getMapping("schmoller/tubes/api/helpers/TubeHelper", "getTubeConnectable", "(Lnet/minecraft/world/IBlockAccess;III)Lschmoller/tubes/api/interfaces/ITubeConnectable;");
+	        ObfMapping getStackInSlot = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "getStackInSlot", "(I)Lnet/minecraft/item/ItemStack;");
+	        ObfMapping copy = NameHelper.getMapping("net/minecraft/item/ItemStack", "copy", "()Lnet/minecraft/item/ItemStack;");
+	        ObfMapping itemPayloadInit = NameHelper.getMapping("schmoller/tubes/api/ItemPayload", "<init>", "(Lnet/minecraft/item/ItemStack;)V");
+	        ObfMapping stackSize = NameHelper.getMapping("net/minecraft/item/ItemStack", "stackSize", "I");
+	        ObfMapping setSlotContents = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "setInventorySlotContents", "(ILnet/minecraft/item/ItemStack;)V");
+	        ObfMapping getSizeInventory = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "getSizeInventory", "()I");
+	        ObfMapping canAddItem = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "canAddItem", "(Lschmoller/tubes/api/Payload;I)Z");
+	        ObfMapping basicInvHandlerInit = NameHelper.getMapping("schmoller/tubes/inventory/BasicInvHandler", "<init>", "(Lnet/minecraft/inventory/IInventory;)V");
+	        ObfMapping addItem = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "addItem", "(Lschmoller/tubes/api/Payload;I)Z");
+	        
 	        // updateHopper
 	        {
         	mv = new MethodNode(ACC_PUBLIC, "updateHopper", "()Z", null, null);
@@ -34,29 +68,29 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
         	mv.visitLabel(l0);
         	mv.visitLineNumber(252, l0);
         	mv.visitVarInsn(ALOAD, 0);
-        	mv.visitFieldInsn(GETFIELD, "net/minecraft/tileentity/TileEntityHopper", "worldObj", "Lnet/minecraft/world/World;");
+        	worldField.visitFieldInsn(mv, GETFIELD);
         	Label l1 = new Label();
         	mv.visitJumpInsn(IFNULL, l1);
         	mv.visitVarInsn(ALOAD, 0);
-        	mv.visitFieldInsn(GETFIELD, "net/minecraft/tileentity/TileEntityHopper", "worldObj", "Lnet/minecraft/world/World;");
-        	mv.visitFieldInsn(GETFIELD, "net/minecraft/world/World", "isRemote", "Z");
+        	worldField.visitFieldInsn(mv, GETFIELD);
+        	isRemote.visitFieldInsn(mv, GETFIELD);
         	mv.visitJumpInsn(IFNE, l1);
         	Label l2 = new Label();
         	mv.visitLabel(l2);
         	mv.visitLineNumber(254, l2);
         	mv.visitVarInsn(ALOAD, 0);
-        	mv.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/tileentity/TileEntityHopper", "isCoolingDown", "()Z");
+        	isCoolingDown.visitMethodInsn(mv, INVOKEVIRTUAL);
         	Label l3 = new Label();
         	mv.visitJumpInsn(IFNE, l3);
         	mv.visitVarInsn(ALOAD, 0);
-        	mv.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/tileentity/TileEntityHopper", "getBlockMetadata", "()I");
-        	mv.visitMethodInsn(INVOKESTATIC, "net/minecraft/block/BlockHopper", "getIsBlockNotPoweredFromMetadata", "(I)Z");
+        	getBlockMetadata.visitMethodInsn(mv, INVOKEVIRTUAL);
+        	getIsBlockNotPoweredFromMetadata.visitMethodInsn(mv, INVOKESTATIC);
         	mv.visitJumpInsn(IFEQ, l3);
         	Label l4 = new Label();
         	mv.visitLabel(l4);
         	mv.visitLineNumber(256, l4);
         	mv.visitVarInsn(ALOAD, 0);
-        	mv.visitMethodInsn(INVOKESPECIAL, "net/minecraft/tileentity/TileEntityHopper", "insertItemToTube", "()Z");
+        	insertItemToTube.visitMethodInsn(mv, INVOKESPECIAL);
         	mv.visitVarInsn(ISTORE, 1);
         	Label l5 = new Label();
         	mv.visitLabel(l5);
@@ -68,13 +102,13 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
         	mv.visitLabel(l7);
         	mv.visitLineNumber(259, l7);
         	mv.visitVarInsn(ALOAD, 0);
-        	mv.visitMethodInsn(INVOKESPECIAL, "net/minecraft/tileentity/TileEntityHopper", "insertItemToInventory", "()Z");
+        	insertItemToInventory.visitMethodInsn(mv, INVOKESPECIAL);
         	mv.visitVarInsn(ISTORE, 1);
         	mv.visitLabel(l6);
         	mv.visitLineNumber(260, l6);
         	mv.visitFrame(Opcodes.F_APPEND,1, new Object[] {Opcodes.INTEGER}, 0, null);
         	mv.visitVarInsn(ALOAD, 0);
-        	mv.visitMethodInsn(INVOKESTATIC, "net/minecraft/tileentity/TileEntityHopper", "suckItemsIntoHopper", "(Lnet/minecraft/tileentity/Hopper;)Z");
+        	suckItemsIntoHopper.visitMethodInsn(mv, INVOKESTATIC);
         	Label l8 = new Label();
         	mv.visitJumpInsn(IFNE, l8);
         	mv.visitVarInsn(ILOAD, 1);
@@ -98,12 +132,12 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
         	mv.visitLineNumber(264, l11);
         	mv.visitVarInsn(ALOAD, 0);
         	mv.visitIntInsn(BIPUSH, 8);
-        	mv.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/tileentity/TileEntityHopper", "setTransferCooldown", "(I)V");
+        	setTransferCooldown.visitMethodInsn(mv, INVOKEVIRTUAL);
         	Label l12 = new Label();
         	mv.visitLabel(l12);
         	mv.visitLineNumber(265, l12);
         	mv.visitVarInsn(ALOAD, 0);
-        	mv.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/tileentity/TileEntityHopper", "onInventoryChanged", "()V");
+        	onInventoryChanged.visitMethodInsn(mv, INVOKEVIRTUAL);
         	Label l13 = new Label();
         	mv.visitLabel(l13);
         	mv.visitLineNumber(266, l13);
@@ -121,7 +155,7 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
         	mv.visitInsn(IRETURN);
         	Label l14 = new Label();
         	mv.visitLabel(l14);
-        	mv.visitLocalVariable("this", "Lnet/minecraft/tileentity/TileEntityHopper;", null, l0, l14, 0);
+        	mv.visitLocalVariable("this", hopperClass.s_desc, null, l0, l14, 0);
         	mv.visitLocalVariable("flag", "Z", null, l5, l3, 1);
         	mv.visitMaxs(2, 2);
         	mv.visitEnd();
@@ -148,33 +182,33 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
         	mv.visitLabel(l0);
         	mv.visitLineNumber(314, l0);
         	mv.visitVarInsn(ALOAD, 0);
-        	mv.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/tileentity/TileEntityHopper", "getBlockMetadata", "()I"); //***
-        	mv.visitMethodInsn(INVOKESTATIC, "net/minecraft/block/BlockHopper", "getDirectionFromMetadata", "(I)I"); //****
+        	getBlockMetadata.visitMethodInsn(mv, INVOKEVIRTUAL);
+        	getDirectionFromMetadata.visitMethodInsn(mv, INVOKESTATIC);
         	mv.visitVarInsn(ISTORE, 1);
         	Label l1 = new Label();
         	mv.visitLabel(l1);
         	mv.visitLineNumber(315, l1);
         	mv.visitVarInsn(ALOAD, 0);
-        	mv.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/tileentity/TileEntityHopper", "getWorldObj", "()Lnet/minecraft/world/World;"); //****
+        	getWorldObj.visitMethodInsn(mv, INVOKEVIRTUAL);
         	mv.visitVarInsn(ALOAD, 0);
-        	mv.visitFieldInsn(GETFIELD, "net/minecraft/tileentity/TileEntityHopper", "xCoord", "I");
-        	mv.visitFieldInsn(GETSTATIC, "net/minecraft/util/Facing", "offsetsXForSide", "[I");
+        	xCoord.visitFieldInsn(mv, GETFIELD);
+        	offsetsXForSide.visitFieldInsn(mv, GETSTATIC);
         	mv.visitVarInsn(ILOAD, 1);
         	mv.visitInsn(IALOAD);
         	mv.visitInsn(IADD);
         	mv.visitVarInsn(ALOAD, 0);
-        	mv.visitFieldInsn(GETFIELD, "net/minecraft/tileentity/TileEntityHopper", "yCoord", "I");
-        	mv.visitFieldInsn(GETSTATIC, "net/minecraft/util/Facing", "offsetsYForSide", "[I");
+        	yCoord.visitFieldInsn(mv, GETFIELD);
+        	offsetsYForSide.visitFieldInsn(mv, GETSTATIC);
         	mv.visitVarInsn(ILOAD, 1);
         	mv.visitInsn(IALOAD);
         	mv.visitInsn(IADD);
         	mv.visitVarInsn(ALOAD, 0);
-        	mv.visitFieldInsn(GETFIELD, "net/minecraft/tileentity/TileEntityHopper", "zCoord", "I");
-        	mv.visitFieldInsn(GETSTATIC, "net/minecraft/util/Facing", "offsetsZForSide", "[I");
+        	zCoord.visitFieldInsn(mv, GETFIELD);
+        	offsetsZForSide.visitFieldInsn(mv, GETSTATIC);
         	mv.visitVarInsn(ILOAD, 1);
         	mv.visitInsn(IALOAD);
         	mv.visitInsn(IADD);
-        	mv.visitMethodInsn(INVOKESTATIC, "schmoller/tubes/api/helpers/TubeHelper", "getTubeConnectable", "(Lnet/minecraft/world/IBlockAccess;III)Lschmoller/tubes/api/interfaces/ITubeConnectable;");
+        	getTubeConnectable.visitMethodInsn(mv, INVOKESTATIC);
         	mv.visitVarInsn(ASTORE, 2);
         	Label l2 = new Label();
         	mv.visitLabel(l2);
@@ -202,7 +236,7 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
         	mv.visitFrame(Opcodes.F_APPEND,1, new Object[] {Opcodes.INTEGER}, 0, null);
         	mv.visitVarInsn(ALOAD, 0);
         	mv.visitVarInsn(ILOAD, 3);
-        	mv.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/tileentity/TileEntityHopper", "getStackInSlot", "(I)Lnet/minecraft/item/ItemStack;"); //****
+        	getStackInSlot.visitMethodInsn(mv, INVOKEVIRTUAL);
         	Label l8 = new Label();
         	mv.visitJumpInsn(IFNULL, l8);
         	Label l9 = new Label();
@@ -210,7 +244,7 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
         	mv.visitLineNumber(324, l9);
         	mv.visitVarInsn(ALOAD, 0);
         	mv.visitVarInsn(ILOAD, 3);
-        	mv.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/tileentity/TileEntityHopper", "getStackInSlot", "(I)Lnet/minecraft/item/ItemStack;"); // ****
+        	getStackInSlot.visitMethodInsn(mv, INVOKEVIRTUAL);
         	mv.visitVarInsn(ASTORE, 4);
         	Label l10 = new Label();
         	mv.visitLabel(l10);
@@ -218,8 +252,8 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
         	mv.visitTypeInsn(NEW, "schmoller/tubes/api/ItemPayload");
         	mv.visitInsn(DUP);
         	mv.visitVarInsn(ALOAD, 4);
-        	mv.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/item/ItemStack", "copy", "()Lnet/minecraft/item/ItemStack;"); // ****
-        	mv.visitMethodInsn(INVOKESPECIAL, "schmoller/tubes/api/ItemPayload", "<init>", "(Lnet/minecraft/item/ItemStack;)V"); //****
+        	copy.visitMethodInsn(mv, INVOKEVIRTUAL);
+        	itemPayloadInit.visitMethodInsn(mv, INVOKESPECIAL);
         	mv.visitVarInsn(ASTORE, 5);
         	Label l11 = new Label();
         	mv.visitLabel(l11);
@@ -246,10 +280,10 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
         	mv.visitLineNumber(332, l15);
         	mv.visitVarInsn(ALOAD, 4);
         	mv.visitInsn(DUP);
-        	mv.visitFieldInsn(GETFIELD, "net/minecraft/item/ItemStack", "stackSize", "I"); //****
+        	stackSize.visitFieldInsn(mv, GETFIELD);
         	mv.visitInsn(ICONST_1);
         	mv.visitInsn(ISUB);
-        	mv.visitFieldInsn(PUTFIELD, "net/minecraft/item/ItemStack", "stackSize", "I"); //****
+        	stackSize.visitFieldInsn(mv, PUTFIELD);
         	Label l16 = new Label();
         	mv.visitLabel(l16);
         	mv.visitLineNumber(334, l16);
@@ -265,9 +299,9 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
         	mv.visitVarInsn(ISTORE, 6);
         	mv.visitLabel(l14);
         	mv.visitLineNumber(338, l14);
-        	mv.visitFrame(Opcodes.F_APPEND,3, new Object[] {"net/minecraft/item/ItemStack", "schmoller/tubes/api/ItemPayload", Opcodes.INTEGER}, 0, null); //***
+        	mv.visitFrame(Opcodes.F_APPEND,3, new Object[] {stackSize.s_owner, "schmoller/tubes/api/ItemPayload", Opcodes.INTEGER}, 0, null);
         	mv.visitVarInsn(ALOAD, 4);
-        	mv.visitFieldInsn(GETFIELD, "net/minecraft/item/ItemStack", "stackSize", "I"); //***
+        	stackSize.visitFieldInsn(mv, GETFIELD);
         	Label l18 = new Label();
         	mv.visitJumpInsn(IFNE, l18);
         	Label l19 = new Label();
@@ -276,7 +310,7 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
         	mv.visitVarInsn(ALOAD, 0);
         	mv.visitVarInsn(ILOAD, 3);
         	mv.visitInsn(ACONST_NULL);
-        	mv.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/tileentity/TileEntityHopper", "setInventorySlotContents", "(ILnet/minecraft/item/ItemStack;)V"); //***
+        	setSlotContents.visitMethodInsn(mv, INVOKEVIRTUAL);
         	mv.visitLabel(l18);
         	mv.visitLineNumber(341, l18);
         	mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
@@ -295,7 +329,7 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
         	mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
         	mv.visitVarInsn(ILOAD, 3);
         	mv.visitVarInsn(ALOAD, 0);
-        	mv.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/tileentity/TileEntityHopper", "getSizeInventory", "()I"); //***
+        	getSizeInventory.visitMethodInsn(mv, INVOKEVIRTUAL);
         	mv.visitJumpInsn(IF_ICMPLT, l7);
         	Label l21 = new Label();
         	mv.visitLabel(l21);
@@ -304,11 +338,11 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
         	mv.visitInsn(IRETURN);
         	Label l22 = new Label();
         	mv.visitLabel(l22);
-        	mv.visitLocalVariable("this", "Lnet/minecraft/tileentity/TileEntityHopper;", null, l0, l22, 0);
+        	mv.visitLocalVariable("this", hopperClass.s_desc, null, l0, l22, 0);
         	mv.visitLocalVariable("side", "I", null, l1, l22, 1);
         	mv.visitLocalVariable("con", "Lschmoller/tubes/api/interfaces/ITubeConnectable;", null, l2, l22, 2);
         	mv.visitLocalVariable("i", "I", null, l5, l21, 3);
-        	mv.visitLocalVariable("inSlot", "Lnet/minecraft/item/ItemStack;", null, l10, l8, 4);
+        	mv.visitLocalVariable("inSlot", "L" + stackSize.s_owner + ";", null, l10, l8, 4);
         	mv.visitLocalVariable("item", "Lschmoller/tubes/api/ItemPayload;", null, l11, l8, 5);
         	mv.visitLocalVariable("did", "Z", null, l13, l8, 6);
         	mv.visitMaxs(6, 7);
@@ -327,7 +361,7 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
         	mv.visitInsn(IRETURN);
         	Label l1 = new Label();
         	mv.visitLabel(l1);
-        	mv.visitLocalVariable("this", "Lnet/minecraft/tileentity/TileEntityHopper;", null, l0, l1, 0);
+        	mv.visitLocalVariable("this", hopperClass.s_desc, null, l0, l1, 0);
         	mv.visitMaxs(1, 1);
         	mv.visitEnd();
         	classNode.methods.add(mv);
@@ -342,7 +376,7 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
         	mv.visitInsn(IRETURN);
         	Label l1 = new Label();
         	mv.visitLabel(l1);
-        	mv.visitLocalVariable("this", "Lnet/minecraft/tileentity/TileEntityHopper;", null, l0, l1, 0);
+        	mv.visitLocalVariable("this", hopperClass.s_desc, null, l0, l1, 0);
         	mv.visitLocalVariable("side", "I", null, l0, l1, 1);
         	mv.visitMaxs(1, 2);
         	mv.visitEnd();
@@ -359,11 +393,11 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
         	mv.visitFieldInsn(GETFIELD, "schmoller/tubes/api/TubeItem", "item", "Lschmoller/tubes/api/Payload;");
         	mv.visitVarInsn(ALOAD, 1);
         	mv.visitFieldInsn(GETFIELD, "schmoller/tubes/api/TubeItem", "direction", "I");
-        	mv.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/tileentity/TileEntityHopper", "canAddItem", "(Lschmoller/tubes/api/Payload;I)Z");
+        	canAddItem.visitMethodInsn(mv, INVOKEVIRTUAL);
         	mv.visitInsn(IRETURN);
         	Label l1 = new Label();
         	mv.visitLabel(l1);
-        	mv.visitLocalVariable("this", "Lnet/minecraft/tileentity/TileEntityHopper;", null, l0, l1, 0);
+        	mv.visitLocalVariable("this", hopperClass.s_desc, null, l0, l1, 0);
         	mv.visitLocalVariable("item", "Lschmoller/tubes/api/TubeItem;", null, l0, l1, 1);
         	mv.visitMaxs(3, 2);
         	mv.visitEnd();
@@ -388,8 +422,8 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
         	mv.visitLineNumber(669, l1);
         	mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
         	mv.visitVarInsn(ALOAD, 0);
-        	mv.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/tileentity/TileEntityHopper", "getBlockMetadata", "()I");
-        	mv.visitMethodInsn(INVOKESTATIC, "net/minecraft/block/BlockHopper", "getDirectionFromMetadata", "(I)I"); //*******
+        	getBlockMetadata.visitMethodInsn(mv, INVOKEVIRTUAL);
+        	getDirectionFromMetadata.visitMethodInsn(mv, INVOKESTATIC);
         	mv.visitVarInsn(ISTORE, 3);
         	Label l3 = new Label();
         	mv.visitLabel(l3);
@@ -411,7 +445,7 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
         	mv.visitTypeInsn(NEW, "schmoller/tubes/inventory/BasicInvHandler");
         	mv.visitInsn(DUP);
         	mv.visitVarInsn(ALOAD, 0);
-        	mv.visitMethodInsn(INVOKESPECIAL, "schmoller/tubes/inventory/BasicInvHandler", "<init>", "(Lnet/minecraft/inventory/IInventory;)V");
+        	basicInvHandlerInit.visitMethodInsn(mv, INVOKESPECIAL);
         	mv.visitVarInsn(ASTORE, 4);
         	Label l6 = new Label();
         	mv.visitLabel(l6);
@@ -451,7 +485,7 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
         	mv.visitInsn(IRETURN);
         	Label l11 = new Label();
         	mv.visitLabel(l11);
-        	mv.visitLocalVariable("this", "Lnet/minecraft/tileentity/TileEntityHopper;", null, l0, l11, 0);
+        	mv.visitLocalVariable("this", hopperClass.s_desc, null, l0, l11, 0);
         	mv.visitLocalVariable("item", "Lschmoller/tubes/api/Payload;", null, l0, l11, 1);
         	mv.visitLocalVariable("direction", "I", null, l0, l11, 2);
         	mv.visitLocalVariable("facing", "I", null, l3, l11, 3);
@@ -470,7 +504,7 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
         	mv.visitVarInsn(ALOAD, 0);
         	mv.visitVarInsn(ALOAD, 1);
         	mv.visitVarInsn(ILOAD, 2);
-        	mv.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/tileentity/TileEntityHopper", "canAddItem", "(Lschmoller/tubes/api/Payload;I)Z");
+        	canAddItem.visitMethodInsn(mv, INVOKEVIRTUAL);
         	Label l1 = new Label();
         	mv.visitJumpInsn(IFNE, l1);
         	Label l2 = new Label();
@@ -484,7 +518,7 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
         	mv.visitTypeInsn(NEW, "schmoller/tubes/inventory/BasicInvHandler");
         	mv.visitInsn(DUP);
         	mv.visitVarInsn(ALOAD, 0);
-        	mv.visitMethodInsn(INVOKESPECIAL, "schmoller/tubes/inventory/BasicInvHandler", "<init>", "(Lnet/minecraft/inventory/IInventory;)V");
+        	basicInvHandlerInit.visitMethodInsn(mv, INVOKESPECIAL);
         	mv.visitVarInsn(ASTORE, 3);
         	Label l3 = new Label();
         	mv.visitLabel(l3);
@@ -518,7 +552,7 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
         	mv.visitInsn(IRETURN);
         	Label l7 = new Label();
         	mv.visitLabel(l7);
-        	mv.visitLocalVariable("this", "Lnet/minecraft/tileentity/TileEntityHopper;", null, l0, l7, 0);
+        	mv.visitLocalVariable("this", hopperClass.s_desc, null, l0, l7, 0);
         	mv.visitLocalVariable("item", "Lschmoller/tubes/api/Payload;", null, l0, l7, 1);
         	mv.visitLocalVariable("side", "I", null, l0, l7, 2);
         	mv.visitLocalVariable("handler", "Lschmoller/tubes/inventory/BasicInvHandler;", null, l3, l7, 3);
@@ -538,11 +572,11 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
         	mv.visitFieldInsn(GETFIELD, "schmoller/tubes/api/TubeItem", "item", "Lschmoller/tubes/api/Payload;");
         	mv.visitVarInsn(ALOAD, 1);
         	mv.visitFieldInsn(GETFIELD, "schmoller/tubes/api/TubeItem", "direction", "I");
-        	mv.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/tileentity/TileEntityHopper", "addItem", "(Lschmoller/tubes/api/Payload;I)Z");
+        	addItem.visitMethodInsn(mv, INVOKEVIRTUAL);
         	mv.visitInsn(IRETURN);
         	Label l1 = new Label();
         	mv.visitLabel(l1);
-        	mv.visitLocalVariable("this", "Lnet/minecraft/tileentity/TileEntityHopper;", null, l0, l1, 0);
+        	mv.visitLocalVariable("this", hopperClass.s_desc, null, l0, l1, 0);
         	mv.visitLocalVariable("item", "Lschmoller/tubes/api/TubeItem;", null, l0, l1, 1);
         	mv.visitMaxs(3, 2);
         	mv.visitEnd();
@@ -559,11 +593,11 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
         	mv.visitFieldInsn(GETFIELD, "schmoller/tubes/api/TubeItem", "item", "Lschmoller/tubes/api/Payload;");
         	mv.visitVarInsn(ALOAD, 1);
         	mv.visitFieldInsn(GETFIELD, "schmoller/tubes/api/TubeItem", "direction", "I");
-        	mv.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/tileentity/TileEntityHopper", "addItem", "(Lschmoller/tubes/api/Payload;I)Z");
+        	addItem.visitMethodInsn(mv, INVOKEVIRTUAL);
         	mv.visitInsn(IRETURN);
         	Label l1 = new Label();
         	mv.visitLabel(l1);
-        	mv.visitLocalVariable("this", "Lnet/minecraft/tileentity/TileEntityHopper;", null, l0, l1, 0);
+        	mv.visitLocalVariable("this", hopperClass.s_desc, null, l0, l1, 0);
         	mv.visitLocalVariable("item", "Lschmoller/tubes/api/TubeItem;", null, l0, l1, 1);
         	mv.visitLocalVariable("syncToClient", "Z", null, l0, l1, 2);
         	mv.visitMaxs(3, 3);
@@ -579,7 +613,7 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
         	mv.visitInsn(RETURN);
         	Label l1 = new Label();
         	mv.visitLabel(l1);
-        	mv.visitLocalVariable("this", "Lnet/minecraft/tileentity/TileEntityHopper;", null, l0, l1, 0);
+        	mv.visitLocalVariable("this", hopperClass.s_desc, null, l0, l1, 0);
         	mv.visitLocalVariable("item", "Lschmoller/tubes/api/TubeItem;", null, l0, l1, 1);
         	mv.visitMaxs(0, 2);
         	mv.visitEnd();
@@ -595,7 +629,7 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
         	mv.visitInsn(IRETURN);
         	Label l1 = new Label();
         	mv.visitLabel(l1);
-        	mv.visitLocalVariable("this", "Lnet/minecraft/tileentity/TileEntityHopper;", null, l0, l1, 0);
+        	mv.visitLocalVariable("this", hopperClass.s_desc, null, l0, l1, 0);
         	mv.visitLocalVariable("item", "Lschmoller/tubes/api/TubeItem;", null, l0, l1, 1);
         	mv.visitMaxs(1, 2);
         	mv.visitEnd();
@@ -611,7 +645,7 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
         	mv.visitInsn(IRETURN);
         	Label l1 = new Label();
         	mv.visitLabel(l1);
-        	mv.visitLocalVariable("this", "Lnet/minecraft/tileentity/TileEntityHopper;", null, l0, l1, 0);
+        	mv.visitLocalVariable("this", hopperClass.s_desc, null, l0, l1, 0);
         	mv.visitMaxs(1, 1);
         	mv.visitEnd();
         	classNode.methods.add(mv);
@@ -626,7 +660,7 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
         	mv.visitInsn(IRETURN);
         	Label l1 = new Label();
         	mv.visitLabel(l1);
-        	mv.visitLocalVariable("this", "Lnet/minecraft/tileentity/TileEntityHopper;", null, l0, l1, 0);
+        	mv.visitLocalVariable("this", hopperClass.s_desc, null, l0, l1, 0);
         	mv.visitMaxs(1, 1);
         	mv.visitEnd();
         	classNode.methods.add(mv);
@@ -641,7 +675,7 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
         	mv.visitInsn(IRETURN);
         	Label l1 = new Label();
         	mv.visitLabel(l1);
-        	mv.visitLocalVariable("this", "Lnet/minecraft/tileentity/TileEntityHopper;", null, l0, l1, 0);
+        	mv.visitLocalVariable("this", hopperClass.s_desc, null, l0, l1, 0);
         	mv.visitMaxs(1, 1);
         	mv.visitEnd();
         	classNode.methods.add(mv);
