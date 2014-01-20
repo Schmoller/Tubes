@@ -4,3 +4,4 @@
 .minecraft
 /.settings
 /dist
+/.pydevproject

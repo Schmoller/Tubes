@@ -2,15 +2,12 @@ package schmoller.tubes.asm;
 
 import java.awt.Desktop;
 import java.io.File;
-import java.io.IOException;
 import java.util.Map;
 
 import javax.swing.JEditorPane;
 import javax.swing.JOptionPane;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
-
-import net.minecraft.launchwrapper.LaunchClassLoader;
 
 import cpw.mods.fml.common.versioning.DefaultArtifactVersion;
 import cpw.mods.fml.common.versioning.VersionParser;
@@ -21,33 +18,7 @@ public class TubesPlugin implements IFMLLoadingPlugin
 {
 	public static File location;
 	
-	private static String hopperClassName;
-	
-	public static String getHopperClass()
-	{
-		if(hopperClassName != null)
-			return hopperClassName;
-		
-		try
-        {
-			if(((LaunchClassLoader)TubesPlugin.class.getClassLoader()).getClassBytes("net.minecraft.world.World") != null)
-			{
-				hopperClassName = "net.minecraft.tileentity.TileEntityHopper";
-				return hopperClassName;
-			}
-        }
-        catch(IOException iox)
-        {
-        }
-		
-		String mcVersion = (String)FMLInjectionData.data()[4];
-		if(mcVersion.equals("1.6.4"))
-			hopperClassName = "asi";
-		else if(mcVersion.equals("1.6.4"))
-			hopperClassName = "asf";
-		
-		return hopperClassName;
-	}
+	public static boolean modifyHopper = true;
 	
 	@Override
 	@Deprecated

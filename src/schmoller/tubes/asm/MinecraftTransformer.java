@@ -20,7 +20,7 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
 	@Override
 	public byte[] transform( String className, String transformedName, byte[] bytes )
 	{
-		if(mHopperClass.javaClass().equals(className))
+		if(TubesPlugin.modifyHopper && mHopperClass.javaClass().equals(className))
 		{
 			ClassNode classNode = new ClassNode();
 	        ClassReader classReader = new ClassReader(bytes);
@@ -30,6 +30,7 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
 	        
 	        classNode.interfaces.add("schmoller/tubes/api/interfaces/ITubeConnectable");
 	        
+	        // Used for name translation: # net/minecraft/tileentity/TileEntityHopper > net/minecraft/tileentity/TileEntity
 	        ObfMapping worldField = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "worldObj", "Lnet/minecraft/world/World;");
 	        ObfMapping isRemote = NameHelper.getMapping("net/minecraft/world/World", "isRemote", "Z");
 	        ObfMapping isCoolingDown = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "isCoolingDown", "()Z");
@@ -687,6 +688,7 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
 	        System.out.println("TileEntityHopper was modified by Tubes");
 	        return cw.toByteArray();
 		}
+
 		return bytes;
 	}
 }

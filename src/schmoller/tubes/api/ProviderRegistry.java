@@ -63,7 +63,7 @@ public class ProviderRegistry
 					continue;
 				
 				if(((Class<?>)clazz).isAssignableFrom(object.getClass()))
-					return providers.get(object.getClass()).provide(object);
+					return providers.get(clazz).provide(object);
 			}
 		}
 			

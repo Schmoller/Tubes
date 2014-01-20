@@ -26,15 +26,16 @@
     </target>
     
     <target name="recompile" depends="prepare">
-    	<move todir="${mcp.dir}/temp">
-    	    <fileset file="${mcsrc.dir}/../net/minecraft/tileentity/TileEntityHopper.java"/>
-    	</move>
+    	<exec executable="${python}">
+            <arg value="nameGenerator.py"/>
+            <arg value="--conf"/>
+    		<arg value="${mcp.dir}/conf"/>
+    		<arg value="--src"/>
+    		<arg value="${mcsrc.dir}"/>
+        </exec>
         <exec executable="${python}" dir="${mcp.dir}">
             <arg value="runtime/recompile.py"/>
         </exec>
-    	<move todir="${mcsrc.dir}/../net/minecraft/tileentity/">
-            <fileset file="${mcp.dir}/temp/TileEntityHopper.java"/>
-        </move>
     </target>
 	
     <target name="reobf" depends="recompile">
