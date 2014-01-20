@@ -7,7 +7,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.google.common.base.Throwables;
-
 import codechicken.lib.asm.ObfMapping;
 import cpw.mods.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 
@@ -16,7 +15,13 @@ public class NameHelper
 	public static ObfMapping getMapping(String className)
 	{
 		if(ObfMapping.obfuscated)
-			return new ObfMapping(FMLDeobfuscatingRemapper.INSTANCE.unmap(className));
+		{
+			String newName = FMLDeobfuscatingRemapper.INSTANCE.unmap(className);
+			if(newName.equals(className))
+				return new ObfMapping("");
+
+			return new ObfMapping(newName);
+		}
 		else
 			return new ObfMapping(className);
 	}
@@ -108,8 +113,6 @@ public class NameHelper
 		{
 			owner = FMLDeobfuscatingRemapper.INSTANCE.unmap(owner);
 			desc = mapDescription(desc);
-			
-			System.out.println(String.format("%s -> %s", name, unmapName(name, owner, desc)));
 			return new ObfMapping(owner, unmapName(name, owner, desc), desc);
 		}
 		else

@@ -15,11 +15,20 @@ import net.minecraft.launchwrapper.IClassTransformer;
 
 public class MinecraftTransformer implements IClassTransformer, Opcodes
 {
-	private ObfMapping mHopperClass = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper");
+	private ObfMapping mHopperClass;
+	
+	static
+	{
+		// This is just used to load the needed classes so they are not loaded during transformation 
+		NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper");
+	}
 	
 	@Override
 	public byte[] transform( String className, String transformedName, byte[] bytes )
 	{
+		if(mHopperClass == null || mHopperClass.s_owner.isEmpty())
+			mHopperClass = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper");
+		
 		if(TubesPlugin.modifyHopper && mHopperClass.javaClass().equals(className))
 		{
 			ClassNode classNode = new ClassNode();
@@ -60,10 +69,11 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
 	        ObfMapping canAddItem = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "canAddItem", "(Lschmoller/tubes/api/Payload;I)Z");
 	        ObfMapping basicInvHandlerInit = NameHelper.getMapping("schmoller/tubes/inventory/BasicInvHandler", "<init>", "(Lnet/minecraft/inventory/IInventory;)V");
 	        ObfMapping addItem = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "addItem", "(Lschmoller/tubes/api/Payload;I)Z");
+	        ObfMapping updateHopper = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "updateHopper", "()Z");
 	        
 	        // updateHopper
 	        {
-        	mv = new MethodNode(ACC_PUBLIC, "updateHopper", "()Z", null, null);
+        	mv = new MethodNode(ACC_PUBLIC, updateHopper.s_name, "()Z", null, null);
         	mv.visitCode();
         	Label l0 = new Label();
         	mv.visitLabel(l0);
@@ -166,7 +176,7 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
         	while(it.hasNext())
         	{
         		MethodNode node = it.next();
-        		if(node.name.equals("updateHopper"))
+        		if(node.name.equals(updateHopper.s_name))
         		{
         			it.remove();
         			break;

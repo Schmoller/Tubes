@@ -13,7 +13,6 @@ import schmoller.tubes.api.TubeRegistry;
 import schmoller.tubes.api.TubesAPI;
 import schmoller.tubes.api.helpers.BaseRouter;
 import schmoller.tubes.api.interfaces.IFilter;
-import schmoller.tubes.asm.TubesPlugin;
 import schmoller.tubes.items.ItemTubeBase;
 import schmoller.tubes.network.PacketManager;
 import schmoller.tubes.network.packets.ModPacketNEIDragDrop;
@@ -103,10 +102,6 @@ public class ModTubes extends TubesAPI implements ITickHandler
 		Property prop =  config.get("general", "plasticYield", 2);
 		prop.comment = "How much the base plastic recipe gives. Next level recipe is 4 times this. Default 2.";
 		plasticYield = prop.getInt();
-		
-		prop = config.get("general", "overrideHoppers", true);
-		prop.comment = "When true, vanilla hoppers will be overridden to interact with tubes, ejecting directly into them and not accepting from the output side";
-		TubesPlugin.modifyHopper = prop.getBoolean(true);
 		
 		config.save();
 		

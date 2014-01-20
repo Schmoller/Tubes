@@ -9,6 +9,9 @@ import javax.swing.JOptionPane;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
+import codechicken.lib.config.ConfigFile;
+import codechicken.lib.config.ConfigTag;
+
 import cpw.mods.fml.common.versioning.DefaultArtifactVersion;
 import cpw.mods.fml.common.versioning.VersionParser;
 import cpw.mods.fml.relauncher.FMLInjectionData;
@@ -19,6 +22,21 @@ public class TubesPlugin implements IFMLLoadingPlugin
 	public static File location;
 	
 	public static boolean modifyHopper = true;
+	
+	public TubesPlugin()
+	{
+		File configFolder = new File((File)FMLInjectionData.data()[6], "config");
+		if(!configFolder.exists())
+			configFolder.mkdirs();
+		
+		ConfigFile config = new ConfigFile(new File(configFolder, "TubesCore.cfg"));
+		
+		ConfigTag tag = config.getTag("overrideHoppers");
+		tag.comment = "When true, vanilla hoppers will be overridden to interact with tubes, ejecting directly into them and not accepting from the output side";;
+		modifyHopper = tag.getBooleanValue(true);
+
+		config.saveConfig();
+	}
 	
 	@Override
 	@Deprecated
