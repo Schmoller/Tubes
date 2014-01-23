@@ -241,7 +241,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("filter"), "ici", "ctc", "ici", 'i', Item.ingotIron, 't', ModTubes.itemTube.createForType("basic"), 'c', Items.RedstoneCircuit.getItem()));
 		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("routing"), "iti", "tft", "iti", 'i', Item.ingotIron, 't', ModTubes.itemTube.createForType("basic"), 'f', ModTubes.itemTube.createForType("filter")));
 		GameRegistry.addRecipe(new SpecialShapelessRecipe(ModTubes.itemTube.createForType("ejection"), ModTubes.itemTube.createForType("basic"), Block.glass));
-		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("fluidExtraction"), "f", "t", "f", 'f', Items.FluidCircuit.getItem(), 't', ModTubes.itemTube.createForType("basic")));
+		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("fluidExtraction"), "f", "t", "f", 'f', Items.FluidCircuit.getItem(), 't', ModTubes.itemTube.createForType("extraction")));
 		
 		TubesAPI.instance.registerShapelessRecipe(ModTubes.itemTube.createForType("valve"), ModTubes.itemTube.createForType("basic"), Item.ingotIron, Block.lever);
 		

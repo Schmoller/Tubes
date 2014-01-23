@@ -291,4 +291,10 @@ public class TankTube extends BaseTube implements IFluidHandler, ITubeOverflowDe
 		else
 			super.onRecieveDataClient(channel, input);
 	}
+	
+	@Override
+	public int getHollowSize( int side )
+	{
+		return 10;
+	}
 }
