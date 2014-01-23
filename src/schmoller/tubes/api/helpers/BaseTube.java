@@ -467,6 +467,9 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 		ITubeConnectable con = TubeHelper.getTubeConnectable(ent);
 		if(con != null)
 		{
+			if(world().isRemote && !(con instanceof ITube))
+				return true;
+			
 			if(con.canItemEnter(item))
 			{
 				item.progress -= 1;

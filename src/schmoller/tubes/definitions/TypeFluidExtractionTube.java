@@ -15,7 +15,7 @@ public class TypeFluidExtractionTube extends TubeDefinition
 	@Override
 	public void registerIcons( IconRegister register )
 	{
-		icon = register.registerIcon("Tubes:tube-extraction");
+		icon = register.registerIcon("Tubes:tube-fluid-extraction");
 	}
 	
 	@Override

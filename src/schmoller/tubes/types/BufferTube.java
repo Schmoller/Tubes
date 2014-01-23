@@ -1,6 +1,5 @@
 package schmoller.tubes.types;
 
-import codechicken.lib.data.MCDataInput;
 import schmoller.tubes.ModTubes;
 import schmoller.tubes.api.ItemPayload;
 import schmoller.tubes.api.OverflowBuffer;
@@ -22,8 +21,6 @@ public class BufferTube extends DirectionalTube implements IInventory, ITubeOver
 {
 	private OverflowBuffer mOverflow = new OverflowBuffer();
 	private ItemStack[] mSlots = new ItemStack[9];
-	
-	public static final int CHANNEL_UPDATESLOT = 10;
 	
 	public BufferTube()
 	{
@@ -52,15 +49,10 @@ public class BufferTube extends DirectionalTube implements IInventory, ITubeOver
 		{
 			ItemStack item = mSlots[i];
 			mSlots[i] = null;
-			updateSlot(i);
 			return item;
 		}
 		else
-		{
-			ItemStack item = mSlots[i].splitStack(amount);
-			updateSlot(i);
-			return item;
-		}
+			return mSlots[i].splitStack(amount);
 	}
 
 	@Override
@@ -73,7 +65,6 @@ public class BufferTube extends DirectionalTube implements IInventory, ITubeOver
 	public void setInventorySlotContents( int i, ItemStack itemstack )
 	{
 		mSlots[i] = itemstack;
-		updateSlot(i);
 	}
 
 	@Override
@@ -234,24 +225,6 @@ public class BufferTube extends DirectionalTube implements IInventory, ITubeOver
 		}
 		
 		return true;
-	}
-	
-	private void updateSlot(int slot)
-	{
-		if(!world().isRemote)
-			openChannel(CHANNEL_UPDATESLOT).writeByte(slot).writeItemStack(mSlots[slot]);
-	}
-	
-	@Override
-	protected void onRecieveDataClient( int channel, MCDataInput input )
-	{
-		if(channel == CHANNEL_UPDATESLOT)
-		{
-			int slot = input.readByte();
-			mSlots[slot] = input.readItemStack();
-		}
-		else
-			super.onRecieveDataClient(channel, input);
 	}
 	
 	@Override
