@@ -30,7 +30,6 @@ import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.versioning.ArtifactVersion;
 import cpw.mods.fml.common.versioning.InvalidVersionSpecificationException;
 import cpw.mods.fml.common.versioning.VersionRange;
@@ -90,7 +89,6 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 	{
 		registerTubes();
 		registerItems();
-		registerText();
 		registerRecipes();
 		
 		OreDictionary.registerOre("dustPlastic", Items.PlasticDust.getItem());
@@ -150,7 +148,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 	
 	private void registerItems()
 	{
-		Items.PlasticDust.initialize(Items.PlasticDust.getItemID() + 256, new BasicItem(Items.PlasticDust.getItemID()).setUnlocalizedName("dustPlastic"));
+		Items.PlasticDust.initialize(Items.PlasticDust.getItemID() + 256, new BasicItem(Items.PlasticDust.getItemID()).setUnlocalizedName("plasticPellets"));
 		Items.PlasticSheet.initialize(Items.PlasticSheet.getItemID() + 256, new BasicItem(Items.PlasticSheet.getItemID()).setUnlocalizedName("sheetPlastic"));
 		Items.BucketMilkCurd.initialize(Items.BucketMilkCurd.getItemID() + 256, new BasicItem(Items.BucketMilkCurd.getItemID()).setUnlocalizedName("milkCurd").setContainerItem(Item.bucketEmpty).setCreativeTab(ModTubes.creativeTab).setMaxStackSize(1));
 		Items.BucketPlastic.initialize(Items.BucketPlastic.getItemID() + 256, new BasicItem(Items.BucketPlastic.getItemID()).setUnlocalizedName("bucketOfPlastic").setContainerItem(Item.bucketEmpty).setCreativeTab(ModTubes.creativeTab).setMaxStackSize(1));
@@ -172,7 +170,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		
 		Blocks.BlockPlastic.initialize(Blocks.BlockPlastic.getBlockID(), new Block(Blocks.BlockPlastic.getBlockID(), Material.piston)
 			.setCreativeTab(ModTubes.creativeTab)
-			.setUnlocalizedName("Tubes:blockPlastic")
+			.setUnlocalizedName("blockPlastic")
 			.setTextureName("tubes:blockPlastic")
 			.setHardness(2.5f));
 		
@@ -186,37 +184,6 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		ModTubes.fluidPlastic = FluidRegistry.getFluid("plastic");
 		
 		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluidStack("plastic", FluidContainerRegistry.BUCKET_VOLUME), new ItemStack(Items.BucketPlastic.getItem()), new ItemStack(Item.bucketEmpty));
-	}
-	
-	private void registerText()
-	{
-		LanguageRegistry.instance().addStringLocalization("tubes.basic.name", "Tube");
-		LanguageRegistry.instance().addStringLocalization("tubes.restriction.name", "Restriction Tube");
-		LanguageRegistry.instance().addStringLocalization("tubes.injection.name", "Injection Tube");
-		LanguageRegistry.instance().addStringLocalization("tubes.ejection.name", "Ejection Tube");
-		LanguageRegistry.instance().addStringLocalization("tubes.filter.name", "Filter Tube");
-		LanguageRegistry.instance().addStringLocalization("tubes.extraction.name", "Extraction Tube");
-		LanguageRegistry.instance().addStringLocalization("tubes.compressor.name", "Compressor Tube");
-		LanguageRegistry.instance().addStringLocalization("tubes.routing.name", "Routing Tube");
-		LanguageRegistry.instance().addStringLocalization("tubes.requesting.name", "Requesting Tube");
-		LanguageRegistry.instance().addStringLocalization("tubes.valve.name", "Valve Tube");
-		LanguageRegistry.instance().addStringLocalization("tubes.coloring.name", "Coloring Tube");
-		LanguageRegistry.instance().addStringLocalization("tubes.fluidExtraction.name", "Fluid Extraction Tube");
-		LanguageRegistry.instance().addStringLocalization("tubes.tank.name", "Tank Tube");
-		LanguageRegistry.instance().addStringLocalization("tubes.buffer.name", "Buffer Tube");
-		
-		LanguageRegistry.instance().addStringLocalization("fluid.plastic", "Plastic");
-		
-		LanguageRegistry.instance().addStringLocalization("itemGroup.tubes", "Tubes");
-		
-		LanguageRegistry.addName(Items.PlasticDust.getItem(), "Plastic Pellets");
-		LanguageRegistry.addName(Items.PlasticSheet.getItem(), "Plastic");
-		LanguageRegistry.addName(Items.BucketMilkCurd.getItem(), "Milk Curd");
-		LanguageRegistry.addName(Items.BucketPlastic.getItem(), "Plastic");
-		LanguageRegistry.addName(Blocks.BlockPlastic.getBlock(), "Block Of Plastic");
-		LanguageRegistry.addName(Items.RedstoneCircuit.getItem(), "Redstone Circuit");
-		LanguageRegistry.addName(Items.TubeCap.getItem(), "Tube Cap");
-		LanguageRegistry.addName(Items.FluidCircuit.getItem(), "Fluid Circuit");
 	}
 	
 	private void registerRecipes()

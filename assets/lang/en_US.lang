@@ -1,0 +1,28 @@
+itemGroup.tubes=Tubes
+
+tubes.basic.name=Tube
+tubes.restriction.name=Restriction Tube
+tubes.injection.name=Injection Tube
+tubes.ejection.name=Ejection Tube
+tubes.filter.name=Filter Tube
+tubes.extraction.name=Extraction Tube
+tubes.compressor.name=Compressor Tube
+tubes.routing.name=Routing Tube
+tubes.requesting.name=Requesting Tube
+tubes.valve.name=Valve Tube
+tubes.coloring.name=Coloring Tube
+tubes.fluidExtraction.name=Fluid Extraction Tube
+tubes.tank.name=Tank Tube
+tubes.buffer.name=Buffer Tube
+
+fluid.plastic=Plastic
+
+item.plasticPellets.name=Plastic Pellets
+item.sheetPlastic.name=Plastic
+item.milkCurd.name=Milk Curd
+item.bucketOfPlastic.name=Bucket of Plastic
+item.redstoneCircuit.name=Redstone Circuit
+item.fluidCircuit.name=Fluid Circuit
+item.tubeCap.name=Tube Cap
+
+tile.blockPlastic.name=Block Of Plastic
