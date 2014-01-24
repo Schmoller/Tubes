@@ -183,6 +183,9 @@ public class BufferTube extends DirectionalTube implements IInventory, ITubeOver
 		if(!(item instanceof ItemPayload))
 			return false;
 		
+		if(world().isRemote)
+			return true;
+		
 		BasicInvHandler handler = new BasicInvHandler(this);
 		
 		ItemPayload result = handler.insert((ItemPayload)item, direction ^ 1, false);

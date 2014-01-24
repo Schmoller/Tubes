@@ -131,9 +131,9 @@ public class ItemPayloadRender implements IPayloadRender
                     Icon icon = item.getItem().getIcon(item, pass);
 
                     int color = Item.itemsList[item.itemID].getColorFromItemStack(item, pass);
-                    float blue = (float)(color >> 16 & 255) / 255.0F;
+                    float red = (float)(color >> 16 & 255) / 255.0F;
                     float green = (float)(color >> 8 & 255) / 255.0F;
-                    float red = (float)(color & 255) / 255.0F;
+                    float blue = (float)(color & 255) / 255.0F;
                     GL11.glColor4f(red, green, blue, 1.0F);
                     renderDroppedItem(item, icon, red, green, blue);
                     GL11.glPopMatrix();
@@ -151,9 +151,9 @@ public class ItemPayloadRender implements IPayloadRender
                 	mRender.bindTexture(TextureMap.locationItemsTexture);
 
                 int color = Item.itemsList[item.itemID].getColorFromItemStack(item, 0);
-                float blue = (float)(color >> 16 & 255) / 255.0F;
+                float red = (float)(color >> 16 & 255) / 255.0F;
                 float green = (float)(color >> 8 & 255) / 255.0F;
-                float red = (float)(color & 255) / 255.0F;
+                float blue = (float)(color & 255) / 255.0F;
                 renderDroppedItem(item, icon, red, green, blue);
             }
 		}
