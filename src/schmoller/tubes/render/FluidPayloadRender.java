@@ -1,14 +1,16 @@
 package schmoller.tubes.render;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.Icon;
-import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 import schmoller.tubes.AdvRender;
+import schmoller.tubes.ModTubes;
 import schmoller.tubes.api.FluidPayload;
 import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.client.IPayloadRender;
@@ -19,56 +21,151 @@ public class FluidPayloadRender implements IPayloadRender
 {
 	private AdvRender mRender = new AdvRender();
 	
-	private static ResourceLocation mBlobSprite = new ResourceLocation("tubes", "textures/models/liquidBlob.png");
-	
 	@Override
 	public void render( Payload rawPayload, int color, double x, double y, double z, int direction, float progress )
 	{
-		// TODO: Still really unsure about this one
 		FluidPayload payload = (FluidPayload)rawPayload;
 		FluidStack fluid = payload.fluid;
 		
+		// Invalidate bad data
+		int tickNo = ModTubes.instance.getCurrentTick();
+		if(payload.tickNo < tickNo - 1)
+		{
+			payload.coordX = (float)x;
+			payload.coordY = (float)y;
+			payload.coordZ = (float)z;
+			payload.lastDirection = direction;
+			payload.lastProgress = progress;
+		}
+		
+		payload.tickNo = tickNo;
 		
 		GL11.glDisable(GL11.GL_LIGHTING);
+		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 		
 		Icon icon = fluid.getFluid().getIcon(fluid);
         
-		mRender.resetLighting();
-        mRender.setLocalLights(0.5f, 1, 0.8f, 0.8f, 0.6f, 0.6f);
+		mRender.enableLighting = false;
+        mRender.enableNormals = true;
         mRender.resetTransform();
+        mRender.resetColor();
          
         Minecraft.getMinecraft().getTextureManager().bindTexture(Minecraft.getMinecraft().getTextureManager().getResourceLocation(fluid.getFluid().getSpriteNumber()));
         mRender.setIcon(icon);
         mRender.setAbsoluteTextureCoords(false);
         
+        float scale = fluid.amount / 1000f;
+        float baseSize = 0.05f * scale;
+        float spacing = 0.1f * scale;
+        
         Tessellator tes = Tessellator.instance;
         
         tes.startDrawingQuads();
         
-        double cx = Math.floor(x / 0.1) * 0.1;
-        double cy = Math.floor(y / 0.1) * 0.1;
-        double cz = Math.floor(z / 0.1) * 0.1;
-        
         mRender.pushTransform();
         
-        mRender.translate((float)cx, (float)cy, (float)cz);
-        mRender.drawBox(63, -0.05f, -0.05f, -0.05f, 0.05f, 0.05f, 0.05f);
+        mRender.translate((float)x, (float)y, (float)z);
+        
+        mRender.drawBox(63, -baseSize, -baseSize, -baseSize, baseSize, baseSize, baseSize);
+        
         
         mRender.popTransform();
         
+        float xx = (float)x;
+        float yy = (float)y;
+        float zz = (float)z;
+        
         int index = 0;
-        for(int i = 0; i < payload.lastCount; ++i)
+        int segmentCount = 4;
+        for(int i = 0; i < segmentCount; ++i)
         {
-        	if(payload.lastX[i] == cx && payload.lastY[i] == cy && payload.lastZ[i] == cz)
-        		continue;
-        	
-        	float size = 1f - (index / (float)(FluidPayload.maxLastCount-1));
+        	float size = 1f - (index / (float)(segmentCount-1));
         	size *= 2;
         	mRender.pushTransform();
-            
         	mRender.scale(size, size, size);
-            mRender.translate((float)payload.lastX[i], (float)payload.lastY[i], (float)payload.lastZ[i]);
-            mRender.drawBox(63, -0.05f, -0.05f, -0.05f, 0.05f, 0.05f, 0.05f);
+        	
+        	ForgeDirection dir = ForgeDirection.getOrientation(direction ^ 1);
+            xx += spacing * dir.offsetX;
+            yy += spacing * dir.offsetY;
+            zz += spacing * dir.offsetZ;
+            
+            boolean backSide = false;
+            switch(direction)
+			{
+			case 0:
+				backSide = (yy > payload.coordY);
+				break;
+			case 1:
+				backSide = (yy < payload.coordY);
+				break;
+			case 2:
+				backSide = (zz > payload.coordZ);
+				break;
+			case 3:
+				backSide = (zz < payload.coordZ);
+				break;
+			case 4:
+				backSide = (xx > payload.coordX);
+				break;
+			case 5:
+				backSide = (xx < payload.coordX);
+				break;
+			}
+        	
+        	if(backSide && payload.lastDirection != direction)
+        	{
+        		float difference = 0;
+        		float xxx = xx;
+        		float yyy = yy;
+        		float zzz = zz;
+        		
+    			switch(direction)
+    			{
+    			case 0:
+    			case 1:
+    				difference = Math.abs(yy - payload.coordY);
+    				yyy = payload.coordY;
+    				break;
+    			case 2:
+    			case 3:
+    				difference = Math.abs(zz - payload.coordZ);
+    				zzz = payload.coordZ;
+    				break;
+    			case 4:
+    			case 5:
+    				difference = Math.abs(xx - payload.coordX);
+    				xxx = payload.coordX;
+    				break;
+    			}
+        		
+    			switch(payload.lastDirection)
+    			{
+    			case 0:
+    				mRender.translate(xxx, yyy + difference, zzz);
+    				break;
+    			case 1:
+    				mRender.translate(xxx, yyy - difference, zzz);
+    				break;
+    			case 2:
+    				mRender.translate(xxx, yyy, zzz + difference);
+    				break;
+    			case 3:
+    				mRender.translate(xxx, yyy, zzz - difference);
+    				break;
+    			case 4:
+    				mRender.translate(xxx + difference, yyy, zzz);
+    				break;
+    			case 5:
+    				mRender.translate(xxx - difference, yyy, zzz);
+    				break;
+    			}
+        	}
+        	else
+        	{
+	            mRender.translate(xx, yy, zz);
+        	}
+            
+        	mRender.drawBox(63, -baseSize, -baseSize, -baseSize, baseSize, baseSize, baseSize);
             
             mRender.popTransform();
             
@@ -77,113 +174,16 @@ public class FluidPayloadRender implements IPayloadRender
         
         tes.draw();
         
-        if(payload.lastCount == 0 || (payload.lastX[0] != cx || payload.lastY[0] != cy || payload.lastZ[0] != cz))
+        if(payload.lastProgress >= 0.5 && progress < 0.5)
         {
-        	double offsetX = 0, offsetY = 0, offsetZ = 0;
-        	
-//        	if(payload.lastProgress >= 0.5 && progress < 0.5)
-//        	{
-//        		offsetX -= ForgeDirection.getOrientation(direction).offsetX;
-//        		offsetY -= ForgeDirection.getOrientation(direction).offsetY;
-//        		offsetZ -= ForgeDirection.getOrientation(direction).offsetZ;
-//        	}
-        	
-        	for(int i = FluidPayload.maxLastCount - 2; i >= 0; --i)
-        	{
-        		payload.lastX[i + 1] = payload.lastX[i] + offsetX;
-        		payload.lastY[i + 1] = payload.lastY[i] + offsetY;
-        		payload.lastZ[i + 1] = payload.lastZ[i] + offsetZ;
-        	}
-        	
-        	++payload.lastCount;
-        	if(payload.lastCount > FluidPayload.maxLastCount)
-        		payload.lastCount = FluidPayload.maxLastCount;
-        	
-        	payload.lastX[0] = cx;
-        	payload.lastY[0] = cy;
-        	payload.lastZ[0] = cz;
+        	payload.lastDirection = direction;
+        	payload.coordX = (float)x;
+        	payload.coordY = (float)y;
+        	payload.coordZ = (float)z;
         }
-        
-        if(payload.lastProgress < 0.5 && progress >= 0.5)
-        	payload.lastDirection = direction;
-        else if(payload.lastProgress >= 0.5 && progress < 0.5)
-        	payload.lastDirection = direction;
         
         payload.lastProgress = progress;
 		
-        GL11.glEnable(GL11.GL_LIGHTING);
-        
-//        GL11.glPushMatrix();
-//        GL11.glTranslated(x, y, z);
-        
-        
-        
-//        GL11.glNormal3f(0.0f, 1.0f, 0.0f);
-//        GL11.glRotatef(-RenderManager.instance.playerViewY, 0.0F, 1.0F, 0.0F);
-//        GL11.glRotatef(RenderManager.instance.playerViewX, 1.0F, 0.0F, 0.0F);
-//        GL11.glScalef(-0.4f, -0.4f, 0.4f);
-//        
-//        GL11.glDisable(GL11.GL_LIGHTING);
-//        GL11.glEnable(GL11.GL_STENCIL_TEST);
-//        GL11.glDisable(GL11.GL_BLEND);
-//        
-//        GL11.glColorMask(false, false, false, false);
-//        GL11.glStencilFunc(GL11.GL_ALWAYS, 0, 0x00);
-//        GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_INCR);
-//        GL11.glStencilMask(0xFF);
-//        GL11.glDepthMask(false);
-//        GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
-//        
-//        Tessellator tes = Tessellator.instance;
-//        
-//        GL11.glAlphaFunc(GL11.GL_GEQUAL, 0.9f);
-//        GL11.glEnable(GL11.GL_ALPHA_TEST);
-//        
-//
-//        Minecraft.getMinecraft().getTextureManager().bindTexture(mBlobSprite);
-//        tes.startDrawingQuads();
-//  
-//        float offset = ((System.currentTimeMillis() / 100) % 7) * (1/7f);
-//        
-//        tes.addVertexWithUV(-0.5, 0.5, 0, 0, offset + 1/7f);
-//        tes.addVertexWithUV(0.5, 0.5, 0, 1, offset + 1/7f);
-//        tes.addVertexWithUV(0.5, -0.5, 0, 1, offset);
-//        tes.addVertexWithUV(-0.5, -0.5, 0, 0, offset);
-//        
-//        tes.draw();
-//        
-//        GL11.glStencilMask(0x00);
-//        GL11.glDepthMask(true);
-//        GL11.glStencilFunc(GL11.GL_EQUAL, 1, 0xFF);
-//        GL11.glColorMask(true, true, true, true);
-//        
-//        Minecraft.getMinecraft().getTextureManager().bindTexture(Minecraft.getMinecraft().getTextureManager().getResourceLocation(fluid.getFluid().getSpriteNumber()));
-//        
-//        tes.startDrawingQuads();
-//        
-//        tes.addVertexWithUV(-0.5, 0.5, 0, icon.getMinU(), icon.getMaxV());
-//        tes.addVertexWithUV(0.5, 0.5, 0, icon.getMaxU(), icon.getMaxV());
-//        tes.addVertexWithUV(0.5, -0.5, 0, icon.getMaxU(), icon.getMinV());
-//        tes.addVertexWithUV(-0.5, -0.5, 0, icon.getMinU(), icon.getMinV());
-//        
-//        tes.draw();
-//        
-//        GL11.glEnable(GL11.GL_LIGHTING);
-//        GL11.glDisable(GL11.GL_STENCIL_TEST);
-//        GL11.glAlphaFunc(GL11.GL_GREATER, 0.1f);
-        
-//        GL11.glPopMatrix();
-        
-//       
-//
-//        
-//        
-//        tes.startDrawingQuads();
-//        mRender.setIcon(icon);
-//        mRender.drawBox(63, 0, 0, 0, 1, 0.8f, 1);
-//        
-//        tes.draw();
-        
         if(color != -1)
 		{
         	Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
@@ -200,7 +200,10 @@ public class FluidPayloadRender implements IPayloadRender
 			mRender.translate(-0.5f, -0.5f, -0.5f);
 			
 			mRender.scale(0.4f, 0.4f, 0.4f);
-			mRender.translate((float)x, (float)y, (float)z);
+			ForgeDirection dir = ForgeDirection.getOrientation(direction);
+			
+			mRender.translate((float)x - 0.1f * dir.offsetX * scale, (float)y - 0.1f * dir.offsetY * scale, (float)z - 0.1f * dir.offsetZ * scale);
+			//mRender.translate((float)x, (float)y, (float)z);
 			mRender.setIcon(TypeNormalTube.itemBorder);
 			
 			tes.startDrawingQuads();
@@ -209,6 +212,9 @@ public class FluidPayloadRender implements IPayloadRender
 			mRender.drawBox(63, 0f, 0f, 0f, 1f, 1f, 1f);
 			tes.draw();
 		}
+        
+        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+        GL11.glEnable(GL11.GL_LIGHTING);
 	}
 
 }

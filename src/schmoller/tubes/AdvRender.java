@@ -63,6 +63,7 @@ public class AdvRender
 	private float opacity = 1;
 
 	public boolean enableNormals = false;
+	public boolean enableLighting = true;
 	
 	public AdvRender()
 	{
@@ -786,30 +787,34 @@ public class AdvRender
 					if (!mUseColor)
 						color.x = color.y = color.z = 1;
 					
-					if (mEnableAO)
+					if(enableLighting)
 					{
-						if(mAbsoluteTexCoords)
+						if (mEnableAO)
 						{
-							float ao = (coords[v].z < 1 ? mInternalAO : interpolateAO(i, coords[v].x, coords[v].y));
-							
-							color.x *= ao;
-							color.y *= ao;
-							color.z *= ao;
+							if(mAbsoluteTexCoords)
+							{
+								float ao = (coords[v].z < 1 ? mInternalAO : interpolateAO(i, coords[v].x, coords[v].y));
+								
+								color.x *= ao;
+								color.y *= ao;
+								color.z *= ao;
+							}
+							else
+							{
+								color.x *= mCornerAO[i][v];
+								color.y *= mCornerAO[i][v];
+								color.z *= mCornerAO[i][v];
+							}
 						}
-						else
-						{
-							color.x *= mCornerAO[i][v];
-							color.y *= mCornerAO[i][v];
-							color.z *= mCornerAO[i][v];
-						}
+						
+						color.x *= mLocalLighting[i];
+						color.y *= mLocalLighting[i];
+						color.z *= mLocalLighting[i];
+						
+						tes.setBrightness((coords[v].z < 1 ? mInternalBrightness : interpolateBrightness(i, coords[v].x, coords[v].y)));
 					}
-					
-					color.x *= mLocalLighting[i];
-					color.y *= mLocalLighting[i];
-					color.z *= mLocalLighting[i];
 
 					tes.setColorRGBA_F(color.x, color.y, color.z, opacity);
-					tes.setBrightness((coords[v].z < 1 ? mInternalBrightness : interpolateBrightness(i, coords[v].x, coords[v].y)));
 					
 					if (enableNormals)
 						tes.setNormal((float)ForgeDirection.getOrientation(i).offsetX, (float)ForgeDirection.getOrientation(i).offsetY, (float)ForgeDirection.getOrientation(i).offsetZ);

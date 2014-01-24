@@ -12,13 +12,10 @@ public class FluidPayload extends Payload
 	// Rendering aids
 	public int lastDirection;
 	public float lastProgress;
-	
-	public static final int maxLastCount = 4;
-	
-	public int lastCount = 0;
-	public double[] lastX = new double[maxLastCount];
-	public double[] lastY = new double[maxLastCount];
-	public double[] lastZ = new double[maxLastCount];
+	public float coordX;
+	public float coordY;
+	public float coordZ;
+	public int tickNo;
 	
 	public FluidPayload() {}
 	public FluidPayload(FluidStack fluid)
