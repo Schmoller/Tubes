@@ -131,10 +131,7 @@ public class FurnaceInventoryProvider implements IInterfaceProvider
 		@Override
 		public boolean canExtractItem( int slot, ItemStack item, int side )
 		{
-			if(slot == 2)
-				return true;
-			
-			return (side == 1);
+			return slot == 2;
 		}
 		
 		

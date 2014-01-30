@@ -1,5 +1,7 @@
 package schmoller.tubes.types;
 
+import java.util.List;
+
 import schmoller.tubes.ModTubes;
 import schmoller.tubes.api.ItemPayload;
 import schmoller.tubes.api.OverflowBuffer;
@@ -263,6 +265,18 @@ public class BufferTube extends DirectionalTube implements IInventory, ITubeOver
 			int slot = tag.getInteger("Slot");
 			
 			mSlots[slot] = ItemStack.loadItemStackFromNBT(tag);
+		}
+	}
+	
+	@Override
+	protected void onDropItems( List<ItemStack> itemsToDrop )
+	{
+		super.onDropItems(itemsToDrop);
+		mOverflow.onDropItems(itemsToDrop);
+		for(int i = 0; i < mSlots.length; ++i)
+		{
+			if(mSlots[i] != null)
+				itemsToDrop.add(mSlots[i]);
 		}
 	}
 }

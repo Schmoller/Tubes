@@ -281,6 +281,15 @@ public class CompressorTube extends BaseTube implements IInventory
 		NBTTagCompound target = (NBTTagCompound)root.getTag("Target");
 		mTarget = FilterRegistry.getInstance().readFilter(target);
 		
+		if(mTarget == null)
+		{
+			ItemStack oldTarget = ItemStack.loadItemStackFromNBT(target);
+			if(oldTarget == null)
+				mTarget = new AnyFilter(64, 64);
+			else
+				mTarget = new ItemFilter(oldTarget, false);
+		}
+		
 		if(root.hasKey("Current"))
 		{
 			NBTTagCompound current = (NBTTagCompound)root.getTag("Current");

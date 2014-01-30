@@ -1,5 +1,7 @@
 package schmoller.tubes.types;
 
+import java.util.List;
+
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import net.minecraft.entity.player.EntityPlayer;
@@ -296,5 +298,12 @@ public class TankTube extends BaseTube implements IFluidHandler, ITubeOverflowDe
 	public int getHollowSize( int side )
 	{
 		return 10;
+	}
+	
+	@Override
+	protected void onDropItems( List<ItemStack> itemsToDrop )
+	{
+		super.onDropItems(itemsToDrop);
+		mOverflow.onDropItems(itemsToDrop);
 	}
 }
