@@ -199,17 +199,89 @@ public class FluidPayloadRender implements IPayloadRender
 			
 			mRender.translate(-0.5f, -0.5f, -0.5f);
 			
-			mRender.scale(0.4f, 0.4f, 0.4f);
-			ForgeDirection dir = ForgeDirection.getOrientation(direction);
+	        ForgeDirection dir = ForgeDirection.getOrientation(direction ^ 1);
+            xx = (float)x + spacing * dir.offsetX;
+            yy = (float)y + spacing * dir.offsetY;
+            zz = (float)z + spacing * dir.offsetZ;
+            
+            boolean backSide = false;
+            switch(direction)
+			{
+			case 0:
+				backSide = (yy > payload.coordY);
+				break;
+			case 1:
+				backSide = (yy < payload.coordY);
+				break;
+			case 2:
+				backSide = (zz > payload.coordZ);
+				break;
+			case 3:
+				backSide = (zz < payload.coordZ);
+				break;
+			case 4:
+				backSide = (xx > payload.coordX);
+				break;
+			case 5:
+				backSide = (xx < payload.coordX);
+				break;
+			}
+            
+            if(backSide && payload.lastDirection != direction)
+        	{
+        		float difference = 0;
+        		float xxx = xx;
+        		float yyy = yy;
+        		float zzz = zz;
+        		
+    			switch(direction)
+    			{
+    			case 0:
+    			case 1:
+    				difference = Math.abs(yy - payload.coordY);
+    				yyy = payload.coordY;
+    				break;
+    			case 2:
+    			case 3:
+    				difference = Math.abs(zz - payload.coordZ);
+    				zzz = payload.coordZ;
+    				break;
+    			case 4:
+    			case 5:
+    				difference = Math.abs(xx - payload.coordX);
+    				xxx = payload.coordX;
+    				break;
+    			}
+        		
+    			switch(payload.lastDirection)
+    			{
+    			case 0:
+    				mRender.translate(xxx, yyy + difference, zzz);
+    				break;
+    			case 1:
+    				mRender.translate(xxx, yyy - difference, zzz);
+    				break;
+    			case 2:
+    				mRender.translate(xxx, yyy, zzz + difference);
+    				break;
+    			case 3:
+    				mRender.translate(xxx, yyy, zzz - difference);
+    				break;
+    			case 4:
+    				mRender.translate(xxx + difference, yyy, zzz);
+    				break;
+    			case 5:
+    				mRender.translate(xxx - difference, yyy, zzz);
+    				break;
+    			}
+        	}
+        	else
+	            mRender.translate(xx, yy, zz);
 			
-			mRender.translate((float)x - 0.1f * dir.offsetX * scale, (float)y - 0.1f * dir.offsetY * scale, (float)z - 0.1f * dir.offsetZ * scale);
-			//mRender.translate((float)x, (float)y, (float)z);
 			mRender.setIcon(TypeNormalTube.itemBorder);
 			
 			tes.startDrawingQuads();
-			
-			
-			mRender.drawBox(63, 0f, 0f, 0f, 1f, 1f, 1f);
+			mRender.drawBox(63, 0.3f, 0.3f, 0.3f, 0.7f, 0.7f, 0.7f);
 			tes.draw();
 		}
         
