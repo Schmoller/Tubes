@@ -54,7 +54,7 @@ public class FluidPayloadRender implements IPayloadRender
         mRender.setIcon(icon);
         mRender.setAbsoluteTextureCoords(false);
         
-        float scale = fluid.amount / 1000f;
+        float scale = (fluid.amount / 1000f) * 0.7f + 0.3f;
         float baseSize = 0.05f * scale;
         float spacing = 0.1f * scale;
         
