@@ -71,6 +71,8 @@ public class ModTubes extends TubesAPI implements ITickHandler
 	
 	public int plasticYield;
 	
+	public static int payloadRenderDistance;
+	
 	public static ItemTubeBase itemTube;
 	
 	public static Fluid fluidPlastic;
@@ -102,6 +104,11 @@ public class ModTubes extends TubesAPI implements ITickHandler
 		Property prop =  config.get("general", "plasticYield", 2);
 		prop.comment = "How much the base plastic recipe gives. Next level recipe is 4 times this. Default 2.";
 		plasticYield = prop.getInt();
+		
+		prop = config.get("general", "maxItemRenderDistance", 30);
+		prop.comment = "The maximum distance in blocks that items in tubes will render.";
+		payloadRenderDistance = prop.getInt();
+		payloadRenderDistance = payloadRenderDistance * payloadRenderDistance;
 		
 		config.save();
 		

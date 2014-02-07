@@ -2,9 +2,11 @@ package schmoller.tubes.api.helpers;
 
 import codechicken.lib.vec.Vector3;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 import net.minecraftforge.common.ForgeDirection;
+import schmoller.tubes.ModTubes;
 import schmoller.tubes.api.PayloadRegistry;
 import schmoller.tubes.api.TubeDefinition;
 import schmoller.tubes.api.TubeItem;
@@ -14,6 +16,8 @@ import schmoller.tubes.api.interfaces.ITube;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.client.FMLClientHandler;
+
 public class RenderHelper
 {
 	public static void initialize()
@@ -22,6 +26,11 @@ public class RenderHelper
 	
 	public static void renderTubeItems(ITube tube, int x, int y, int z, float partialTick)
 	{
+		EntityPlayer player = FMLClientHandler.instance().getClient().thePlayer;
+		
+		if(player.getDistanceSq(x + 0.5, y + 0.5, z + 0.5) - 10 > ModTubes.payloadRenderDistance)
+			return;
+		
 		for(TubeItem item : tube.getItems())
 		{
 			ForgeDirection dir = ForgeDirection.getOrientation(item.direction);
@@ -31,7 +40,13 @@ public class RenderHelper
 				dir = ForgeDirection.getOrientation(item.lastDirection);
 
 			progress -= 0.5f;
-			PayloadRegistry.instance().getPayloadRender(item.item.getClass()).render(item.item, item.colour, x + 0.5 + progress * dir.offsetX, y + 0.5 + progress * dir.offsetY, z + 0.5 + progress * dir.offsetZ, item.direction, progress + 0.5f);
+			
+			double xx = x + 0.5 + progress * dir.offsetX;
+			double yy = y + 0.5 + progress * dir.offsetY;
+			double zz = z + 0.5 + progress * dir.offsetZ;
+			
+			if(player.getDistanceSq(xx, yy, zz) < ModTubes.payloadRenderDistance)
+				PayloadRegistry.instance().getPayloadRender(item.item.getClass()).render(item.item, item.colour, xx, yy, zz, item.direction, progress + 0.5f);
 		}
 	}
 
