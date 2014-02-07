@@ -56,7 +56,7 @@ public class ExtractionTubeRender extends NormalTubeRender
 		renderExtractor(direction);
 	}
 	
-	private void renderExtractor(int side)
+	protected void renderExtractor(int side)
 	{
 		mRender.setIcon(TypeExtractionTube.icon);
 		

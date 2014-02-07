@@ -16,7 +16,8 @@ import org.lwjgl.opengl.GL11;
 
 public class FluidExtractionTubeRender extends ExtractionTubeRender
 {
-	private void renderExtractor(int side)
+	@Override
+	protected void renderExtractor(int side)
 	{
 		mRender.setIcon(TypeFluidExtractionTube.icon);
 		
@@ -26,41 +27,35 @@ public class FluidExtractionTubeRender extends ExtractionTubeRender
 			mRender.drawBox(60, 0.25f, 0.0f, 0.25f, 0.75f, 0.25f, 0.75f);
 			mRender.setIcon(TypeEjectionTube.endIcon, TypeEjectionTube.endIcon, TypeFluidExtractionTube.icon, TypeFluidExtractionTube.icon, TypeFluidExtractionTube.icon, TypeFluidExtractionTube.icon);
 			mRender.drawBox(63, 0.1875f, 0.0f, 0.1875f, 0.8125f, 0.0625f, 0.8125f);
-			mRender.drawBox(63, 0.1875f, 0.1875f, 0.1875f, 0.8125f, 0.25f, 0.8125f);
 			break;
 		case 1:
 			mRender.drawBox(60, 0.25f, 0.75f, 0.25f, 0.75f, 1.0f, 0.75f);
 			mRender.setIcon(TypeEjectionTube.endIcon, TypeEjectionTube.endIcon, TypeFluidExtractionTube.icon, TypeFluidExtractionTube.icon, TypeFluidExtractionTube.icon, TypeFluidExtractionTube.icon);
 			mRender.drawBox(63, 0.1875f, 0.9375f, 0.1875f, 0.8125f, 1.0f, 0.8125f);
-			mRender.drawBox(63, 0.1875f, 0.75f, 0.1875f, 0.8125f, 0.8125f, 0.8125f);
 			break;
 		case 2:
 			mRender.setTextureRotation(0, 0, 0, 0, 1, 1);
 			mRender.drawBox(51, 0.25f, 0.25f, 0.0f, 0.75f, 0.75f, 0.25f);
 			mRender.setIcon(TypeFluidExtractionTube.icon, TypeFluidExtractionTube.icon, TypeEjectionTube.endIcon, TypeEjectionTube.endIcon, TypeFluidExtractionTube.icon, TypeFluidExtractionTube.icon);
 			mRender.drawBox(63, 0.1875f, 0.1875f, 0.0f, 0.8125f, 0.8125f, 0.0625f);
-			mRender.drawBox(63, 0.1875f, 0.1875f, 0.1875f, 0.8125f, 0.8125f, 0.25f);
 			break;
 		case 3:
 			mRender.setTextureRotation(0, 0, 0, 0, 1, 1);
 			mRender.drawBox(51, 0.25f, 0.25f, 0.75f, 0.75f, 0.75f, 1.0f);
 			mRender.setIcon(TypeFluidExtractionTube.icon, TypeFluidExtractionTube.icon, TypeEjectionTube.endIcon, TypeEjectionTube.endIcon, TypeFluidExtractionTube.icon, TypeFluidExtractionTube.icon);
 			mRender.drawBox(63, 0.1875f, 0.1875f, 0.9375f, 0.8125f, 0.8125f, 1.0f);
-			mRender.drawBox(63, 0.1875f, 0.1875f, 0.75f, 0.8125f, 0.8125f, 0.8125f);
 			break;
 		case 4:
 			mRender.setTextureRotation(1, 1, 1, 1, 0, 0);
 			mRender.drawBox(15, 0.0f, 0.25f, 0.25f, 0.25f, 0.75f, 0.75f);
 			mRender.setIcon(TypeFluidExtractionTube.icon, TypeFluidExtractionTube.icon, TypeFluidExtractionTube.icon, TypeFluidExtractionTube.icon, TypeEjectionTube.endIcon, TypeEjectionTube.endIcon);
 			mRender.drawBox(63, 0.0f, 0.1875f, 0.1875f, 0.0625f, 0.8125f, 0.8125f);
-			mRender.drawBox(63, 0.1875f, 0.1875f, 0.1875f, 0.25f, 0.8125f, 0.8125f);
 			break;
 		case 5:
 			mRender.setTextureRotation(1, 1, 1, 1, 0, 0);
 			mRender.drawBox(15, 0.75f, 0.25f, 0.25f, 1.0f, 0.75f, 0.75f);
 			mRender.setIcon(TypeFluidExtractionTube.icon, TypeFluidExtractionTube.icon, TypeFluidExtractionTube.icon, TypeFluidExtractionTube.icon, TypeEjectionTube.endIcon, TypeEjectionTube.endIcon);
 			mRender.drawBox(63, 0.9375f, 0.1875f, 0.1875f, 1.0f, 0.8125f, 0.8125f);
-			mRender.drawBox(63, 0.75f, 0.1875f, 0.1875f, 0.8125f, 0.8125f, 0.8125f);
 			break;
 		}
 		
