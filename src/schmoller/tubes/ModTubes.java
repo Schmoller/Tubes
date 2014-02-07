@@ -229,7 +229,7 @@ public class ModTubes extends TubesAPI implements ITickHandler
 	
 	public int getCurrentTick()
 	{
-		if(FMLCommonHandler.instance().getMinecraftServerInstance() != null)
+		if(FMLCommonHandler.instance().getSide() == Side.SERVER)
 			return FMLCommonHandler.instance().getMinecraftServerInstance().getTickCounter();
 		else
 			return mClientTickCounter;
