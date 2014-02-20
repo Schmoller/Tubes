@@ -54,7 +54,7 @@ import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@Mod(name="Tubes", version="@{mod.version}", modid = "Tubes", dependencies="required-after:Forge; required-before:ForgeMultipart")
+@Mod(name="Tubes", version="@{mod.version}", modid = "Tubes", dependencies="required-after:Forge; required-after:ForgeMultipart")
 @NetworkMod(clientSideRequired=true, serverSideRequired=true)
 public class ModTubes extends TubesAPI implements ITickHandler
 {
@@ -131,6 +131,7 @@ public class ModTubes extends TubesAPI implements ITickHandler
 		PacketManager.registerPacket(ModPacketNEIDragDrop.class);
 
 		proxy.initialize();
+		TubeRegistry.instance().finalizeTubes();
 	}
 	
 	@EventHandler
@@ -146,7 +147,6 @@ public class ModTubes extends TubesAPI implements ITickHandler
 		}
 		
 		proxy.registerOreRecipes();
-		TubeRegistry.instance().finalizeTubes();
 		
 		event.buildSoftDependProxy("BuildCraft|Core", BuildcraftProxy.class.getName());
 		

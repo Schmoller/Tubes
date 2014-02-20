@@ -30,6 +30,7 @@ public class TubeRegistry implements IPartFactory
 	
 	/**
 	 * Register new types of tubes here
+	 * NOTE: This must be called before Tubes Initialization stage
 	 * @param tube The definition the tubes are made from
 	 * @param name The name that you refer to this type with. Any lookup will use this value
 	 */
@@ -43,6 +44,7 @@ public class TubeRegistry implements IPartFactory
 	@SideOnly(Side.CLIENT)
 	/**
 	 * Gives the tube type a special renderer
+	 * NOTE: This must be called before Tubes Initialization stage
 	 * @param typeName The name of the tube type, same as used in registerTube
 	 * @param render The renderer
 	 */
