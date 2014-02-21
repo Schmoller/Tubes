@@ -53,16 +53,12 @@ public class PacketManager implements IPacketHandler
 		
 		if(filter != null && filter.length != 0)
 			mHandlerFilters.put(handler, filter);
-		
-		FMLLog.info(handler.getClass().getSimpleName() + " registered as packet handler");
 	}
 	
 	public static void deregisterHandler(IModPacketHandler handler)
 	{
 		mHandlers.remove(handler);
 		mHandlerFilters.remove(handler);
-		
-		FMLLog.info(handler.getClass().getSimpleName() + " unregistered as packet handler");
 	}
 	
 	public void initialize(String channel)
@@ -127,7 +123,6 @@ public class PacketManager implements IPacketHandler
 	@ForgeSubscribe
 	private void onServerStop(FMLServerStoppingEvent event)
 	{
-		FMLLog.info("Stopping");
 		mHandlers.clear();
 		mHandlerFilters.clear();
 	}
