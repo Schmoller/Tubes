@@ -1,5 +1,6 @@
 package schmoller.tubes.nei;
 
+import net.minecraft.util.StatCollector;
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
 import codechicken.nei.forge.GuiContainerManager;
@@ -9,7 +10,7 @@ public class NEITubesConfig implements IConfigureNEI
 	@Override
 	public String getName()
 	{
-		return "Tubes!";
+		return StatCollector.translateToLocal("itemGroup.tubes");
 	}
 	
 	@Override

@@ -33,7 +33,7 @@ public class FilterTubeGui extends GuiExtContainer
 	@Override
 	protected void drawGuiContainerForegroundLayer( int curX, int curY )
 	{
-		String s = "Filter Tube";
+		String s = StatCollector.translateToLocal("tubes.filter.name");
 		fontRenderer.drawString(s, xSize / 2 - fontRenderer.getStringWidth(s) / 2, 6, 0x404040);
         fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, this.ySize - 96 + 2, 0x404040);
         
@@ -46,30 +46,13 @@ public class FilterTubeGui extends GuiExtContainer
 		{
 			if(yy >= 19 && yy <= 33) // Mode button
 			{
-				drawHoveringText(Arrays.asList(mTube.getMode() == Mode.Allow ? "Allow specified items" : "Deny specified items"), xx, yy, fontRenderer);
+				drawHoveringText(Arrays.asList(StatCollector.translateToLocalFormatted("gui.filtertube.modestring", StatCollector.translateToLocal("gui.filtertube.mode." + mTube.getMode().name()))), xx, yy, fontRenderer);
 				RenderHelper.enableGUIStandardItemLighting();
 			}
 			else if(yy >= 35 && yy <= 49) // Comparison button
 			{
-				String text = "";
-				String mode = mTube.getMode().name();
+				String text = StatCollector.translateToLocalFormatted("gui.filtertube.size." + mTube.getComparison().name(), StatCollector.translateToLocal("gui.filtertube.mode." + mTube.getMode().name()));
 				
-				switch(mTube.getComparison())
-				{
-				case Any:
-					text = mode + " stacks specified with any size";
-					break;
-				case Exact:
-					text = mode + " stacks specified with the same size";
-					break;
-				case Greater:
-					text = mode + " stacks specified with a larger size";
-					break;
-				case Less:
-					text = mode + " stacks specified with a smaller size";
-					break;
-				}
-
 				int old = width;
 				width -= (xx + curX); 
 				drawHoveringText(Arrays.asList(text), xx, yy, fontRenderer);
@@ -80,7 +63,7 @@ public class FilterTubeGui extends GuiExtContainer
 			else if(yy >= 51 && yy <= 65)
 			{
 				int colour = mTube.getColour();
-				String text = "No Color";
+				String text = StatCollector.translateToLocal("gui.colors.none");
 				if(colour != -1)
 					text = CommonHelper.getDyeName(colour);
 				

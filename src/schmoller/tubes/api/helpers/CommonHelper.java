@@ -8,13 +8,14 @@ import codechicken.multipart.TileMultipart;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class CommonHelper
 {
 	private static final String[] dyes = { "dyeWhite", "dyeOrange", "dyeMagenta", "dyeLightBlue", "dyeYellow", "dyeLime", "dyePink", "dyeGray", "dyeLightGray", "dyeCyan", "dyePurple", "dyeBlue", "dyeBrown", "dyeGreen", "dyeRed", "dyeBlack" };
-	private static final String[] colourNames = {"White", "Orange", "Magenta", "Light Blue", "Yellow", "Lime", "Pink", "Gray", "Light Gray", "Cyan", "Purple", "Blue", "Brown", "Green", "Red", "Black"};
+	private static final String[] colourNames = {"item.fireworksCharge.white", "item.fireworksCharge.orange", "item.fireworksCharge.magenta", "item.fireworksCharge.lightBlue", "item.fireworksCharge.yellow", "item.fireworksCharge.lime", "item.fireworksCharge.pink", "item.fireworksCharge.gray", "item.fireworksCharge.silver", "item.fireworksCharge.cyan", "item.fireworksCharge.purple", "item.fireworksCharge.blue", "item.fireworksCharge.brown", "item.fireworksCharge.green", "item.fireworksCharge.red", "item.fireworksCharge.black"};
 	private static int[] dyeIds;
 	
 	public static TileEntity getTileEntity(IBlockAccess world, Position pos)
@@ -83,7 +84,7 @@ public class CommonHelper
 	
 	public static String getDyeName(int index)
 	{
-		return colourNames[index];
+		return StatCollector.translateToLocal(colourNames[index]);
 	}
 	
 	public static boolean isCtrlPressed()

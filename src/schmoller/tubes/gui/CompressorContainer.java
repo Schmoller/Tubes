@@ -12,6 +12,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
 
 public class CompressorContainer extends ExtContainer
 {
@@ -125,7 +126,7 @@ public class CompressorContainer extends ExtContainer
 			if(getFilter() != null)
 				count = getFilter().size();
 			
-			return Arrays.asList("Compressing " + name + EnumChatFormatting.RESET + " to " + count);
+			return Arrays.asList(StatCollector.translateToLocalFormatted("gui.compressortube.compressing", name + EnumChatFormatting.RESET, count));
 		}
 	}
 

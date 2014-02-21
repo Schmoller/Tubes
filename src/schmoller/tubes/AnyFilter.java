@@ -10,6 +10,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.SizeMode;
 import schmoller.tubes.api.TubeItem;
@@ -140,7 +141,7 @@ public class AnyFilter implements IFilter
 	@SideOnly(Side.CLIENT)
 	public List<String> getTooltip( List<String> current )
 	{
-		return Arrays.asList("Any");
+		return Arrays.asList(StatCollector.translateToLocal("gui.filter.any"));
 	}
 
 	@Override

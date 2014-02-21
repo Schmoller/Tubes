@@ -19,7 +19,7 @@ public class BufferTubeGui extends GuiContainer
 	@Override
 	protected void drawGuiContainerForegroundLayer( int par1, int par2 )
 	{
-		String s = "Buffer Tube";
+		String s = StatCollector.translateToLocal("tubes.buffer.name");
 		fontRenderer.drawString(s, xSize / 2 - fontRenderer.getStringWidth(s) / 2, 6, 0x404040);
         fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, this.ySize - 96 + 2, 0x404040);
 	}

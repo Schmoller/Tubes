@@ -11,6 +11,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.StatCollector;
 import schmoller.tubes.ItemFilter;
 import schmoller.tubes.ModTubes;
 import schmoller.tubes.api.FilterRegistry;
@@ -555,9 +556,9 @@ public class RoutingTube extends BaseTube
 		public String toString()
 		{
 			if(this == Any || this == Closed)
-				return name();
+				return StatCollector.translateToLocal("gui.routingtube.direction." + name());
 			
-			return TypeRoutingTube.sideColoursText[ordinal()].toString() + name();
+			return TypeRoutingTube.sideColoursText[ordinal()].toString() + StatCollector.translateToLocal("gui.routingtube.direction." + name());
 		}
 	}
 }

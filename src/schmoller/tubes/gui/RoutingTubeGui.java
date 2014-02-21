@@ -31,7 +31,7 @@ public class RoutingTubeGui extends GuiExtContainer
 	@Override
 	protected void drawGuiContainerForegroundLayer( int curX, int curY )
 	{
-		String s = "Routing Tube";
+		String s = StatCollector.translateToLocal("tubes.routing.name");
 		fontRenderer.drawString(s, xSize / 2 - fontRenderer.getStringWidth(s) / 2, 6, 0x404040);
         fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, this.ySize - 96 + 2, 0x404040);
         
@@ -55,7 +55,7 @@ public class RoutingTubeGui extends GuiExtContainer
 				else if(yy >= 107 && yy <= 121) // Colour button
 				{
 					int colour = mTube.getColour(i);
-					String text = "No Color";
+					String text = StatCollector.translateToLocal("gui.colors.none");
 					if(colour != -1)
 						text = CommonHelper.getDyeName(colour);
 					

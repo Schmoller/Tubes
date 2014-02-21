@@ -33,7 +33,7 @@ public class RequestingTubeGui extends GuiExtContainer
 	@Override
 	protected void drawGuiContainerForegroundLayer( int curX, int curY )
 	{
-		String s = "Requesting Tube";
+		String s = StatCollector.translateToLocal("tubes.requesting.name");
 		fontRenderer.drawString(s, xSize / 2 - fontRenderer.getStringWidth(s) / 2, 6, 0x404040);
         fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, this.ySize - 96 + 2, 0x404040);
         
@@ -48,48 +48,20 @@ public class RequestingTubeGui extends GuiExtContainer
 		{
 			if(yy >= 19 && yy <= 33)
 			{
-				String text = "";
-				switch(mTube.getMode())
-				{
-				case Constant:
-					text = "Always pull";
-					break;
-				case RedstoneConstant:
-					text = "Pull while redstone is active";
-					break;
-				case RedstoneSingle:
-					text = "Pull once per restone pulse";
-					break;
-				}
+				String text = StatCollector.translateToLocal("gui.requestingtube.mode." + mTube.getMode().name());
 				drawHoveringText(Arrays.asList(text), xx, yy, fontRenderer);
 				RenderHelper.enableGUIStandardItemLighting();
 			}
 			else if(yy >= 35 && yy <= 49)
 			{
-				String text = "";
-				switch(mTube.getSizeMode())
-				{
-				case Exact:
-					text = "Pull Exact Amount";
-					break;
-				case GreaterEqual:
-					text = "Pull At Least Amount";
-					break;
-				case LessEqual:
-					text = "Pull At Most Amount";
-					break;
-				case Max:
-					text = "Pull Maximum Amount";
-					break;
-				}
-				
+				String text = StatCollector.translateToLocal("gui.requestingtube.size." + mTube.getSizeMode().name());
 				drawHoveringText(Arrays.asList(text), xx, yy, fontRenderer);
 				RenderHelper.enableGUIStandardItemLighting();
 			}
 			else if(yy >= 51 && yy <= 65)
 			{
 				int colour = mTube.getColour();
-				String text = "No Color";
+				String text = StatCollector.translateToLocal("gui.colors.none");
 				if(colour != -1)
 					text = CommonHelper.getDyeName(colour);
 				

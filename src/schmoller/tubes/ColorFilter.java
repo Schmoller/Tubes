@@ -13,6 +13,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.SizeMode;
 import schmoller.tubes.api.TubeItem;
@@ -125,7 +126,7 @@ public class ColorFilter implements IFilter
 	@SideOnly(Side.CLIENT)
 	public List<String> getTooltip( List<String> current )
 	{
-		return Arrays.asList((mColor == -1 ? "Any Color" : CommonHelper.getDyeName(mColor)));
+		return Arrays.asList((mColor == -1 ? StatCollector.translateToLocal("gui.colors.any") : CommonHelper.getDyeName(mColor)));
 	}
 	
 	@Override

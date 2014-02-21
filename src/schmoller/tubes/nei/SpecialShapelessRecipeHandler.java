@@ -12,6 +12,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidContainerRegistry.FluidContainerData;
@@ -80,7 +81,7 @@ public class SpecialShapelessRecipeHandler extends TemplateRecipeHandler
 	@Override
 	public String getRecipeName()
 	{
-		return "Tubes Shapeless Recipe";
+		return StatCollector.translateToLocal("gui.nei.tubes.shapeless");
 	}
 
 	@Override

@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.oredict.OreDictionary;
 import schmoller.tubes.api.ItemPayload;
 import schmoller.tubes.api.Payload;
@@ -220,7 +221,7 @@ public class ItemFilter implements IFilter
         }
         
         if(mFuzzy)
-        	list.add(EnumChatFormatting.YELLOW + "Using ore dictionary");
+        	list.add(EnumChatFormatting.YELLOW + StatCollector.translateToLocal("gui.filter.item.oredict"));
         
         return list;
 	}
