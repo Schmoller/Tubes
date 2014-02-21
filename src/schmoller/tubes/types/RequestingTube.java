@@ -208,6 +208,9 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 		if(item.direction != (getFacing() ^ 1))
 			return false;
 		
+		if(!mOverflow.isEmpty())
+			return false;
+		
 		boolean empty = true;
 		for(int i = 0; i < 16; ++i)
 		{

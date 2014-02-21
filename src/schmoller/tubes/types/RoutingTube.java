@@ -365,11 +365,16 @@ public class RoutingTube extends BaseTube
 				con &= getRoutableDirections(item);
 				
 				int total = Integer.bitCount(con);
-				if(total <= 1)
+				if(total == 1)
 				{
 					item.direction = Integer.numberOfTrailingZeros(con);
 					item.updated = true;
 					addToClient(item);
+					return true;
+				}
+				else if(total == 0)
+				{
+					item.direction = 6;
 					return true;
 				}
 				
