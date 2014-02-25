@@ -26,3 +26,38 @@ item.fluidCircuit.name=Flüssigkeitsschaltkreis
 item.tubeCap.name=Röhrenkappe
 
 tile.blockPlastic.name=Plastikblock
+
+gui.compressortube.compressing=Komprimiere %1$s zu %2$d
+gui.routingtube.direction.Up=Oben
+gui.routingtube.direction.Down=Unten
+gui.routingtube.direction.North=Nord
+gui.routingtube.direction.South=Süd
+gui.routingtube.direction.West=West
+gui.routingtube.direction.East=Ost
+gui.routingtube.direction.Any=Jeglich
+gui.routingtube.direction.Closed=Geschlossen
+gui.colors.none=Keine Farbe
+gui.colors.any=Jegliche Farbe
+
+gui.requestingtube.mode.Constant=Immer Extrahieren
+gui.requestingtube.mode.RedstoneConstant=Extrahiere bei aktivem Redstone-Signal
+gui.requestingtube.mode.RedstoneSingle=Extrahiere einmalig pro Redstone-Puls
+
+gui.requestingtube.size.Exact=Exakte Menge extrahieren
+gui.requestingtube.size.GreaterEqual=Mindestmenge extrahieren
+gui.requestingtube.size.LessEqual=Höchstmenge extrahieren
+gui.requestingtube.size.Max=Maximalmenge extrahieren
+
+gui.filtertube.mode.Allow=Erlauben
+gui.filtertube.mode.Deny=Verweigern
+gui.filtertube.modestring=%s spezifizierte Items
+gui.filtertube.size.Any=%s Stacks mit jeglicher Größe spezifiziert
+gui.filtertube.size.Greater=%s Stacks mit größerer Größe spezifiziert
+gui.filtertube.size.Less=Stacks mit geringerer Größe spezifiziert
+gui.filtertube.size.Exact=Stacks mit der selben Größe spezifiziert
+
+gui.filter.any=Jeglich
+gui.filter.item.oredict=Ore Dictionary verwenden
+
+gui.nei.tubes.shapeless=Tubes Formlose Herstellung
+gui.nei.tubes.shaped=Tubes Geformte Herstellung
