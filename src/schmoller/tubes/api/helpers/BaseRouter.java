@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 import schmoller.tubes.api.Position;
+import schmoller.tubes.api.interfaces.IRouteCheckCallback;
 
 import net.minecraft.world.IBlockAccess;
 
@@ -16,10 +17,18 @@ public abstract class BaseRouter
 
 	private IBlockAccess mWorld;
 	
+	private IRouteCheckCallback mCallback = null;
+	
 	public BaseRouter()
 	{
 		mVisitedLocations = new HashSet<Position>();
 		mSearchQueue = new PriorityQueue<PathLocation>();
+	}
+	
+	public BaseRouter setRouteCheckCallback(IRouteCheckCallback callback)
+	{
+		mCallback = callback;
+		return this;
 	}
 	
 	protected void setup(IBlockAccess world, Position initialPosition)
@@ -62,6 +71,12 @@ public abstract class BaseRouter
 	 */
 	protected abstract boolean isTerminator(Position current, int side);
 
+	private boolean isEndPointOk(Position current, int side)
+	{
+		if(mCallback != null)
+			return mCallback.isEndPointOk(current, side);
+		return true;
+	}
 	/**
 	 * Find the applicable destination or null if none was found
 	 */
@@ -90,8 +105,11 @@ public abstract class BaseRouter
 			
 			if(isTerminator(path.position, path.dir))
 			{
-				shortestPath = path.dist;
-				paths.add(path);
+				if(isEndPointOk(path.position, path.dir))
+				{
+					shortestPath = path.dist;
+					paths.add(path);
+				}
 			}
 			else
 				getNextLocations(path);

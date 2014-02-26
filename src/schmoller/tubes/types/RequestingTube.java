@@ -28,13 +28,15 @@ import schmoller.tubes.api.helpers.TubeHelper;
 import schmoller.tubes.api.helpers.BaseRouter.PathLocation;
 import schmoller.tubes.api.interfaces.IFilter;
 import schmoller.tubes.api.interfaces.IPayloadHandler;
+import schmoller.tubes.api.interfaces.IRouteCheckCallback;
 import schmoller.tubes.api.interfaces.ITubeConnectable;
 import schmoller.tubes.api.interfaces.ITubeImportDest;
 import schmoller.tubes.api.interfaces.ITubeOverflowDestination;
 import schmoller.tubes.routing.ImportSourceFinder;
+import schmoller.tubes.routing.InputRouter;
 import schmoller.tubes.routing.OutputRouter;
 
-public class RequestingTube extends DirectionalTube implements ITubeImportDest, IRedstonePart, ITubeOverflowDestination
+public class RequestingTube extends DirectionalTube implements ITubeImportDest, IRedstonePart, ITubeOverflowDestination, IRouteCheckCallback
 {
 	private IFilter[] mFilter = new IFilter[16];
 	private int mNext = 0;
@@ -52,6 +54,8 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 	public static final int CHANNEL_SIZEMODE = 5;
 	
 	public float animTime = 0;
+	
+	private IFilter mActiveFilter;
 	
 	public RequestingTube()
 	{
@@ -127,7 +131,9 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 			}
 			while(filterItem == null && mNext != start);
 			
-			PathLocation source = new ImportSourceFinder(world(), new Position(x(), y(), z()), getFacing(), filterItem, mSizeMode).route();
+			mActiveFilter = filterItem;
+			
+			PathLocation source = new ImportSourceFinder(world(), new Position(x(), y(), z()), getFacing(), filterItem, mSizeMode).setRouteCheckCallback(this).route();
 			
 			if(source != null)
 			{
@@ -164,6 +170,31 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 				}
 			}
 		}
+	}
+	
+	@Override
+	public boolean isEndPointOk( Position position, int fromSide )
+	{
+		IPayloadHandler handler = InteractionHandler.getHandler((mActiveFilter == null ? null : mActiveFilter.getPayloadType()), world(), position);
+		if(handler != null)
+		{
+			Payload extracted;
+			if(mActiveFilter == null)
+				extracted = handler.extract(new AnyFilter(0), fromSide ^ 1, false);
+			else
+				extracted = handler.extract(mActiveFilter, fromSide ^ 1, mActiveFilter.size(), mSizeMode, false);
+			
+			if(extracted != null)
+			{
+				TubeItem tItem = new TubeItem(extracted);
+				tItem.state = TubeItem.IMPORT;
+				tItem.direction = fromSide ^ 1;
+				
+				return (new InputRouter(world(), position.copy().offset(fromSide ^ 1, 1), tItem).route() != null);
+			}
+		}
+		
+		return false;
 	}
 	
 	@Override

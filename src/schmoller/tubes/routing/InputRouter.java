@@ -13,11 +13,20 @@ import net.minecraft.world.IBlockAccess;
 public class InputRouter extends BaseRouter
 {
 	private TubeItem mItem;
+	private int mDirection = -1;
 	
 	public InputRouter(IBlockAccess world, Position position, TubeItem item)
 	{
 		mItem = item.clone();
 		mItem.state = TubeItem.IMPORT;
+		setup(world, position);
+	}
+	
+	public InputRouter(IBlockAccess world, Position position, TubeItem item, int direction)
+	{
+		mItem = item.clone();
+		mItem.state = TubeItem.NORMAL;
+		mDirection = direction;
 		setup(world, position);
 	}
 	
@@ -72,6 +81,9 @@ public class InputRouter extends BaseRouter
 		
 		for(int i = 0; i < 6; ++i)
 		{
+			if(mDirection != -1 && mDirection != i)
+				continue;
+			
 			if((conns & (1 << i)) != 0)
 			{
 				PathLocation loc = new PathLocation(position, i);
