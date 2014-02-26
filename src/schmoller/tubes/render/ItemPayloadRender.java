@@ -3,6 +3,8 @@ package schmoller.tubes.render;
 import static net.minecraftforge.client.IItemRenderer.ItemRenderType.ENTITY;
 import static net.minecraftforge.client.IItemRenderer.ItemRendererHelper.BLOCK_3D;
 
+import java.util.Random;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -37,6 +39,7 @@ public class ItemPayloadRender implements IPayloadRender
 	private EntityItem mDummy = new EntityItem(null);
 	
 	private TextureManager mRender;
+	private Random mRand = new Random();
 	
 	@Override
 	public void render( Payload payload, int color, double x, double y, double z, int direction, float progress )
@@ -87,15 +90,40 @@ public class ItemPayloadRender implements IPayloadRender
             block = Block.blocksList[item.itemID];
 		
         int count = getMiniBlockCount(item);
-
-        GL11.glTranslatef(0, 0, (0.04f * (count - 1)) / -2f);
-        for(int i = 0; i < count; ++i)
+        
+        if(item.getItemSpriteNumber() == 0 && block != null && RenderBlocks.renderItemIn3d(Block.blocksList[item.itemID].getRenderType()))
         {
-        	GL11.glPushMatrix();
-        	if(i != 0)
-        		GL11.glTranslatef(0, 0, 0.04f * i);
-        	renderSingleItem(item, block);
-        	GL11.glPopMatrix();
+        	mRand.setSeed(1234);
+        	for (int i = 0; i < count; ++i)
+            {
+                GL11.glPushMatrix();
+
+                GL11.glScalef(0.8f, 0.8f, 0.8f);
+                if (i > 0)
+                {
+                    float xx = (mRand.nextFloat() * 2.0F - 1.0F) * 0.1F;
+                    float yy = (mRand.nextFloat() * 2.0F - 1.0F) * 0.1F;
+                    float zz = (mRand.nextFloat() * 2.0F - 1.0F) * 0.1F;
+                    GL11.glTranslatef(xx, yy, zz);
+                }
+
+                renderSingleItem(item, block);
+                GL11.glPopMatrix();
+            }
+        }
+        else
+        {
+	        GL11.glTranslatef(0, 0, (0.04f * (count - 1)) / -2f);
+	        for(int i = 0; i < count; ++i)
+	        {
+	        	GL11.glPushMatrix();
+	        	if(i != 0)
+	        	{
+	        		GL11.glTranslatef(0, 0, 0.04f * i);
+	        	}
+	        	renderSingleItem(item, block);
+	        	GL11.glPopMatrix();
+	        }
         }
         
 		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
