@@ -54,7 +54,7 @@ import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@Mod(name="Tubes", version="@{mod.version}", modid = "Tubes", dependencies="required-after:Forge; required-after:ForgeMultipart")
+@Mod(name="Tubes", version="@{mod.version}", modid = "Tubes", dependencies="required-after:Forge; required-after:ForgeMultipart@(,1.0.0.238),(1.0.0.245,)")
 @NetworkMod(clientSideRequired=true, serverSideRequired=true)
 public class ModTubes extends TubesAPI implements ITickHandler
 {

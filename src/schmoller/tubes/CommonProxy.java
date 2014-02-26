@@ -102,17 +102,36 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		MultiPartRegistry.registerParts(this, new String[] {"tubeCap"});
 	}
 	
+	private Boolean mCanUseInjection;
 	private boolean canUseInjection()
 	{
+		if(mCanUseInjection != null)
+			return mCanUseInjection;
+		
 		try
 		{
-			return VersionRange.createFromVersionSpec("[1.0.0.211,)").containsVersion(getMultipartVersion());
+			ArtifactVersion version = getMultipartVersion();
+			
+			if(!VersionRange.createFromVersionSpec("[1.0.0.211,)").containsVersion(version))
+			{
+				System.err.println("**** WARNING: The version of ForgeMultiPart you are running is too old to support the Injection Tube. As such the Injection Tube has been disabled. Please update to a newer version. ****");
+				mCanUseInjection = false;
+			}
+			else if(VersionRange.createFromVersionSpec("[1.0.0.238,1.0.0.245]").containsVersion(version))
+			{
+				System.err.println("**** WARNING: The version of ForgeMultiPart you are running is known to have an issue with Tubes. As such the Injection Tube has been disabled. Please update to a newer version. ****");
+				mCanUseInjection = false;
+			}
+			else
+				mCanUseInjection = true;
 		}
 		catch ( InvalidVersionSpecificationException e )
 		{
 			e.printStackTrace();
-			return false;
+			mCanUseInjection = false;
 		} 
+		
+		return mCanUseInjection;
 	}
 	
 	private ArtifactVersion getMultipartVersion()
@@ -124,7 +143,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 	private void registerTubes()
 	{
 		if(canUseInjection())
-			MultipartGenerator.registerPassThroughInterface("net.minecraft.inventory.IInventory");
+			MultipartGenerator.registerPassThroughInterface("net.minecraft.inventory.ISidedInventory");
 		
 		TubeRegistry.registerTube(new TypeNormalTube(), "basic");
 		TubeRegistry.registerTube(new TypeRestrictionTube(), "restriction");
