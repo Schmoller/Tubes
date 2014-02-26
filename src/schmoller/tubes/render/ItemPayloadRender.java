@@ -91,7 +91,7 @@ public class ItemPayloadRender implements IPayloadRender
 		
         int count = getMiniBlockCount(item);
         
-        if(item.getItemSpriteNumber() == 0 && block != null && RenderBlocks.renderItemIn3d(Block.blocksList[item.itemID].getRenderType()))
+        if((item.getItemSpriteNumber() == 0 && block != null && RenderBlocks.renderItemIn3d(Block.blocksList[item.itemID].getRenderType())) || MinecraftForgeClient.getItemRenderer(item, ENTITY) != null)
         {
         	mRand.setSeed(1234);
         	for (int i = 0; i < count; ++i)
