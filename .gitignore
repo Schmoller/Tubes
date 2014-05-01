@@ -5,3 +5,6 @@
 /.settings
 /dist
 /.pydevproject
+/.gradle
+/eclipse
+/build
