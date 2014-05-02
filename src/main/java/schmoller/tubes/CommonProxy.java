@@ -93,7 +93,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		OreDictionary.registerOre("blockPlastic", Blocks.BlockPlastic.getBlock());
 		
 		MicroMaterialRegistry.registerMaterial(new BlockMicroMaterial(Blocks.BlockPlastic.getBlock(), 0), "tile.tubes.blockPlastic");
-		FMLInterModComms.sendMessage("BuildCraft|Transport", "add-facade", String.format("%d@%d", Blocks.BlockPlastic.getBlock().getUnlocalizedName(), 0 ));
+		FMLInterModComms.sendMessage("BuildCraft|Transport", "add-facade", String.format("%s@%d", Blocks.BlockPlastic.getBlock().getUnlocalizedName(), 0 ));
 		
 		NetworkRegistry.INSTANCE.registerGuiHandler(ModTubes.instance, this);
 		MultiPartRegistry.registerParts(this, new String[] {"tubeCap"});

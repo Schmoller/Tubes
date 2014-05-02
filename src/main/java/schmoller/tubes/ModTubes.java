@@ -36,9 +36,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.Type;
-
+import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
@@ -101,6 +99,7 @@ public class ModTubes extends TubesAPI
 		config.save();
 		
 		MinecraftForge.EVENT_BUS.register(this);
+		FMLCommonHandler.instance().bus().register(this);
 		FilterRegistry.registerFilterFactory(new BasicFilterFactory());
 		
 		creativeTab = new TubeCreativeTab();
@@ -229,9 +228,8 @@ public class ModTubes extends TubesAPI
 	}
 
 	@SubscribeEvent
-	public void onTick(TickEvent event)
+	public void onTick(ClientTickEvent event)
 	{
-		if(event.type == Type.CLIENT)
-			++mClientTickCounter;
+		++mClientTickCounter;
 	}
 }
