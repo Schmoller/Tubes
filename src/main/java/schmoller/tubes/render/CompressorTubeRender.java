@@ -41,7 +41,7 @@ public class CompressorTubeRender extends NormalTubeRender
 	
 	private void renderPumps(int connections)
 	{
-		FMLClientHandler.instance().getClient().renderGlobal.renderEngine.bindTexture(TypeCompressorTube.pumpTexture);
+		FMLClientHandler.instance().getClient().renderEngine.bindTexture(TypeCompressorTube.pumpTexture);
 		
 		mRender.setTextureIndex(0);
 		mRender.setTextureSize(1, 1);
@@ -155,7 +155,7 @@ public class CompressorTubeRender extends NormalTubeRender
 		
 		Tessellator tes = Tessellator.instance;
 		
-		FMLClientHandler.instance().getClient().renderGlobal.renderEngine.bindTexture(TextureMap.locationBlocksTexture);
+		FMLClientHandler.instance().getClient().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
 		tes.startDrawingQuads();
 		
 		renderCore(0, type, -1);

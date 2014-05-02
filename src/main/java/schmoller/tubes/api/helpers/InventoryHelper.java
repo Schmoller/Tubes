@@ -45,14 +45,14 @@ public class InventoryHelper
 				inv.setInventorySlotContents(slot, item.copy());
 				item.stackSize = 0;
 			}
-			inv.onInventoryChanged();
+			inv.markDirty();
 		}
 		else if(existing.isItemEqual(item) && ItemStack.areItemStackTagsEqual(existing, item))
 		{
 			int toAdd = Math.min(inv.getInventoryStackLimit(), Math.min(item.stackSize, existing.getMaxStackSize() - existing.stackSize));
 			existing.stackSize += toAdd;
 			item.stackSize -= toAdd;
-			inv.onInventoryChanged();
+			inv.markDirty();
 		}
 	}
 }

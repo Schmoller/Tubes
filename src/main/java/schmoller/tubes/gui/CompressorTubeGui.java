@@ -20,8 +20,8 @@ public class CompressorTubeGui extends GuiExtContainer
 	protected void drawGuiContainerForegroundLayer( int curX, int curY )
 	{
 		String s = StatCollector.translateToLocal("tubes.compressor.name");
-		fontRenderer.drawString(s, xSize / 2 - fontRenderer.getStringWidth(s) / 2, 6, 0x404040);
-        fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, this.ySize - 96 + 2, 0x404040);
+		fontRendererObj.drawString(s, xSize / 2 - fontRendererObj.getStringWidth(s) / 2, 6, 0x404040);
+		fontRendererObj.drawString(StatCollector.translateToLocal("container.inventory"), 8, this.ySize - 96 + 2, 0x404040);
         
 		super.drawGuiContainerForegroundLayer(curX, curY);
 	}

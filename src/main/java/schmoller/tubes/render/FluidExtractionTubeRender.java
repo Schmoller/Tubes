@@ -64,7 +64,7 @@ public class FluidExtractionTubeRender extends ExtractionTubeRender
 	
 	private void renderPump(int side, float animTime)
 	{
-		FMLClientHandler.instance().getClient().renderGlobal.renderEngine.bindTexture(TypeFluidExtractionTube.pumpTexture);
+		FMLClientHandler.instance().getClient().renderEngine.bindTexture(TypeFluidExtractionTube.pumpTexture);
 		
 		mRender.setTextureIndex(0);
 		mRender.setTextureSize(1, 1);
@@ -123,7 +123,7 @@ public class FluidExtractionTubeRender extends ExtractionTubeRender
 		
 		GL11.glDisable(GL11.GL_CULL_FACE);
 		
-		FMLClientHandler.instance().getClient().renderGlobal.renderEngine.bindTexture(TextureMap.locationBlocksTexture);
+		FMLClientHandler.instance().getClient().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
 		tes.startDrawingQuads();
 		
 		mRender.setIcon(type.getCenterIcon());

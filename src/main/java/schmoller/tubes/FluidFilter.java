@@ -13,7 +13,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraftforge.fluids.FluidStack;
 import schmoller.tubes.api.FluidPayload;
 import schmoller.tubes.api.Payload;
@@ -111,11 +111,11 @@ public class FluidFilter implements IFilter
 	}
 	
 	@SideOnly(Side.CLIENT)
-	private void renderBlock(Icon icon, int x, int y, int sprite)
+	private void renderBlock(IIcon icon, int x, int y, int sprite)
 	{
 		Minecraft.getMinecraft().getTextureManager().bindTexture(Minecraft.getMinecraft().getTextureManager().getResourceLocation(sprite));
         GL11.glPushMatrix();
-        GL11.glTranslatef((float)(x - 2), (float)(y + 3), -3.0F + 200);
+        GL11.glTranslatef(x - 2, y + 3, -3.0F + 200);
         GL11.glScalef(10.0F, 10.0F, 10.0F);
         GL11.glTranslatef(1.0F, 0.5F, 1.0F);
         GL11.glScalef(1.0F, 1.0F, -1.0F);
@@ -148,7 +148,7 @@ public class FluidFilter implements IFilter
 		
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
         
-        Icon icon = mTemplate.getFluid().getIcon(mTemplate);
+		IIcon icon = mTemplate.getFluid().getIcon(mTemplate);
         Minecraft.getMinecraft().getTextureManager().bindTexture(Minecraft.getMinecraft().getTextureManager().getResourceLocation(mTemplate.getFluid().getSpriteNumber()));
         
         renderBlock(icon, x, y, mTemplate.getFluid().getSpriteNumber());
@@ -206,7 +206,7 @@ public class FluidFilter implements IFilter
 	@SideOnly(Side.CLIENT)
 	public List<String> getTooltip( List<String> current )
 	{
-		return Arrays.asList("\u00a7" + Integer.toHexString(mTemplate.getFluid().getRarity(mTemplate).rarityColor) + mTemplate.getFluid().getLocalizedName());
+		return Arrays.asList(mTemplate.getFluid().getRarity(mTemplate).rarityColor + mTemplate.getFluid().getLocalizedName());
 	}
 	
 	@Override

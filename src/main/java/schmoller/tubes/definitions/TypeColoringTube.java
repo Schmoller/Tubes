@@ -1,7 +1,7 @@
 package schmoller.tubes.definitions;
 
-import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.util.Icon;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.util.IIcon;
 import codechicken.lib.vec.Cuboid6;
 import codechicken.multipart.TMultiPart;
 import schmoller.tubes.api.TubeDefinition;
@@ -9,23 +9,23 @@ import schmoller.tubes.types.ColoringTube;
 
 public class TypeColoringTube extends TubeDefinition
 {
-	public static Icon center;
-	public static Icon paint;
+	public static IIcon center;
+	public static IIcon paint;
 	
 	@Override
-	public void registerIcons( IconRegister register )
+	public void registerIcons( IIconRegister register )
 	{
 		center = register.registerIcon("tubes:tube-coloring");
 		paint = register.registerIcon("tubes:tube-coloring-paint");
 	}
 	@Override
-	public Icon getCenterIcon()
+	public IIcon getCenterIcon()
 	{
 		return TypeNormalTube.centerIcon;
 	}
 
 	@Override
-	public Icon getStraightIcon()
+	public IIcon getStraightIcon()
 	{
 		return TypeNormalTube.straightIcon;
 	}

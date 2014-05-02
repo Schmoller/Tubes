@@ -32,8 +32,8 @@ public class RoutingTubeGui extends GuiExtContainer
 	protected void drawGuiContainerForegroundLayer( int curX, int curY )
 	{
 		String s = StatCollector.translateToLocal("tubes.routing.name");
-		fontRenderer.drawString(s, xSize / 2 - fontRenderer.getStringWidth(s) / 2, 6, 0x404040);
-        fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, this.ySize - 96 + 2, 0x404040);
+		fontRendererObj.drawString(s, xSize / 2 - fontRendererObj.getStringWidth(s) / 2, 6, 0x404040);
+		fontRendererObj.drawString(StatCollector.translateToLocal("container.inventory"), 8, this.ySize - 96 + 2, 0x404040);
         
         super.drawGuiContainerForegroundLayer(curX, curY);
 
@@ -49,7 +49,7 @@ public class RoutingTubeGui extends GuiExtContainer
 				{
 					String text = mTube.getDirection(i).toString();
 
-					drawHoveringText(Arrays.asList(text), xx, yy, fontRenderer);
+					drawHoveringText(Arrays.asList(text), xx, yy, fontRendererObj);
 					RenderHelper.enableGUIStandardItemLighting();
 				}
 				else if(yy >= 107 && yy <= 121) // Colour button
@@ -59,7 +59,7 @@ public class RoutingTubeGui extends GuiExtContainer
 					if(colour != -1)
 						text = CommonHelper.getDyeName(colour);
 					
-					drawHoveringText(Arrays.asList(text), xx, yy, fontRenderer);
+					drawHoveringText(Arrays.asList(text), xx, yy, fontRendererObj);
 					RenderHelper.enableGUIStandardItemLighting();
 				}
 			}

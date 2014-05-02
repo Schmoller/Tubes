@@ -14,7 +14,6 @@ import schmoller.tubes.gui.FilterTubeGui;
 import schmoller.tubes.gui.InjectionTubeGui;
 import schmoller.tubes.gui.RequestingTubeGui;
 import schmoller.tubes.gui.RoutingTubeGui;
-import schmoller.tubes.network.ModPacket;
 import schmoller.tubes.render.BufferTubeRender;
 import schmoller.tubes.render.ColoringTubeRender;
 import schmoller.tubes.render.CompressorTubeRender;
@@ -39,7 +38,6 @@ import schmoller.tubes.types.FilterTube;
 import schmoller.tubes.types.InjectionTube;
 import schmoller.tubes.types.RequestingTube;
 import schmoller.tubes.types.RoutingTube;
-import cpw.mods.fml.common.network.Player;
 
 public class ClientProxy extends CommonProxy
 {
@@ -55,8 +53,8 @@ public class ClientProxy extends CommonProxy
 	
 	private void registerRenderers()
 	{
-		MinecraftForgeClient.registerItemRenderer(Items.Tube.getItemID(), new RenderTubeItem());
-		MinecraftForgeClient.registerItemRenderer(Items.TubeCap.getItemID(), new RenderTubeCap());
+		MinecraftForgeClient.registerItemRenderer(Items.Tube.getItem(), new RenderTubeItem());
+		MinecraftForgeClient.registerItemRenderer(Items.TubeCap.getItem(), new RenderTubeCap());
 		
 		TubeRegistry.registerRenderer("basic",new NormalTubeRender());
 		TubeRegistry.registerRenderer("restriction",new RestrictionTubeRender());
@@ -75,12 +73,6 @@ public class ClientProxy extends CommonProxy
 		
 		PayloadRegistry.registerPayloadRenderer("item", new ItemPayloadRender());
 		PayloadRegistry.registerPayloadRenderer("fluid", new FluidPayloadRender());
-	}
-	
-	@Override
-	public boolean onPacketArrive( ModPacket packet, Player sender )
-	{
-		return super.onPacketArrive(packet, sender);
 	}
 	
 	@Override

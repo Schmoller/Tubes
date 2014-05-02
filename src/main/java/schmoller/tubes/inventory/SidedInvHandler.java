@@ -48,7 +48,7 @@ public class SidedInvHandler implements IPayloadHandler<ItemPayload>
 			if(remaining.stackSize <= 0)
 			{
 				if(doAdd)
-					mInv.onInventoryChanged();
+					mInv.markDirty();
 				return null;
 			}
 		}
@@ -80,13 +80,13 @@ public class SidedInvHandler implements IPayloadHandler<ItemPayload>
 			if(remaining.stackSize <= 0)
 			{
 				if(doAdd)
-					mInv.onInventoryChanged();
+					mInv.markDirty();
 				return null;
 			}
 		}
 		
 		if(remaining.stackSize != payload.size() && doAdd)
-			mInv.onInventoryChanged();
+			mInv.markDirty();
 			
 		
 		// Some was left over
@@ -175,7 +175,7 @@ public class SidedInvHandler implements IPayloadHandler<ItemPayload>
 		}
 		
 		if(pulled != null && doExtract)
-			mInv.onInventoryChanged();
+			mInv.markDirty();
 
 		return (pulled == null ? null : new ItemPayload(pulled));
 	}

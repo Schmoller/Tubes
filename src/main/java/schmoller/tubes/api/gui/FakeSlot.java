@@ -5,6 +5,7 @@ import java.util.List;
 import schmoller.tubes.api.FilterRegistry;
 import schmoller.tubes.api.interfaces.IFilter;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -32,7 +33,7 @@ public abstract class FakeSlot extends Slot
 		if(filter == null)
 			return null;
 		
-		ItemStack item = new ItemStack(1, 1, 0);
+		ItemStack item = new ItemStack(Blocks.stone, 1, 0);
 		NBTTagCompound tag = new NBTTagCompound();
 		NBTTagCompound data = new NBTTagCompound();
 		

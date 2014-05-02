@@ -49,7 +49,7 @@ public class EjectionTubeRender extends NormalTubeRender
 		
 		Tessellator tes = Tessellator.instance;
 		
-		FMLClientHandler.instance().getClient().renderGlobal.renderEngine.bindTexture(TextureMap.locationBlocksTexture);
+		FMLClientHandler.instance().getClient().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
 		tes.startDrawingQuads();
 		
 		mRender.setIcon(type.getCenterIcon());

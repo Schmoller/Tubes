@@ -4,15 +4,13 @@ import net.minecraft.block.Block;
 
 public enum Blocks
 {
-	BlockPlastic(1027, "PlasticBlock");
+	BlockPlastic("PlasticBlock");
 	
-	private int mBlockId;
 	private Block mBlock = null;
 	private String mConfigName;
 	
-	private Blocks(int defaultId, String configName)
+	private Blocks(String configName)
 	{
-		mBlockId = defaultId;
 		mConfigName = configName;
 	}
 	
@@ -21,22 +19,16 @@ public enum Blocks
 		return mConfigName;
 	}
 	
-	public int getBlockID()
-	{
-		return mBlockId;
-	}
-	
 	public Block getBlock()
 	{
 		return mBlock;
 	}
 	
-	public void initialize(int blockId, Block block)
+	public void initialize(Block block)
 	{
 		if(mBlock != null)
 			throw new IllegalStateException("Block is already initialized");
 		
-		mBlockId = blockId;
 		mBlock = block;
 	}
 }

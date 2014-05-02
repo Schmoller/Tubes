@@ -1,8 +1,9 @@
 package schmoller.tubes.network;
 
-import java.io.DataInput;
-import java.io.DataOutput;
 import java.io.IOException;
+
+import codechicken.lib.data.MCDataInput;
+import codechicken.lib.data.MCDataOutput;
 
 public class ModBlockPacket extends ModPacket
 {
@@ -24,7 +25,7 @@ public class ModBlockPacket extends ModPacket
 	}
 	
 	@Override
-	public void write( DataOutput output ) throws IOException
+	public void write( MCDataOutput output ) throws IOException
 	{
 		output.writeInt(xCoord);
 		output.writeInt(yCoord);
@@ -32,7 +33,7 @@ public class ModBlockPacket extends ModPacket
 	}
 
 	@Override
-	public void read( DataInput input ) throws IOException
+	public void read( MCDataInput input ) throws IOException
 	{
 		xCoord = input.readInt();
 		yCoord = input.readInt();

@@ -4,15 +4,14 @@ import java.util.ArrayList;
 
 import schmoller.tubes.AdvRender;
 import schmoller.tubes.api.Items;
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
-import codechicken.lib.lighting.LazyLightMatrix;
 import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Transformation;
@@ -28,7 +27,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class TubeCap extends JCuboidPart implements TFacePart, JNormalOcclusion
 {
 	private int mSlot = 0;
-	public static Icon icon;
+	public static IIcon icon;
 	@SideOnly(Side.CLIENT)
 	private AdvRender mRender;
 	
@@ -66,13 +65,13 @@ public class TubeCap extends JCuboidPart implements TFacePart, JNormalOcclusion
 	@Override
 	public boolean occlusionTest( TMultiPart npart )
 	{
-		return NormalOcclusionTest.apply((JNormalOcclusion)this, npart);
+		return NormalOcclusionTest.apply(this, npart);
 	}
 	
 	@Override
 	public float getStrength( MovingObjectPosition hit, EntityPlayer player )
 	{
-		return player.getCurrentPlayerStrVsBlock(Block.netherrack, false, 0) /  Block.netherrack.blockHardness;
+		return player.getCurrentPlayerStrVsBlock(Blocks.netherrack, false) /  Blocks.netherrack.getBlockHardness(player.worldObj, hit.blockX, hit.blockY, hit.blockZ);
 	}
 
 	@Override
@@ -135,7 +134,7 @@ public class TubeCap extends JCuboidPart implements TFacePart, JNormalOcclusion
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderStatic( final Vector3 pos, LazyLightMatrix olm, int pass )
+	public boolean renderStatic( final Vector3 pos, int pass )
 	{
 		if(mRender == null)
 			mRender = new AdvRender();
@@ -153,6 +152,7 @@ public class TubeCap extends JCuboidPart implements TFacePart, JNormalOcclusion
 		mRender.setIcon(icon);
 		
 		mRender.drawBox(63, (float)boxes[mSlot].min.x, (float)boxes[mSlot].min.y, (float)boxes[mSlot].min.z, (float)boxes[mSlot].max.x, (float)boxes[mSlot].max.y, (float)boxes[mSlot].max.z);
+		return true;
 	}
 
 	@Override

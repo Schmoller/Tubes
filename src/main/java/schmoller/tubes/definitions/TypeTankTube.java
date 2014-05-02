@@ -2,30 +2,30 @@ package schmoller.tubes.definitions;
 
 import codechicken.lib.vec.Cuboid6;
 import codechicken.multipart.TMultiPart;
-import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.util.Icon;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.util.IIcon;
 import schmoller.tubes.api.TubeDefinition;
 import schmoller.tubes.types.TankTube;
 
 public class TypeTankTube extends TubeDefinition
 {
-	public static Icon coreIcon;
-	public static Icon coreOpenIcon;
+	public static IIcon coreIcon;
+	public static IIcon coreOpenIcon;
 	
 	@Override
-	public void registerIcons( IconRegister register )
+	public void registerIcons( IIconRegister register )
 	{
 		coreIcon = register.registerIcon("Tubes:tube-tank");
 		coreOpenIcon = register.registerIcon("Tubes:tube-tank-top");
 	}
 	
 	@Override
-	public Icon getCenterIcon()
+	public IIcon getCenterIcon()
 	{
 		return coreIcon;
 	}
 	
-	public Icon getStraightIcon() 
+	public IIcon getStraightIcon() 
 	{
 		return TypeNormalTube.straightIcon;
 	}

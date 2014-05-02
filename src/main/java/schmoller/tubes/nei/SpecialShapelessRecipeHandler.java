@@ -149,7 +149,7 @@ public class SpecialShapelessRecipeHandler extends TemplateRecipeHandler
 	                {
 	                	ItemStack toMatch = (ItemStack)obj;
 	                	
-	                	if(ingredient.itemID != toMatch.itemID)
+	                	if(ingredient.getItem() != toMatch.getItem())
 	                		continue;
 	                	
 	                	if(ingredient.getItemDamage() != toMatch.getItemDamage() && toMatch.getItemDamage() != OreDictionary.WILDCARD_VALUE)
@@ -168,7 +168,7 @@ public class SpecialShapelessRecipeHandler extends TemplateRecipeHandler
 	                	boolean matched = false;
 	                	for(ItemStack toMatch : toMatchAny)
 	                	{
-	                		if(ingredient.itemID != toMatch.itemID)
+	                		if(ingredient.getItem() != toMatch.getItem())
 	                			continue;
 	                    	
 	                    	if(ingredient.getItemDamage() != toMatch.getItemDamage() && toMatch.getItemDamage() != OreDictionary.WILDCARD_VALUE)

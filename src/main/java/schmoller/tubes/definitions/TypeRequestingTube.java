@@ -1,8 +1,8 @@
 package schmoller.tubes.definitions;
 
 import codechicken.lib.vec.Cuboid6;
-import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.util.Icon;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import schmoller.tubes.api.TubeDefinition;
 import schmoller.tubes.api.helpers.BaseTube;
@@ -10,23 +10,23 @@ import schmoller.tubes.types.RequestingTube;
 
 public class TypeRequestingTube extends TubeDefinition
 {
-	public static Icon icon;
+	public static IIcon icon;
 	public static ResourceLocation gui = new ResourceLocation("tubes", "textures/gui/requesterTube.png");
 	
 	@Override
-	public void registerIcons( IconRegister register )
+	public void registerIcons( IIconRegister register )
 	{
 		icon = register.registerIcon("Tubes:tube-requesting");
 	}
 	
 	@Override
-	public Icon getCenterIcon()
+	public IIcon getCenterIcon()
 	{
 		return TypeNormalTube.centerIcon;
 	}
 
 	@Override
-	public Icon getStraightIcon()
+	public IIcon getStraightIcon()
 	{
 		return TypeNormalTube.straightIcon;
 	}

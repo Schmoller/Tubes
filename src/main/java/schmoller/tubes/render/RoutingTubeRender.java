@@ -5,7 +5,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import schmoller.tubes.api.InteractionHandler;
 import schmoller.tubes.api.TubeDefinition;
 import schmoller.tubes.api.helpers.CommonHelper;
@@ -169,7 +169,7 @@ public class RoutingTubeRender extends NormalTubeRender
 		
 		Tessellator tes = Tessellator.instance;
 		
-		FMLClientHandler.instance().getClient().renderGlobal.renderEngine.bindTexture(TextureMap.locationBlocksTexture);
+		FMLClientHandler.instance().getClient().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
 		tes.startDrawingQuads();
 		
 		mRender.setIcon(TypeRoutingTube.center);

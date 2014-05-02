@@ -97,7 +97,7 @@ public class BasicTube extends BaseTube implements ITubeConnectable
 	@Override
 	public boolean activate( EntityPlayer player, MovingObjectPosition part, ItemStack item )
 	{
-		if(item == null || item.itemID == 0)
+		if(item == null || item.getItem() != null)
 			return false;
 		
 		FluidStack liquid = FluidContainerRegistry.getFluidForFilledItem(item);

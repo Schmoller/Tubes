@@ -70,13 +70,13 @@ public class InjectionTube extends BaseTube implements ISidedInventory, ITubeOve
 	}
 
 	@Override
-	public String getInvName()
+	public String getInventoryName()
 	{
 		return "container.inventory";
 	}
 
 	@Override
-	public boolean isInvNameLocalized()
+	public boolean hasCustomInventoryName()
 	{
 		return false;
 	}
@@ -88,7 +88,7 @@ public class InjectionTube extends BaseTube implements ISidedInventory, ITubeOve
 	}
 
 	@Override
-	public void onInventoryChanged()
+	public void markDirty()
 	{
 	}
 
@@ -99,10 +99,10 @@ public class InjectionTube extends BaseTube implements ISidedInventory, ITubeOve
 	}
 
 	@Override
-	public void openChest() {}
+	public void openInventory() {}
 
 	@Override
-	public void closeChest() {}
+	public void closeInventory() {}
 
 	@Override
 	public boolean isItemValidForSlot( int i, ItemStack itemstack )

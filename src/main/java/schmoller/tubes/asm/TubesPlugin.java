@@ -39,13 +39,6 @@ public class TubesPlugin implements IFMLLoadingPlugin
 	}
 	
 	@Override
-	@Deprecated
-	public String[] getLibraryRequestClass()
-	{
-		return null;
-	}
-
-	@Override
 	public String[] getASMTransformerClass()
 	{
 		versionCheck("[1.6.2,1.6.4]", "Tubes");
@@ -105,6 +98,12 @@ public class TubesPlugin implements IFMLLoadingPlugin
 	{
 		if(data.containsKey("coremodLocation"))
             location = (File)data.get("coremodLocation");
+	}
+
+	@Override
+	public String getAccessTransformerClass() 
+	{
+		return null;
 	}
 
 	

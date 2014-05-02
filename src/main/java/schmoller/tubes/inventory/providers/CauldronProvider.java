@@ -1,7 +1,7 @@
 package schmoller.tubes.inventory.providers;
 
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -52,7 +52,7 @@ public class CauldronProvider implements IInterfaceProvider<IFluidHandler>
 				if(doFill)
 				{
 					((World)mBlock.world).setBlockMetadataWithNotify(mBlock.x, mBlock.y, mBlock.z, meta + filled, 2);
-					((World)mBlock.world).func_96440_m(mBlock.x, mBlock.y, mBlock.z, mBlock.world.getBlockId(mBlock.x, mBlock.y, mBlock.z));
+					((World)mBlock.world).notifyBlockOfNeighborChange(mBlock.x, mBlock.y, mBlock.z, mBlock.world.getBlock(mBlock.x, mBlock.y, mBlock.z));
 				}
 					
 				return Math.min((int)(filled * (1000/3D)), resource.amount);
@@ -85,7 +85,7 @@ public class CauldronProvider implements IInterfaceProvider<IFluidHandler>
 			if(doDrain)
 			{
 				((World)mBlock.world).setBlockMetadataWithNotify(mBlock.x, mBlock.y, mBlock.z, meta - drained, 2);
-				((World)mBlock.world).func_96440_m(mBlock.x, mBlock.y, mBlock.z, mBlock.world.getBlockId(mBlock.x, mBlock.y, mBlock.z));
+				((World)mBlock.world).notifyBlockOfNeighborChange(mBlock.x, mBlock.y, mBlock.z, mBlock.world.getBlock(mBlock.x, mBlock.y, mBlock.z));
 			}
 			
 			return new FluidStack(FluidRegistry.WATER, drained * 333);

@@ -20,8 +20,8 @@ public class InjectionTubeGui extends GuiContainer
 	protected void drawGuiContainerForegroundLayer( int par1, int par2 )
 	{
 		String s = StatCollector.translateToLocal("tubes.injection.name");
-		fontRenderer.drawString(s, this.xSize / 2 - this.fontRenderer.getStringWidth(s) / 2, 6, 0x404040);
-        fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, this.ySize - 96 + 2, 0x404040);
+		fontRendererObj.drawString(s, this.xSize / 2 - this.fontRendererObj.getStringWidth(s) / 2, 6, 0x404040);
+		fontRendererObj.drawString(StatCollector.translateToLocal("container.inventory"), 8, this.ySize - 96 + 2, 0x404040);
         
 		super.drawGuiContainerForegroundLayer(par1, par2);
 	}

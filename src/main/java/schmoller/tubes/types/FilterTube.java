@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraftforge.common.util.Constants;
 import schmoller.tubes.ItemFilter;
 import schmoller.tubes.ModTubes;
 import schmoller.tubes.api.FilterRegistry;
@@ -249,21 +250,21 @@ public class FilterTube extends BaseTube
 		
 		if(root.hasKey("filter"))
 		{
-			NBTTagList items = root.getTagList("filter");
+			NBTTagList items = root.getTagList("filter", Constants.NBT.TAG_COMPOUND);
 			
 			for(int i = 0; i < items.tagCount(); ++i)
 			{
-				NBTTagCompound tag = (NBTTagCompound)items.tagAt(i);
+				NBTTagCompound tag = items.getCompoundTagAt(i);
 				int slot = tag.getInteger("Slot");
 				mFilterStacks[slot] = new ItemFilter(ItemStack.loadItemStackFromNBT(tag), false);
 			}
 		}
 		else
 		{
-			NBTTagList filters = root.getTagList("NewFilter");
+			NBTTagList filters = root.getTagList("NewFilter", Constants.NBT.TAG_COMPOUND);
 			for(int i = 0; i < filters.tagCount(); ++i)
 			{
-				NBTTagCompound tag = (NBTTagCompound)filters.tagAt(i);
+				NBTTagCompound tag = filters.getCompoundTagAt(i);
 				int slot = tag.getInteger("Slot");
 				mFilterStacks[slot] = FilterRegistry.getInstance().readFilter(tag);
 			}

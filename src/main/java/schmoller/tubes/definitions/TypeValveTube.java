@@ -1,20 +1,20 @@
 package schmoller.tubes.definitions;
 
-import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.util.Icon;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.util.IIcon;
 import codechicken.multipart.TMultiPart;
 import schmoller.tubes.api.TubeDefinition;
 import schmoller.tubes.types.ValveTube;
 
 public class TypeValveTube extends TubeDefinition
 {
-	public static Icon valve;
-	public static Icon valveOpen;
-	public static Icon valveClosed;
-	public static Icon valveEdge;
+	public static IIcon valve;
+	public static IIcon valveOpen;
+	public static IIcon valveClosed;
+	public static IIcon valveEdge;
 	
 	@Override
-	public void registerIcons( IconRegister register )
+	public void registerIcons( IIconRegister register )
 	{
 		valve = register.registerIcon("tubes:tube-valve");
 		valveOpen = register.registerIcon("tubes:tube-valve-open");
@@ -23,13 +23,13 @@ public class TypeValveTube extends TubeDefinition
 	}
 	
 	@Override
-	public Icon getCenterIcon()
+	public IIcon getCenterIcon()
 	{
 		return TypeNormalTube.centerIcon;
 	}
 
 	@Override
-	public Icon getStraightIcon()
+	public IIcon getStraightIcon()
 	{
 		return TypeNormalTube.straightIcon;
 	}

@@ -3,13 +3,13 @@ package schmoller.tubes.parts;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import schmoller.tubes.api.TubeDefinition;
 import schmoller.tubes.api.TubeRegistry;
 import schmoller.tubes.api.TubesAPI;
@@ -19,7 +19,6 @@ import schmoller.tubes.api.interfaces.ITube;
 import codechicken.core.asm.InterfaceDependancies;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
-import codechicken.lib.lighting.LazyLightMatrix;
 import codechicken.lib.raytracer.IndexedCuboid6;
 import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Vector3;
@@ -53,7 +52,8 @@ public abstract class BaseTubePart extends JCuboidPart implements ITube, JNormal
 	@Override
 	public float getStrength( MovingObjectPosition hit, EntityPlayer player )
 	{
-		return player.getCurrentPlayerStrVsBlock(Block.netherrack, false, 0) /  Block.netherrack.blockHardness;
+		// TODO: Find alternative for this method
+		return player.getCurrentPlayerStrVsBlock(Blocks.netherrack, false) /  Blocks.netherrack.getBlockHardness(player.worldObj, hit.blockX, hit.blockY, hit.blockZ);
 	}
 	
 	@Override
@@ -71,7 +71,7 @@ public abstract class BaseTubePart extends JCuboidPart implements ITube, JNormal
 	@Override
 	public boolean occlusionTest( TMultiPart npart )
 	{
-		return NormalOcclusionTest.apply((JNormalOcclusion)this, npart);
+		return NormalOcclusionTest.apply(this, npart);
 	}
 	
 	@Override
@@ -207,9 +207,9 @@ public abstract class BaseTubePart extends JCuboidPart implements ITube, JNormal
 	
 	@Override
 	@SideOnly( Side.CLIENT )
-	public final void renderStatic(Vector3 pos, LazyLightMatrix olm, int pass) 
+	public final boolean renderStatic(Vector3 pos, int pass) 
 	{
-		RenderHelper.renderStatic(this, mDef);
+		return RenderHelper.renderStatic(this, mDef);
 	}
 	
 	@Override
@@ -228,14 +228,14 @@ public abstract class BaseTubePart extends JCuboidPart implements ITube, JNormal
 	
 	@Override
 	@SideOnly( Side.CLIENT )
-	public final Icon getBreakingIcon( Object subPart, int side )
+	public final IIcon getBreakingIcon( Object subPart, int side )
 	{
 		return getBrokenIcon(side);
 	}
 	
 	@Override
 	@SideOnly( Side.CLIENT )
-	public final Icon getBrokenIcon( int side )
+	public final IIcon getBrokenIcon( int side )
 	{
 		return mDef.getCenterIcon();
 	}

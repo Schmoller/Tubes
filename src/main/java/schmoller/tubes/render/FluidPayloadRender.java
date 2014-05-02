@@ -6,8 +6,8 @@ import org.lwjgl.opengl.GL12;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.util.Icon;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraft.util.IIcon;
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 import schmoller.tubes.AdvRender;
 import schmoller.tubes.ModTubes;
@@ -43,7 +43,7 @@ public class FluidPayloadRender implements IPayloadRender
 		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 		
-		Icon icon = fluid.getFluid().getIcon(fluid);
+		IIcon icon = fluid.getFluid().getIcon(fluid);
         
 		mRender.enableLighting = false;
         mRender.enableNormals = true;

@@ -18,9 +18,8 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -77,7 +76,7 @@ public class ItemPayloadRender implements IPayloadRender
 	public void renderItemStack(ItemStack item, double x, double y, double z)
 	{
 		if(mRender == null)
-			mRender = FMLClientHandler.instance().getClient().renderGlobal.renderEngine;
+			mRender = FMLClientHandler.instance().getClient().renderEngine;
 		
 		mDummy.setEntityItemStack(item);
 		
@@ -85,13 +84,11 @@ public class ItemPayloadRender implements IPayloadRender
 		GL11.glTranslated(x, y, z);
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 		
-		Block block = null;
-        if (item.itemID < Block.blocksList.length)
-            block = Block.blocksList[item.itemID];
-		
+		Block block = Block.getBlockFromItem(item.getItem());;
+        
         int count = getMiniBlockCount(item);
         
-        if((item.getItemSpriteNumber() == 0 && block != null && RenderBlocks.renderItemIn3d(Block.blocksList[item.itemID].getRenderType())) || MinecraftForgeClient.getItemRenderer(item, ENTITY) != null)
+        if((item.getItemSpriteNumber() == 0 && block != null && RenderBlocks.renderItemIn3d(block.getRenderType())) || MinecraftForgeClient.getItemRenderer(item, ENTITY) != null)
         {
         	mRand.setSeed(1234);
         	for (int i = 0; i < count; ++i)
@@ -133,7 +130,7 @@ public class ItemPayloadRender implements IPayloadRender
 	private void renderSingleItem(ItemStack item, Block block)
 	{
 		if(renderCustomItem(item)) {}
-		else if (item.getItemSpriteNumber() == 0 && block != null && RenderBlocks.renderItemIn3d(Block.blocksList[item.itemID].getRenderType()))
+		else if (item.getItemSpriteNumber() == 0 && block != null && RenderBlocks.renderItemIn3d(block.getRenderType()))
 		{
 			GL11.glRotatef(0.0F, 0.0F, 1.0F, 0.0F);
 
@@ -156,12 +153,12 @@ public class ItemPayloadRender implements IPayloadRender
                 for (int pass = 0; pass < item.getItem().getRenderPasses(item.getItemDamage()); ++pass)
                 {
                 	GL11.glPushMatrix();
-                    Icon icon = item.getItem().getIcon(item, pass);
+                    IIcon icon = item.getItem().getIcon(item, pass);
 
-                    int color = Item.itemsList[item.itemID].getColorFromItemStack(item, pass);
-                    float red = (float)(color >> 16 & 255) / 255.0F;
-                    float green = (float)(color >> 8 & 255) / 255.0F;
-                    float blue = (float)(color & 255) / 255.0F;
+                    int color = item.getItem().getColorFromItemStack(item, pass);
+                    float red = (color >> 16 & 255) / 255.0F;
+                    float green = (color >> 8 & 255) / 255.0F;
+                    float blue = (color & 255) / 255.0F;
                     GL11.glColor4f(red, green, blue, 1.0F);
                     renderDroppedItem(item, icon, red, green, blue);
                     GL11.glPopMatrix();
@@ -171,22 +168,22 @@ public class ItemPayloadRender implements IPayloadRender
             {
                 GL11.glScalef(0.5F, 0.5F, 0.5F);
 
-                Icon icon = item.getIconIndex();
+                IIcon icon = item.getIconIndex();
 
                 if (item.getItemSpriteNumber() == 0)
                 	mRender.bindTexture(TextureMap.locationBlocksTexture);
                 else
                 	mRender.bindTexture(TextureMap.locationItemsTexture);
 
-                int color = Item.itemsList[item.itemID].getColorFromItemStack(item, 0);
-                float red = (float)(color >> 16 & 255) / 255.0F;
-                float green = (float)(color >> 8 & 255) / 255.0F;
-                float blue = (float)(color & 255) / 255.0F;
+                int color = item.getItem().getColorFromItemStack(item, 0);
+                float red = (color >> 16 & 255) / 255.0F;
+                float green = (color >> 8 & 255) / 255.0F;
+                float blue = (color & 255) / 255.0F;
                 renderDroppedItem(item, icon, red, green, blue);
             }
 		}
 	}
-	private void renderDroppedItem(ItemStack item, Icon icon, float red, float green, float blue)
+	private void renderDroppedItem(ItemStack item, IIcon icon, float red, float green, float blue)
 	{
 		if (icon == null)
 		{
@@ -221,14 +218,14 @@ public class ItemPayloadRender implements IPayloadRender
                 GL11.glPushMatrix();
                 float f14 = 0.125F;
                 GL11.glScalef(f14, f14, f14);
-                float f15 = (float)(Minecraft.getSystemTime() % 3000L) / 3000.0F * 8.0F;
+                float f15 = Minecraft.getSystemTime() % 3000L / 3000.0F * 8.0F;
                 GL11.glTranslatef(f15, 0.0F, 0.0F);
                 GL11.glRotatef(-50.0F, 0.0F, 0.0F, 1.0F);
                 ItemRenderer.renderItemIn2D(Tessellator.instance, 0.0F, 0.0F, 1.0F, 1.0F, 255, 255, 0.0625f);
                 GL11.glPopMatrix();
                 GL11.glPushMatrix();
                 GL11.glScalef(f14, f14, f14);
-                f15 = (float)(Minecraft.getSystemTime() % 4873L) / 4873.0F * 8.0F;
+                f15 = Minecraft.getSystemTime() % 4873L / 4873.0F * 8.0F;
                 GL11.glTranslatef(-f15, 0.0F, 0.0F);
                 GL11.glRotatef(10.0F, 0.0F, 0.0F, 1.0F);
                 ItemRenderer.renderItemIn2D(Tessellator.instance, 0.0F, 0.0F, 1.0F, 1.0F, 255, 255, 0.0625f);
@@ -261,7 +258,7 @@ public class ItemPayloadRender implements IPayloadRender
         boolean is3D = customRenderer.shouldUseRenderHelper(ENTITY, item, BLOCK_3D);
 
         mRender.bindTexture(mRender.getResourceLocation(item.getItemSpriteNumber()));
-        Block block = (item.itemID < Block.blocksList.length ? Block.blocksList[item.itemID] : null);
+        Block block = Block.getBlockFromItem(item.getItem());
         if (is3D || (block != null && RenderBlocks.renderItemIn3d(block.getRenderType())))
         {
             int renderType = (block != null ? block.getRenderType() : 1);

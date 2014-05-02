@@ -34,8 +34,8 @@ public class FilterTubeGui extends GuiExtContainer
 	protected void drawGuiContainerForegroundLayer( int curX, int curY )
 	{
 		String s = StatCollector.translateToLocal("tubes.filter.name");
-		fontRenderer.drawString(s, xSize / 2 - fontRenderer.getStringWidth(s) / 2, 6, 0x404040);
-        fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, this.ySize - 96 + 2, 0x404040);
+		fontRendererObj.drawString(s, xSize / 2 - fontRendererObj.getStringWidth(s) / 2, 6, 0x404040);
+		fontRendererObj.drawString(StatCollector.translateToLocal("container.inventory"), 8, this.ySize - 96 + 2, 0x404040);
         
         super.drawGuiContainerForegroundLayer(curX, curY);
 
@@ -46,7 +46,7 @@ public class FilterTubeGui extends GuiExtContainer
 		{
 			if(yy >= 19 && yy <= 33) // Mode button
 			{
-				drawHoveringText(Arrays.asList(StatCollector.translateToLocalFormatted("gui.filtertube.modestring", StatCollector.translateToLocal("gui.filtertube.mode." + mTube.getMode().name()))), xx, yy, fontRenderer);
+				drawHoveringText(Arrays.asList(StatCollector.translateToLocalFormatted("gui.filtertube.modestring", StatCollector.translateToLocal("gui.filtertube.mode." + mTube.getMode().name()))), xx, yy, fontRendererObj);
 				RenderHelper.enableGUIStandardItemLighting();
 			}
 			else if(yy >= 35 && yy <= 49) // Comparison button
@@ -55,7 +55,7 @@ public class FilterTubeGui extends GuiExtContainer
 				
 				int old = width;
 				width -= (xx + curX); 
-				drawHoveringText(Arrays.asList(text), xx, yy, fontRenderer);
+				drawHoveringText(Arrays.asList(text), xx, yy, fontRendererObj);
 				RenderHelper.enableGUIStandardItemLighting();
 				
 				width = old;
@@ -67,7 +67,7 @@ public class FilterTubeGui extends GuiExtContainer
 				if(colour != -1)
 					text = CommonHelper.getDyeName(colour);
 				
-				drawHoveringText(Arrays.asList(text), xx, yy, fontRenderer);
+				drawHoveringText(Arrays.asList(text), xx, yy, fontRendererObj);
 				RenderHelper.enableGUIStandardItemLighting();
 			}
 		}

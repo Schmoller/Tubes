@@ -35,9 +35,9 @@ public class DoubleChestProvider implements IInterfaceProvider
 				inventory = new InventoryLargeChest("", adjacent, inventory);
 			}
 			
-			if (chest.adjacentChestZPosition != null)
+			if (chest.adjacentChestZPos != null)
 			{
-				adjacent = chest.adjacentChestZPosition;
+				adjacent = chest.adjacentChestZPos;
 				inventory = new InventoryLargeChest("", inventory, adjacent);
 			}
 			

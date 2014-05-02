@@ -7,10 +7,11 @@ import schmoller.tubes.api.TubeRegistry;
 import schmoller.tubes.api.interfaces.IDirectionalTube;
 import schmoller.tubes.api.interfaces.ISpecialItemCompare;
 
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -25,16 +26,15 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ItemTubeBase extends JItemMultiPart implements ISpecialItemCompare
 {
 
-	public ItemTubeBase( int id )
+	public ItemTubeBase()
 	{
-		super(id);
 		setHasSubtypes(true);
 		setCreativeTab(ModTubes.creativeTab);
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void registerIcons( IconRegister register )
+	public void registerIcons( IIconRegister register )
 	{
 		itemIcon = register.registerIcon("missing");
 	}
@@ -44,7 +44,7 @@ public class ItemTubeBase extends JItemMultiPart implements ISpecialItemCompare
 	{
 		if(super.onItemUse(item, player, world, x, y, z, side, hitX, hitY, hitZ))
 		{
-			world.playSoundEffect(x + 0.5, y + 0.5, z + 0.5, Block.soundGlassFootstep.getPlaceSound(), (Block.soundGlassFootstep.getVolume() * 5.0F), Block.soundGlassFootstep.getPitch() * .9F);
+			world.playSoundEffect(x + 0.5, y + 0.5, z + 0.5, Blocks.glass.stepSound.func_150496_b(), (Blocks.glass.stepSound.getVolume() * 5.0F), Blocks.glass.stepSound.getPitch() * .9F);
 			return true;
 		}
 		
@@ -78,7 +78,7 @@ public class ItemTubeBase extends JItemMultiPart implements ISpecialItemCompare
 	{
 		ItemStack item = new ItemStack(this, amount);
 		
-		NBTTagCompound tag = new NBTTagCompound("tag");
+		NBTTagCompound tag = new NBTTagCompound();
 		tag.setString("tube", tubeType);
 		item.setTagCompound(tag);
 		
@@ -105,7 +105,7 @@ public class ItemTubeBase extends JItemMultiPart implements ISpecialItemCompare
 	@SuppressWarnings( { "unchecked", "rawtypes" } )
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void getSubItems( int id, CreativeTabs tab, List items )
+	public void getSubItems( Item item, CreativeTabs tab, List items )
 	{
 		for(String type : TubeRegistry.instance().getTypeNames())
 			items.add(createForType(type));

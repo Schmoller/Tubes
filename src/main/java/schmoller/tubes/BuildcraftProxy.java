@@ -1,12 +1,12 @@
 package schmoller.tubes;
 
 import net.minecraftforge.fluids.FluidRegistry;
-import buildcraft.api.recipes.RefineryRecipes;
+import buildcraft.core.recipes.RefineryRecipeManager;
 
 public class BuildcraftProxy
 {
 	public BuildcraftProxy()
 	{
-		RefineryRecipes.addRecipe(FluidRegistry.getFluidStack("fuel", 1), FluidRegistry.getFluidStack("plastic", 1), 8, 1);
+		RefineryRecipeManager.INSTANCE.addRecipe(FluidRegistry.getFluidStack("fuel", 1), FluidRegistry.getFluidStack("plastic", 1), 8, 1);
 	}
 }

@@ -1,53 +1,47 @@
 package schmoller.tubes.network;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
+
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet250CustomPayload;
+import net.minecraft.network.INetHandler;
+import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
-import cpw.mods.fml.common.FMLLog;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
-import cpw.mods.fml.common.network.IPacketHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.network.FMLEmbeddedChannel;
+import cpw.mods.fml.common.network.FMLOutboundHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
+import cpw.mods.fml.relauncher.Side;
 
-public class PacketManager implements IPacketHandler
+public class PacketManager extends SimpleChannelInboundHandler<ModPacket>
 {
 	protected String mChannel;
-	
-	protected static HashMap<Class<? extends ModPacket>, Integer> mTypeMap = new HashMap<Class<? extends ModPacket>, Integer>();
-	protected static HashMap<Integer, Class<? extends ModPacket>> mTypeMapRev = new HashMap<Integer, Class<? extends ModPacket>>();
-	
-	private static int sNextId = 0;
+	private int sNextId = 0;
 
-	private static HashMap<IModPacketHandler, Class<? extends ModPacket>[]> mHandlerFilters = new HashMap<IModPacketHandler, Class<? extends ModPacket>[]>();
-	private static HashSet<IModPacketHandler> mHandlers = new HashSet<IModPacketHandler>();
+	private HashMap<IModPacketHandler, Class<? extends ModPacket>[]> mHandlerFilters = new HashMap<IModPacketHandler, Class<? extends ModPacket>[]>();
+	private HashSet<IModPacketHandler> mHandlers = new HashSet<IModPacketHandler>();
+	private EnumMap<Side, FMLEmbeddedChannel> mChannels;
 	
-	public static int registerPacket(Class<? extends ModPacket> type)
+	protected FMLEmbeddedChannel client;
+	protected FMLEmbeddedChannel server;
+	
+	private ModPacketCodec mCodec;
+	
+	public void registerPacket(Class<? extends ModPacket> type)
 	{
-		if(mTypeMap.containsKey(type))
-			throw new RuntimeException("Packet already registered!");
-		
-		mTypeMap.put(type, sNextId);
-		mTypeMapRev.put(sNextId, type);
-		sNextId++;
-		
-		return sNextId-1;
+		mCodec.addDiscriminator(sNextId++, type);
 	}
 	
 	@SuppressWarnings( "unchecked" )
-	public static void registerHandler(IModPacketHandler handler, Class<? extends ModPacket>... filter)
+	public void registerHandler(IModPacketHandler handler, Class<? extends ModPacket>... filter)
 	{
 		mHandlers.add(handler);
 		
@@ -55,7 +49,7 @@ public class PacketManager implements IPacketHandler
 			mHandlerFilters.put(handler, filter);
 	}
 	
-	public static void deregisterHandler(IModPacketHandler handler)
+	public void deregisterHandler(IModPacketHandler handler)
 	{
 		mHandlers.remove(handler);
 		mHandlerFilters.remove(handler);
@@ -64,63 +58,59 @@ public class PacketManager implements IPacketHandler
 	public void initialize(String channel)
 	{
 		mChannel = channel;
-		NetworkRegistry.instance().registerChannel(this, channel);
+		mCodec = new ModPacketCodec();
+		mChannels = NetworkRegistry.INSTANCE.newChannel(channel, mCodec);
+		client = mChannels.get(Side.CLIENT);
+		server = mChannels.get(Side.SERVER);
+		
 		MinecraftForge.EVENT_BUS.register(this);
+		
+		if(FMLCommonHandler.instance().getSide() == Side.SERVER)
+		{
+			setupHandler(); 
+		}
 	}
 	
-	protected Packet250CustomPayload toPacket(ModPacket packet)
+	private void setupHandler()
 	{
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-		DataOutputStream output = new DataOutputStream(bytes);
-		
-		if(!mTypeMap.containsKey(packet.getClass()))
-			throw new RuntimeException("ModPacket '" + packet.getClass().getName() +"' has not been registered!");
-		
-		int id = mTypeMap.get(packet.getClass());
-		try
-		{
-			output.write(id);
-			packet.write(output);
-		}
-		catch(IOException e)
-		{
-			e.printStackTrace();
-			return null;
-		}
-		
-		Packet250CustomPayload finalPacket = new Packet250CustomPayload();
-		finalPacket.channel = mChannel;
-		finalPacket.isChunkDataPacket = false;
-		finalPacket.data = bytes.toByteArray();
-		finalPacket.length = finalPacket.data.length;
-		
-		return finalPacket;
+		FMLEmbeddedChannel channel = mChannels.get(Side.CLIENT);
+		String codec = channel.findChannelHandlerNameForType(ModPacketCodec.class);
+		channel.pipeline().addAfter(codec, "Handler", this);
 	}
 	
-	
-	public void sendPacketToServer(ModPacket packet) {}
+	public void sendPacketToServer(ModPacket packet) 
+	{
+		throw new IllegalStateException("Side is server!");
+	}
 
 	public void sendPacketToClient(ModPacket packet, EntityPlayer player) 
 	{
-		PacketDispatcher.sendPacketToPlayer(toPacket(packet), (Player)player);
+		server.attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.PLAYER);
+		server.attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(player);
+		server.writeAndFlush(packet);
 	}
 	
 	public void sendPacketToAllClients(ModPacket packet) 
 	{
-		PacketDispatcher.sendPacketToAllPlayers(toPacket(packet));
+		server.attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALL);
+		server.writeAndFlush(packet);
 	}
 	
-	public void sendPacketForBlock(ModBlockPacket packet, World world)
+	public void sendPacketToAllAround(ModPacket packet, World world, int x, int y, int z, int range) 
 	{
-		PacketDispatcher.sendPacketToAllAround(packet.xCoord, packet.yCoord, packet.zCoord, 200, world.provider.dimensionId, toPacket(packet));
+		server.attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALLAROUNDPOINT);
+		server.attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(new NetworkRegistry.TargetPoint(world.provider.dimensionId, x, y, z, range));
+		server.writeAndFlush(packet);
 	}
 	
 	public void sendPacketToWorld(ModPacket packet, World world) 
 	{
-		PacketDispatcher.sendPacketToAllInDimension(toPacket(packet), world.provider.dimensionId);
+		server.attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.DIMENSION);
+		server.attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(world.provider.dimensionId);
+		server.writeAndFlush(packet);
 	}
 	
-	@ForgeSubscribe
+	@SubscribeEvent
 	private void onServerStop(FMLServerStoppingEvent event)
 	{
 		mHandlers.clear();
@@ -128,85 +118,43 @@ public class PacketManager implements IPacketHandler
 	}
 	
 	
-	private ModPacket getPacket(int id)
-	{
-		try
-		{
-			Class<? extends ModPacket> clazz = mTypeMapRev.get(id);
-			
-			if(clazz == null)
-				return null;
-			
-			return clazz.newInstance();
-		}
-		catch(IllegalAccessException e)
-		{
-			e.printStackTrace();
-		}
-		catch ( InstantiationException e )
-		{
-			e.printStackTrace();
-		}
-		
-		return null;
-	}
-	
 	@Override
-	public void onPacketData( INetworkManager manager,	Packet250CustomPayload packet, Player player )
+	protected void channelRead0( ChannelHandlerContext ctx, ModPacket packet ) throws Exception
 	{
-		ByteArrayInputStream stream = new ByteArrayInputStream(packet.data);
-		DataInputStream input = new DataInputStream(stream);
+		Iterator<IModPacketHandler> it = mHandlers.iterator();
 		
-		try
+		while(it.hasNext())
 		{
-			// Read the packet
-			int id = input.readByte();
+			IModPacketHandler handler = it.next();
 			
-			ModPacket modPacket = getPacket(id);
-			
-			if(modPacket == null)
+			// Check the filter
+			Class<? extends ModPacket>[] filter = mHandlerFilters.get(handler);
+			if(filter != null)
 			{
-				FMLLog.warning(mChannel + " got bad packet id %d", id);
-				return;
-			}
-			
-			modPacket.read(input);
-			
-			// Send to handlers
-			Iterator<IModPacketHandler> it = mHandlers.iterator();
-			
-			while(it.hasNext())
-			{
-				IModPacketHandler handler = it.next();
-				
-				// Check the filter
-				Class<? extends ModPacket>[] filter = mHandlerFilters.get(handler);
-				if(filter != null)
+				boolean found = false;
+				for(Class<? extends ModPacket> clazz : filter)
 				{
-					boolean found = false;
-					for(Class<? extends ModPacket> clazz : filter)
+					if(clazz.isInstance(packet))
 					{
-						if(clazz.isInstance(modPacket))
-						{
-							found = true;
-							break;
-						}
+						found = true;
+						break;
 					}
-					if(!found)
-						continue;
 				}
-				
-				// Try handle
-				if(handler.onPacketArrive(modPacket, player))
-					break;
+				if(!found)
+					continue;
 			}
+			
+			EntityPlayer player = null;
+			
+			if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+			{
+				INetHandler netHandler = ctx.channel().attr(NetworkRegistry.NET_HANDLER).get();
+	            player = ((NetHandlerPlayServer)netHandler).playerEntity;
+			}
+			
+			// Try handle
+			if(handler.onPacketArrive(packet, player))
+				break;
 		}
-		catch(IOException e)
-		{
-			e.printStackTrace();
-		}
-		
-		
 	}
-
 }

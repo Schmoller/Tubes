@@ -3,21 +3,21 @@ package schmoller.tubes.definitions;
 import schmoller.tubes.api.TubeDefinition;
 import schmoller.tubes.api.helpers.BaseTube;
 import schmoller.tubes.types.BasicTube;
-import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.util.Icon;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.util.IIcon;
 
 public class TypeNormalTube extends TubeDefinition
 {
-	public static Icon centerIcon;
-	public static Icon straightIcon;
+	public static IIcon centerIcon;
+	public static IIcon straightIcon;
 	
-	public static Icon paintStraight;
-	public static Icon paintCenter;
+	public static IIcon paintStraight;
+	public static IIcon paintCenter;
 	
-	public static Icon itemBorder;
+	public static IIcon itemBorder;
 	
 	@Override
-	public void registerIcons( IconRegister register )
+	public void registerIcons( IIconRegister register )
 	{
 		centerIcon = register.registerIcon("Tubes:tube-center");
 		straightIcon = register.registerIcon("Tubes:tube");
@@ -27,12 +27,12 @@ public class TypeNormalTube extends TubeDefinition
 	}
 	
 	@Override
-	public Icon getCenterIcon()
+	public IIcon getCenterIcon()
 	{
 		return centerIcon;
 	}
 	
-	public Icon getStraightIcon() 
+	public IIcon getStraightIcon() 
 	{
 		return straightIcon;
 	}

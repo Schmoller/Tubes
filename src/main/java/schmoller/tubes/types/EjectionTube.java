@@ -1,6 +1,6 @@
 package schmoller.tubes.types;
 
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import schmoller.tubes.api.TubeItem;
 import schmoller.tubes.api.interfaces.ITubeConnectable;
 

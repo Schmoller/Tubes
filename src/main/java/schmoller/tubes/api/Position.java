@@ -1,6 +1,6 @@
 package schmoller.tubes.api;
 
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class Position
 {

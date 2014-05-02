@@ -4,8 +4,8 @@ import codechicken.lib.vec.Vector3;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraft.util.IIcon;
+import net.minecraftforge.common.util.ForgeDirection;
 import schmoller.tubes.ModTubes;
 import schmoller.tubes.api.PayloadRegistry;
 import schmoller.tubes.api.TubeDefinition;
@@ -62,10 +62,11 @@ public class RenderHelper
 		GL11.glPopMatrix();
 	}
 
-	public static void renderStatic( ITube tube, TubeDefinition definition )
+	public static boolean renderStatic( ITube tube, TubeDefinition definition )
 	{
 		ITubeRender render = TubeRegistry.instance().getRender(definition);
 		render.renderStatic(definition, tube, tube.world(), tube.x(), tube.y(), tube.z());
+		return true;
 	}
 	
 	public static void renderItem( ItemStack item, TubeDefinition definition )
@@ -74,7 +75,7 @@ public class RenderHelper
 		render.renderItem(definition, item);
 	}
 	
-	public static void renderIcon( Icon icon, int x, int y, int width, int height)
+	public static void renderIcon( IIcon icon, int x, int y, int width, int height)
 	{
 		Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();

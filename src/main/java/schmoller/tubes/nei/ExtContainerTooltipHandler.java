@@ -3,17 +3,18 @@ package schmoller.tubes.nei;
 import java.util.Collections;
 import java.util.List;
 
+import codechicken.nei.guihook.IContainerTooltipHandler;
+
 import schmoller.tubes.api.gui.FakeSlot;
 import schmoller.tubes.api.gui.GuiExtContainer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import codechicken.nei.forge.IContainerTooltipHandler;
 
 public class ExtContainerTooltipHandler implements IContainerTooltipHandler
 {
 	@Override
-	public List<String> handleTooltipFirst( GuiContainer gui, int x, int y, List<String> current )
+	public List<String> handleTooltip( GuiContainer gui, int x, int y, List<String> current )
 	{
 		if(!(gui instanceof GuiExtContainer))
 			return current;
@@ -51,9 +52,14 @@ public class ExtContainerTooltipHandler implements IContainerTooltipHandler
 	}
 
 	@Override
-	public List<String> handleItemTooltip( GuiContainer gui, ItemStack itemstack, List<String> currenttip )
+	public List<String> handleItemTooltip( GuiContainer gui, ItemStack itemstack, int x, int y, List<String> currenttip )
 	{
 		return currenttip;
 	}
-
+	
+	@Override
+	public List<String> handleItemDisplayName( GuiContainer gui, ItemStack item, List<String> currentName )
+	{
+		return currentName;
+	}
 }

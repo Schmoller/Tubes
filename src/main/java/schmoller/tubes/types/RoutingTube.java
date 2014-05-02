@@ -12,6 +12,7 @@ import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
+import net.minecraftforge.common.util.Constants;
 import schmoller.tubes.ItemFilter;
 import schmoller.tubes.ModTubes;
 import schmoller.tubes.api.FilterRegistry;
@@ -451,12 +452,12 @@ public class RoutingTube extends BaseTube
 		
 		list = new NBTTagList();
 		for(int i = 0; i < 9; ++i)
-			list.appendTag(new NBTTagInt("", mColours[i]));
+			list.appendTag(new NBTTagInt(mColours[i]));
 		root.setTag("Colours", list);
 		
 		list = new NBTTagList();
 		for(int i = 0; i < 9; ++i)
-			list.appendTag(new NBTTagInt("", mDir[i].ordinal()));
+			list.appendTag(new NBTTagInt(mDir[i].ordinal()));
 		root.setTag("Dirs", list);
 	}
 	
@@ -465,15 +466,15 @@ public class RoutingTube extends BaseTube
 	{
 		super.load(root);
 		
-		NBTTagList colours = root.getTagList("Colours");
-		NBTTagList directions = root.getTagList("Dirs");
+		NBTTagList colours = root.getTagList("Colours", Constants.NBT.TAG_INT);
+		NBTTagList directions = root.getTagList("Dirs", Constants.NBT.TAG_INT);
 
 		if(root.hasKey("Filter"))
 		{
-			NBTTagList filters = root.getTagList("Filter");
+			NBTTagList filters = root.getTagList("Filter", Constants.NBT.TAG_COMPOUND);
 			for(int i = 0; i < filters.tagCount(); ++i)
 			{
-				NBTTagCompound tag = (NBTTagCompound)filters.tagAt(i);
+				NBTTagCompound tag = filters.getCompoundTagAt(i);
 				
 				int row = tag.getInteger("Slot") % 4;
 				int column = tag.getInteger("Slot") / 4;
@@ -483,10 +484,10 @@ public class RoutingTube extends BaseTube
 		}
 		else
 		{
-			NBTTagList filters = root.getTagList("NewFilter");
+			NBTTagList filters = root.getTagList("NewFilter", Constants.NBT.TAG_COMPOUND);
 			for(int i = 0; i < filters.tagCount(); ++i)
 			{
-				NBTTagCompound tag = (NBTTagCompound)filters.tagAt(i);
+				NBTTagCompound tag = filters.getCompoundTagAt(i);
 				
 				int row = tag.getInteger("Slot") % 4;
 				int column = tag.getInteger("Slot") / 4;
@@ -496,10 +497,10 @@ public class RoutingTube extends BaseTube
 		}
 		
 		for(int i = 0; i < 9; ++i)
-			mColours[i] = ((NBTTagInt)colours.tagAt(i)).data;
+			mColours[i] = Integer.valueOf(colours.getStringTagAt(i));
 		
 		for(int i = 0; i < 9; ++i)
-			mDir[i] = RouteDirection.from(((NBTTagInt)directions.tagAt(i)).data);
+			mDir[i] = RouteDirection.from(Integer.valueOf(directions.getStringTagAt(i)));
 	}
 	
 	@Override

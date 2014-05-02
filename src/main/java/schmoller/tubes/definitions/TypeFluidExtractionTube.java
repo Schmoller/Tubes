@@ -1,7 +1,7 @@
 package schmoller.tubes.definitions;
 
-import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.util.Icon;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import schmoller.tubes.api.TubeDefinition;
 import schmoller.tubes.api.helpers.BaseTube;
@@ -9,23 +9,23 @@ import schmoller.tubes.types.FluidExtractionTube;
 
 public class TypeFluidExtractionTube extends TubeDefinition
 {
-	public static Icon icon;
+	public static IIcon icon;
 	public static ResourceLocation pumpTexture = new ResourceLocation("tubes", "textures/models/tube-extractor-pump.png");
 	
 	@Override
-	public void registerIcons( IconRegister register )
+	public void registerIcons( IIconRegister register )
 	{
 		icon = register.registerIcon("Tubes:tube-fluid-extraction");
 	}
 	
 	@Override
-	public Icon getCenterIcon()
+	public IIcon getCenterIcon()
 	{
 		return TypeNormalTube.centerIcon;
 	}
 
 	@Override
-	public Icon getStraightIcon()
+	public IIcon getStraightIcon()
 	{
 		return TypeNormalTube.straightIcon;
 	}

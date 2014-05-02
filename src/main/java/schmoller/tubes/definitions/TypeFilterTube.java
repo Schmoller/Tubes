@@ -1,8 +1,8 @@
 package schmoller.tubes.definitions;
 
 import codechicken.lib.vec.Cuboid6;
-import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.util.Icon;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import schmoller.tubes.api.TubeDefinition;
 import schmoller.tubes.api.helpers.BaseTube;
@@ -10,16 +10,16 @@ import schmoller.tubes.types.FilterTube;
 
 public class TypeFilterTube extends TubeDefinition
 {
-	public Icon centerIcon;
-	public Icon straightIcon;
+	public IIcon centerIcon;
+	public IIcon straightIcon;
 	
-	public static Icon filterIcon;
-	public static Icon filterOpenIcon;
+	public static IIcon filterIcon;
+	public static IIcon filterOpenIcon;
 	
 	public static ResourceLocation gui = new ResourceLocation("tubes", "textures/gui/filterTube.png");
 	
 	@Override
-	public void registerIcons( IconRegister register )
+	public void registerIcons( IIconRegister register )
 	{
 		centerIcon = register.registerIcon("Tubes:tube-center");
 		straightIcon = register.registerIcon("Tubes:tube");
@@ -28,12 +28,12 @@ public class TypeFilterTube extends TubeDefinition
 	}
 	
 	@Override
-	public Icon getCenterIcon()
+	public IIcon getCenterIcon()
 	{
 		return centerIcon;
 	}
 	
-	public Icon getStraightIcon() 
+	public IIcon getStraightIcon() 
 	{
 		return straightIcon;
 	}

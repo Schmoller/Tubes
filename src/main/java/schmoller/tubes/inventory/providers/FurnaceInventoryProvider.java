@@ -60,15 +60,15 @@ public class FurnaceInventoryProvider implements IInterfaceProvider
 		}
 
 		@Override
-		public String getInvName()
+		public String getInventoryName()
 		{
-			return mFurnace.getInvName();
+			return mFurnace.getInventoryName();
 		}
 
 		@Override
-		public boolean isInvNameLocalized()
+		public boolean hasCustomInventoryName()
 		{
-			return mFurnace.isInvNameLocalized();
+			return mFurnace.hasCustomInventoryName();
 		}
 
 		@Override
@@ -78,9 +78,9 @@ public class FurnaceInventoryProvider implements IInterfaceProvider
 		}
 
 		@Override
-		public void onInventoryChanged()
+		public void markDirty()
 		{
-			mFurnace.onInventoryChanged();
+			mFurnace.markDirty();
 		}
 
 		@Override
@@ -90,15 +90,15 @@ public class FurnaceInventoryProvider implements IInterfaceProvider
 		}
 
 		@Override
-		public void openChest()
+		public void openInventory()
 		{
-			mFurnace.openChest();
+			mFurnace.openInventory();
 		}
 
 		@Override
-		public void closeChest()
+		public void closeInventory()
 		{
-			mFurnace.closeChest();
+			mFurnace.closeInventory();
 		}
 
 		@Override

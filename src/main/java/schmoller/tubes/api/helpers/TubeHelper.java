@@ -13,14 +13,14 @@ import codechicken.multipart.TileMultipart;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class TubeHelper
 {
 	public static final Random rand = new Random();
 	public static ITubeConnectable getTubeConnectable(IBlockAccess world, int x, int y, int z)
 	{
-		return getTubeConnectable(world.getBlockTileEntity(x, y, z));
+		return getTubeConnectable(world.getTileEntity(x, y, z));
 	}
 	public static ITubeConnectable getTubeConnectable(TileEntity entity)
 	{
@@ -47,7 +47,7 @@ public class TubeHelper
 	 */
 	public static boolean isTubeConnectable(ITubeConnectable other, IBlockAccess world, int x, int y, int z, int side)
 	{
-		TileEntity ent = world.getBlockTileEntity(x, y, z);
+		TileEntity ent = world.getTileEntity(x, y, z);
 
 		ITubeConnectable con = getTubeConnectable(ent);
 		if(con != null)

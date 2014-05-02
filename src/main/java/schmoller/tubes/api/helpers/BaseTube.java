@@ -8,7 +8,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.common.util.ForgeDirection;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import codechicken.microblock.HollowMicroblock;
@@ -384,11 +385,11 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 	{
 		mItemsInTransit.clear();
 		
-		NBTTagList list = root.getTagList("items");
+		NBTTagList list = root.getTagList("items", Constants.NBT.TAG_COMPOUND);
 		
 		for(int i = 0; i < list.tagCount(); ++i)
 		{
-			NBTTagCompound tag = (NBTTagCompound)list.tagAt(i);
+			NBTTagCompound tag = list.getCompoundTagAt(i);
 			
 			mItemsInTransit.add(TubeItem.readFromNBT(tag));
 		}
@@ -463,7 +464,7 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 		
 		ForgeDirection dir = ForgeDirection.getOrientation(item.direction);
 		
-		TileEntity ent = world().getBlockTileEntity(x() + dir.offsetX, y() + dir.offsetY, z() + dir.offsetZ);
+		TileEntity ent = world().getTileEntity(x() + dir.offsetX, y() + dir.offsetY, z() + dir.offsetZ);
 		ITubeConnectable con = TubeHelper.getTubeConnectable(ent);
 		if(con != null)
 		{

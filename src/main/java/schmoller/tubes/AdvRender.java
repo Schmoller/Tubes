@@ -4,9 +4,9 @@ import java.util.Stack;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
@@ -34,7 +34,7 @@ public class AdvRender
 	private int[] textureFlip = new int[6];
 	
 	private int [] texIndex = new int[6];
-	private Icon[] texIcons = new Icon[6];
+	private IIcon[] texIcons = new IIcon[6];
 	
 	// Width in 16x16 icons
 	private int textureWidth = 16;
@@ -73,20 +73,20 @@ public class AdvRender
 			mCornerColors[i] = new Vector3f(1,1,1);
 	}
 	
-	public void setIcon(Icon icon)
+	public void setIcon(IIcon icon)
 	{
 		iconMode = true;
 		for(int i = 0; i < 6; ++i)
 			texIcons[i] = icon;
 	}
 	
-	public void setIcon(int side, Icon icon)
+	public void setIcon(int side, IIcon icon)
 	{
 		iconMode = true;
 		texIcons[side] = icon;
 	}
 	
-	public void setIcon(Icon down, Icon up, Icon north, Icon south, Icon west, Icon east)
+	public void setIcon(IIcon down, IIcon up, IIcon north, IIcon south, IIcon west, IIcon east)
 	{
 		iconMode = true;
 		texIcons[0] = down;
@@ -208,19 +208,19 @@ public class AdvRender
 
 	private int getMixedBrightnessForBlock(IBlockAccess world, int x, int y, int z)
 	{
-		int id = world.getBlockId(x, y, z);
-		if(Block.blocksList[id] != null)
-			return Block.blocksList[id].getMixedBrightnessForBlock(world, x, y, z);
+		Block block = world.getBlock(x, y, z);
+		if(block != null)
+			return block.getMixedBrightnessForBlock(world, x, y, z);
 		else
 			return world.getLightBrightnessForSkyBlocks(x, y, z, 0);
 	}
 	
 	private float getAmbientOcclusionLightValue(IBlockAccess world, int x, int y, int z)
 	{
-		int id = world.getBlockId(x, y, z);
+		Block block = world.getBlock(x, y, z);
 
-		if(Block.blocksList[id] != null)
-			return Block.blocksList[id].getAmbientOcclusionLightValue(world, x, y, z);
+		if(block != null)
+			return block.getAmbientOcclusionLightValue();
 		else
 			return 1.0f;
 	}
@@ -746,7 +746,7 @@ public class AdvRender
 		float skyVal = skyValTop * v + (1 - v) * skyValBottom;
 		float blockVal = blockValTop * v + (1 - v) * blockValBottom;
 		
-		return (int)Math.round(skyVal) << 20 | (int)Math.round(blockVal) << 4;
+		return Math.round(skyVal) << 20 | Math.round(blockVal) << 4;
 	}
 	
 	public void drawFaces(int faces)
@@ -817,7 +817,7 @@ public class AdvRender
 					tes.setColorRGBA_F(color.x, color.y, color.z, opacity);
 					
 					if (enableNormals)
-						tes.setNormal((float)ForgeDirection.getOrientation(i).offsetX, (float)ForgeDirection.getOrientation(i).offsetY, (float)ForgeDirection.getOrientation(i).offsetZ);
+						tes.setNormal(ForgeDirection.getOrientation(i).offsetX, ForgeDirection.getOrientation(i).offsetY, ForgeDirection.getOrientation(i).offsetZ);
 					
 					Vector4f vert = new Vector4f();
 					Matrix4f.transform(transform, new Vector4f(vertices[corners[i][v]].x, vertices[corners[i][v]].y, vertices[corners[i][v]].z,1), vert);

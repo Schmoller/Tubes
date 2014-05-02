@@ -20,7 +20,7 @@ public class CommonHelper
 	
 	public static TileEntity getTileEntity(IBlockAccess world, Position pos)
 	{
-		return world.getBlockTileEntity(pos.x, pos.y, pos.z);
+		return world.getTileEntity(pos.x, pos.y, pos.z);
 	}
 	
 	public static <T> T getTileEntity(IBlockAccess world, Position pos, Class<? extends T> tileClass)
@@ -31,7 +31,7 @@ public class CommonHelper
 	@SuppressWarnings("unchecked")
 	public static <T> T getTileEntity(IBlockAccess world, int x, int y, int z, Class<? extends T> tileClass)
 	{
-		TileEntity tile = world.getBlockTileEntity(x, y, z);
+		TileEntity tile = world.getTileEntity(x, y, z);
 		if(tileClass.isInstance(tile))
 			return (T)tile;
 		

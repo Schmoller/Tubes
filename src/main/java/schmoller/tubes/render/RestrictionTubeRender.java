@@ -185,7 +185,7 @@ public class RestrictionTubeRender extends NormalTubeRender
 		
 		GL11.glDisable(GL11.GL_CULL_FACE);
 		
-		FMLClientHandler.instance().getClient().renderGlobal.renderEngine.bindTexture(TextureMap.locationBlocksTexture);
+		FMLClientHandler.instance().getClient().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
 		tes.startDrawingQuads();
 		
 		mRender.setIcon(TypeRestrictionTube.straight);

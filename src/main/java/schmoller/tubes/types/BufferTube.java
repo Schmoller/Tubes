@@ -18,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraftforge.common.util.Constants;
 
 public class BufferTube extends DirectionalTube implements IInventory, ITubeOverflowDestination
 {
@@ -70,13 +71,13 @@ public class BufferTube extends DirectionalTube implements IInventory, ITubeOver
 	}
 
 	@Override
-	public String getInvName()
+	public String getInventoryName()
 	{
 		return "Buffer Tube";
 	}
 
 	@Override
-	public boolean isInvNameLocalized()
+	public boolean hasCustomInventoryName()
 	{
 		return true;
 	}
@@ -88,7 +89,7 @@ public class BufferTube extends DirectionalTube implements IInventory, ITubeOver
 	}
 
 	@Override
-	public void onInventoryChanged()
+	public void markDirty()
 	{
 	}
 
@@ -99,10 +100,10 @@ public class BufferTube extends DirectionalTube implements IInventory, ITubeOver
 	}
 
 	@Override
-	public void openChest()	{}
+	public void openInventory() {}
 
 	@Override
-	public void closeChest() {}
+	public void closeInventory() {}
 
 	@Override
 	public boolean isItemValidForSlot( int i, ItemStack itemstack )	{ return true; }
@@ -258,10 +259,10 @@ public class BufferTube extends DirectionalTube implements IInventory, ITubeOver
 		super.load(root);
 		mOverflow.load(root);
 		
-		NBTTagList items = root.getTagList("Slots");
+		NBTTagList items = root.getTagList("Slots", Constants.NBT.TAG_COMPOUND);
 		for(int i = 0; i < items.tagCount(); ++i)
 		{
-			NBTTagCompound tag = (NBTTagCompound)items.tagAt(i);
+			NBTTagCompound tag = items.getCompoundTagAt(i);
 			int slot = tag.getInteger("Slot");
 			
 			mSlots[slot] = ItemStack.loadItemStackFromNBT(tag);

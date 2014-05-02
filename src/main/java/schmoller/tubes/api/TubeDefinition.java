@@ -2,16 +2,15 @@ package schmoller.tubes.api;
 
 import codechicken.lib.vec.Cuboid6;
 import codechicken.multipart.TMultiPart;
-import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.util.Icon;
-
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.util.IIcon;
 
 public abstract class TubeDefinition
 {
-	public void registerIcons(IconRegister register) {}
+	public void registerIcons(IIconRegister register) {}
 	
-	public abstract Icon getCenterIcon();
-	public abstract Icon getStraightIcon();
+	public abstract IIcon getCenterIcon();
+	public abstract IIcon getStraightIcon();
 
 	public abstract TMultiPart createTube();
 

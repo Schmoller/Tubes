@@ -168,7 +168,7 @@ public class CompressorTube extends BaseTube implements IInventory
             	mCurrent = null;
         }
         
-        onInventoryChanged();
+        markDirty();
         return itemstack;
 	}
 
@@ -210,13 +210,13 @@ public class CompressorTube extends BaseTube implements IInventory
 	}
 
 	@Override
-	public String getInvName()
+	public String getInventoryName()
 	{
 		return "container.inventory";
 	}
 
 	@Override
-	public boolean isInvNameLocalized()
+	public boolean hasCustomInventoryName()
 	{
 		return false;
 	}
@@ -228,7 +228,7 @@ public class CompressorTube extends BaseTube implements IInventory
 	}
 
 	@Override
-	public void onInventoryChanged()
+	public void markDirty()
 	{
 		
 	}
@@ -240,10 +240,10 @@ public class CompressorTube extends BaseTube implements IInventory
 	}
 
 	@Override
-	public void openChest() {}
+	public void openInventory() {}
 
 	@Override
-	public void closeChest() {}
+	public void closeInventory() {}
 
 	@Override
 	public boolean isItemValidForSlot( int i, ItemStack item )

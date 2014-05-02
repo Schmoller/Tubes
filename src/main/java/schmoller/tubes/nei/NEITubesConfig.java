@@ -3,7 +3,7 @@ package schmoller.tubes.nei;
 import net.minecraft.util.StatCollector;
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
-import codechicken.nei.forge.GuiContainerManager;
+import codechicken.nei.guihook.GuiContainerManager;
 
 public class NEITubesConfig implements IConfigureNEI
 {

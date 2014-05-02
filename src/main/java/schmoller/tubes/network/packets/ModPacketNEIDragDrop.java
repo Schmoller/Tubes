@@ -1,11 +1,11 @@
 package schmoller.tubes.network.packets;
 
-import java.io.DataInput;
-import java.io.DataOutput;
 import java.io.IOException;
 
+import codechicken.lib.data.MCDataInput;
+import codechicken.lib.data.MCDataOutput;
+
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.Packet;
 
 import schmoller.tubes.network.ModPacket;
 
@@ -32,23 +32,23 @@ public class ModPacketNEIDragDrop extends ModPacket
 	}
 	
 	@Override
-	public void write( DataOutput output ) throws IOException
+	public void write( MCDataOutput output ) throws IOException
 	{
 		output.writeInt(windowId);
 		output.writeShort(slot);
 		output.writeShort(button);
 		output.writeShort(modifiers);
-		Packet.writeItemStack(item, output);
+		output.writeItemStack(item);
 	}
 
 	@Override
-	public void read( DataInput input ) throws IOException
+	public void read( MCDataInput input ) throws IOException
 	{
 		windowId = input.readInt();
 		slot = input.readShort();
 		button = input.readShort();
 		modifiers = input.readShort();
-		item = Packet.readItemStack(input);
+		item = input.readItemStack();
 	}
 
 }

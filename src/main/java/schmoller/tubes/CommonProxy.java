@@ -1,15 +1,12 @@
 
 package schmoller.tubes;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -28,7 +25,6 @@ import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.versioning.ArtifactVersion;
 import cpw.mods.fml.common.versioning.InvalidVersionSpecificationException;
@@ -64,6 +60,7 @@ import schmoller.tubes.gui.FilterTubeContainer;
 import schmoller.tubes.gui.InjectionTubeContainer;
 import schmoller.tubes.gui.RequestingTubeContainer;
 import schmoller.tubes.gui.RoutingTubeContainer;
+import schmoller.tubes.items.BasicBlock;
 import schmoller.tubes.items.BasicItem;
 import schmoller.tubes.items.ItemTubeBase;
 import schmoller.tubes.items.ItemTubeCap;
@@ -96,9 +93,9 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		OreDictionary.registerOre("blockPlastic", Blocks.BlockPlastic.getBlock());
 		
 		MicroMaterialRegistry.registerMaterial(new BlockMicroMaterial(Blocks.BlockPlastic.getBlock(), 0), "tile.tubes.blockPlastic");
-		FMLInterModComms.sendMessage("BuildCraft|Transport", "add-facade", String.format("%d@%d", Blocks.BlockPlastic.getBlockID(), 0 ));
+		FMLInterModComms.sendMessage("BuildCraft|Transport", "add-facade", String.format("%d@%d", Blocks.BlockPlastic.getBlock().getUnlocalizedName(), 0 ));
 		
-		NetworkRegistry.instance().registerGuiHandler(ModTubes.instance, this);
+		NetworkRegistry.INSTANCE.registerGuiHandler(ModTubes.instance, this);
 		MultiPartRegistry.registerParts(this, new String[] {"tubeCap"});
 	}
 	
@@ -167,15 +164,15 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 	
 	private void registerItems()
 	{
-		Items.PlasticDust.initialize(Items.PlasticDust.getItemID() + 256, new BasicItem(Items.PlasticDust.getItemID()).setUnlocalizedName("plasticPellets"));
-		Items.PlasticSheet.initialize(Items.PlasticSheet.getItemID() + 256, new BasicItem(Items.PlasticSheet.getItemID()).setUnlocalizedName("sheetPlastic"));
-		Items.BucketMilkCurd.initialize(Items.BucketMilkCurd.getItemID() + 256, new BasicItem(Items.BucketMilkCurd.getItemID()).setUnlocalizedName("milkCurd").setContainerItem(Item.bucketEmpty).setCreativeTab(ModTubes.creativeTab).setMaxStackSize(1));
-		Items.BucketPlastic.initialize(Items.BucketPlastic.getItemID() + 256, new BasicItem(Items.BucketPlastic.getItemID()).setUnlocalizedName("bucketOfPlastic").setContainerItem(Item.bucketEmpty).setCreativeTab(ModTubes.creativeTab).setMaxStackSize(1));
-		Items.RedstoneCircuit.initialize(Items.RedstoneCircuit.getItemID() + 256, new BasicItem(Items.RedstoneCircuit.getItemID()).setUnlocalizedName("redstoneCircuit").setCreativeTab(ModTubes.creativeTab));
-		Items.FluidCircuit.initialize(Items.FluidCircuit.getItemID() + 256, new BasicItem(Items.FluidCircuit.getItemID()).setUnlocalizedName("fluidCircuit").setCreativeTab(ModTubes.creativeTab));
+		Items.PlasticDust.initialize(new BasicItem().setUnlocalizedName("plasticPellets"));
+		Items.PlasticSheet.initialize(new BasicItem().setUnlocalizedName("sheetPlastic"));
+		Items.BucketMilkCurd.initialize(new BasicItem().setUnlocalizedName("milkCurd").setContainerItem(net.minecraft.init.Items.bucket).setCreativeTab(ModTubes.creativeTab).setMaxStackSize(1));
+		Items.BucketPlastic.initialize(new BasicItem().setUnlocalizedName("bucketOfPlastic").setContainerItem(net.minecraft.init.Items.bucket).setCreativeTab(ModTubes.creativeTab).setMaxStackSize(1));
+		Items.RedstoneCircuit.initialize(new BasicItem().setUnlocalizedName("redstoneCircuit").setCreativeTab(ModTubes.creativeTab));
+		Items.FluidCircuit.initialize(new BasicItem().setUnlocalizedName("fluidCircuit").setCreativeTab(ModTubes.creativeTab));
 		
-		ModTubes.itemTube = new ItemTubeBase(Items.Tube.getItemID());
-		Items.Tube.initialize(Items.Tube.getItemID() + 256, ModTubes.itemTube);
+		ModTubes.itemTube = new ItemTubeBase();
+		Items.Tube.initialize(ModTubes.itemTube);
 		
 		GameRegistry.registerItem(Items.PlasticDust.getItem(), "dustPlastic");
 		GameRegistry.registerItem(Items.PlasticSheet.getItem(), "sheetPlastic");
@@ -184,17 +181,17 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		GameRegistry.registerItem(Items.Tube.getItem(), "tubes:items:tube");
 		GameRegistry.registerItem(Items.RedstoneCircuit.getItem(), "redstoneCircuit");
 		
-		Items.TubeCap.initialize(Items.TubeCap.getItemID() + 256, new ItemTubeCap(Items.TubeCap.getItemID()).setUnlocalizedName("tubeCap").setCreativeTab(ModTubes.creativeTab));
+		Items.TubeCap.initialize(new ItemTubeCap().setUnlocalizedName("tubeCap").setCreativeTab(ModTubes.creativeTab));
 		GameRegistry.registerItem(Items.TubeCap.getItem(), "tubeCap");
 		
-		Blocks.BlockPlastic.initialize(Blocks.BlockPlastic.getBlockID(), new Block(Blocks.BlockPlastic.getBlockID(), Material.piston)
+		Blocks.BlockPlastic.initialize(new BasicBlock(Material.piston)
 			.setCreativeTab(ModTubes.creativeTab)
-			.setUnlocalizedName("blockPlastic")
-			.setTextureName("tubes:blockPlastic")
+			.setBlockName("blockPlastic")
+			.setBlockTextureName("tubes:blockPlastic")
 			.setHardness(2.5f));
 		
-		MinecraftForge.setBlockHarvestLevel(Blocks.BlockPlastic.getBlock(), "pickaxe", 0);
-		MinecraftForge.setBlockHarvestLevel(Blocks.BlockPlastic.getBlock(), "axe", 0);
+		Blocks.BlockPlastic.getBlock().setHarvestLevel("pickaxe", 0);
+		Blocks.BlockPlastic.getBlock().setHarvestLevel("axe", 0);
 		
 		GameRegistry.registerBlock(Blocks.BlockPlastic.getBlock(), "blockPlastic");
 		
@@ -202,43 +199,43 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		FluidRegistry.registerFluid(ModTubes.fluidPlastic);
 		ModTubes.fluidPlastic = FluidRegistry.getFluid("plastic");
 		
-		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluidStack("plastic", FluidContainerRegistry.BUCKET_VOLUME), new ItemStack(Items.BucketPlastic.getItem()), new ItemStack(Item.bucketEmpty));
+		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluidStack("plastic", FluidContainerRegistry.BUCKET_VOLUME), new ItemStack(Items.BucketPlastic.getItem()), new ItemStack(net.minecraft.init.Items.bucket));
 	}
 	
 	private void registerRecipes()
 	{
-		GameRegistry.addSmelting(Items.PlasticDust.getItemID(), new ItemStack(Items.PlasticSheet.getItem()), 0);
-		GameRegistry.addSmelting(Item.bucketMilk.itemID, new ItemStack(Items.BucketMilkCurd.getItem()), 0);
-		GameRegistry.addRecipe(new SpecialShapelessRecipe(new ItemStack(Items.PlasticDust.getItem(), ModTubes.instance.plasticYield * 4), Items.BucketMilkCurd.getItem(), new ItemStack(Item.coal, 1, OreDictionary.WILDCARD_VALUE), Item.gunpowder, FluidRegistry.getFluid("water")));
-		GameRegistry.addRecipe(new SpecialShapelessRecipe(new ItemStack(Items.PlasticDust.getItem(), ModTubes.instance.plasticYield * 4), Items.BucketPlastic.getItem(), new ItemStack(Item.coal, 1, OreDictionary.WILDCARD_VALUE)));
-		GameRegistry.addRecipe(new SpecialShapedRecipe(new ItemStack(Items.PlasticDust.getItem(), ModTubes.instance.plasticYield), " c ", "sCs", " c ", 'c', new ItemStack(Item.coal, 1, OreDictionary.WILDCARD_VALUE), 'C', Item.clay, 's', Block.sand));
+		GameRegistry.addSmelting(Items.PlasticDust.getItem(), new ItemStack(Items.PlasticSheet.getItem()), 0);
+		GameRegistry.addSmelting(net.minecraft.init.Items.milk_bucket, new ItemStack(Items.BucketMilkCurd.getItem()), 0);
+		GameRegistry.addRecipe(new SpecialShapelessRecipe(new ItemStack(Items.PlasticDust.getItem(), ModTubes.instance.plasticYield * 4), Items.BucketMilkCurd.getItem(), new ItemStack(net.minecraft.init.Items.coal, 1, OreDictionary.WILDCARD_VALUE), net.minecraft.init.Items.gunpowder, FluidRegistry.getFluid("water")));
+		GameRegistry.addRecipe(new SpecialShapelessRecipe(new ItemStack(Items.PlasticDust.getItem(), ModTubes.instance.plasticYield * 4), Items.BucketPlastic.getItem(), new ItemStack(net.minecraft.init.Items.coal, 1, OreDictionary.WILDCARD_VALUE)));
+		GameRegistry.addRecipe(new SpecialShapedRecipe(new ItemStack(Items.PlasticDust.getItem(), ModTubes.instance.plasticYield), " c ", "sCs", " c ", 'c', new ItemStack(net.minecraft.init.Items.coal, 1, OreDictionary.WILDCARD_VALUE), 'C', net.minecraft.init.Items.clay_ball, 's', net.minecraft.init.Blocks.sand));
 		
-		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("basic", 8), "pgp", 'p', "sheetPlastic", 'g', Block.glass));
+		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("basic", 8), "pgp", 'p', "sheetPlastic", 'g', net.minecraft.init.Blocks.glass));
 		GameRegistry.addRecipe(new SpecialShapedRecipe(new ItemStack(Blocks.BlockPlastic.getBlock()), "pp","pp", 'p', "sheetPlastic"));
 		
-		GameRegistry.addRecipe(new SpecialShapelessRecipe(ModTubes.itemTube.createForType("restriction"), ModTubes.itemTube.createForType("basic"), Item.ingotIron));
-		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("compressor"), "ipi", "ptp", "ipi", 'i', Item.ingotIron, 'p', Block.pistonBase, 't', ModTubes.itemTube.createForType("basic")));
+		GameRegistry.addRecipe(new SpecialShapelessRecipe(ModTubes.itemTube.createForType("restriction"), ModTubes.itemTube.createForType("basic"), net.minecraft.init.Items.iron_ingot));
+		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("compressor"), "ipi", "ptp", "ipi", 'i', net.minecraft.init.Items.iron_ingot, 'p', net.minecraft.init.Blocks.piston, 't', ModTubes.itemTube.createForType("basic")));
 		
 		if(canUseInjection())
 			GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("injection"), " w ", "wtw", " w ", 'w', "plankWood", 't', ModTubes.itemTube.createForType("basic")));
 		
-		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("extraction"), "h", "t", "p", 't', ModTubes.itemTube.createForType("basic"), 'h', Block.hopperBlock, 'p', Block.pistonStickyBase));
+		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("extraction"), "h", "t", "p", 't', ModTubes.itemTube.createForType("basic"), 'h', net.minecraft.init.Blocks.hopper, 'p', net.minecraft.init.Blocks.sticky_piston));
 		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("requesting"), "t", "e", "f", 't', ModTubes.itemTube.createForType("basic"), 'e', ModTubes.itemTube.createForType("extraction"), 'f', ModTubes.itemTube.createForType("filter")));
-		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("filter"), "ici", "ctc", "ici", 'i', Item.ingotIron, 't', ModTubes.itemTube.createForType("basic"), 'c', Items.RedstoneCircuit.getItem()));
-		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("routing"), "iti", "tft", "iti", 'i', Item.ingotIron, 't', ModTubes.itemTube.createForType("basic"), 'f', ModTubes.itemTube.createForType("filter")));
-		GameRegistry.addRecipe(new SpecialShapelessRecipe(ModTubes.itemTube.createForType("ejection"), ModTubes.itemTube.createForType("basic"), Block.glass));
+		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("filter"), "ici", "ctc", "ici", 'i', net.minecraft.init.Items.iron_ingot, 't', ModTubes.itemTube.createForType("basic"), 'c', Items.RedstoneCircuit.getItem()));
+		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("routing"), "iti", "tft", "iti", 'i', net.minecraft.init.Items.iron_ingot, 't', ModTubes.itemTube.createForType("basic"), 'f', ModTubes.itemTube.createForType("filter")));
+		GameRegistry.addRecipe(new SpecialShapelessRecipe(ModTubes.itemTube.createForType("ejection"), ModTubes.itemTube.createForType("basic"), net.minecraft.init.Blocks.glass));
 		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("fluidExtraction"), "f", "t", "f", 'f', Items.FluidCircuit.getItem(), 't', ModTubes.itemTube.createForType("extraction")));
 		
-		TubesAPI.instance.registerShapelessRecipe(ModTubes.itemTube.createForType("valve"), ModTubes.itemTube.createForType("basic"), Item.ingotIron, Block.lever);
+		TubesAPI.instance.registerShapelessRecipe(ModTubes.itemTube.createForType("valve"), ModTubes.itemTube.createForType("basic"), net.minecraft.init.Items.iron_ingot, net.minecraft.init.Blocks.lever);
 		
-		GameRegistry.addShapedRecipe(new ItemStack(Items.RedstoneCircuit.getItem(), 4), "igi", "rrr", "igi", 'i', Item.ingotIron, 'g', Item.ingotGold, 'r', Item.redstone);
+		GameRegistry.addShapedRecipe(new ItemStack(Items.RedstoneCircuit.getItem(), 4), "igi", "rrr", "igi", 'i', net.minecraft.init.Items.iron_ingot, 'g', net.minecraft.init.Items.gold_ingot, 'r', net.minecraft.init.Items.redstone);
 		
 		TubesAPI.instance.registerShapelessRecipe(new ItemStack(Items.TubeCap.getItem(), 2, 0), TubesAPI.instance.createTubeForType("basic"), MicroblockProxy.sawStone());
 		
-		TubesAPI.instance.registerShapelessRecipe(new ItemStack(Items.FluidCircuit.getItem(), 1, 0), new ItemStack(Items.RedstoneCircuit.getItem(), 1, 0), Item.bucketEmpty);
+		TubesAPI.instance.registerShapelessRecipe(new ItemStack(Items.FluidCircuit.getItem(), 1, 0), new ItemStack(Items.RedstoneCircuit.getItem(), 1, 0), net.minecraft.init.Items.bucket);
 		
-		TubesAPI.instance.registerShapedRecipe(TubesAPI.instance.createTubeForType("tank", 1), " g ", "gtg", " g ", 'g', Block.glass, 't', TubesAPI.instance.createTubeForType("basic"));
-		TubesAPI.instance.registerShapedRecipe(TubesAPI.instance.createTubeForType("buffer", 1), "t", "c", "t", 't', TubesAPI.instance.createTubeForType("basic"), 'c', Block.chest);
+		TubesAPI.instance.registerShapedRecipe(TubesAPI.instance.createTubeForType("tank", 1), " g ", "gtg", " g ", 'g', net.minecraft.init.Blocks.glass, 't', TubesAPI.instance.createTubeForType("basic"));
+		TubesAPI.instance.registerShapedRecipe(TubesAPI.instance.createTubeForType("buffer", 1), "t", "c", "t", 't', TubesAPI.instance.createTubeForType("basic"), 'c', net.minecraft.init.Blocks.chest);
 		
 	}
 
@@ -247,13 +244,12 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		TubesAPI.instance.registerShapedRecipe(ModTubes.itemTube.createForType("coloring"), " d ", "dtd", " d ", 'd', "Tubes$anyDye", 't', ModTubes.itemTube.createForType("basic"));
 	}
 	
-	
 	@Override
-	public boolean onPacketArrive( ModPacket packet, Player sender )
+	public boolean onPacketArrive( ModPacket packet, EntityPlayer sender )
 	{
 		if(packet instanceof ModBlockPacket)
 		{
-			ITube tube = CommonHelper.getMultiPart(((EntityPlayer)sender).worldObj, ((ModBlockPacket)packet).xCoord, ((ModBlockPacket)packet).yCoord, ((ModBlockPacket)packet).zCoord, ITube.class);
+			ITube tube = CommonHelper.getMultiPart(sender.worldObj, ((ModBlockPacket)packet).xCoord, ((ModBlockPacket)packet).yCoord, ((ModBlockPacket)packet).zCoord, ITube.class);
 			
 			if(packet instanceof ModPacketSetFilterMode && tube instanceof FilterTube)
 			{
@@ -304,7 +300,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		}
 		else if(packet instanceof ModPacketNEIDragDrop)
 		{
-			EntityPlayer player = (EntityPlayer)sender;
+			EntityPlayer player = sender;
 			ModPacketNEIDragDrop drop = (ModPacketNEIDragDrop)packet;
 			
 			if(player.openContainer instanceof ExtContainer && player.openContainer.windowId == drop.windowId && drop.slot >= 0 && drop.slot < player.openContainer.inventorySlots.size())

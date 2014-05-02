@@ -1,10 +1,11 @@
 package schmoller.tubes.inventory.providers;
 
+import net.minecraft.block.BlockJukebox.TileEntityJukebox;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemRecord;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntityRecordPlayer;
 import schmoller.tubes.api.interfaces.IInterfaceProvider;
 
 public class JukeboxProvider implements IInterfaceProvider<IInventory>
@@ -12,14 +13,14 @@ public class JukeboxProvider implements IInterfaceProvider<IInventory>
 	@Override
 	public IInventory provide( Object object )
 	{
-		return new JukeboxInventory((TileEntityRecordPlayer)object);
+		return new JukeboxInventory((TileEntityJukebox)object);
 	}
 	
 	private static class JukeboxInventory implements IInventory
 	{
-		private TileEntityRecordPlayer mTile;
+		private TileEntityJukebox mTile;
 		
-		public JukeboxInventory(TileEntityRecordPlayer tile)
+		public JukeboxInventory(TileEntityJukebox tile)
 		{
 			mTile = tile;
 		}
@@ -33,13 +34,13 @@ public class JukeboxProvider implements IInterfaceProvider<IInventory>
 		@Override
 		public ItemStack getStackInSlot( int i )
 		{
-			return mTile.func_96097_a();
+			return mTile.func_145856_a();
 		}
 
 		@Override
 		public ItemStack decrStackSize( int i, int j )
 		{
-			ItemStack existing = mTile.func_96097_a();
+			ItemStack existing = mTile.func_145856_a();
 			setInventorySlotContents(0, null);
 			return existing;
 		}
@@ -47,7 +48,7 @@ public class JukeboxProvider implements IInterfaceProvider<IInventory>
 		@Override
 		public ItemStack getStackInSlotOnClosing( int i )
 		{
-			return mTile.func_96097_a();
+			return mTile.func_145856_a();
 		}
 
 		@Override
@@ -58,32 +59,32 @@ public class JukeboxProvider implements IInterfaceProvider<IInventory>
 				if(!(item.getItem() instanceof ItemRecord))
 					return;
 				
-				mTile.func_96098_a(item.copy());
-                mTile.worldObj.setBlockMetadataWithNotify(mTile.xCoord, mTile.yCoord, mTile.zCoord, 1, 2);
-                mTile.worldObj.playAuxSFXAtEntity((EntityPlayer)null, 1005, mTile.xCoord, mTile.yCoord, mTile.zCoord, item.itemID);
+				mTile.func_145857_a(item.copy());
+                mTile.getWorldObj().setBlockMetadataWithNotify(mTile.xCoord, mTile.yCoord, mTile.zCoord, 1, 2);
+                mTile.getWorldObj().playAuxSFXAtEntity((EntityPlayer)null, 1005, mTile.xCoord, mTile.yCoord, mTile.zCoord, Item.getIdFromItem(item.getItem()));
 			}
 			else
 			{
-				ItemStack existing = mTile.func_96097_a();
+				ItemStack existing = mTile.func_145856_a();
 
                 if (existing != null)
                 {
-                    mTile.worldObj.playAuxSFX(1005, mTile.xCoord, mTile.yCoord, mTile.zCoord, 0);
-                    mTile.worldObj.playRecord((String)null, mTile.xCoord, mTile.yCoord, mTile.zCoord);
-                    mTile.func_96098_a((ItemStack)null);
-                    mTile.worldObj.setBlockMetadataWithNotify(mTile.xCoord, mTile.yCoord, mTile.zCoord, 0, 2);
+                    mTile.getWorldObj().playAuxSFX(1005, mTile.xCoord, mTile.yCoord, mTile.zCoord, 0);
+                    mTile.getWorldObj().playRecord((String)null, mTile.xCoord, mTile.yCoord, mTile.zCoord);
+                    mTile.func_145857_a((ItemStack)null);
+                    mTile.getWorldObj().setBlockMetadataWithNotify(mTile.xCoord, mTile.yCoord, mTile.zCoord, 0, 2);
                 }
 			}
 		}
 
 		@Override
-		public String getInvName()
+		public String getInventoryName()
 		{
 			return "Jukebox";
 		}
 
 		@Override
-		public boolean isInvNameLocalized()
+		public boolean hasCustomInventoryName()
 		{
 			return true;
 		}
@@ -95,7 +96,7 @@ public class JukeboxProvider implements IInterfaceProvider<IInventory>
 		}
 
 		@Override
-		public void onInventoryChanged()
+		public void markDirty()
 		{
 		}
 
@@ -106,10 +107,10 @@ public class JukeboxProvider implements IInterfaceProvider<IInventory>
 		}
 
 		@Override
-		public void openChest() {}
+		public void openInventory() {}
 
 		@Override
-		public void closeChest() {}
+		public void closeInventory() {}
 
 		@Override
 		public boolean isItemValidForSlot( int i, ItemStack item )

@@ -215,7 +215,7 @@ public class ItemFilter implements IFilter
         for (int k = 0; k < list.size(); ++k)
         {
             if (k == 0)
-                list.set(k, "\u00a7" + Integer.toHexString(mTemplate.getRarity().rarityColor) + (String)list.get(k));
+                list.set(k, mTemplate.getRarity().rarityColor + (String)list.get(k));
             else
                 list.set(k, EnumChatFormatting.GRAY + (String)list.get(k));
         }

@@ -1,9 +1,9 @@
 package schmoller.tubes.definitions;
 
 import codechicken.lib.vec.Cuboid6;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import schmoller.tubes.api.TubeDefinition;
 import schmoller.tubes.api.helpers.BaseTube;
@@ -11,8 +11,8 @@ import schmoller.tubes.types.RoutingTube;
 
 public class TypeRoutingTube extends TubeDefinition
 {
-	public static Icon center;
-	public static Icon colours;
+	public static IIcon center;
+	public static IIcon colours;
 	
 	public static ResourceLocation gui = new ResourceLocation("tubes", "textures/gui/routingTube.png");
 	
@@ -20,20 +20,20 @@ public class TypeRoutingTube extends TubeDefinition
 	public static EnumChatFormatting[] sideColoursText = new EnumChatFormatting[] {EnumChatFormatting.DARK_GRAY, EnumChatFormatting.WHITE, EnumChatFormatting.BLUE, EnumChatFormatting.RED, EnumChatFormatting.YELLOW, EnumChatFormatting.DARK_AQUA};
 	
 	@Override
-	public void registerIcons( IconRegister register )
+	public void registerIcons( IIconRegister register )
 	{
 		center = register.registerIcon("Tubes:tube-routing-center");
 		colours = register.registerIcon("Tubes:tube-routing-colours");
 	}
 	
 	@Override
-	public Icon getCenterIcon()
+	public IIcon getCenterIcon()
 	{
 		return TypeNormalTube.centerIcon;
 	}
 
 	@Override
-	public Icon getStraightIcon()
+	public IIcon getStraightIcon()
 	{
 		return TypeNormalTube.straightIcon;
 	}

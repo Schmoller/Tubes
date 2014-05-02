@@ -1,8 +1,8 @@
 package schmoller.tubes.network;
 
-import cpw.mods.fml.common.network.Player;
+import net.minecraft.entity.player.EntityPlayer;
 
 public interface IModPacketHandler
 {
-	public boolean onPacketArrive(ModPacket packet, Player sender);
+	public boolean onPacketArrive(ModPacket packet, EntityPlayer player);
 }

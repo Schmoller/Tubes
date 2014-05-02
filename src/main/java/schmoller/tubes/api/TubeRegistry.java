@@ -9,7 +9,7 @@ import codechicken.multipart.TMultiPart;
 import codechicken.multipart.MultiPartRegistry.IPartFactory;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import schmoller.tubes.api.client.ITubeRender;
 
 public class TubeRegistry implements IPartFactory
@@ -57,7 +57,7 @@ public class TubeRegistry implements IPartFactory
 		instance().mRenderers.put(instance().mRegisteredTubes.get(typeName), render);
 	}
 	
-	public void registerIcons(IconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		for(TubeDefinition def : mRegisteredTubes.values())
 			def.registerIcons(register);

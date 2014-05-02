@@ -39,7 +39,7 @@ public class RenderTubeCap implements IItemRenderer
 			mRender.translate(-0.5f, -0.5f, -0.5f);
 		
 		mRender.translate(0, 0, -0.34375f);
-		FMLClientHandler.instance().getClient().renderGlobal.renderEngine.bindTexture(TextureMap.locationBlocksTexture);
+		FMLClientHandler.instance().getClient().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
 		
 		tes.setColorOpaque_F(1, 1, 1);
 		tes.startDrawingQuads();

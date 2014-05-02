@@ -1,8 +1,9 @@
 package schmoller.tubes.network.packets;
 
-import java.io.DataInput;
-import java.io.DataOutput;
 import java.io.IOException;
+
+import codechicken.lib.data.MCDataInput;
+import codechicken.lib.data.MCDataOutput;
 
 import schmoller.tubes.network.ModBlockPacket;
 
@@ -19,14 +20,14 @@ public class ModPacketSetColor extends ModBlockPacket
 	public ModPacketSetColor() {}
 	
 	@Override
-	public void write( DataOutput output ) throws IOException
+	public void write( MCDataOutput output ) throws IOException
 	{
 		super.write(output);
 		output.writeShort(color);
 	}
 	
 	@Override
-	public void read( DataInput input ) throws IOException
+	public void read( MCDataInput input ) throws IOException
 	{
 		super.read(input);
 		color = input.readShort();

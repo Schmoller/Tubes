@@ -1,20 +1,20 @@
 package schmoller.tubes.definitions;
 
-import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.util.Icon;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.util.IIcon;
 import schmoller.tubes.api.TubeDefinition;
 import schmoller.tubes.api.helpers.BaseTube;
 import schmoller.tubes.types.EjectionTube;
 
 public class TypeEjectionTube extends TubeDefinition
 {
-	public Icon centerIcon;
-	public Icon straightIcon;
-	public static Icon funnelIcon;
-	public static Icon endIcon;
+	public IIcon centerIcon;
+	public IIcon straightIcon;
+	public static IIcon funnelIcon;
+	public static IIcon endIcon;
 	
 	@Override
-	public void registerIcons( IconRegister register )
+	public void registerIcons( IIconRegister register )
 	{
 		centerIcon = register.registerIcon("Tubes:tube-center");
 		straightIcon = register.registerIcon("Tubes:tube");
@@ -23,12 +23,12 @@ public class TypeEjectionTube extends TubeDefinition
 	}
 	
 	@Override
-	public Icon getCenterIcon()
+	public IIcon getCenterIcon()
 	{
 		return centerIcon;
 	}
 	
-	public Icon getStraightIcon() 
+	public IIcon getStraightIcon() 
 	{
 		return straightIcon;
 	}

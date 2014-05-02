@@ -3,12 +3,13 @@ package schmoller.tubes.items;
 import java.util.List;
 
 import schmoller.tubes.parts.TubeCap;
-import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 import codechicken.lib.raytracer.RayTracer;
 import codechicken.lib.vec.BlockCoord;
@@ -23,9 +24,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemTubeCap extends JItemMultiPart
 {
-	public ItemTubeCap(int id)
+	public ItemTubeCap()
 	{
-		super(id);
 	}
 	
 	@Override
@@ -64,8 +64,8 @@ public class ItemTubeCap extends JItemMultiPart
 		TMultiPart part = create(slot);
 		if(tile.canAddPart(part))
 		{
-			if(!tile.worldObj.isRemote)
-				TileMultipart.addPart(tile.worldObj, new BlockCoord(tile.xCoord, tile.yCoord, tile.zCoord), part);
+			if(!tile.getWorldObj().isRemote)
+				TileMultipart.addPart(tile.getWorldObj(), new BlockCoord(tile.xCoord, tile.yCoord, tile.zCoord), part);
 			
 			return true;
 		}
@@ -91,7 +91,7 @@ public class ItemTubeCap extends JItemMultiPart
 	public boolean onItemUse( ItemStack item, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
 	{
 		MovingObjectPosition hit = RayTracer.retraceBlock(world, player, x, y, z);
-        if(hit != null && hit.typeOfHit == EnumMovingObjectType.TILE)
+        if(hit != null && hit.typeOfHit == MovingObjectType.BLOCK)
         {
         	Vector3 vhit = new Vector3(hitX, hitY, hitZ);
         	int slot = getHitSlot(vhit, side);
@@ -152,7 +152,7 @@ public class ItemTubeCap extends JItemMultiPart
         	if(!player.capabilities.isCreativeMode)
         		item.stackSize -= 1;
 
-        	world.playSoundEffect(x + 0.5, y + 0.5, z + 0.5, Block.soundGlassFootstep.getPlaceSound(), (Block.soundGlassFootstep.getVolume() * 5.0F), Block.soundGlassFootstep.getPitch() * .9F);
+        	world.playSoundEffect(x + 0.5, y + 0.5, z + 0.5, Blocks.glass.stepSound.func_150496_b(), (Blocks.glass.stepSound.getVolume() * 5.0F), Blocks.glass.stepSound.getPitch() * .9F);
         	
         	return true;
         }
@@ -162,9 +162,9 @@ public class ItemTubeCap extends JItemMultiPart
 	
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void getSubItems( int itemId, CreativeTabs tab, List items )
+	public void getSubItems( Item item, CreativeTabs tab, List items )
 	{
-		items.add(new ItemStack(itemId, 1, 0));
+		items.add(new ItemStack(item, 1, 0));
 	}
 
 }

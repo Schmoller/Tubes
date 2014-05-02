@@ -1,7 +1,7 @@
 package schmoller.tubes.definitions;
 
-import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.util.Icon;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import codechicken.lib.vec.Cuboid6;
 import codechicken.multipart.TMultiPart;
@@ -11,24 +11,24 @@ import schmoller.tubes.types.BufferTube;
 public class TypeBufferTube extends TubeDefinition
 {
 	public static ResourceLocation gui = new ResourceLocation("tubes", "textures/gui/bufferTube.png");
-	public static Icon center;
-	public static Icon centerExport;
+	public static IIcon center;
+	public static IIcon centerExport;
 	
 	@Override
-	public void registerIcons( IconRegister register )
+	public void registerIcons( IIconRegister register )
 	{
 		center = register.registerIcon("tubes:tube-buffer");
 		centerExport = register.registerIcon("tubes:tube-buffer-export");
 	}
 	
 	@Override
-	public Icon getCenterIcon()
+	public IIcon getCenterIcon()
 	{
 		return center;
 	}
 
 	@Override
-	public Icon getStraightIcon()
+	public IIcon getStraightIcon()
 	{
 		return TypeNormalTube.straightIcon;
 	}

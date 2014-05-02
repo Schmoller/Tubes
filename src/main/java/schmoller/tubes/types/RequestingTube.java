@@ -12,6 +12,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraftforge.common.util.Constants;
 import schmoller.tubes.AnyFilter;
 import schmoller.tubes.ItemFilter;
 import schmoller.tubes.ModTubes;
@@ -518,14 +519,14 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 		
 		if(root.hasKey("Filter"))
 		{
-			NBTTagList filter = root.getTagList("Filter");
+			NBTTagList filter = root.getTagList("Filter", Constants.NBT.TAG_COMPOUND);
 			
 			if(filter == null)
 				return;
 			
 			for(int i = 0; i < filter.tagCount(); ++i)
 			{
-				NBTTagCompound tag = (NBTTagCompound)filter.tagAt(i);
+				NBTTagCompound tag = filter.getCompoundTagAt(i);
 				
 				int slot = tag.getInteger("Slot");
 				mFilter[slot] = new ItemFilter(ItemStack.loadItemStackFromNBT(tag), false);
@@ -533,14 +534,14 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 		}
 		else
 		{
-			NBTTagList filter = root.getTagList("NewFilter");
+			NBTTagList filter = root.getTagList("NewFilter", Constants.NBT.TAG_COMPOUND);
 			
 			if(filter == null)
 				return;
 			
 			for(int i = 0; i < filter.tagCount(); ++i)
 			{
-				NBTTagCompound tag = (NBTTagCompound)filter.tagAt(i);
+				NBTTagCompound tag = filter.getCompoundTagAt(i);
 				
 				int slot = tag.getInteger("Slot");
 				mFilter[slot] = FilterRegistry.getInstance().readFilter(tag);

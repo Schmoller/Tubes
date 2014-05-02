@@ -49,7 +49,7 @@ public class InteractionHandler
 		if(payloadClass == null)
 			return buildMultiHandler(world, x, y, z);
 		
-		Block block = Block.blocksList[world.getBlockId(x, y, z)];
+		Block block = world.getBlock(x, y, z);
 		
 		Class<?> interfaceClass = PayloadRegistry.instance().getPayload(payloadClass).interfaceClass;
 		
@@ -62,7 +62,7 @@ public class InteractionHandler
 				return HandlerRegistry.getHandler(payloadClass, interfaceObject);
 		}
 		
-		TileEntity ent = world.getBlockTileEntity(x, y, z);
+		TileEntity ent = world.getTileEntity(x, y, z);
 		
 		interfaceObject = ProviderRegistry.provideFor(interfaceClass, ent);
 		if(interfaceObject != null)

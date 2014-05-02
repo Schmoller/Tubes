@@ -7,6 +7,7 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.util.Constants;
 
 public class OverflowBuffer
 {
@@ -52,12 +53,12 @@ public class OverflowBuffer
 	
 	public void load(NBTTagCompound root)
 	{
-		NBTTagList list = root.getTagList("Overflow");
+		NBTTagList list = root.getTagList("Overflow", Constants.NBT.TAG_COMPOUND);
 		mBuffer.clear();
 		
 		for(int i = 0; i < list.tagCount(); ++i)
 		{
-			NBTTagCompound tag = (NBTTagCompound)list.tagAt(i);
+			NBTTagCompound tag = list.getCompoundTagAt(i);
 			mBuffer.add(TubeItem.readFromNBT(tag));
 		}
 	}

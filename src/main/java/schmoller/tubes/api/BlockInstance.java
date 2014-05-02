@@ -23,7 +23,7 @@ public class BlockInstance
 	
 	public Block getBlock()
 	{
-		return Block.blocksList[world.getBlockId(x, y, z)];
+		return world.getBlock(x, y, z);
 	}
 	
 	@Override

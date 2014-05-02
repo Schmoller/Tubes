@@ -1,11 +1,8 @@
 package schmoller.tubes;
 
-import java.util.EnumSet;
 import java.util.logging.Logger;
 
-import schmoller.tubes.api.Blocks;
 import schmoller.tubes.api.FilterRegistry;
-import schmoller.tubes.api.Items;
 import schmoller.tubes.api.Position;
 import schmoller.tubes.api.SizeMode;
 import schmoller.tubes.api.TubeItem;
@@ -29,34 +26,31 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.Property;
-import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.oredict.OreDictionary;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.Type;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.TickType;
 
-import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@Mod(name="Tubes", version="@{mod.version}", modid = "Tubes", dependencies="required-after:Forge; required-after:ForgeMultipart@(,1.0.0.238),(1.0.0.245,)")
-@NetworkMod(clientSideRequired=true, serverSideRequired=true)
-public class ModTubes extends TubesAPI implements ITickHandler
+@Mod(name="Tubes", version="${version}", modid = "Tubes", dependencies="required-after:Forge; required-after:ForgeMultipart@(,1.0.0.238),(1.0.0.245,)")
+public class ModTubes extends TubesAPI
 {
 	@Instance("Tubes")
     public static ModTubes instance;
@@ -95,12 +89,6 @@ public class ModTubes extends TubesAPI implements ITickHandler
 		
 		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
 		
-		for(Items item : Items.values())
-			item.initialize(config.getItem(item.getConfigName(), item.getItemID()).getInt(), null);
-		
-		for(Blocks block : Blocks.values())
-			block.initialize(config.getBlock(block.getConfigName(), block.getBlockID()).getInt(), null);
-		
 		Property prop =  config.get("general", "plasticYield", 2);
 		prop.comment = "How much the base plastic recipe gives. Next level recipe is 4 times this. Default 2.";
 		plasticYield = prop.getInt();
@@ -123,12 +111,12 @@ public class ModTubes extends TubesAPI implements ITickHandler
 	public void init(FMLInitializationEvent event)
 	{
 		packetManager.initialize("tubes");
-		PacketManager.registerHandler(proxy);
-		PacketManager.registerPacket(ModPacketSetFilterMode.class);
-		PacketManager.registerPacket(ModPacketSetRequestingModes.class);
-		PacketManager.registerPacket(ModPacketSetRoutingOptions.class);
-		PacketManager.registerPacket(ModPacketSetColor.class);
-		PacketManager.registerPacket(ModPacketNEIDragDrop.class);
+		packetManager.registerHandler(proxy);
+		packetManager.registerPacket(ModPacketSetFilterMode.class);
+		packetManager.registerPacket(ModPacketSetRequestingModes.class);
+		packetManager.registerPacket(ModPacketSetRoutingOptions.class);
+		packetManager.registerPacket(ModPacketSetColor.class);
+		packetManager.registerPacket(ModPacketNEIDragDrop.class);
 
 		proxy.initialize();
 		TubeRegistry.instance().finalizeTubes();
@@ -149,15 +137,13 @@ public class ModTubes extends TubesAPI implements ITickHandler
 		proxy.registerOreRecipes();
 		
 		event.buildSoftDependProxy("BuildCraft|Core", BuildcraftProxy.class.getName());
-		
-		TickRegistry.registerTickHandler(this, Side.CLIENT);
 	}
 
-	@ForgeSubscribe
+	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(TextureStitchEvent.Pre event)
 	{
-		if(event.map.textureType == 0)
+		if(event.map.getTextureType() == 0)
 		{
 			TubeRegistry.instance().registerIcons(event.map);
 			if(fluidPlastic != null)
@@ -242,26 +228,10 @@ public class ModTubes extends TubesAPI implements ITickHandler
 			return mClientTickCounter;
 	}
 
-	@Override
-	public void tickStart( EnumSet<TickType> type, Object... tickData )
+	@SubscribeEvent
+	public void onTick(TickEvent event)
 	{
-		++mClientTickCounter;
-	}
-
-	@Override
-	public void tickEnd( EnumSet<TickType> type, Object... tickData )
-	{
-	}
-
-	@Override
-	public EnumSet<TickType> ticks()
-	{
-		return EnumSet.of(TickType.CLIENT);
-	}
-
-	@Override
-	public String getLabel()
-	{
-		return "ClientTickCounter";
+		if(event.type == Type.CLIENT)
+			++mClientTickCounter;
 	}
 }

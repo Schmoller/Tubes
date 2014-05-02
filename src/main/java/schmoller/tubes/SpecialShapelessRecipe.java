@@ -77,7 +77,7 @@ public class SpecialShapelessRecipe implements IRecipe
                     	}
                     	else
                     	{
-		                	if(inSlot.itemID != toMatch.itemID)
+		                	if(inSlot.getItem() != toMatch.getItem())
 		                		continue;
 		                	
 		                	if(inSlot.getItemDamage() != toMatch.getItemDamage() && toMatch.getItemDamage() != OreDictionary.WILDCARD_VALUE)
@@ -97,7 +97,7 @@ public class SpecialShapelessRecipe implements IRecipe
                     	boolean matched = false;
                     	for(ItemStack toMatch : toMatchAny)
                     	{
-                    		if(inSlot.itemID != toMatch.itemID)
+                    		if(inSlot.getItem() != toMatch.getItem())
                     			continue;
                         	
                         	if(inSlot.getItemDamage() != toMatch.getItemDamage() && toMatch.getItemDamage() != OreDictionary.WILDCARD_VALUE)

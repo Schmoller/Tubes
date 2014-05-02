@@ -1,5 +1,6 @@
 package schmoller.tubes.nei;
 
+import java.util.Collections;
 import java.util.List;
 
 import schmoller.tubes.ModTubes;
@@ -26,9 +27,9 @@ public class DragDropHandler implements INEIGuiHandler
 	}
 
 	@Override
-	public int getItemSpawnSlot( GuiContainer paramGuiContainer, ItemStack paramItemStack )
+	public Iterable<Integer> getItemSpawnSlots(GuiContainer arg0, ItemStack arg1) 
 	{
-		return 0;
+		return Collections.emptyList();
 	}
 
 	@Override

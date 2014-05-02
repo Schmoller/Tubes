@@ -9,10 +9,11 @@ import schmoller.tubes.inventory.providers.FurnaceInventoryProvider;
 import schmoller.tubes.inventory.providers.JukeboxProvider;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockJukebox.TileEntityJukebox;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraft.tileentity.TileEntityRecordPlayer;
 import net.minecraftforge.fluids.IFluidHandler;
 
 public class ProviderRegistry
@@ -28,9 +29,9 @@ public class ProviderRegistry
 		registerProvider(IInventory.class, TileEntityChest.class, new DoubleChestProvider());
 		
 		// Allows jukeboxes to be interacted with tubes
-		registerProvider(IInventory.class, TileEntityRecordPlayer.class, new JukeboxProvider());
+		registerProvider(IInventory.class, TileEntityJukebox.class, new JukeboxProvider());
 		
-		registerProvider(IFluidHandler.class, Block.cauldron, new CauldronProvider());
+		registerProvider(IFluidHandler.class, Blocks.cauldron, new CauldronProvider());
 	}
 	
 	/**

@@ -112,7 +112,7 @@ public class RequestingTubeRender extends NormalTubeRender
 	
 	private void renderPump(int side, float time)
 	{
-		FMLClientHandler.instance().getClient().renderGlobal.renderEngine.bindTexture(TypeExtractionTube.pumpTexture);
+		FMLClientHandler.instance().getClient().renderEngine.bindTexture(TypeExtractionTube.pumpTexture);
 		
 		mRender.setTextureIndex(0);
 		mRender.setTextureSize(1, 1);
@@ -171,7 +171,7 @@ public class RequestingTubeRender extends NormalTubeRender
 		
 		GL11.glDisable(GL11.GL_CULL_FACE);
 
-		FMLClientHandler.instance().getClient().renderGlobal.renderEngine.bindTexture(TextureMap.locationBlocksTexture);
+		FMLClientHandler.instance().getClient().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
 		tes.startDrawingQuads();
 		
 		mRender.setIcon(type.getCenterIcon());

@@ -8,7 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -139,7 +139,7 @@ public class TankTube extends BaseTube implements IFluidHandler, ITubeOverflowDe
 				onFluidChange();
 				
 				player.inventory.mainInventory[player.inventory.currentItem] = filled;
-				player.inventory.onInventoryChanged();
+				player.inventory.markDirty();
 				return true;
 			}
 		}
@@ -154,8 +154,8 @@ public class TankTube extends BaseTube implements IFluidHandler, ITubeOverflowDe
 			{
 				if(!player.capabilities.isCreativeMode)
 				{
-					if(item.getItem().hasContainerItem())
-						player.inventory.mainInventory[player.inventory.currentItem] = item.getItem().getContainerItemStack(item);
+					if(item.getItem().hasContainerItem(item))
+						player.inventory.mainInventory[player.inventory.currentItem] = item.getItem().getContainerItem(item);
 					else
 						player.inventory.decrStackSize(player.inventory.currentItem, 1);
 				}

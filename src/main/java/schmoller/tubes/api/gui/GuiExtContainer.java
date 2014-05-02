@@ -12,7 +12,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import java.util.Iterator;
 import org.lwjgl.opengl.GL12;
 
@@ -51,8 +51,9 @@ public abstract class GuiExtContainer extends GuiContainer
 		super.handleMouseClick(slot, par2, par3, modifiers);
 	}
 	
+	
 	@Override
-	protected void drawSlotInventory( Slot slot )
+	protected void func_146977_a( Slot slot )
 	{
 		if(slot instanceof FakeSlot)
 		{
@@ -64,13 +65,13 @@ public abstract class GuiExtContainer extends GuiContainer
 	        int y = slot.yDisplayPosition;
 
 	        zLevel = 100.0F;
-	        itemRenderer.zLevel = 100.0F;
+	        itemRender.zLevel = 100.0F;
 	        
 	        GL11.glEnable(GL11.GL_DEPTH_TEST);
 
 	        if(filter == null)
 	        {
-	            Icon icon = slot.getBackgroundIconIndex();
+	            IIcon icon = slot.getBackgroundIconIndex();
 
 	            if (icon != null)
 	            {
@@ -83,15 +84,15 @@ public abstract class GuiExtContainer extends GuiContainer
 	        else
 	            filter.renderFilter(x, y);
 
-	        itemRenderer.zLevel = 0.0F;
+	        itemRender.zLevel = 0.0F;
 	        zLevel = 0.0F;
 		}
 		else 
-			super.drawSlotInventory(slot);
+			super.func_146977_a(slot);
 	}
 	
 	@Override
-	protected void drawItemStackTooltip( ItemStack item, int x, int y )
+	protected void renderToolTip( ItemStack item, int x, int y )
 	{
 		Slot slot = null;
 		
@@ -117,10 +118,10 @@ public abstract class GuiExtContainer extends GuiContainer
 			tooltip = ((FakeSlot)slot).getTooltip(tooltip);
 			
 			if(tooltip != null)
-				drawHoveringText(tooltip, x, y, fontRenderer);
+				drawHoveringText(tooltip, x, y, fontRendererObj);
 		}
 		else
-			super.drawItemStackTooltip(item, x, y);
+			super.renderToolTip(item, x, y);
 	}
 	
 	// NOTE: This has been brought up here because TMI overrides GuiContainer, and does not provider this method causing a crash
@@ -166,7 +167,7 @@ public abstract class GuiExtContainer extends GuiContainer
             }
 
             this.zLevel = 300.0F;
-            itemRenderer.zLevel = 300.0F;
+            itemRender.zLevel = 300.0F;
             int l1 = -267386864;
             this.drawGradientRect(i1 - 3, j1 - 4, i1 + k + 3, j1 - 3, l1, l1);
             this.drawGradientRect(i1 - 3, j1 + k1 + 3, i1 + k + 3, j1 + k1 + 4, l1, l1);
@@ -192,9 +193,9 @@ public abstract class GuiExtContainer extends GuiContainer
 
                 j1 += 10;
             }
-
+            
             this.zLevel = 0.0F;
-            itemRenderer.zLevel = 0.0F;
+            itemRender.zLevel = 0.0F;
             GL11.glEnable(GL11.GL_LIGHTING);
             GL11.glEnable(GL11.GL_DEPTH_TEST);
             RenderHelper.enableStandardItemLighting();
