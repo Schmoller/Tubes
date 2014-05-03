@@ -36,10 +36,23 @@ version = "1.7.2-2.0.0"
 group= "au.com.addstar"
 archivesBaseName = "Tubes"
 
+def forge = "1.7.2-10.12.1.1065"
+
 minecraft {
-    version = "1.7.2-10.12.1.1065"
+    version = "${forge}"
     assetDir = "eclipse/assets"
 }
+
+// Determine conf dir
+def gradlePath = System.properties['user.home'] + "/.gradle"
+
+if( System.properties['gradle.user.home'] != null ) {
+    gradlePath = System.properties['gradle.user.home']
+} else if( System.env['GRADLE_USER_HOME'] != null ) {
+    gradlePath = System.env['GRADLE_USER_HOME']
+}
+
+def conf = gradlePath + "/caches/minecraft/net/minecraftforge/forge/${forge}/unpacked/conf"
 
 processResources {
     // this will ensure that this task is redone when the versions change.
@@ -60,6 +73,15 @@ processResources {
     }
 }
 
+// Process naming
+sourceMainJava.doLast {
+    def srcDir = "build/sources/java"
+    exec {
+        executable "pythonw"
+        args "nameGenerator.py", "--conf", conf, "--src", srcDir
+    }
+}
+
 // Normal jar
 jar {
     manifest {
@@ -71,7 +93,7 @@ jar {
 // Dev jar (deobfuscated)
 task devJar(type: Jar) {
     from sourceSets.main.output
-    clasifier = 'dev'
+    classifier = 'dev'
     version = "${project.version}"
     manifest {
         attributes 'FMLCorePlugin': 'schmoller.tubes.asm.TubesPlugin'

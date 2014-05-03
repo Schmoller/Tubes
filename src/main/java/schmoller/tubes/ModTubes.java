@@ -47,7 +47,7 @@ import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@Mod(name="Tubes", version="${version}", modid = "Tubes", dependencies="required-after:Forge; required-after:ForgeMultipart@(,1.0.0.238),(1.0.0.245,)")
+@Mod(name="Tubes", modid = "Tubes", dependencies="required-after:Forge; required-after:ForgeMultipart@(,1.0.0.238),(1.0.0.245,)")
 public class ModTubes extends TubesAPI
 {
 	@Instance("Tubes")
