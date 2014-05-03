@@ -42,14 +42,14 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
 	        // Used for name translation: # net/minecraft/tileentity/TileEntityHopper > net/minecraft/tileentity/TileEntity
 	        ObfMapping worldField = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "worldObj", "Lnet/minecraft/world/World;");
 	        ObfMapping isRemote = NameHelper.getMapping("net/minecraft/world/World", "isRemote", "Z");
-	        ObfMapping isCoolingDown = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "isCoolingDown", "()Z");
+	        ObfMapping isCoolingDown = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "func_145888_j", "()Z");
 	        ObfMapping getBlockMetadata = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "getBlockMetadata", "()I");
-	        ObfMapping getIsBlockNotPoweredFromMetadata = NameHelper.getMapping("net/minecraft/block/BlockHopper", "getIsBlockNotPoweredFromMetadata", "(I)Z");
+	        ObfMapping getIsBlockNotPoweredFromMetadata = NameHelper.getMapping("net/minecraft/block/BlockHopper", "func_149917_c", "(I)Z");
 	        ObfMapping insertItemToTube = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "insertItemToTube", "()Z");
-	        ObfMapping insertItemToInventory = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "insertItemToInventory", "()Z");
-	        ObfMapping suckItemsIntoHopper = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "suckItemsIntoHopper", "(Lnet/minecraft/tileentity/Hopper;)Z");
-	        ObfMapping setTransferCooldown = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "setTransferCooldown", "(I)V");
-	        ObfMapping onInventoryChanged = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "onInventoryChanged", "()V");
+	        ObfMapping insertItemToInventory = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "func_145883_k", "()Z");
+	        ObfMapping suckItemsIntoHopper = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "func_145891_a", "(Lnet/minecraft/tileentity/Hopper;)Z");
+	        ObfMapping setTransferCooldown = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "func_145896_c", "(I)V");
+	        ObfMapping onInventoryChanged = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "markDirty", "()V");
 	        ObfMapping hopperClass = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "this", "Lnet/minecraft/tileentity/TileEntityHopper;");
 	        ObfMapping getDirectionFromMetadata = NameHelper.getMapping("net/minecraft/block/BlockHopper", "getDirectionFromMetadata", "(I)I");
 	        ObfMapping getWorldObj = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "getWorldObj", "()Lnet/minecraft/world/World;");
@@ -69,7 +69,7 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
 	        ObfMapping canAddItem = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "canAddItem", "(Lschmoller/tubes/api/Payload;I)Z");
 	        ObfMapping basicInvHandlerInit = NameHelper.getMapping("schmoller/tubes/inventory/BasicInvHandler", "<init>", "(Lnet/minecraft/inventory/IInventory;)V");
 	        ObfMapping addItem = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "addItem", "(Lschmoller/tubes/api/Payload;I)Z");
-	        ObfMapping updateHopper = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "updateHopper", "()Z");
+	        ObfMapping updateHopper = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "func_145887_i", "()Z");
 	        
 	        // updateHopper
 	        {
