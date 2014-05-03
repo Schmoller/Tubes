@@ -10,3 +10,9 @@ If you wish to contribute a language please use the en_US.lang file in the asset
 
 Once you have finished a translation please submit a Pull Request.
 Please remember to use **UTF-8** encoding on language files.
+
+### Building
+Make sure you have python installed and available on the system PATH.
+
+Run "gradlew build" from a terminal/command prompt. 
+The output will be in build/libs
