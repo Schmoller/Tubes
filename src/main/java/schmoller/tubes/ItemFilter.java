@@ -141,7 +141,7 @@ public class ItemFilter implements IFilter
 		
 		GL11.glPushMatrix();
 		GL11.glTranslatef(0.0F, 0.0F, 32.0F);
-        itemRenderer.zLevel = 200.0F;
+        itemRenderer.zLevel = 20.0F;
         FontRenderer font = mTemplate.getItem().getFontRenderer(mTemplate);
         if (font == null) 
         	font = Minecraft.getMinecraft().fontRenderer;
