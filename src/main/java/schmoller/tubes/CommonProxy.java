@@ -12,6 +12,8 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.RecipeSorter;
+import net.minecraftforge.oredict.RecipeSorter.Category;
 import codechicken.microblock.BlockMicroMaterial;
 import codechicken.microblock.MicroMaterialRegistry;
 import codechicken.microblock.handler.MicroblockProxy;
@@ -178,7 +180,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		GameRegistry.registerItem(Items.PlasticSheet.getItem(), "sheetPlastic");
 		GameRegistry.registerItem(Items.BucketMilkCurd.getItem(), "milkCurd");
 		GameRegistry.registerItem(Items.BucketPlastic.getItem(), "bucketOfPlastic");
-		GameRegistry.registerItem(Items.Tube.getItem(), "tubes:items:tube");
+		GameRegistry.registerItem(Items.Tube.getItem(), "tube");
 		GameRegistry.registerItem(Items.RedstoneCircuit.getItem(), "redstoneCircuit");
 		
 		Items.TubeCap.initialize(new ItemTubeCap().setUnlocalizedName("tubeCap").setCreativeTab(ModTubes.creativeTab));
@@ -204,6 +206,9 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 	
 	private void registerRecipes()
 	{
+		RecipeSorter.register("tubes:shapeless", SpecialShapelessRecipe.class, Category.SHAPELESS, "before:minecraft:shapeless");
+		RecipeSorter.register("tubes:shaped", SpecialShapedRecipe.class, Category.SHAPED, "before:tubes:shapeless");
+		
 		GameRegistry.addSmelting(Items.PlasticDust.getItem(), new ItemStack(Items.PlasticSheet.getItem()), 0);
 		GameRegistry.addSmelting(net.minecraft.init.Items.milk_bucket, new ItemStack(Items.BucketMilkCurd.getItem()), 0);
 		GameRegistry.addRecipe(new SpecialShapelessRecipe(new ItemStack(Items.PlasticDust.getItem(), ModTubes.instance.plasticYield * 4), Items.BucketMilkCurd.getItem(), new ItemStack(net.minecraft.init.Items.coal, 1, OreDictionary.WILDCARD_VALUE), net.minecraft.init.Items.gunpowder, FluidRegistry.getFluid("water")));
