@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import schmoller.tubes.AdvRender.FaceMode;
 import schmoller.tubes.api.InteractionHandler;
 import schmoller.tubes.api.TubeDefinition;
 import schmoller.tubes.api.helpers.CommonHelper;
@@ -27,6 +28,7 @@ public class RoutingTubeRender extends NormalTubeRender
 		mRender.resetTextureFlip();
 		mRender.resetTextureRotation();
 		mRender.resetColor();
+		mRender.faceMode = FaceMode.Both;
 		
 		mRender.setLocalLights(0.5f, 1.0f, 0.8f, 0.8f, 0.6f, 0.6f);
 		
@@ -101,6 +103,8 @@ public class RoutingTubeRender extends NormalTubeRender
 				mRender.drawFaces(63 - (1 << (i ^ 1))  - (1 << i));
 				mRender.setIcon(TypeRoutingTube.colours);
 				mRender.setColorRGB(CommonHelper.getDyeColor(TypeRoutingTube.sideColours[i]));
+				mRender.outset(0.001f);
+				mRender.clamp();
 				mRender.drawFaces(63 - (1 << (i ^ 1))  - (1 << i));
 				mRender.resetColor();
 			}
@@ -164,6 +168,7 @@ public class RoutingTubeRender extends NormalTubeRender
 		mRender.resetTextureRotation();
 		mRender.resetLighting(15728880);
 		mRender.resetColor();
+		mRender.faceMode = FaceMode.Normal;
 		
 		mRender.setLocalLights(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
 		

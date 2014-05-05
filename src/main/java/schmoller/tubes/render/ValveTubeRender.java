@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import schmoller.tubes.AdvRender.FaceMode;
 import schmoller.tubes.api.TubeDefinition;
 import schmoller.tubes.api.helpers.TubeHelper;
 import schmoller.tubes.api.interfaces.IDirectionalTube;
@@ -27,6 +28,7 @@ public class ValveTubeRender extends NormalTubeRender
 		mRender.setLightingFromBlock(world, x, y, z);
 		mRender.resetTextureFlip();
 		mRender.resetTextureRotation();
+		mRender.faceMode = FaceMode.Both;
 		
 		mRender.setLocalLights(0.5f, 1.0f, 0.8f, 0.8f, 0.6f, 0.6f);
 		
@@ -127,6 +129,7 @@ public class ValveTubeRender extends NormalTubeRender
 		mRender.resetTextureFlip();
 		mRender.resetTextureRotation();
 		mRender.resetLighting(15728880);
+		mRender.faceMode = FaceMode.Normal;
 		
 		mRender.setLocalLights(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
 		

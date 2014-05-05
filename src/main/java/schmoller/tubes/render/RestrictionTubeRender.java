@@ -6,6 +6,7 @@ import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
+import schmoller.tubes.AdvRender.FaceMode;
 import schmoller.tubes.api.TubeDefinition;
 import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.definitions.TypeNormalTube;
@@ -178,6 +179,7 @@ public class RestrictionTubeRender extends NormalTubeRender
 		mRender.resetTextureRotation();
 		mRender.resetLighting(15728880);
 		mRender.resetColor();
+		mRender.faceMode = FaceMode.Normal;
 		
 		mRender.setLocalLights(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
 		

@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import schmoller.tubes.AdvRender.FaceMode;
 import schmoller.tubes.api.TubeDefinition;
 import schmoller.tubes.api.interfaces.ITube;
 import schmoller.tubes.definitions.TypeCompressorTube;
@@ -22,6 +23,7 @@ public class CompressorTubeRender extends NormalTubeRender
 		mRender.setLightingFromBlock(world, x, y, z);
 		mRender.resetTextureFlip();
 		mRender.resetTextureRotation();
+		mRender.faceMode = FaceMode.Both;
 		
 		GL11.glDisable(GL11.GL_LIGHTING);
 		
@@ -150,7 +152,7 @@ public class CompressorTubeRender extends NormalTubeRender
 		mRender.resetTextureFlip();
 		mRender.resetTextureRotation();
 		mRender.resetLighting(15728880);
-		
+		mRender.faceMode = FaceMode.Normal;
 		mRender.setLocalLights(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
 		
 		Tessellator tes = Tessellator.instance;

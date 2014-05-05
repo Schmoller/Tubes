@@ -5,6 +5,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import schmoller.tubes.AdvRender.FaceMode;
 import schmoller.tubes.api.TubeDefinition;
 import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.api.helpers.TubeHelper;
@@ -24,6 +25,7 @@ public class ColoringTubeRender extends NormalTubeRender
 		mRender.resetTextureFlip();
 		mRender.resetTextureRotation();
 		mRender.resetColor();
+		mRender.faceMode = FaceMode.Both;
 		
 		mRender.setLocalLights(0.5f, 1.0f, 0.8f, 0.8f, 0.6f, 0.6f);
 		
@@ -103,6 +105,7 @@ public class ColoringTubeRender extends NormalTubeRender
 		mRender.resetTextureRotation();
 		mRender.resetLighting(15728880);
 		mRender.resetColor();
+		mRender.faceMode = FaceMode.Normal;
 		
 		mRender.setLocalLights(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
 		

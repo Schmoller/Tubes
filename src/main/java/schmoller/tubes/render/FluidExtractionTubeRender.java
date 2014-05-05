@@ -5,6 +5,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import schmoller.tubes.AdvRender.FaceMode;
 import schmoller.tubes.api.TubeDefinition;
 import schmoller.tubes.api.interfaces.IDirectionalTube;
 import schmoller.tubes.api.interfaces.ITube;
@@ -149,6 +150,7 @@ public class FluidExtractionTubeRender extends ExtractionTubeRender
 		mRender.setLightingFromBlock(world, x, y, z);
 		mRender.resetTextureFlip();
 		mRender.resetTextureRotation();
+		mRender.faceMode = FaceMode.Normal;
 		
 		GL11.glDisable(GL11.GL_LIGHTING);
 		

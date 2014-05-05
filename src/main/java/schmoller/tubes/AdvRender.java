@@ -17,6 +17,13 @@ import cpw.mods.fml.client.FMLClientHandler;
 
 public class AdvRender 
 {
+	public enum FaceMode
+	{
+		Normal,
+		Inverse,
+		Both
+	}
+	
 	private Vector3f[] vertices = new Vector3f[8];
 	
 	private boolean mUseColor = false;
@@ -47,6 +54,8 @@ public class AdvRender
 	private boolean mAbsoluteTexCoords = true;
 	
 	private Stack<Matrix4f> mStackTransforms = new Stack<Matrix4f>();
+	
+	public FaceMode faceMode = FaceMode.Normal;
 	
 	
 	// Lighting information
@@ -700,6 +709,27 @@ public class AdvRender
 		}
 	}
 	
+	public void clamp()
+	{
+		for(int i = 0; i < vertices.length; ++i)
+		{
+			Vector3f vec = vertices[i];
+			if(vec.x < 0)
+				vec.x = 0;
+			if(vec.y < 0)
+				vec.y = 0;
+			if(vec.z < 0)
+				vec.z = 0;
+			
+			if(vec.x > 1)
+				vec.x = 1;
+			if(vec.y > 1)
+				vec.y = 1;
+			if(vec.z > 1)
+				vec.z = 1;
+		}
+	}
+	
 	public void resetTransform()
 	{
 		transform.setIdentity();
@@ -768,6 +798,74 @@ public class AdvRender
 		return Math.round(skyVal) << 20 | Math.round(blockVal) << 4;
 	}
 	
+	private void drawFace(int face, boolean reverse)
+	{
+		Vector3f[] coords = new Vector3f[4];
+		
+		for(int v = 0; v < 4; ++v)
+		{
+			coords[v] = getLocalCoords(vertices[corners[face][v]], face);
+		}
+		
+		if(face == 0 || face == 1)
+		{
+			Vector3f temp = coords[0];
+			coords[0] = coords[2];
+			coords[2] = temp;
+			temp = coords[3];
+			coords[3] = coords[1];
+			coords[1] = temp;
+		}
+		
+		normalizeCoords(coords);
+		
+		for(int v = 0; v < 4; v++)
+		{
+			int vertexIndex = (reverse ? 3 - v : v);
+			
+			Vector3f color = mCornerColors[face];
+			
+			if (!mUseColor)
+				color.x = color.y = color.z = 1;
+			
+			if(enableLighting)
+			{
+				if (mEnableAO)
+				{
+					if(mAbsoluteTexCoords)
+					{
+						float ao = (coords[vertexIndex].z < 1 ? mInternalAO : interpolateAO(face, coords[vertexIndex].x, coords[vertexIndex].y));
+						
+						color.x *= ao;
+						color.y *= ao;
+						color.z *= ao;
+					}
+					else
+					{
+						color.x *= mCornerAO[face][vertexIndex];
+						color.y *= mCornerAO[face][vertexIndex];
+						color.z *= mCornerAO[face][vertexIndex];
+					}
+				}
+				
+				color.x *= mLocalLighting[face];
+				color.y *= mLocalLighting[face];
+				color.z *= mLocalLighting[face];
+				
+				tes.setBrightness((coords[vertexIndex].z < 1 ? mInternalBrightness : interpolateBrightness(face, coords[vertexIndex].x, coords[vertexIndex].y)));
+			}
+
+			tes.setColorRGBA_F(color.x, color.y, color.z, opacity);
+			
+			if (enableNormals)
+				tes.setNormal(ForgeDirection.getOrientation(face).offsetX, ForgeDirection.getOrientation(face).offsetY, ForgeDirection.getOrientation(face).offsetZ);
+			
+			Vector4f vert = new Vector4f();
+			Matrix4f.transform(transform, new Vector4f(vertices[corners[face][vertexIndex]].x, vertices[corners[face][vertexIndex]].y, vertices[corners[face][vertexIndex]].z,1), vert);
+			tes.addVertexWithUV(vert.x,vert.y,vert.z, textureCoords[face][vertexIndex].x, textureCoords[face][vertexIndex].y);
+		}
+	}
+	
 	public void drawFaces(int faces)
 	{
 		tes = Tessellator.instance;
@@ -780,68 +878,20 @@ public class AdvRender
 			{
 				// Draw the face
 				
-				Vector3f[] coords = new Vector3f[4];
-				
-				for(int v = 0; v < 4; ++v)
+				switch(faceMode)
 				{
-					coords[v] = getLocalCoords(vertices[corners[i][v]], i);
+				case Normal:
+					drawFace(i, false);
+					break;
+				case Inverse:
+					drawFace(i, true);
+					break;
+				case Both:
+					drawFace(i, false);
+					drawFace(i, true);
+					break;
 				}
 				
-				if(i == 0 || i == 1)
-				{
-					Vector3f temp = coords[0];
-					coords[0] = coords[2];
-					coords[2] = temp;
-					temp = coords[3];
-					coords[3] = coords[1];
-					coords[1] = temp;
-				}
-				
-				normalizeCoords(coords);
-				
-				for(int v = 0; v < 4; v++)
-				{
-					Vector3f color = mCornerColors[i];
-					
-					if (!mUseColor)
-						color.x = color.y = color.z = 1;
-					
-					if(enableLighting)
-					{
-						if (mEnableAO)
-						{
-							if(mAbsoluteTexCoords)
-							{
-								float ao = (coords[v].z < 1 ? mInternalAO : interpolateAO(i, coords[v].x, coords[v].y));
-								
-								color.x *= ao;
-								color.y *= ao;
-								color.z *= ao;
-							}
-							else
-							{
-								color.x *= mCornerAO[i][v];
-								color.y *= mCornerAO[i][v];
-								color.z *= mCornerAO[i][v];
-							}
-						}
-						
-						color.x *= mLocalLighting[i];
-						color.y *= mLocalLighting[i];
-						color.z *= mLocalLighting[i];
-						
-						tes.setBrightness((coords[v].z < 1 ? mInternalBrightness : interpolateBrightness(i, coords[v].x, coords[v].y)));
-					}
-
-					tes.setColorRGBA_F(color.x, color.y, color.z, opacity);
-					
-					if (enableNormals)
-						tes.setNormal(ForgeDirection.getOrientation(i).offsetX, ForgeDirection.getOrientation(i).offsetY, ForgeDirection.getOrientation(i).offsetZ);
-					
-					Vector4f vert = new Vector4f();
-					Matrix4f.transform(transform, new Vector4f(vertices[corners[i][v]].x, vertices[corners[i][v]].y, vertices[corners[i][v]].z,1), vert);
-					tes.addVertexWithUV(vert.x,vert.y,vert.z, textureCoords[i][v].x, textureCoords[i][v].y);
-				}
 			}
 		}
 	}
