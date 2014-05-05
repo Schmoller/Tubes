@@ -681,6 +681,25 @@ public class AdvRender
 		corners[4] = new int[] {5,2,0,3}; // West
 		corners[5] = new int[] {4,7,6,1}; // East
 	}
+	
+	public void outset(float amount)
+	{
+		Vector3f center = new Vector3f();
+		for(int i = 0; i < vertices.length; ++i)
+			Vector3f.add(center, vertices[i], center);
+		
+		center.scale(1f/vertices.length);
+		
+		for(int i = 0; i < vertices.length; ++i)
+		{
+			Vector3f diff = new Vector3f();
+			Vector3f.sub(vertices[i], center, diff);
+			diff.normalise();
+			diff.scale(amount);
+			Vector3f.add(vertices[i], diff, vertices[i]);
+		}
+	}
+	
 	public void resetTransform()
 	{
 		transform.setIdentity();

@@ -89,7 +89,9 @@ public class NormalTubeRender implements ITubeRender
 			{
 				mRender.setIcon(TypeNormalTube.paintStraight);
 				mRender.setColorRGB(CommonHelper.getDyeColor(col));
-				mRender.drawBox(60, 0.25f, min, 0.25f, 0.75f, max, 0.75f);
+				mRender.setupBox(0.25f, min, 0.25f, 0.75f, max, 0.75f);
+				mRender.outset(0.001f);
+				mRender.drawFaces(60);
 			}
 		}
 		else if(connections == 12)
@@ -108,7 +110,9 @@ public class NormalTubeRender implements ITubeRender
 			{
 				mRender.setIcon(TypeNormalTube.paintStraight);
 				mRender.setColorRGB(CommonHelper.getDyeColor(col));
-				mRender.drawBox(51, 0.25f, 0.25f, min, 0.75f, 0.75f, max);
+				mRender.setupBox(0.25f, 0.25f, min, 0.75f, 0.75f, max);
+				mRender.outset(0.001f);
+				mRender.drawFaces(51);
 			}
 		}
 		else
@@ -126,7 +130,9 @@ public class NormalTubeRender implements ITubeRender
 			{
 				mRender.setIcon(TypeNormalTube.paintStraight);
 				mRender.setColorRGB(CommonHelper.getDyeColor(col));
-				mRender.drawBox(15, min, 0.25f, 0.25f, max, 0.75f, 0.75f);
+				mRender.setupBox(min, 0.25f, 0.25f, max, 0.75f, 0.75f);
+				mRender.outset(0.001f);
+				mRender.drawFaces(15);
 			}
 		}
 		mRender.resetColor();
@@ -142,7 +148,9 @@ public class NormalTubeRender implements ITubeRender
 		{
 			mRender.setIcon(TypeNormalTube.paintCenter);
 			mRender.setColorRGB(CommonHelper.getDyeColor(col));
-			mRender.drawBox((~connections) & 63, 0.25f, 0.25f, 0.25f, 0.75f, 0.75f, 0.75f);
+			mRender.setupBox(0.25f, 0.25f, 0.25f, 0.75f, 0.75f, 0.75f);
+			mRender.outset(0.001f);
+			mRender.drawFaces((~connections) & 63);
 			mRender.resetColor();
 		}
 	}

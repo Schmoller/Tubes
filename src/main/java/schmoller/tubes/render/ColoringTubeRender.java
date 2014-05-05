@@ -86,6 +86,7 @@ public class ColoringTubeRender extends NormalTubeRender
 				{
 					mRender.setIcon(TypeColoringTube.paint);
 					mRender.setColorRGB(CommonHelper.getDyeColor(col));
+					mRender.outset(0.001f);
 					mRender.drawFaces(1 << i);
 					mRender.resetColor();
 				}
