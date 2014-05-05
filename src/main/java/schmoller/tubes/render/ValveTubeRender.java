@@ -133,6 +133,9 @@ public class ValveTubeRender extends NormalTubeRender
 		Tessellator tes = Tessellator.instance;
 		
 		GL11.glDisable(GL11.GL_CULL_FACE);
+		GL11.glEnable(GL11.GL_ALPHA_TEST);
+		GL11.glColor3f(1, 1, 1);
+		
 		FMLClientHandler.instance().getClient().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
 		tes.startDrawingQuads();
 		
