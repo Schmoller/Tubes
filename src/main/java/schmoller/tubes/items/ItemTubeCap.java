@@ -3,6 +3,7 @@ package schmoller.tubes.items;
 import java.util.List;
 
 import schmoller.tubes.parts.TubeCap;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -166,5 +167,9 @@ public class ItemTubeCap extends JItemMultiPart
 	{
 		items.add(new ItemStack(item, 1, 0));
 	}
+	
+	@Override
+	@SideOnly( Side.CLIENT )
+	public void registerIcons( IIconRegister par1IconRegister ) {}
 
 }

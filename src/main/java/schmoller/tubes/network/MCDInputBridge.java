@@ -117,6 +117,10 @@ public class MCDInputBridge implements MCDataInput
 	public NBTTagCompound readNBTTagCompound()
 	{
 		short length = readShort();
+		
+		if(length == -1)
+			return null;
+		
 		byte[] data = readByteArray(length);
 		
 		try

@@ -1,6 +1,7 @@
 package schmoller.tubes.network;
 
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.SimpleChannelInboundHandler;
 
 import java.util.EnumMap;
@@ -21,6 +22,7 @@ import cpw.mods.fml.common.network.FMLOutboundHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 
+@Sharable
 public class PacketManager extends SimpleChannelInboundHandler<ModPacket>
 {
 	protected String mChannel;
@@ -65,15 +67,12 @@ public class PacketManager extends SimpleChannelInboundHandler<ModPacket>
 		
 		MinecraftForge.EVENT_BUS.register(this);
 		
-		if(FMLCommonHandler.instance().getSide() == Side.SERVER)
-		{
-			setupHandler(); 
-		}
+		setupHandler(client);
+		setupHandler(server);
 	}
 	
-	private void setupHandler()
+	private void setupHandler(FMLEmbeddedChannel channel)
 	{
-		FMLEmbeddedChannel channel = mChannels.get(Side.CLIENT);
 		String codec = channel.findChannelHandlerNameForType(ModPacketCodec.class);
 		channel.pipeline().addAfter(codec, "Handler", this);
 	}

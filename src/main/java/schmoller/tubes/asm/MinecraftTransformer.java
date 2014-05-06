@@ -47,7 +47,7 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
 	        ObfMapping getIsBlockNotPoweredFromMetadata = NameHelper.getMapping("net/minecraft/block/BlockHopper", "func_149917_c", "(I)Z");
 	        ObfMapping insertItemToTube = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "insertItemToTube", "()Z");
 	        ObfMapping insertItemToInventory = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "func_145883_k", "()Z");
-	        ObfMapping suckItemsIntoHopper = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "func_145891_a", "(Lnet/minecraft/tileentity/Hopper;)Z");
+	        ObfMapping suckItemsIntoHopper = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "func_145891_a", "(Lnet/minecraft/tileentity/IHopper;)Z");
 	        ObfMapping setTransferCooldown = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "func_145896_c", "(I)V");
 	        ObfMapping onInventoryChanged = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "markDirty", "()V");
 	        ObfMapping hopperClass = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "this", "Lnet/minecraft/tileentity/TileEntityHopper;");
