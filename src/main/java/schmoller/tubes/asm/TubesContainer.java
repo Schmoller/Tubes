@@ -7,6 +7,8 @@ import com.google.common.eventbus.EventBus;
 import cpw.mods.fml.common.DummyModContainer;
 import cpw.mods.fml.common.LoadController;
 import cpw.mods.fml.common.ModMetadata;
+import cpw.mods.fml.common.versioning.VersionParser;
+import cpw.mods.fml.common.versioning.VersionRange;
 
 public class TubesContainer extends DummyModContainer
 {
@@ -27,5 +29,11 @@ public class TubesContainer extends DummyModContainer
 	{
 		bus.register(this);
 		return true;
+	}
+	
+	@Override
+	public VersionRange acceptableMinecraftVersionRange()
+	{
+		return VersionParser.parseRange("[1.7.2]");
 	}
 }

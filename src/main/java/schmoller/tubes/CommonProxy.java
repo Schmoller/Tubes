@@ -20,17 +20,10 @@ import codechicken.microblock.handler.MicroblockProxy;
 import codechicken.multipart.MultiPartRegistry.IPartFactory;
 import codechicken.multipart.MultiPartRegistry;
 import codechicken.multipart.TMultiPart;
-import codechicken.multipart.MultipartGenerator;
-
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.versioning.ArtifactVersion;
-import cpw.mods.fml.common.versioning.InvalidVersionSpecificationException;
-import cpw.mods.fml.common.versioning.VersionRange;
 import schmoller.tubes.api.Blocks;
 import schmoller.tubes.api.FluidPayload;
 import schmoller.tubes.api.ItemPayload;
@@ -101,49 +94,8 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		MultiPartRegistry.registerParts(this, new String[] {"tubeCap"});
 	}
 	
-	private Boolean mCanUseInjection;
-	private boolean canUseInjection()
-	{
-		if(mCanUseInjection != null)
-			return mCanUseInjection;
-		
-		try
-		{
-			ArtifactVersion version = getMultipartVersion();
-			
-			if(!VersionRange.createFromVersionSpec("[1.0.0.211,)").containsVersion(version))
-			{
-				System.err.println("**** WARNING: The version of ForgeMultiPart you are running is too old to support the Injection Tube. As such the Injection Tube has been disabled. Please update to a newer version. ****");
-				mCanUseInjection = false;
-			}
-			else if(VersionRange.createFromVersionSpec("[1.0.0.238,1.0.0.245]").containsVersion(version))
-			{
-				System.err.println("**** WARNING: The version of ForgeMultiPart you are running is known to have an issue with Tubes. As such the Injection Tube has been disabled. Please update to a newer version. ****");
-				mCanUseInjection = false;
-			}
-			else
-				mCanUseInjection = true;
-		}
-		catch ( InvalidVersionSpecificationException e )
-		{
-			e.printStackTrace();
-			mCanUseInjection = false;
-		} 
-		
-		return mCanUseInjection;
-	}
-	
-	private ArtifactVersion getMultipartVersion()
-	{
-		ModContainer mod = Loader.instance().getIndexedModList().get("ForgeMultipart");
-		return mod.getProcessedVersion();
-	}
-	
 	private void registerTubes()
 	{
-		if(canUseInjection())
-			MultipartGenerator.registerPassThroughInterface("net.minecraft.inventory.ISidedInventory");
-		
 		TubeRegistry.registerTube(new TypeNormalTube(), "basic");
 		TubeRegistry.registerTube(new TypeRestrictionTube(), "restriction");
 		TubeRegistry.registerTube(new TypeInjectionTube(), "injection");
@@ -221,8 +173,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		GameRegistry.addRecipe(new SpecialShapelessRecipe(ModTubes.itemTube.createForType("restriction"), ModTubes.itemTube.createForType("basic"), net.minecraft.init.Items.iron_ingot));
 		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("compressor"), "ipi", "ptp", "ipi", 'i', net.minecraft.init.Items.iron_ingot, 'p', net.minecraft.init.Blocks.piston, 't', ModTubes.itemTube.createForType("basic")));
 		
-		if(canUseInjection())
-			GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("injection"), " w ", "wtw", " w ", 'w', "plankWood", 't', ModTubes.itemTube.createForType("basic")));
+		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("injection"), " w ", "wtw", " w ", 'w', "plankWood", 't', ModTubes.itemTube.createForType("basic")));
 		
 		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("extraction"), "h", "t", "p", 't', ModTubes.itemTube.createForType("basic"), 'h', net.minecraft.init.Blocks.hopper, 'p', net.minecraft.init.Blocks.sticky_piston));
 		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("requesting"), "t", "e", "f", 't', ModTubes.itemTube.createForType("basic"), 'e', ModTubes.itemTube.createForType("extraction"), 'f', ModTubes.itemTube.createForType("filter")));

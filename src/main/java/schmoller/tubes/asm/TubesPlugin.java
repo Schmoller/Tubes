@@ -42,7 +42,7 @@ public class TubesPlugin implements IFMLLoadingPlugin
 	public String[] getASMTransformerClass()
 	{
 		versionCheck("[1.7.2]", "Tubes");
-		return new String[] {"schmoller.tubes.asm.MinecraftTransformer", "schmoller.tubes.asm.APIChecker"};
+		return new String[] {"schmoller.tubes.asm.MinecraftTransformer"};
 	}
 
 	public static void versionCheck(String reqVersion, String mod)

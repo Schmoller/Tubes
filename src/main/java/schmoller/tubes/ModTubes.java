@@ -3,6 +3,7 @@ package schmoller.tubes;
 import java.util.logging.Logger;
 
 import schmoller.tubes.api.FilterRegistry;
+import schmoller.tubes.api.Items;
 import schmoller.tubes.api.Position;
 import schmoller.tubes.api.SizeMode;
 import schmoller.tubes.api.TubeItem;
@@ -33,6 +34,8 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.oredict.OreDictionary;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLMissingMappingsEvent;
+import cpw.mods.fml.common.event.FMLMissingMappingsEvent.MissingMapping;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -47,7 +50,7 @@ import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@Mod(name="Tubes", modid = "Tubes", dependencies="required-after:Forge; required-after:ForgeMultipart@(,1.0.0.238),(1.0.0.245,)")
+@Mod(name="Tubes", modid = "Tubes", dependencies="required-after:Forge; required-after:ForgeMultipart")
 public class ModTubes extends TubesAPI
 {
 	@Instance("Tubes")
@@ -136,6 +139,18 @@ public class ModTubes extends TubesAPI
 		proxy.registerOreRecipes();
 		
 		event.buildSoftDependProxy("BuildCraft|Core", BuildcraftProxy.class.getName());
+	}
+	
+	@EventHandler
+	public void onRemapMissing(FMLMissingMappingsEvent event)
+	{
+		for(MissingMapping mapping : event.get())
+		{
+			if(mapping.name.equalsIgnoreCase("tubes:tubes:items:tube"))
+				mapping.remap(Items.Tube.getItem());
+			else
+				mapping.warn(); // Nothing else has been changed
+		}
 	}
 
 	@SubscribeEvent
