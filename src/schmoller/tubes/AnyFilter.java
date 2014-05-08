@@ -3,6 +3,8 @@ package schmoller.tubes;
 import java.util.Arrays;
 import java.util.List;
 
+import org.lwjgl.opengl.GL11;
+
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import cpw.mods.fml.relauncher.Side;
@@ -105,6 +107,27 @@ public class AnyFilter implements IFilter
 	{
 		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
 		RenderHelper.renderRect(x, y, 16, 16, 0, 0, 1, 1);
+		
+		String text = String.valueOf(mValue);
+		
+        int fwidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(text);
+        
+        GL11.glPushMatrix();
+        
+        GL11.glTranslated(x + 17 - fwidth, y + 9, 0);
+        if(fwidth > 16)
+        {
+        	GL11.glTranslatef(fwidth / 2 - 1, Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT / 2f - 1, 0);
+        	GL11.glScalef(0.5f, 0.5f, 0.5f);
+        }
+        
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
+        Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(text, 0, 0, 16777215);
+        GL11.glEnable(GL11.GL_LIGHTING);
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        
+        GL11.glPopMatrix();
 	}
 
 	@Override
