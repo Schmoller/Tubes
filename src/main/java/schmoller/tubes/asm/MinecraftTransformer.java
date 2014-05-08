@@ -6,9 +6,16 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.JumpInsnNode;
+import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.VarInsnNode;
 
+import codechicken.lib.asm.ASMHelper;
 import codechicken.lib.asm.ObfMapping;
 
 import net.minecraft.launchwrapper.IClassTransformer;
@@ -16,6 +23,7 @@ import net.minecraft.launchwrapper.IClassTransformer;
 public class MinecraftTransformer implements IClassTransformer, Opcodes
 {
 	private ObfMapping mHopperClass;
+	private ObfMapping mGuiContainerClass;
 	
 	static
 	{
@@ -28,6 +36,8 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
 	{
 		if(mHopperClass == null || mHopperClass.s_owner.isEmpty())
 			mHopperClass = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper");
+		if(mGuiContainerClass == null || mGuiContainerClass.s_owner.isEmpty())
+			mGuiContainerClass = NameHelper.getMapping("net/minecraft/client/gui/inventory/GuiContainer");
 		
 		if(TubesPlugin.modifyHopper && mHopperClass.javaClass().equals(className))
 		{
@@ -696,6 +706,37 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
 	        classNode.accept(cw);
 	        
 	        System.out.println("TileEntityHopper was modified by Tubes");
+	        return cw.toByteArray();
+		}
+		else if(mGuiContainerClass.javaClass().equals(className))
+		{
+			ObfMapping drawSlotInventory = NameHelper.getMapping("net/minecraft/client/gui/inventory/GuiContainer", "func_146977_a", "(Lnet/minecraft/inventory/Slot;)V");
+			ObfMapping hook = NameHelper.getMapping("schmoller/tubes/gui/GUIHook", "drawSlotInventory", "(Lnet/minecraft/client/gui/inventory/GuiContainer;Lnet/minecraft/inventory/Slot;)Z");
+
+			ClassNode classNode = new ClassNode();
+	        ClassReader classReader = new ClassReader(bytes);
+	        classReader.accept(classNode, 0);
+        
+	        MethodNode mv;
+	        {
+	        	mv = ASMHelper.findMethod(drawSlotInventory, classNode);
+	        	AbstractInsnNode first = mv.instructions.getFirst();
+	        	
+	        	mv.instructions.insertBefore(first, new VarInsnNode(ALOAD, 0));
+	        	mv.instructions.insertBefore(first, new VarInsnNode(ALOAD, 1));
+	        	mv.instructions.insertBefore(first, new MethodInsnNode(INVOKESTATIC, hook.s_owner, hook.s_name, hook.s_desc));
+		        LabelNode l1 = new LabelNode();
+		        mv.instructions.insertBefore(first, new JumpInsnNode(IFEQ, l1));
+		        mv.instructions.insertBefore(first, new InsnNode(RETURN));
+		        mv.instructions.insertBefore(first, l1);
+		        
+		        System.out.println("Injected hook into GuiContainer");
+	        }
+	        
+	        ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+	        classNode.accept(cw);
+	        
+	        System.out.println("GuiContainer was modified by Tubes");
 	        return cw.toByteArray();
 		}
 

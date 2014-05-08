@@ -52,8 +52,7 @@ public abstract class GuiExtContainer extends GuiContainer
 	}
 	
 	
-	@Override
-	protected void func_146977_a( Slot slot )
+	public boolean drawSlotInventory( Slot slot )
 	{
 		if(slot instanceof FakeSlot)
 		{
@@ -86,9 +85,10 @@ public abstract class GuiExtContainer extends GuiContainer
 
 	        itemRender.zLevel = 0.0F;
 	        zLevel = 0.0F;
+	        return true;
 		}
 		else 
-			super.func_146977_a(slot);
+			return false;
 	}
 	
 	@Override

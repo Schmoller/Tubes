@@ -6,6 +6,7 @@ import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import schmoller.tubes.Utilities;
 import schmoller.tubes.api.interfaces.IFilter;
 import schmoller.tubes.api.interfaces.IFilterFactory;
 
@@ -53,7 +54,7 @@ public class FilterRegistry
 	
 	public void writeFilter(IFilter filter, MCDataOutput output)
 	{
-		output.writeString(filter.getType());
+		Utilities.writeString(output, filter.getType());
 		filter.write(output);
 	}
 	
@@ -73,7 +74,7 @@ public class FilterRegistry
 	
 	public IFilter readFilter(MCDataInput input)
 	{
-		String type = input.readString();
+		String type = Utilities.readString(input);
 		
 		for(IFilterFactory factory : mFactories)
 		{
@@ -82,6 +83,6 @@ public class FilterRegistry
 				return filter;
 		}
 		
-		return null;
+		throw new IllegalArgumentException("Unknown filter type '" + type + "'");
 	}
 }

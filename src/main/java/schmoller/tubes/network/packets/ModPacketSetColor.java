@@ -31,5 +31,8 @@ public class ModPacketSetColor extends ModBlockPacket
 	{
 		super.read(input);
 		color = input.readShort();
+		
+		if(color < -1 || color > 15)
+			throw new IOException("Invalid color " + color);
 	}
 }
