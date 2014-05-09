@@ -13,14 +13,14 @@ import schmoller.tubes.api.interfaces.ITubeOverflowDestination;
 import schmoller.tubes.inventory.BasicInvHandler;
 import schmoller.tubes.routing.OutputRouter;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.common.util.Constants;
 
-public class BufferTube extends DirectionalTube implements IInventory, ITubeOverflowDestination
+public class BufferTube extends DirectionalTube implements ISidedInventory, ITubeOverflowDestination
 {
 	private OverflowBuffer mOverflow = new OverflowBuffer();
 	private ItemStack[] mSlots = new ItemStack[9];
@@ -108,6 +108,24 @@ public class BufferTube extends DirectionalTube implements IInventory, ITubeOver
 	@Override
 	public boolean isItemValidForSlot( int i, ItemStack itemstack )	{ return true; }
 
+	@Override
+	public boolean canExtractItem( int var1, ItemStack var2, int var3 )
+	{
+		return true;
+	}
+	
+	@Override
+	public boolean canInsertItem( int var1, ItemStack var2, int var3 )
+	{
+		return true;
+	}
+	
+	@Override
+	public int[] getAccessibleSlotsFromSide( int side )
+	{
+		return new int[] {0,1,2,3,4,5,6,7,8,9};
+	}
+	
 	@Override
 	protected int getConnectableSides()
 	{
