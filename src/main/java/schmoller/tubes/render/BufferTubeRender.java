@@ -7,15 +7,19 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 import schmoller.tubes.AdvRender.FaceMode;
 import schmoller.tubes.api.TubeDefinition;
+import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.api.helpers.TubeHelper;
 import schmoller.tubes.api.interfaces.IDirectionalTube;
 import schmoller.tubes.api.interfaces.ITube;
 import schmoller.tubes.definitions.TypeBufferTube;
+import schmoller.tubes.types.BufferTube;
 
 public class BufferTubeRender extends NormalTubeRender
 {
+	private ITube mTube;
 	@Override
 	public void renderStatic( TubeDefinition type, ITube tube, World world, int x, int y, int z )
 	{
@@ -46,12 +50,12 @@ public class BufferTubeRender extends NormalTubeRender
 			}
 		}
 		
+		mTube = tube;
+		
 		int tubeCons = connections - invCons;
 
 		renderCenter(((IDirectionalTube)tube).getFacing());
 		renderConnections(tubeCons, type);
-		
-		renderInventoryConnections(invCons, type);
 		
 		renderInventoryConnections(1 << ((IDirectionalTube)tube).getFacing(), type);
 	}
@@ -65,6 +69,12 @@ public class BufferTubeRender extends NormalTubeRender
 		{
 			if((connections & (1 << i)) != 0)
 			{
+				ForgeDirection dir = ForgeDirection.getOrientation(i);
+				BufferTube other = CommonHelper.getMultiPart(mTube.world(), mTube.x() + dir.offsetX, mTube.y() + dir.offsetY, mTube.z() + dir.offsetZ, BufferTube.class);
+				
+				if(other != null && other.getFacing() != (i ^ 1))
+					continue;
+				
 				mRender.resetTextureRotation();
 				switch(i)
 				{
