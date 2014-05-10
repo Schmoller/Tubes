@@ -122,7 +122,7 @@ public class BufferTube extends DirectionalTube implements ISidedInventory, ITub
 	@Override
 	public int[] getAccessibleSlotsFromSide( int side )
 	{
-		return new int[] {0,1,2,3,4,5,6,7,8,9};
+		return new int[] {0,1,2,3,4,5,6,7,8};
 	}
 	
 	@Override
