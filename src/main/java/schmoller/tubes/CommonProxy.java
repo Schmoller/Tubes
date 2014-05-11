@@ -134,6 +134,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		GameRegistry.registerItem(Items.BucketPlastic.getItem(), "bucketOfPlastic");
 		GameRegistry.registerItem(Items.Tube.getItem(), "tube");
 		GameRegistry.registerItem(Items.RedstoneCircuit.getItem(), "redstoneCircuit");
+		GameRegistry.registerItem(Items.FluidCircuit.getItem(), "fluidCircuit");
 		
 		Items.TubeCap.initialize(new ItemTubeCap().setUnlocalizedName("tubeCap").setCreativeTab(ModTubes.creativeTab));
 		GameRegistry.registerItem(Items.TubeCap.getItem(), "tubeCap");
