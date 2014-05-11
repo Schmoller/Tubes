@@ -24,7 +24,10 @@ public class RestrictionTubeRender extends NormalTubeRender
 		{
 			mRender.setIcon(TypeNormalTube.paintCenter);
 			mRender.setColorRGB(CommonHelper.getDyeColor(col));
-			mRender.drawBox((~connections) & 63, 0.25f, 0.25f, 0.25f, 0.75f, 0.75f, 0.75f);
+			mRender.setupBox(0.25f, 0.25f, 0.25f, 0.75f, 0.75f, 0.75f);
+			mRender.outset(0.001f);
+			mRender.clamp();
+			mRender.drawFaces((~connections) & 63);
 			mRender.resetColor();
 		}
 	}
@@ -110,7 +113,10 @@ public class RestrictionTubeRender extends NormalTubeRender
 			{
 				mRender.setIcon(TypeRestrictionTube.paintStraight);
 				mRender.setColorRGB(CommonHelper.getDyeColor(col));
-				mRender.drawBox(60, 0.25f, min, 0.25f, 0.75f, max, 0.75f);
+				mRender.setupBox(0.25f, min, 0.25f, 0.75f, max, 0.75f);
+				mRender.outset(0.001f);
+				mRender.clamp();
+				mRender.drawFaces(60);
 			}
 		}
 		else if(connections == 12)
@@ -136,7 +142,10 @@ public class RestrictionTubeRender extends NormalTubeRender
 			{
 				mRender.setIcon(TypeRestrictionTube.paintStraight);
 				mRender.setColorRGB(CommonHelper.getDyeColor(col));
-				mRender.drawBox(51, 0.25f, 0.25f, min, 0.75f, 0.75f, max);
+				mRender.setupBox(0.25f, 0.25f, min, 0.75f, 0.75f, max);
+				mRender.outset(0.001f);
+				mRender.clamp();
+				mRender.drawFaces(51);
 			}
 		}
 		else
@@ -162,7 +171,10 @@ public class RestrictionTubeRender extends NormalTubeRender
 			{
 				mRender.setIcon(TypeRestrictionTube.paintStraight);
 				mRender.setColorRGB(CommonHelper.getDyeColor(col));
-				mRender.drawBox(15, min, 0.25f, 0.25f, max, 0.75f, 0.75f);
+				mRender.setupBox(min, 0.25f, 0.25f, max, 0.75f, 0.75f);
+				mRender.outset(0.001f);
+				mRender.clamp();
+				mRender.drawFaces(15);
 			}
 		}
 		mRender.resetColor();
