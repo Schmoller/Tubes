@@ -46,6 +46,7 @@ import schmoller.tubes.definitions.TypeInjectionTube;
 import schmoller.tubes.definitions.TypeNormalTube;
 import schmoller.tubes.definitions.TypeRequestingTube;
 import schmoller.tubes.definitions.TypeRestrictionTube;
+import schmoller.tubes.definitions.TypeRoundRobinTube;
 import schmoller.tubes.definitions.TypeRoutingTube;
 import schmoller.tubes.definitions.TypeTankTube;
 import schmoller.tubes.definitions.TypeValveTube;
@@ -110,6 +111,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		TubeRegistry.registerTube(new TypeFluidExtractionTube(), "fluidExtraction");
 		TubeRegistry.registerTube(new TypeTankTube(), "tank");
 		TubeRegistry.registerTube(new TypeBufferTube(), "buffer");
+		TubeRegistry.registerTube(new TypeRoundRobinTube(), "roundrobin");
 		
 		
 		PayloadRegistry.registerPayload(ItemPayload.class, "item", IInventory.class);
@@ -193,7 +195,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		
 		TubesAPI.instance.registerShapedRecipe(TubesAPI.instance.createTubeForType("tank", 1), " g ", "gtg", " g ", 'g', net.minecraft.init.Blocks.glass, 't', TubesAPI.instance.createTubeForType("basic"));
 		TubesAPI.instance.registerShapedRecipe(TubesAPI.instance.createTubeForType("buffer", 1), "t", "c", "t", 't', TubesAPI.instance.createTubeForType("basic"), 'c', net.minecraft.init.Blocks.chest);
-		
+		TubesAPI.instance.registerShapedRecipe(TubesAPI.instance.createTubeForType("roundrobin",1), "iti", "ttt", "iti", 'i', net.minecraft.init.Items.iron_ingot, 't', TubesAPI.instance.createTubeForType("basic"));
 	}
 
 	public void registerOreRecipes()
