@@ -190,7 +190,10 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 				tItem.state = TubeItem.IMPORT;
 				tItem.direction = fromSide ^ 1;
 				
-				return (new InputRouter(world(), position.copy().offset(fromSide ^ 1, 1), tItem).route() != null);
+				Position routePos = position.copy().offset(fromSide ^ 1, 1);
+				if(routePos.equals(new Position(x(),y(),z())))
+					return true;
+				return (new InputRouter(world(), routePos, tItem).route() != null);
 			}
 		}
 		
