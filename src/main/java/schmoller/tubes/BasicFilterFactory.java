@@ -4,6 +4,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import codechicken.lib.data.MCDataInput;
+import schmoller.tubes.api.FluidPayload;
+import schmoller.tubes.api.ItemPayload;
+import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.api.helpers.InventoryHelper;
 import schmoller.tubes.api.interfaces.IFilter;
@@ -44,6 +47,17 @@ public class BasicFilterFactory implements IFilterFactory
 			return existing;
 		}
 			
+		
+		return null;
+	}
+	
+	@Override
+	public IFilter getFilterFrom( Payload payload )
+	{
+		if(payload instanceof ItemPayload)
+			return new ItemFilter(((ItemPayload)payload).item.copy(), false);
+		if(payload instanceof FluidPayload)
+			return new FluidFilter(((FluidPayload)payload).fluid.copy());
 		
 		return null;
 	}

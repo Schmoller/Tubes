@@ -1,5 +1,6 @@
 package schmoller.tubes.api.interfaces;
 
+import schmoller.tubes.api.Payload;
 import codechicken.lib.data.MCDataInput;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -17,6 +18,13 @@ public interface IFilterFactory
 	 * @return A new filter, or null if none would have been created
 	 */
 	public IFilter getFilterFrom(ItemStack heldItem, IFilter existing, int button, boolean shift, boolean ctrl, boolean mustHavePayload);
+	
+	/**
+	 * Creates a filter that holds the specified payload
+	 * @param payload The payload to copy
+	 * @return A filter, or null
+	 */
+	public IFilter getFilterFrom(Payload payload);
 	
 	/**
 	 * Load a filter from an NBTTagCompound

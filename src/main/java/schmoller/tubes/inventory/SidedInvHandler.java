@@ -1,5 +1,9 @@
 package schmoller.tubes.inventory;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+
 import schmoller.tubes.AnyFilter;
 import schmoller.tubes.ItemFilter;
 import schmoller.tubes.api.ItemPayload;
@@ -192,5 +196,37 @@ public class SidedInvHandler implements IPayloadHandler<ItemPayload>
 	public boolean isSideAccessable( int side )
 	{
 		return !isNullOrEmpty(mInv.getAccessibleSlotsFromSide(side));
+	}
+	
+	@Override
+	public Collection<ItemPayload> listContents( IFilter filter, int side )
+	{
+		assert(filter != null);
+		assert(side >= 0 && side < 6);
+		assert(filter instanceof AnyFilter || filter instanceof ItemFilter);
+		
+		ArrayList<ItemPayload> payloads = new ArrayList<ItemPayload>();
+		int[] slots = mInv.getAccessibleSlotsFromSide(side);
+		if(slots == null)
+			return Collections.emptyList();
+		
+		for(int i = 0; i < slots.length; ++i)
+		{
+			ItemStack item = mInv.getStackInSlot(slots[i]);
+			if(item != null)
+			{
+				ItemPayload payload = new ItemPayload(item);
+				if(filter.matches(payload, SizeMode.Max))
+					payloads.add(payload.copy());
+			}
+		}
+		
+		return payloads;
+	}
+	
+	@Override
+	public Collection<ItemPayload> listContents( int side )
+	{
+		return listContents(new AnyFilter(64), side);
 	}
 }

@@ -1,7 +1,11 @@
 package schmoller.tubes.inventory;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import schmoller.tubes.AnyFilter;
 import schmoller.tubes.FluidFilter;
@@ -90,5 +94,31 @@ public class BasicFluidHandler implements IPayloadHandler<FluidPayload>
 	{
 		return true;
 	}
-
+	
+	@Override
+	public Collection<FluidPayload> listContents( IFilter filter, int side )
+	{
+		assert(filter != null);
+		assert(side >= 0 && side < 6);
+		
+		FluidTankInfo[] tanks = mParent.getTankInfo(ForgeDirection.getOrientation(side));
+		ArrayList<FluidPayload> payloads = new ArrayList<FluidPayload>();
+		for(FluidTankInfo tank : tanks)
+		{
+			if(tank.fluid != null)
+			{
+				FluidPayload payload = new FluidPayload(tank.fluid);
+				if(filter.matches(payload, SizeMode.Max))
+					payloads.add(payload.copy());
+			}
+		}
+		
+		return payloads;
+	}
+	
+	@Override
+	public Collection<FluidPayload> listContents( int side )
+	{
+		return listContents(new AnyFilter(64), side);
+	}
 }

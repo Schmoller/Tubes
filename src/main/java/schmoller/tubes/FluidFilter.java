@@ -99,8 +99,6 @@ public class FluidFilter implements IFilter
 	@Override
 	public int getMax()
 	{
-		if(mTemplate.getFluid().isGaseous(mTemplate))
-			return 8000;
 		return 1000;
 	}
 

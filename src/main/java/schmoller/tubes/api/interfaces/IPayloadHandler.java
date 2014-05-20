@@ -1,5 +1,7 @@
 package schmoller.tubes.api.interfaces;
 
+import java.util.Collection;
+
 import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.SizeMode;
 
@@ -41,4 +43,19 @@ public interface IPayloadHandler<T extends Payload>
 	 * @return True if it can
 	 */
 	public boolean isSideAccessable(int side);
+	
+	/**
+	 * Lists the contents of this
+	 * @param side The side to access it from.
+	 * @return A collection of Payloads that are in this
+	 */
+	public Collection<T> listContents(int side);
+	
+	/**
+	 * Lists the contents of this which match the filter
+	 * @param filter The filter to match against. Cannot be null, use AnyFilter: "any" to select anything
+	 * @param side The side to access it from.
+	 * @return A collection of Payloads that are in this
+	 */
+	public Collection<T> listContents(IFilter filter, int side);
 }

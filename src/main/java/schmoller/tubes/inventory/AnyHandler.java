@@ -1,5 +1,7 @@
 package schmoller.tubes.inventory;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import schmoller.tubes.api.Payload;
@@ -56,5 +58,25 @@ public class AnyHandler implements IPayloadHandler<Payload>
 				return true;
 		}
 		return false;
+	}
+	
+	@Override
+	public Collection<Payload> listContents( IFilter filter, int side )
+	{
+		ArrayList<Payload> payloads = new ArrayList<Payload>();
+		for(IPayloadHandler handler : mHandlers)
+			payloads.addAll(handler.listContents(filter, side));
+		
+		return payloads;
+	}
+	
+	@Override
+	public Collection<Payload> listContents( int side )
+	{
+		ArrayList<Payload> payloads = new ArrayList<Payload>();
+		for(IPayloadHandler handler : mHandlers)
+			payloads.addAll(handler.listContents(side));
+		
+		return payloads;
 	}
 }

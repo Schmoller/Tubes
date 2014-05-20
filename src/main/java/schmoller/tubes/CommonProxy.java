@@ -43,6 +43,7 @@ import schmoller.tubes.definitions.TypeExtractionTube;
 import schmoller.tubes.definitions.TypeFilterTube;
 import schmoller.tubes.definitions.TypeFluidExtractionTube;
 import schmoller.tubes.definitions.TypeInjectionTube;
+import schmoller.tubes.definitions.TypeManagementTube;
 import schmoller.tubes.definitions.TypeNormalTube;
 import schmoller.tubes.definitions.TypeRequestingTube;
 import schmoller.tubes.definitions.TypeRestrictionTube;
@@ -54,6 +55,7 @@ import schmoller.tubes.gui.BufferTubeContainer;
 import schmoller.tubes.gui.CompressorContainer;
 import schmoller.tubes.gui.FilterTubeContainer;
 import schmoller.tubes.gui.InjectionTubeContainer;
+import schmoller.tubes.gui.ManagementTubeContainer;
 import schmoller.tubes.gui.RequestingTubeContainer;
 import schmoller.tubes.gui.RoutingTubeContainer;
 import schmoller.tubes.items.BasicBlock;
@@ -73,6 +75,7 @@ import schmoller.tubes.types.BufferTube;
 import schmoller.tubes.types.CompressorTube;
 import schmoller.tubes.types.FilterTube;
 import schmoller.tubes.types.InjectionTube;
+import schmoller.tubes.types.ManagementTube;
 import schmoller.tubes.types.RequestingTube;
 import schmoller.tubes.types.RoutingTube;
 
@@ -112,6 +115,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		TubeRegistry.registerTube(new TypeTankTube(), "tank");
 		TubeRegistry.registerTube(new TypeBufferTube(), "buffer");
 		TubeRegistry.registerTube(new TypeRoundRobinTube(), "roundrobin");
+		TubeRegistry.registerTube(new TypeManagementTube(), "management");
 		
 		
 		PayloadRegistry.registerPayload(ItemPayload.class, "item", IInventory.class);
@@ -292,6 +296,8 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 			return new RoutingTubeContainer(CommonHelper.getMultiPart(world, x, y, z, RoutingTube.class), player);
 		case ModTubes.GUI_BUFFER_TUBE:
 			return new BufferTubeContainer(player.inventory, CommonHelper.getMultiPart(world, x, y, z, BufferTube.class));
+		case ModTubes.GUI_MANAGEMENT_TUBE:
+			return new ManagementTubeContainer(CommonHelper.getMultiPart(world, x, y, z, ManagementTube.class), player);
 		}
 		
 		return null;

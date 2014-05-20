@@ -44,7 +44,17 @@ public class FilterRegistry
 		return null;
 	}
 	
-	
+	public IFilter createFilter(Payload payload)
+	{
+		for(IFilterFactory factory : mFactories)
+		{
+			IFilter filter = factory.getFilterFrom(payload);
+			if(filter != null)
+				return filter;
+		}
+		
+		return null;
+	}
 	
 	public void writeFilter(IFilter filter, NBTTagCompound tag)
 	{

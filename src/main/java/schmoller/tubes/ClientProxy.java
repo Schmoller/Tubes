@@ -12,6 +12,7 @@ import schmoller.tubes.gui.BufferTubeGui;
 import schmoller.tubes.gui.CompressorTubeGui;
 import schmoller.tubes.gui.FilterTubeGui;
 import schmoller.tubes.gui.InjectionTubeGui;
+import schmoller.tubes.gui.ManagementTubeGui;
 import schmoller.tubes.gui.RequestingTubeGui;
 import schmoller.tubes.gui.RoutingTubeGui;
 import schmoller.tubes.render.BufferTubeRender;
@@ -37,6 +38,7 @@ import schmoller.tubes.types.BufferTube;
 import schmoller.tubes.types.CompressorTube;
 import schmoller.tubes.types.FilterTube;
 import schmoller.tubes.types.InjectionTube;
+import schmoller.tubes.types.ManagementTube;
 import schmoller.tubes.types.RequestingTube;
 import schmoller.tubes.types.RoutingTube;
 
@@ -72,6 +74,7 @@ public class ClientProxy extends CommonProxy
 		TubeRegistry.registerRenderer("tank",new TankTubeRender());
 		TubeRegistry.registerRenderer("buffer", new BufferTubeRender());
 		TubeRegistry.registerRenderer("roundrobin", new RoundRobinTubeRender());
+		TubeRegistry.registerRenderer("management", new EjectionTubeRender());
 		
 		PayloadRegistry.registerPayloadRenderer("item", new ItemPayloadRender());
 		PayloadRegistry.registerPayloadRenderer("fluid", new FluidPayloadRender());
@@ -94,6 +97,8 @@ public class ClientProxy extends CommonProxy
 			return new RoutingTubeGui(CommonHelper.getMultiPart(world, x, y, z, RoutingTube.class), player);
 		case ModTubes.GUI_BUFFER_TUBE:
 			return new BufferTubeGui(player.inventory, CommonHelper.getMultiPart(world, x, y, z, BufferTube.class));
+		case ModTubes.GUI_MANAGEMENT_TUBE:
+			return new ManagementTubeGui(CommonHelper.getMultiPart(world, x, y, z, ManagementTube.class), player);
 		}
 		
 		return null;
