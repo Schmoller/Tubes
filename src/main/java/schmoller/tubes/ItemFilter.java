@@ -12,11 +12,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.oredict.OreDictionary;
 import schmoller.tubes.api.ItemPayload;
 import schmoller.tubes.api.Payload;
@@ -176,28 +178,80 @@ public class ItemFilter implements IFilter
         itemRenderer.zLevel = 0.0F;
 	}
 
+	private void writeItemStack(MCDataOutput output, ItemStack stack)
+	{
+		if (stack == null) 
+			output.writeShort(-1);
+		else 
+		{
+			output.writeShort(Item.getIdFromItem(stack.getItem()));
+			output.writeShort(stack.stackSize);
+			output.writeShort(stack.getItemDamage());
+			output.writeNBTTagCompound(stack.stackTagCompound);
+		}
+	}
+	
+	private void writeItemStack(NBTTagCompound tag, ItemStack stack)
+	{
+		tag.setShort("id", (short)Item.getIdFromItem(stack.getItem()));
+		tag.setShort("Count", (short)stack.stackSize);
+		tag.setShort("Damage", (short)stack.getItemDamage());
+
+        if (stack.getTagCompound() != null)
+            tag.setTag("tag", stack.getTagCompound());
+	}
+	
+	private static ItemStack readItemStack(MCDataInput input)
+	{
+		short id = input.readShort();
+		if(id == -1)
+			return null;
+		
+		int size = input.readUShort();
+		int damage = input.readUShort();
+		NBTTagCompound tag = input.readNBTTagCompound();
+		
+		ItemStack stack = new ItemStack(Item.getItemById(id), size, damage);
+		stack.setTagCompound(tag);
+		
+		return stack;
+	}
+	
+	private static ItemStack readItemStack(NBTTagCompound tag)
+	{
+		int id = tag.getShort("id");
+		int count = tag.getShort("Count");
+		int damage = tag.getShort("Damage");
+		
+		ItemStack stack = new ItemStack(Item.getItemById(id), count, damage);
+		if(tag.hasKey("tag", Constants.NBT.TAG_COMPOUND))
+			stack.setTagCompound(tag);
+		
+		return stack;
+	}
+	
 	@Override
 	public void write( NBTTagCompound tag )
 	{
-		mTemplate.writeToNBT(tag);
+		writeItemStack(tag, mTemplate);
 		tag.setBoolean("fuzzy", mFuzzy);
 	}
 	
 	@Override
 	public void write( MCDataOutput output )
 	{
-		output.writeItemStack(mTemplate);
+		writeItemStack(output, mTemplate);
 		output.writeBoolean(mFuzzy);
 	}
 	
 	public static ItemFilter from(NBTTagCompound tag)
 	{
-		return new ItemFilter(ItemStack.loadItemStackFromNBT(tag), tag.getBoolean("fuzzy"));
+		return new ItemFilter(readItemStack(tag), tag.getBoolean("fuzzy"));
 	}
 	
 	public static ItemFilter from(MCDataInput input)
 	{
-		return new ItemFilter(input.readItemStack(), input.readBoolean());
+		return new ItemFilter(readItemStack(input), input.readBoolean());
 	}
 	
 	@Override

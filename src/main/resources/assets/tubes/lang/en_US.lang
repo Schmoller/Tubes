@@ -15,6 +15,7 @@ tubes.fluidExtraction.name=Fluid Extraction Tube
 tubes.tank.name=Tank Tube
 tubes.buffer.name=Buffer Tube
 tubes.roundrobin.name=Round Robin Tube
+tubes.management.name=Management Tube
 
 fluid.plastic=Plastic
 
@@ -62,3 +63,8 @@ gui.filter.item.oredict=Using ore dictionary
 
 gui.nei.tubes.shapeless=Tubes Shapeless Recipe
 gui.nei.tubes.shaped=Tubes Shaped Recipe
+
+gui.managementtube.mode.Stock=Stock
+gui.managementtube.mode.Fill=Fill
+gui.managementtube.mode.PassiveStock=Passive Stock
+gui.managementtube.mode.PassiveFill=Passive Fill

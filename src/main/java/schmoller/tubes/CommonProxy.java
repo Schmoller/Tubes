@@ -68,6 +68,7 @@ import schmoller.tubes.network.ModPacket;
 import schmoller.tubes.network.packets.ModPacketNEIDragDrop;
 import schmoller.tubes.network.packets.ModPacketSetColor;
 import schmoller.tubes.network.packets.ModPacketSetFilterMode;
+import schmoller.tubes.network.packets.ModPacketSetManagementMode;
 import schmoller.tubes.network.packets.ModPacketSetRequestingModes;
 import schmoller.tubes.network.packets.ModPacketSetRoutingOptions;
 import schmoller.tubes.parts.TubeCap;
@@ -259,6 +260,13 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 					((RequestingTube)tube).setColour((short)color);
 				else if(tube instanceof FilterTube)
 					((FilterTube)tube).setColour((short)color);
+				else if(tube instanceof ManagementTube)
+					((ManagementTube)tube).setColor(color);
+			}
+			else if(packet instanceof ModPacketSetManagementMode && tube instanceof ManagementTube)
+			{
+				ModPacketSetManagementMode options = (ModPacketSetManagementMode)packet;
+				((ManagementTube)tube).setMode(options.mode);
 			}
 		}
 		else if(packet instanceof ModPacketNEIDragDrop)

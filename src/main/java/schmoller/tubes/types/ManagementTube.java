@@ -75,6 +75,28 @@ public class ManagementTube extends DirectionalTube implements ITubeImportDest, 
 		mFilters[y][x] = filter;
 	}
 	
+	public ManagementMode getMode()
+	{
+		return mMode;
+	}
+	
+	public void setMode(ManagementMode mode)
+	{
+		mMode = mode;
+	}
+	
+	public int getColor()
+	{
+		return mColor;
+	}
+	
+	public void setColor(int color)
+	{
+		assert(color >= -1 && color < 16);
+		
+		mColor = color;
+	}
+	
 	private IPayloadHandler<? extends Payload> getHandler(Class<? extends Payload> payloadClass)
 	{
 		Position pos = new Position(x(), y(), z()).offset(getFacing(), 1);
