@@ -10,34 +10,26 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.common.util.Constants;
-import schmoller.tubes.AnyFilter;
 import schmoller.tubes.ItemFilter;
 import schmoller.tubes.ModTubes;
 import schmoller.tubes.PullMode;
 import schmoller.tubes.api.FilterRegistry;
-import schmoller.tubes.api.InteractionHandler;
 import schmoller.tubes.api.OverflowBuffer;
 import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.Position;
 import schmoller.tubes.api.SizeMode;
 import schmoller.tubes.api.TubeItem;
-import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.api.helpers.TubeHelper;
 import schmoller.tubes.api.helpers.BaseRouter.PathLocation;
 import schmoller.tubes.api.interfaces.IFilter;
-import schmoller.tubes.api.interfaces.IPayloadHandler;
-import schmoller.tubes.api.interfaces.IRouteCheckCallback;
 import schmoller.tubes.api.interfaces.ITubeConnectable;
 import schmoller.tubes.api.interfaces.ITubeImportDest;
 import schmoller.tubes.api.interfaces.ITubeOverflowDestination;
-import schmoller.tubes.routing.ImportSourceFinder;
-import schmoller.tubes.routing.InputRouter;
 import schmoller.tubes.routing.OutputRouter;
 
-public class RequestingTube extends DirectionalTube implements ITubeImportDest, IRedstonePart, ITubeOverflowDestination, IRouteCheckCallback
+public class RequestingTube extends DirectionalTube implements ITubeImportDest, IRedstonePart, ITubeOverflowDestination
 {
 	private IFilter[] mFilter = new IFilter[16];
 	private int mNext = 0;
@@ -55,8 +47,6 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 	public static final int CHANNEL_SIZEMODE = 5;
 	
 	public float animTime = 0;
-	
-	private IFilter mActiveFilter;
 	
 	public RequestingTube()
 	{
@@ -132,73 +122,17 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 			}
 			while(filterItem == null && mNext != start);
 			
-			mActiveFilter = filterItem;
-			
-			PathLocation source = new ImportSourceFinder(world(), new Position(x(), y(), z()), getFacing(), filterItem, mSizeMode).setRouteCheckCallback(this).route();
-			
-			if(source != null)
+			TubeItem item = TubeHelper.requestImport(world(), new Position(x(), y(), z()), getFacing(), filterItem, mSizeMode, -1, null);
+			if(item != null)
 			{
-				IPayloadHandler handler = InteractionHandler.getHandler((filterItem == null ? null : filterItem.getPayloadType()), world(), source.position);
-				if(handler != null)
-				{
-					Payload extracted;
-					if(filterItem == null)
-						extracted = handler.extract(new AnyFilter(0), source.dir ^ 1, true);
-					else
-						extracted = handler.extract(filterItem, source.dir ^ 1, filterItem.size(), mSizeMode, true);
-					
-					if(extracted != null)
-					{
-						TubeItem tItem = new TubeItem(extracted);
-						tItem.state = TubeItem.IMPORT;
-						tItem.direction = source.dir ^ 1;
-						
-						PathLocation tubeLoc = new PathLocation(source, source.dir ^ 1);
-						TileEntity tile = CommonHelper.getTileEntity(world(), tubeLoc.position);
-						ITubeConnectable con = TubeHelper.getTubeConnectable(tile);
-						if(con != null)
-							con.addItem(tItem, true);
-						
-						--mPulses;
-						if(mPulses < 0)
-							mPulses = 0;
-						
-						if(mMode == PullMode.RedstoneSingle)
-							openChannel(CHANNEL_PULSE);
-						
-						return;
-					}
-				}
-			}
-		}
-	}
-	
-	@Override
-	public boolean isEndPointOk( Position position, int fromSide )
-	{
-		IPayloadHandler handler = InteractionHandler.getHandler((mActiveFilter == null ? null : mActiveFilter.getPayloadType()), world(), position);
-		if(handler != null)
-		{
-			Payload extracted;
-			if(mActiveFilter == null)
-				extracted = handler.extract(new AnyFilter(0), fromSide ^ 1, false);
-			else
-				extracted = handler.extract(mActiveFilter, fromSide ^ 1, mActiveFilter.size(), mSizeMode, false);
-			
-			if(extracted != null)
-			{
-				TubeItem tItem = new TubeItem(extracted);
-				tItem.state = TubeItem.IMPORT;
-				tItem.direction = fromSide ^ 1;
+				--mPulses;
+				if(mPulses < 0)
+					mPulses = 0;
 				
-				Position routePos = position.copy().offset(fromSide ^ 1, 1);
-				if(routePos.equals(new Position(x(),y(),z())))
-					return true;
-				return (new InputRouter(world(), routePos, tItem).route() != null);
+				if(mMode == PullMode.RedstoneSingle)
+					openChannel(CHANNEL_PULSE);
 			}
 		}
-		
-		return false;
 	}
 	
 	@Override
