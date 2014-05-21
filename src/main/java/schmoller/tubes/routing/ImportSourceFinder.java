@@ -111,7 +111,10 @@ public class ImportSourceFinder extends BaseRouter
 		IImportSource source = CommonHelper.getInterface(getWorld(), current, IImportSource.class);
 		
 		if(source != null)
-			return source.canPullItem(mItem, side ^ 1, mItem.size(), mMode);
+		{
+			if(source.isImportSourceOk(mStartPosition))
+				return source.canPullItem(mItem, side ^ 1, mItem.size(), mMode);
+		}
 		else if(con == null)
 		{
 			IPayloadHandler handler = InteractionHandler.getHandler((mItem == null ? null : mItem.getPayloadType()), getWorld(),current);

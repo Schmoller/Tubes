@@ -597,6 +597,15 @@ public class ManagementTube extends DirectionalTube implements ITubeImportDest, 
 	}
 	
 	@Override
+	public boolean isImportSourceOk( Position position )
+	{
+		// Only management tubes can pull from this
+		ManagementTube tube = CommonHelper.getInterface(world(), position, ManagementTube.class);
+		
+		return (tube != null);
+	}
+	
+	@Override
 	public boolean canPullItem( IFilter filter, int side, int count, SizeMode mode)
 	{
 		IPayloadHandler<? extends Payload> handler = getHandler(null);
