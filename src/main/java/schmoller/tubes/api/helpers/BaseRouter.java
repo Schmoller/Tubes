@@ -71,7 +71,7 @@ public abstract class BaseRouter
 	 */
 	protected abstract boolean isTerminator(Position current, int side);
 
-	private boolean isEndPointOk(Position current, int side)
+	protected boolean isEndPointOk(Position current, int side)
 	{
 		if(mCallback != null)
 			return mCallback.isEndPointOk(current, side);

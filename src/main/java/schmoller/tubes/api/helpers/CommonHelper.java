@@ -18,6 +18,18 @@ public class CommonHelper
 	private static final String[] colourNames = {"item.fireworksCharge.white", "item.fireworksCharge.orange", "item.fireworksCharge.magenta", "item.fireworksCharge.lightBlue", "item.fireworksCharge.yellow", "item.fireworksCharge.lime", "item.fireworksCharge.pink", "item.fireworksCharge.gray", "item.fireworksCharge.silver", "item.fireworksCharge.cyan", "item.fireworksCharge.purple", "item.fireworksCharge.blue", "item.fireworksCharge.brown", "item.fireworksCharge.green", "item.fireworksCharge.red", "item.fireworksCharge.black"};
 	private static int[] dyeIds;
 	
+	public static <T> T getInterface(IBlockAccess world, Position pos, Class<? extends T> interfaceClass)
+	{
+		T iface = getMultiPart(world, pos.x, pos.y, pos.z, interfaceClass);
+		
+		if(iface != null)
+			return iface;
+		
+		iface = getTileEntity(world, pos, interfaceClass);
+		
+		return iface;
+	}
+	
 	public static TileEntity getTileEntity(IBlockAccess world, Position pos)
 	{
 		return world.getTileEntity(pos.x, pos.y, pos.z);

@@ -2,14 +2,21 @@ package schmoller.tubes.types;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+
+import codechicken.lib.data.MCDataInput;
+import codechicken.lib.data.MCDataOutput;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraftforge.common.util.Constants;
 
-import schmoller.tubes.AnyFilter;
 import schmoller.tubes.ModTubes;
 import schmoller.tubes.api.FilterRegistry;
 import schmoller.tubes.api.InteractionHandler;
@@ -21,14 +28,13 @@ import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.api.helpers.TubeHelper;
 import schmoller.tubes.api.helpers.BaseRouter.PathLocation;
 import schmoller.tubes.api.interfaces.IFilter;
+import schmoller.tubes.api.interfaces.IImportSource;
+import schmoller.tubes.api.interfaces.IImportController;
 import schmoller.tubes.api.interfaces.IPayloadHandler;
-import schmoller.tubes.api.interfaces.IRouteCheckCallback;
-import schmoller.tubes.api.interfaces.ITubeConnectable;
 import schmoller.tubes.api.interfaces.ITubeImportDest;
-import schmoller.tubes.routing.ImportSourceFinder;
-import schmoller.tubes.routing.InputRouter;
+import schmoller.tubes.routing.ManagementTubeFinder;
 
-public class ManagementTube extends DirectionalTube implements ITubeImportDest, IRouteCheckCallback
+public class ManagementTube extends DirectionalTube implements ITubeImportDest, IImportSource, IImportController
 {
 	public enum ManagementMode
 	{
@@ -38,16 +44,27 @@ public class ManagementTube extends DirectionalTube implements ITubeImportDest, 
 		PassiveFill;
 	}
 	
-	private IFilter[][] mFilters;
+	private static HashSet<ManagementTube>[] mAllTubes = new HashSet[17];
+	
+	static
+	{
+		for(int i = 0; i < 17; ++i)
+			mAllTubes[i] = new HashSet<ManagementTube>();
+	}
+	
+	protected static final int CHANNEL_COLOR = 1;
+	protected static final int CHANNEL_PRIORITY = 2;
+	protected static final int CHANNEL_MODE = 3;
+	
+	private IFilter[] mFilters;
 	private ManagementMode mMode;
 	private int mColor;
 	private int mPriority;
 	
-	private IFilter mActiveFilter;
 	public ManagementTube()
 	{
 		super("management");
-		mFilters = new IFilter[6][8];
+		mFilters = new IFilter[48];
 		mMode = ManagementMode.Stock;
 		mColor = -1;
 		mPriority = 0;
@@ -67,12 +84,13 @@ public class ManagementTube extends DirectionalTube implements ITubeImportDest, 
 	
 	public IFilter getFilter(int x, int y)
 	{
-		return mFilters[y][x];
+		return mFilters[x + (y * 8)];
 	}
 	
 	public void setFilter(int x, int y, IFilter filter)
 	{
-		mFilters[y][x] = filter;
+		mFilters[x + (y * 8)] = filter;
+		tile().markDirty();
 	}
 	
 	public ManagementMode getMode()
@@ -83,6 +101,12 @@ public class ManagementTube extends DirectionalTube implements ITubeImportDest, 
 	public void setMode(ManagementMode mode)
 	{
 		mMode = mode;
+		
+		if(!world().isRemote)
+		{
+			openChannel(CHANNEL_MODE).writeByte(mMode.ordinal());
+			tile().markDirty();
+		}
 	}
 	
 	public int getColor()
@@ -94,7 +118,50 @@ public class ManagementTube extends DirectionalTube implements ITubeImportDest, 
 	{
 		assert(color >= -1 && color < 16);
 		
+		mAllTubes[mColor+1].remove(this);
 		mColor = color;
+		mAllTubes[mColor+1].add(this);
+		mAllTubes[0].add(this);
+		
+		if(!world().isRemote)
+		{
+			openChannel(CHANNEL_COLOR).writeShort(mColor);
+			tile().markDirty();
+		}
+	}
+	
+	public int getPriority()
+	{
+		return mPriority;
+	}
+	
+	public void setPriority(int priority)
+	{
+		mPriority = priority;
+		
+		if(!world().isRemote)
+		{
+			openChannel(CHANNEL_PRIORITY).writeByte(mPriority);
+			tile().markDirty();
+		}
+	}
+	
+	@Override
+	public void onWorldJoin()
+	{
+		super.onWorldJoin();
+		
+		mAllTubes[mColor+1].add(this);
+		mAllTubes[0].add(this);
+	}
+	
+	@Override
+	public void onWorldSeparate()
+	{
+		super.onWorldSeparate();
+		
+		mAllTubes[mColor+1].remove(this);
+		mAllTubes[0].remove(this);
 	}
 	
 	private IPayloadHandler<? extends Payload> getHandler(Class<? extends Payload> payloadClass)
@@ -105,16 +172,13 @@ public class ManagementTube extends DirectionalTube implements ITubeImportDest, 
 	
 	private boolean filtersMatch(Payload payload)
 	{
-		for(int x = 0; x < 8; ++x)
+		for(int i = 0; i < mFilters.length; ++i)
 		{
-			for(int y = 0; y < 6; ++y)
+			IFilter filter = mFilters[i];
+			if(filter != null)
 			{
-				IFilter filter = mFilters[y][x];
-				if(filter != null)
-				{
-					if(filter.matches(payload, SizeMode.Max))
-						return true;
-				}
+				if(filter.matches(payload, SizeMode.Max))
+					return true;
 			}
 		}
 		
@@ -147,16 +211,13 @@ public class ManagementTube extends DirectionalTube implements ITubeImportDest, 
 	private int getMaxLevel(Payload payload)
 	{
 		int count = 0;
-		for(int x = 0; x < 8; ++x)
+		for(int i = 0; i < mFilters.length; ++i)
 		{
-			for(int y = 0; y < 6; ++y)
+			IFilter filter = mFilters[i];
+			if(filter != null)
 			{
-				IFilter filter = mFilters[y][x];
-				if(filter != null)
-				{
-					if(filter.matches(payload, SizeMode.Max))
-						count += filter.size();
-				}
+				if(filter.matches(payload, SizeMode.Max))
+					count += filter.size();
 			}
 		}
 		return count;
@@ -190,7 +251,11 @@ public class ManagementTube extends DirectionalTube implements ITubeImportDest, 
 		
 		if(extracted != null)
 		{
-			addItem(extracted, getFacing() ^ 1);
+			TubeItem item = new TubeItem(extracted);
+			item.colour = mColor;
+			item.direction = getFacing() ^ 1;
+			
+			addItem(item, true);
 			return true;
 		}
 		
@@ -225,88 +290,33 @@ public class ManagementTube extends DirectionalTube implements ITubeImportDest, 
 	
 	private boolean request(IFilter filter)
 	{
-		mActiveFilter = filter;
-		PathLocation source = new ImportSourceFinder(world(), new Position(x(), y(), z()), getFacing() ^ 1, filter, SizeMode.LessEqual).setRouteCheckCallback(this).route();
-		
-		if(source != null)
-		{
-			IPayloadHandler handler = InteractionHandler.getHandler((filter == null ? null : filter.getPayloadType()), world(), source.position);
-			if(handler != null)
-			{
-				Payload extracted;
-				if(filter == null)
-					extracted = handler.extract(new AnyFilter(0), source.dir ^ 1, true);
-				else
-					extracted = handler.extract(filter, source.dir ^ 1, (filter.size() > filter.getMax() ? filter.getMax() : filter.size()), SizeMode.LessEqual, true);
-				
-				if(extracted != null)
-				{
-					TubeItem tItem = new TubeItem(extracted);
-					tItem.state = TubeItem.IMPORT;
-					tItem.direction = source.dir ^ 1;
-					
-					PathLocation tubeLoc = new PathLocation(source, source.dir ^ 1);
-					TileEntity tile = CommonHelper.getTileEntity(world(), tubeLoc.position);
-					ITubeConnectable con = TubeHelper.getTubeConnectable(tile);
-					if(con != null)
-						con.addItem(tItem, true);
-					
-					return true;
-				}
-			}
-		}
-		
-		return false;
+		return TubeHelper.requestImport(world(), new Position(x(), y(), z()), getFacing() ^ 1, filter, SizeMode.LessEqual, getColor(), this) != null;
 	}
 	
 	private boolean requestMore(List<Payload> contents)
 	{
 		// If the filter does not match any, then it will be requested 
-		for(int x = 0; x < 8; ++x)
+		for(int i = 0; i < mFilters.length; ++i)
 		{
-			for(int y = 0; y < 6; ++y)
+			IFilter filter = mFilters[i];
+			if(filter != null)
 			{
-				IFilter filter = mFilters[y][x];
-				if(filter != null)
+				if(getHandler(filter.getPayloadType()) == null) // If there is no handler for it, there is no point going any further
+					continue;
+				
+				boolean matched = false;
+				for(Payload payload : contents)
 				{
-					if(getHandler(filter.getPayloadType()) == null) // If there is no handler for it, there is no point going any further
-						continue;
-					
-					boolean matched = false;
-					for(Payload payload : contents)
+					if(filter.matches(payload, SizeMode.Max))
 					{
-						if(filter.matches(payload, SizeMode.Max))
+						if(mMode == ManagementMode.Stock)
 						{
-							if(mMode == ManagementMode.Stock)
+							int max = getMaxLevel(payload);
+							if(payload.size() < max)
 							{
-								int max = getMaxLevel(payload);
-								if(payload.size() < max)
-								{
-									int toRequest = max - payload.size();
-									Payload req = payload.copy();
-									req.setSize(Math.min(toRequest, req.maxSize()));
-									
-									// Ensure we could actually add it
-									IPayloadHandler<Payload> handler = (IPayloadHandler<Payload>)getHandler(req.getClass());
-									Payload leftover = handler.insert(req, getFacing() ^ 1, false);
-									if(leftover != null)
-									{
-										if(leftover.isPayloadEqual(req)) // Nothing could be inserted
-										{
-											matched = true;
-											break;
-										}
-										req.setSize(req.size() - leftover.size()); // dont request more than we could actually insert
-									}
-									
-									if(request(FilterRegistry.getInstance().createFilter(req)))
-										return true;
-								}
-							}
-							else if(mMode == ManagementMode.Fill)
-							{
+								int toRequest = max - payload.size();
 								Payload req = payload.copy();
-								req.setSize(req.maxSize());
+								req.setSize(Math.min(toRequest, req.maxSize()));
 								
 								// Ensure we could actually add it
 								IPayloadHandler<Payload> handler = (IPayloadHandler<Payload>)getHandler(req.getClass());
@@ -324,19 +334,40 @@ public class ManagementTube extends DirectionalTube implements ITubeImportDest, 
 								if(request(FilterRegistry.getInstance().createFilter(req)))
 									return true;
 							}
-							
-							matched = true;
-							break;
 						}
+						else if(mMode == ManagementMode.Fill)
+						{
+							Payload req = payload.copy();
+							req.setSize(req.maxSize());
+							
+							// Ensure we could actually add it
+							IPayloadHandler<Payload> handler = (IPayloadHandler<Payload>)getHandler(req.getClass());
+							Payload leftover = handler.insert(req, getFacing() ^ 1, false);
+							if(leftover != null)
+							{
+								if(leftover.isPayloadEqual(req)) // Nothing could be inserted
+								{
+									matched = true;
+									break;
+								}
+								req.setSize(req.size() - leftover.size()); // dont request more than we could actually insert
+							}
+							
+							if(request(FilterRegistry.getInstance().createFilter(req)))
+								return true;
+						}
+						
+						matched = true;
+						break;
 					}
-					
-					if(!matched)
-					{
-						if(request(filter))
-							return true;
-					}
-					
 				}
+				
+				if(!matched)
+				{
+					if(request(filter))
+						return true;
+				}
+				
 			}
 		}
 		
@@ -373,28 +404,50 @@ public class ManagementTube extends DirectionalTube implements ITubeImportDest, 
 		return false;
 	}
 	
-	@Override
-	public boolean canAddItem( Payload item, int direction )
+	private boolean isPrioritySatisfied(Payload payload)
 	{
-		if(world().isRemote)
-			return true;
+		List<PathLocation> tubeLocs = new ManagementTubeFinder(this).routeAll();
+		ArrayList<ManagementTube> allAvailable = new ArrayList<ManagementTube>(tubeLocs.size());
 		
+		// Sort by priority
+		for(PathLocation loc : tubeLocs)
+		{
+			ManagementTube other = (ManagementTube)TubeHelper.getTubeConnectable(world(), loc.position.x, loc.position.y, loc.position.z);
+			
+			int ind = Collections.binarySearch(allAvailable, other, PrioritySorter.instance);
+			if(ind < 0)
+				ind = (ind + 1) * -1;
+			allAvailable.add(ind, other);
+		}
+		
+		for(int i = allAvailable.size() - 1; i >= 0; --i)
+		{
+			ManagementTube other = allAvailable.get(i);
+			if(!other.isSatisfied(payload))
+				return false;
+		}
+		
+		return true;
+	}
+	
+	public boolean isSatisfied(Payload item)
+	{
 		if(!filtersMatch(item))
-			return false;
+			return true;
 		
 		IPayloadHandler<Payload> specHandler = (IPayloadHandler<Payload>)getHandler(item.getClass());
 		if(specHandler == null)
-			return false;
+			return true;
 		
 		Payload leftover = specHandler.insert(item, getFacing() ^ 1, false);
 		if(leftover != null)
 		{
 			if(leftover.isPayloadEqual(item))
-				return false;
+				return true;
 		}
 		
 		if(mMode == ManagementMode.Fill || mMode == ManagementMode.PassiveFill)
-			return true;
+			return false;
 		
 		List<Payload> contents = combine(specHandler.listContents(getFacing() ^ 1));
 		
@@ -404,11 +457,29 @@ public class ManagementTube extends DirectionalTube implements ITubeImportDest, 
 			{
 				int max = getMaxLevel(item) - getCurrentLevel(item);
 				
-				return (max > 0);
+				return (max <= 0);
 			}
 		}
 		
-		return true;
+		return false;
+	}
+	
+	@Override
+	public boolean canAddItem( Payload item, int direction )
+	{
+		if(world().isRemote)
+			return true;
+
+		if(!isPrioritySatisfied(item))
+			return false;
+		
+		return !isSatisfied(item);
+	}
+	
+	@Override
+	public boolean canItemEnter( TubeItem item )
+	{
+		return (mColor == NO_COLOUR || item.colour == mColor || item.colour == NO_COLOUR) && super.canItemEnter(item);
 	}
 	
 	@Override
@@ -497,54 +568,142 @@ public class ManagementTube extends DirectionalTube implements ITubeImportDest, 
 	}
 	
 	@Override
-	public boolean isEndPointOk( Position position, int fromSide )
+	public boolean isImportItemOk( Payload item )
 	{
-		IPayloadHandler handler = InteractionHandler.getHandler((mActiveFilter == null ? null : mActiveFilter.getPayloadType()), world(), position);
-		if(handler != null)
+		// Check that it can fit
+		IPayloadHandler<Payload> myHandler = (IPayloadHandler<Payload>)getHandler(item.getClass());
+		if(myHandler == null)
+			return false;
+		
+		Payload leftover = myHandler.insert(item, getFacing() ^ 1, false);
+		if(leftover != null)
 		{
-			Payload extracted;
-			if(mActiveFilter == null)
-				extracted = handler.extract(new AnyFilter(0), fromSide ^ 1, false);
-			else
-				extracted = handler.extract(mActiveFilter, fromSide ^ 1, mActiveFilter.size(), SizeMode.LessEqual, false);
-			
-			if(extracted != null)
-			{
-				// Check that it can fit
-				IPayloadHandler<Payload> myHandler = (IPayloadHandler<Payload>)getHandler(extracted.getClass());
-				if(myHandler == null)
-					return false;
-				
-				Payload leftover = myHandler.insert(extracted, getFacing() ^ 1, false);
-				if(leftover != null)
-				{
-					if(leftover.isPayloadEqual(extracted))
-						return false;
-				}
-				
-				TubeItem tItem = new TubeItem(extracted);
-				tItem.state = TubeItem.IMPORT;
-				tItem.direction = fromSide ^ 1;
-				
-				Position routePos = position.copy().offset(fromSide ^ 1, 1);
-				if(routePos.equals(new Position(x(),y(),z())))
-					return true;
-				
-				return (new InputRouter(world(), routePos, tItem).route() != null);
-			}
+			if(leftover.isPayloadEqual(item))
+				return false;
 		}
+		
+		return true;
+	}
+	
+	@Override
+	public boolean isImportSourceOk( Position position, int fromSide )
+	{
+		ManagementTube tube = CommonHelper.getInterface(world(), position, ManagementTube.class);
+		
+		if(tube != null)
+			return ((tube.getColor() == -1 || mColor == -1 || mColor == tube.getColor()) && tube.getPriority() < mPriority);
+		
+		return true;
+	}
+	
+	@Override
+	public boolean canPullItem( IFilter filter, int side, int count, SizeMode mode)
+	{
+		IPayloadHandler<? extends Payload> handler = getHandler(null);
+		if(handler != null)
+			return handler.extract(filter, side, count, mode, false) != null;
 		
 		return false;
 	}
 	
-	// Keep 6x8 filters
-	// Have a priority
-	// Have a color
-	// Have a mode
-	// - Stock (keep specified in the chest)
-	// - Fill (keep specified type in chest, no limit)
-	// - Passive Stock (accept specified items into the chest, no request)
-	// - Passive Fill (accept specified items into the chest, no request, no limit)
+	@Override
+	public Payload pullItem( IFilter filter, int side, int count, SizeMode mode, boolean doExtract )
+	{
+		IPayloadHandler<? extends Payload> handler = getHandler(null);
+		if(handler != null)
+			return handler.extract(filter, side, count, mode, doExtract);
+		
+		return null;
+	}
 	
+	@Override
+	public void writeDesc( MCDataOutput packet )
+	{
+		super.writeDesc(packet);
+		packet.writeByte(mPriority);
+		packet.writeShort(mColor);
+		packet.writeByte(mMode.ordinal());
+	}
 	
+	@Override
+	public void readDesc( MCDataInput packet )
+	{
+		super.readDesc(packet);
+		mPriority = packet.readByte();
+		mColor = packet.readShort();
+		mMode = ManagementMode.values()[packet.readByte()];
+	}
+	
+	@Override
+	protected void onRecieveDataClient( int channel, MCDataInput input )
+	{
+		switch(channel)
+		{
+		case CHANNEL_COLOR:
+			mColor = input.readShort();
+			break;
+		case CHANNEL_PRIORITY:
+			mPriority = input.readByte();
+			break;
+		case CHANNEL_MODE:
+			mMode = ManagementMode.values()[input.readByte()];
+			break;
+		default:
+			super.onRecieveDataClient(channel, input);
+		}
+	}
+	
+	@Override
+	public void save( NBTTagCompound root )
+	{
+		super.save(root);
+		root.setShort("Color", (short)mColor);
+		root.setByte("Priority", (byte)mPriority);
+		root.setString("Mode", mMode.name());
+		
+		NBTTagList list = new NBTTagList();
+		for(int i = 0; i < mFilters.length; ++i)
+		{
+			IFilter filter = mFilters[i];
+			if(filter != null)
+			{
+				NBTTagCompound tag = new NBTTagCompound();
+				FilterRegistry.getInstance().writeFilter(filter, tag);
+				tag.setInteger("FSlot", i);
+				list.appendTag(tag);
+			}
+		}
+		
+		root.setTag("Filters", list);
+	}
+	
+	@Override
+	public void load( NBTTagCompound root )
+	{
+		super.load(root);
+		
+		mColor = root.getShort("Color");
+		mPriority = root.getByte("Priority");
+		mMode = ManagementMode.valueOf(root.getString("Mode"));
+		
+		mFilters = new IFilter[mFilters.length];
+		NBTTagList list = root.getTagList("Filters", Constants.NBT.TAG_COMPOUND);
+		for(int i = 0; i < list.tagCount(); ++i)
+		{
+			NBTTagCompound tag = list.getCompoundTagAt(i);
+			int index = tag.getInteger("FSlot");
+			mFilters[index] = FilterRegistry.getInstance().readFilter(tag);
+		}
+	}
+	
+	private static class PrioritySorter implements Comparator<ManagementTube>
+	{
+		public static final PrioritySorter instance = new PrioritySorter();
+		
+		@Override
+		public int compare( ManagementTube o1, ManagementTube o2 )
+		{
+			return Integer.valueOf(o1.getPriority()).compareTo(o2.getPriority());
+		}
+	}
 }

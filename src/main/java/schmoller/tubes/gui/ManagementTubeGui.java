@@ -10,6 +10,7 @@ import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.definitions.TypeManagementTube;
 import schmoller.tubes.network.packets.ModPacketSetColor;
 import schmoller.tubes.network.packets.ModPacketSetManagementMode;
+import schmoller.tubes.network.packets.ModPacketSetPriority;
 import schmoller.tubes.types.ManagementTube;
 import schmoller.tubes.types.ManagementTube.ManagementMode;
 import net.minecraft.client.renderer.RenderHelper;
@@ -102,25 +103,24 @@ public class ManagementTubeGui extends GuiExtContainer
 				mTube.setMode(ManagementMode.values()[i]);
 				ModTubes.packetManager.sendPacketToServer(new ModPacketSetManagementMode(mTube.x(), mTube.y(), mTube.z(), ManagementMode.values()[i]));
 			}
-//			else if(yy >= 35 && yy <= 49) // Comparison button
-//			{
-//				Comparison current = mTube.getComparison();
-//				int i = current.ordinal();
-//				if(button == 0)
-//					++i;
-//				else if(button == 1)
-//					--i;
-//				else if(button == 2)
-//					i = 0;
-//				
-//				if(i < 0)
-//					i = Comparison.values().length - 1;
-//				else if(i >= Comparison.values().length)
-//					i = 0;
-//				
-//				mTube.setComparison(Comparison.values()[i]);
-//				ModTubes.packetManager.sendPacketToServer(new ModPacketSetFilterMode(mTube.x(), mTube.y(), mTube.z(), Comparison.values()[i]));
-//			}
+			else if(yy >= 35 && yy <= 49) // Priority button
+			{
+				int i = mTube.getPriority();
+				if(button == 0)
+					++i;
+				else if(button == 1)
+					--i;
+				else if(button == 2)
+					i = 0;
+				
+				if(i < 0)
+					i = 9;
+				else if(i >= 10)
+					i = 0;
+				
+				mTube.setPriority(i);
+				ModTubes.packetManager.sendPacketToServer(new ModPacketSetPriority(mTube.x(), mTube.y(), mTube.z(), i));
+			}
 			else if(yy >= 51 && yy <= 65)
 			{
 				int colour = mTube.getColor();
@@ -158,8 +158,8 @@ public class ManagementTubeGui extends GuiExtContainer
 		drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
 		
 		drawTexturedModalRect(x + 153, y + 19, xSize, 14 * mTube.getMode().ordinal(), 14, 14);
-//		drawTexturedModalRect(x + 153, y + 35, xSize + 14, 14 * mTube.getComparison().ordinal(), 14, 14);
-//		
+		drawCenteredString(fontRendererObj, String.valueOf(mTube.getPriority()), x + 160, y + 38, 0xffffff);
+		
 		int colour = mTube.getColor();
 		
 		if(colour != -1)

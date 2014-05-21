@@ -2,12 +2,21 @@ package schmoller.tubes.api.helpers;
 
 import java.util.Random;
 
+import schmoller.tubes.AnyFilter;
 import schmoller.tubes.api.InteractionHandler;
+import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.Position;
+import schmoller.tubes.api.SizeMode;
 import schmoller.tubes.api.TubeItem;
 import schmoller.tubes.api.TubesAPI;
+import schmoller.tubes.api.helpers.BaseRouter.PathLocation;
+import schmoller.tubes.api.interfaces.IFilter;
+import schmoller.tubes.api.interfaces.IImportSource;
+import schmoller.tubes.api.interfaces.IImportController;
+import schmoller.tubes.api.interfaces.IPayloadHandler;
 import schmoller.tubes.api.interfaces.ITube;
 import schmoller.tubes.api.interfaces.ITubeConnectable;
+import schmoller.tubes.routing.ImportSourceFinder;
 
 import codechicken.multipart.TileMultipart;
 
@@ -150,5 +159,68 @@ public class TubeHelper
 			return con.showInventoryConnection(side ^ 1);
 		
 		return InteractionHandler.isInteractable(world, x + ForgeDirection.getOrientation(side).offsetX, y + ForgeDirection.getOrientation(side).offsetY, z + ForgeDirection.getOrientation(side).offsetZ, side);
+	}
+	
+	/**
+	 * Attempts to find a place to import something that matches the filter from. If it succeeds, it will add the item to the tube next to it. 
+	 * @param world The world
+	 * @param position The location it should go to (ie. the object doing the requesting)
+	 * @param side The side of the requesting object to search from
+	 * @param filter The filter to match, may be null
+	 * @param mode The size comparison to perform
+	 * @param color The color to paint items when they are pulled. -1 for no color
+	 * @param callback A callback that can be used to pick and choose valid import sources
+	 * @return The TubeItem that was requested or null if the request failed.
+	 */
+	public static TubeItem requestImport(IBlockAccess world, Position position, int side, IFilter filter, SizeMode mode, int color, IImportController controller)
+	{
+		if(filter == null)
+			filter = new AnyFilter(0);
+		
+		// Disallow any oversize requests
+		int size = Math.min(filter.size(), filter.getMax()); 
+		
+		PathLocation source = new ImportSourceFinder(world, position, side, filter, mode, color).setImportControl(controller).route();
+		
+		if(source == null)
+			return null;
+		
+		IPayloadHandler handler = InteractionHandler.getHandler(filter.getPayloadType(), world, source.position);
+		IImportSource importSource = CommonHelper.getInterface(world, source.position, IImportSource.class);
+		Payload extracted = null;
+		
+		if(importSource != null)
+			extracted = importSource.pullItem(filter, source.dir ^ 1, size, mode, false);
+		else if(handler != null)
+			extracted = handler.extract(filter, source.dir ^ 1, size, mode, false);
+		
+		if(extracted != null)
+		{
+			TubeItem tItem = new TubeItem(extracted);
+			tItem.state = TubeItem.IMPORT;
+			tItem.direction = source.dir ^ 1;
+			tItem.colour = color;
+			
+			PathLocation tubeLoc = new PathLocation(source, source.dir ^ 1);
+			TileEntity tile = CommonHelper.getTileEntity(world, tubeLoc.position);
+			ITubeConnectable con = TubeHelper.getTubeConnectable(tile);
+			if(con != null)
+			{
+				if(con.addItem(tItem, true))
+				{
+					// Finalize
+					if(importSource != null)
+						importSource.pullItem(filter, source.dir ^ 1, size, mode, true);
+					else if(handler != null)
+						handler.extract(filter, source.dir ^ 1, size, mode, true);
+					
+					return tItem;
+				}
+			}
+			
+			return null;
+		}
+		
+		return null;
 	}
 }
