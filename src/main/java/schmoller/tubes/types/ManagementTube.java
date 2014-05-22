@@ -9,6 +9,7 @@ import java.util.List;
 
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
+import codechicken.lib.vec.Cuboid6;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -68,6 +69,36 @@ public class ManagementTube extends DirectionalTube implements ITubeImportDest, 
 		mMode = ManagementMode.Stock;
 		mColor = -1;
 		mPriority = 0;
+	}
+	
+	@Override
+	public Cuboid6 getBounds()
+	{
+		switch(getFacing())
+		{
+		default:
+		case 0:
+			return new Cuboid6(0.125f, 0.0f, 0.125f, 0.875f, 0.8125f, 0.875f);
+		case 1:
+			return new Cuboid6(0.125f, 0.1875f, 0.125f, 0.875f, 1.0f, 0.875f);
+		case 2:
+			return new Cuboid6(0.125f, 0.125f, 0.0f, 0.875f, 0.875f, 0.8125f);
+		case 3:
+			return new Cuboid6(0.125f, 0.125f, 0.1875f, 0.875f, 0.875f, 1.0f);
+		case 4:
+			return new Cuboid6(0.0f, 0.125f, 0.125f, 0.8125f, 0.875f, 0.875f);
+		case 5:
+			return new Cuboid6(0.1875f, 0.125f, 0.125f, 1.0f, 0.875f, 0.875f);
+		}
+	}
+	
+	@Override
+	public int getHollowSize( int side )
+	{
+		if(side == getFacing())
+			return 12;
+		
+		return super.getHollowSize(side);
 	}
 	
 	@Override
