@@ -35,6 +35,7 @@ import schmoller.tubes.api.gui.ExtContainer;
 import schmoller.tubes.api.gui.FakeSlot;
 import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.api.interfaces.ITube;
+import schmoller.tubes.api.interfaces.ITubeOverflowDestination;
 import schmoller.tubes.definitions.TypeBufferTube;
 import schmoller.tubes.definitions.TypeColoringTube;
 import schmoller.tubes.definitions.TypeCompressorTube;
@@ -56,10 +57,12 @@ import schmoller.tubes.gui.CompressorContainer;
 import schmoller.tubes.gui.FilterTubeContainer;
 import schmoller.tubes.gui.InjectionTubeContainer;
 import schmoller.tubes.gui.ManagementTubeContainer;
+import schmoller.tubes.gui.OverflowContainer;
 import schmoller.tubes.gui.RequestingTubeContainer;
 import schmoller.tubes.gui.RoutingTubeContainer;
 import schmoller.tubes.items.BasicBlock;
 import schmoller.tubes.items.BasicItem;
+import schmoller.tubes.items.ItemDiagnosticTool;
 import schmoller.tubes.items.ItemTubeBase;
 import schmoller.tubes.items.ItemTubeCap;
 import schmoller.tubes.network.IModPacketHandler;
@@ -132,6 +135,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		Items.BucketPlastic.initialize(new BasicItem().setUnlocalizedName("bucketOfPlastic").setContainerItem(net.minecraft.init.Items.bucket).setCreativeTab(ModTubes.creativeTab).setMaxStackSize(1));
 		Items.RedstoneCircuit.initialize(new BasicItem().setUnlocalizedName("redstoneCircuit").setCreativeTab(ModTubes.creativeTab));
 		Items.FluidCircuit.initialize(new BasicItem().setUnlocalizedName("fluidCircuit").setCreativeTab(ModTubes.creativeTab));
+		Items.DiagnosticTool.initialize(new ItemDiagnosticTool().setUnlocalizedName("diagnosticTool").setCreativeTab(ModTubes.creativeTab));
 		
 		ModTubes.itemTube = new ItemTubeBase();
 		Items.Tube.initialize(ModTubes.itemTube);
@@ -143,6 +147,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		GameRegistry.registerItem(Items.Tube.getItem(), "tube");
 		GameRegistry.registerItem(Items.RedstoneCircuit.getItem(), "redstoneCircuit");
 		GameRegistry.registerItem(Items.FluidCircuit.getItem(), "fluidCircuit");
+		GameRegistry.registerItem(Items.DiagnosticTool.getItem(), "diagnosticTool");
 		
 		Items.TubeCap.initialize(new ItemTubeCap().setUnlocalizedName("tubeCap").setCreativeTab(ModTubes.creativeTab));
 		GameRegistry.registerItem(Items.TubeCap.getItem(), "tubeCap");
@@ -311,6 +316,8 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 			return new BufferTubeContainer(player.inventory, CommonHelper.getMultiPart(world, x, y, z, BufferTube.class));
 		case ModTubes.GUI_MANAGEMENT_TUBE:
 			return new ManagementTubeContainer(CommonHelper.getMultiPart(world, x, y, z, ManagementTube.class), player);
+		case ModTubes.GUI_OVERFLOW:
+			return new OverflowContainer(CommonHelper.getInterface(world, x, y, z, ITubeOverflowDestination.class).getOverflowContents());
 		}
 		
 		return null;

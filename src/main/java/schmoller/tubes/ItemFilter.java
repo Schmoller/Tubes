@@ -225,7 +225,7 @@ public class ItemFilter implements IFilter
 		
 		ItemStack stack = new ItemStack(Item.getItemById(id), count, damage);
 		if(tag.hasKey("tag", Constants.NBT.TAG_COMPOUND))
-			stack.setTagCompound(tag);
+			stack.setTagCompound(tag.getCompoundTag("tag"));
 		
 		return stack;
 	}

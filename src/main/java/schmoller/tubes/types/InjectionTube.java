@@ -220,6 +220,12 @@ public class InjectionTube extends BaseTube implements ISidedInventory, ITubeOve
 	}
 	
 	@Override
+	public OverflowBuffer getOverflowContents()
+	{
+		return mOverflow;
+	}
+	
+	@Override
 	public void save( NBTTagCompound root )
 	{
 		super.save(root);

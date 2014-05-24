@@ -142,6 +142,12 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 	}
 	
 	@Override
+	public OverflowBuffer getOverflowContents()
+	{
+		return mOverflow;
+	}
+	
+	@Override
 	public boolean hasCustomRouting()
 	{
 		return true;

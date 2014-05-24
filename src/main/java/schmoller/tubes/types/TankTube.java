@@ -306,4 +306,10 @@ public class TankTube extends BaseTube implements IFluidHandler, ITubeOverflowDe
 		super.onDropItems(itemsToDrop);
 		mOverflow.onDropItems(itemsToDrop);
 	}
+	
+	@Override
+	public OverflowBuffer getOverflowContents()
+	{
+		return mOverflow;
+	}
 }

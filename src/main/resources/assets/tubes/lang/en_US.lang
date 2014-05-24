@@ -26,6 +26,7 @@ item.bucketOfPlastic.name=Bucket of Plastic
 item.redstoneCircuit.name=Redstone Circuit
 item.fluidCircuit.name=Fluid Circuit
 item.tubeCap.name=Tube Cap
+item.diagnosticTool.name=Diagnostic Tool
 
 tile.blockPlastic.name=Block Of Plastic
 
@@ -68,3 +69,5 @@ gui.managementtube.mode.Stock=Stock
 gui.managementtube.mode.Fill=Fill
 gui.managementtube.mode.PassiveStock=Passive Stock
 gui.managementtube.mode.PassiveFill=Passive Fill
+
+gui.overflow.name=Overflow Contents

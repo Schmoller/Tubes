@@ -298,4 +298,10 @@ public class BufferTube extends DirectionalTube implements ISidedInventory, ITub
 				itemsToDrop.add(mSlots[i]);
 		}
 	}
+	
+	@Override
+	public OverflowBuffer getOverflowContents()
+	{
+		return mOverflow;
+	}
 }

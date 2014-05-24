@@ -27,6 +27,7 @@ import schmoller.tubes.routing.InputRouter;
 import schmoller.tubes.routing.OutputRouter;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.config.Configuration;
@@ -66,6 +67,8 @@ public class ModTubes extends TubesAPI
 	
 	public static Logger logger = Logger.getLogger("Tubes");
 	
+	public static ResourceLocation overflowGui = new ResourceLocation("tubes", "textures/gui/overflow.png");
+	
 	public int plasticYield;
 	
 	public static int payloadRenderDistance;
@@ -81,6 +84,7 @@ public class ModTubes extends TubesAPI
 	public static final int GUI_ROUTING_TUBE = 4;
 	public static final int GUI_BUFFER_TUBE = 5;
 	public static final int GUI_MANAGEMENT_TUBE = 6;
+	public static final int GUI_OVERFLOW = 100;
 	
 	public static TubeCreativeTab creativeTab;
 	

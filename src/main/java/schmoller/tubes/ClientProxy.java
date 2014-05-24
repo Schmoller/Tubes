@@ -8,11 +8,13 @@ import schmoller.tubes.api.PayloadRegistry;
 import schmoller.tubes.api.TubeRegistry;
 import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.api.helpers.RenderHelper;
+import schmoller.tubes.api.interfaces.ITubeOverflowDestination;
 import schmoller.tubes.gui.BufferTubeGui;
 import schmoller.tubes.gui.CompressorTubeGui;
 import schmoller.tubes.gui.FilterTubeGui;
 import schmoller.tubes.gui.InjectionTubeGui;
 import schmoller.tubes.gui.ManagementTubeGui;
+import schmoller.tubes.gui.OverflowGui;
 import schmoller.tubes.gui.RequestingTubeGui;
 import schmoller.tubes.gui.RoutingTubeGui;
 import schmoller.tubes.render.BufferTubeRender;
@@ -100,6 +102,8 @@ public class ClientProxy extends CommonProxy
 			return new BufferTubeGui(player.inventory, CommonHelper.getMultiPart(world, x, y, z, BufferTube.class));
 		case ModTubes.GUI_MANAGEMENT_TUBE:
 			return new ManagementTubeGui(CommonHelper.getMultiPart(world, x, y, z, ManagementTube.class), player);
+		case ModTubes.GUI_OVERFLOW:
+			return new OverflowGui(CommonHelper.getInterface(world, x, y, z, ITubeOverflowDestination.class).getOverflowContents());
 		}
 		
 		return null;

@@ -30,6 +30,18 @@ public class CommonHelper
 		return iface;
 	}
 	
+	public static <T> T getInterface(IBlockAccess world, int x, int y, int z, Class<? extends T> interfaceClass)
+	{
+		T iface = getMultiPart(world, x, y, z, interfaceClass);
+		
+		if(iface != null)
+			return iface;
+		
+		iface = getTileEntity(world, x, y, z, interfaceClass);
+		
+		return iface;
+	}
+	
 	public static TileEntity getTileEntity(IBlockAccess world, Position pos)
 	{
 		return world.getTileEntity(pos.x, pos.y, pos.z);

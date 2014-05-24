@@ -1,5 +1,6 @@
 package schmoller.tubes.api;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -36,6 +37,11 @@ public class OverflowBuffer
 	public TubeItem peekNext()
 	{
 		return mBuffer.getFirst();
+	}
+	
+	public List<TubeItem> peekItems()
+	{
+		return Collections.unmodifiableList(mBuffer);
 	}
 	
 	public void save(NBTTagCompound root)

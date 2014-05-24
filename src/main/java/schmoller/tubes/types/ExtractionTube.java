@@ -122,6 +122,12 @@ public class ExtractionTube extends DirectionalBasicTube implements IRedstonePar
 	}
 	
 	@Override
+	public OverflowBuffer getOverflowContents()
+	{
+		return mOverflow;
+	}
+	
+	@Override
 	public void onWorldJoin()
 	{
 		mIsPowered = getPower() > 0;

@@ -11,7 +11,8 @@ public enum Items
 	BucketPlastic("BucketOfPlastic"),
 	RedstoneCircuit("redstoneCircuit"),
 	TubeCap("TubeCap"),
-	FluidCircuit("FluidCircuit");
+	FluidCircuit("FluidCircuit"),
+	DiagnosticTool("");
 	
 	private Item mItem = null;
 	private String mConfigName;
