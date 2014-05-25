@@ -1,0 +1,65 @@
+itemGroup.tubes=Tubes
+
+tubes.basic.name=Труба
+tubes.restriction.name=Ограничивающая труба
+tubes.injection.name=Вводящая труба
+tubes.ejection.name=Выводящая труба
+tubes.filter.name=Фильтрующая труба
+tubes.extraction.name=Извлекающая труба
+tubes.compressor.name=Компрессорная труба
+tubes.routing.name=Направляющая труба
+tubes.requesting.name=Запрашивающая труба
+tubes.valve.name=Клапанная труба
+tubes.coloring.name=Красящаяся труба
+tubes.fluidExtraction.name=Жидкостная извлекающая труба
+tubes.tank.name=Резервуарная труба
+tubes.buffer.name=Буферная труба
+tubes.roundrobin.name=Циклическая труба
+tubes.management.name=Управляющая труба
+
+fluid.plastic=Пластик
+
+item.plasticPellets.name=Пластиковые гранулы
+item.sheetPlastic.name=Пластик
+item.milkCurd.name=Молочный творог
+item.bucketOfPlastic.name=Ведро пластика
+item.redstoneCircuit.name=Красная схема
+item.fluidCircuit.name=Жидкостная схема
+item.tubeCap.name=Заглушка для трубы
+
+tile.blockPlastic.name=Пластиковый блок
+
+gui.compressortube.compressing=Сжатие %1$s в %2$d
+gui.routingtube.direction.Up=Верх
+gui.routingtube.direction.Down=Низ
+gui.routingtube.direction.North=Север
+gui.routingtube.direction.South=Юг
+gui.routingtube.direction.West=Запад
+gui.routingtube.direction.East=Восток
+gui.routingtube.direction.Any=Любой
+gui.routingtube.direction.Closed=Закрыт
+gui.colors.none=Нет цвета
+gui.colors.any=Любой цвет
+
+gui.requestingtube.mode.Constant=Всегда втягивать
+gui.requestingtube.mode.RedstoneConstant=Втягивать, когда сигнал красного камня активен
+gui.requestingtube.mode.RedstoneSingle=Втягивать один раз за пульс красного камня
+
+gui.requestingtube.size.Exact=Втягивать точное количество
+gui.requestingtube.size.GreaterEqual=Втягивать наименьшее количество
+gui.requestingtube.size.LessEqual=Втягивать наибольшее количество
+gui.requestingtube.size.Max=Втягивать максимальное количество
+
+gui.filtertube.mode.Allow=Разрешить
+gui.filtertube.mode.Deny=Запретить
+gui.filtertube.modestring=%s определённые предметы
+gui.filtertube.size.Any=%s стаки любого размера
+gui.filtertube.size.Greater=%s стаки с большим размером
+gui.filtertube.size.Less=%s стаки с меньшим размером
+gui.filtertube.size.Exact=%s стаки с одинаковым размером
+
+gui.filter.any=Любой
+gui.filter.item.oredict=Использование словаря руд
+
+gui.nei.tubes.shapeless=Tubes: Бесформенный рецепт
+gui.nei.tubes.shaped=Tubes: Форменный рецепт
