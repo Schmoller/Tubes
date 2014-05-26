@@ -194,7 +194,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("filter"), "ici", "ctc", "ici", 'i', net.minecraft.init.Items.iron_ingot, 't', ModTubes.itemTube.createForType("basic"), 'c', Items.RedstoneCircuit.getItem()));
 		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("routing"), "iti", "tft", "iti", 'i', net.minecraft.init.Items.iron_ingot, 't', ModTubes.itemTube.createForType("basic"), 'f', ModTubes.itemTube.createForType("filter")));
 		GameRegistry.addRecipe(new SpecialShapelessRecipe(ModTubes.itemTube.createForType("ejection"), ModTubes.itemTube.createForType("basic"), net.minecraft.init.Blocks.glass));
-		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("fluidExtraction"), "f", "t", "f", 'f', Items.FluidCircuit.getItem(), 't', ModTubes.itemTube.createForType("extraction")));
+		GameRegistry.addRecipe(new SpecialShapedRecipe(ModTubes.itemTube.createForType("fluidExtraction"), "b", "t", "p", 'p', net.minecraft.init.Blocks.sticky_piston, 't', ModTubes.itemTube.createForType("basic"), 'b', net.minecraft.init.Items.bucket));
 		
 		TubesAPI.instance.registerShapelessRecipe(ModTubes.itemTube.createForType("valve"), ModTubes.itemTube.createForType("basic"), net.minecraft.init.Items.iron_ingot, net.minecraft.init.Blocks.lever);
 		
