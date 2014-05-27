@@ -36,6 +36,7 @@ import schmoller.tubes.api.gui.FakeSlot;
 import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.api.interfaces.ITube;
 import schmoller.tubes.api.interfaces.ITubeOverflowDestination;
+import schmoller.tubes.definitions.TypeAdvancedExtractionTube;
 import schmoller.tubes.definitions.TypeBufferTube;
 import schmoller.tubes.definitions.TypeColoringTube;
 import schmoller.tubes.definitions.TypeCompressorTube;
@@ -52,6 +53,7 @@ import schmoller.tubes.definitions.TypeRoundRobinTube;
 import schmoller.tubes.definitions.TypeRoutingTube;
 import schmoller.tubes.definitions.TypeTankTube;
 import schmoller.tubes.definitions.TypeValveTube;
+import schmoller.tubes.gui.AdvancedExtractionTubeContainer;
 import schmoller.tubes.gui.BufferTubeContainer;
 import schmoller.tubes.gui.CompressorContainer;
 import schmoller.tubes.gui.FilterTubeContainer;
@@ -76,6 +78,7 @@ import schmoller.tubes.network.packets.ModPacketSetPriority;
 import schmoller.tubes.network.packets.ModPacketSetRequestingModes;
 import schmoller.tubes.network.packets.ModPacketSetRoutingOptions;
 import schmoller.tubes.parts.TubeCap;
+import schmoller.tubes.types.AdvancedExtractionTube;
 import schmoller.tubes.types.BufferTube;
 import schmoller.tubes.types.CompressorTube;
 import schmoller.tubes.types.FilterTube;
@@ -121,6 +124,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		TubeRegistry.registerTube(new TypeBufferTube(), "buffer");
 		TubeRegistry.registerTube(new TypeRoundRobinTube(), "roundrobin");
 		TubeRegistry.registerTube(new TypeManagementTube(), "management");
+		TubeRegistry.registerTube(new TypeAdvancedExtractionTube(), "advancedExtraction");
 		
 		
 		PayloadRegistry.registerPayload(ItemPayload.class, "item", IInventory.class);
@@ -318,6 +322,8 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 			return new ManagementTubeContainer(CommonHelper.getMultiPart(world, x, y, z, ManagementTube.class), player);
 		case ModTubes.GUI_OVERFLOW:
 			return new OverflowContainer(CommonHelper.getInterface(world, x, y, z, ITubeOverflowDestination.class).getOverflowContents());
+		case ModTubes.GUI_ADV_EXTRACTION:
+			return new AdvancedExtractionTubeContainer(CommonHelper.getMultiPart(world, x, y, z, AdvancedExtractionTube.class), player);
 		}
 		
 		return null;

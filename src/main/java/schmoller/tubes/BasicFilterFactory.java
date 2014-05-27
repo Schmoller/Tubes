@@ -73,6 +73,8 @@ public class BasicFilterFactory implements IFilterFactory
 			return FluidFilter.from(tag);
 		if(filterName.equals("color"))
 			return ColorFilter.from(tag);
+		if(filterName.equals("compound"))
+			return CompoundFilter.from(tag);
 		
 		return null;
 	}
@@ -88,6 +90,8 @@ public class BasicFilterFactory implements IFilterFactory
 			return FluidFilter.from(input);
 		if(filterName.equals("color"))
 			return ColorFilter.from(input);
+		if(filterName.equals("compound"))
+			return CompoundFilter.from(input);
 		
 		return null;
 	}

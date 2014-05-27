@@ -84,6 +84,7 @@ public class ModTubes extends TubesAPI
 	public static final int GUI_ROUTING_TUBE = 4;
 	public static final int GUI_BUFFER_TUBE = 5;
 	public static final int GUI_MANAGEMENT_TUBE = 6;
+	public static final int GUI_ADV_EXTRACTION = 7;
 	public static final int GUI_OVERFLOW = 100;
 	
 	public static TubeCreativeTab creativeTab;

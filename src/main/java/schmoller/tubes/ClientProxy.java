@@ -9,6 +9,7 @@ import schmoller.tubes.api.TubeRegistry;
 import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.api.helpers.RenderHelper;
 import schmoller.tubes.api.interfaces.ITubeOverflowDestination;
+import schmoller.tubes.gui.AdvancedExtractionTubeGui;
 import schmoller.tubes.gui.BufferTubeGui;
 import schmoller.tubes.gui.CompressorTubeGui;
 import schmoller.tubes.gui.FilterTubeGui;
@@ -37,6 +38,7 @@ import schmoller.tubes.render.RoundRobinTubeRender;
 import schmoller.tubes.render.RoutingTubeRender;
 import schmoller.tubes.render.TankTubeRender;
 import schmoller.tubes.render.ValveTubeRender;
+import schmoller.tubes.types.AdvancedExtractionTube;
 import schmoller.tubes.types.BufferTube;
 import schmoller.tubes.types.CompressorTube;
 import schmoller.tubes.types.FilterTube;
@@ -78,6 +80,7 @@ public class ClientProxy extends CommonProxy
 		TubeRegistry.registerRenderer("buffer", new BufferTubeRender());
 		TubeRegistry.registerRenderer("roundrobin", new RoundRobinTubeRender());
 		TubeRegistry.registerRenderer("management", new ManagementTubeRender());
+		TubeRegistry.registerRenderer("advancedExtraction", new EjectionTubeRender());
 		
 		PayloadRegistry.registerPayloadRenderer("item", new ItemPayloadRender());
 		PayloadRegistry.registerPayloadRenderer("fluid", new FluidPayloadRender());
@@ -104,6 +107,8 @@ public class ClientProxy extends CommonProxy
 			return new ManagementTubeGui(CommonHelper.getMultiPart(world, x, y, z, ManagementTube.class), player);
 		case ModTubes.GUI_OVERFLOW:
 			return new OverflowGui(CommonHelper.getInterface(world, x, y, z, ITubeOverflowDestination.class).getOverflowContents());
+		case ModTubes.GUI_ADV_EXTRACTION:
+			return new AdvancedExtractionTubeGui(CommonHelper.getMultiPart(world, x, y, z, AdvancedExtractionTube.class), player);
 		}
 		
 		return null;
