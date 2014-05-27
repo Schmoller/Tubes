@@ -263,11 +263,19 @@ public abstract class GuiExtContainer extends GuiContainer
 		GuiBaseButton button = getButtonAtPosition(x, y);
 		if(button != null)
 		{
+			int oldWidth = width;
+			width -= guiLeft;
 			ArrayList<String> tooltip = new ArrayList<String>();
 			button.getTooltip(tooltip);
 			if(!tooltip.isEmpty())
+			{
+				schmoller.tubes.api.helpers.RenderHelper.wrapTooltip(tooltip);
 				drawHoveringText(tooltip, x - guiLeft, y - guiTop, fontRendererObj);
+			}
+			width = oldWidth;
 		}
+		
+		RenderHelper.enableGUIStandardItemLighting();
 
 		super.drawGuiContainerForegroundLayer(x, y);
 	}

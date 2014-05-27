@@ -2,8 +2,12 @@ package schmoller.tubes.gui;
 
 import schmoller.tubes.api.gui.ExtContainer;
 import schmoller.tubes.api.gui.FakeSlot;
+import schmoller.tubes.api.gui.GuiColorButton;
+import schmoller.tubes.api.gui.GuiEnumButton;
+import schmoller.tubes.api.gui.GuiEnumButton.INameCallback;
 import schmoller.tubes.api.interfaces.IFilter;
 import schmoller.tubes.types.RoutingTube;
+import schmoller.tubes.types.RoutingTube.RouteDirection;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -29,6 +33,21 @@ public class RoutingTubeContainer extends ExtContainer
 
         for (int i = 0; i < 9; ++i)
             this.addSlotToContainer(new Slot(player.inventory, i, 8 + i * 18, 196));
+        
+        INameCallback<RouteDirection> callback = new INameCallback<RouteDirection>()
+		{
+        	@Override
+        	public String getNameFor( RouteDirection e )
+        	{
+        		return e.toString();
+        	}
+		};
+        
+        for(int i = 0; i < 9; ++i)
+        {
+        	addButtonToContainer(new GuiEnumButton<RouteDirection>(tube, RoutingTube.PROP_DIRSTART + i, RouteDirection.class, 9 + (i * 18), 92, 176, 0, callback));
+        	addButtonToContainer(new GuiColorButton(tube, RoutingTube.PROP_COLORSTART + i, 9 + (i * 18), 107));
+        }
 	}
 	
 	@Override

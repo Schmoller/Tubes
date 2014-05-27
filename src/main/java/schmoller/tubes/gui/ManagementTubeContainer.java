@@ -2,8 +2,12 @@ package schmoller.tubes.gui;
 
 import schmoller.tubes.api.gui.ExtContainer;
 import schmoller.tubes.api.gui.FakeSlot;
+import schmoller.tubes.api.gui.GuiColorButton;
+import schmoller.tubes.api.gui.GuiCounterButton;
+import schmoller.tubes.api.gui.GuiEnumButton;
 import schmoller.tubes.api.interfaces.IFilter;
 import schmoller.tubes.types.ManagementTube;
+import schmoller.tubes.types.ManagementTube.ManagementMode;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -26,6 +30,10 @@ public class ManagementTubeContainer extends ExtContainer
 
         for (int i = 0; i < 9; ++i)
             this.addSlotToContainer(new Slot(player.inventory, i, 8 + i * 18, 202));
+        
+        addButtonToContainer(new GuiEnumButton<ManagementMode>(tube, ManagementTube.PROP_MODE, ManagementMode.class, 153, 19, 176, 0, "gui.managementtube.mode.%s"));
+        addButtonToContainer(new GuiCounterButton(tube, ManagementTube.PROP_PRIORITY, 0, 10, 153, 49, "gui.managementtube.priority"));
+        addButtonToContainer(new GuiColorButton(tube, ManagementTube.PROP_COLOR, 153, 65));
 	}
 	
 	@Override

@@ -16,10 +16,15 @@ import schmoller.tubes.api.SizeMode;
 import schmoller.tubes.api.TubeItem;
 import schmoller.tubes.api.helpers.BaseTube;
 import schmoller.tubes.api.interfaces.IFilter;
+import schmoller.tubes.api.interfaces.IPropertyHolder;
 import schmoller.tubes.api.interfaces.ITubeConnectable;
 
-public class FilterTube extends BaseTube
+public class FilterTube extends BaseTube implements IPropertyHolder
 {
+	public static final int PROP_MODE = 1;
+	public static final int PROP_COMPARISON = 2;
+	public static final int PROP_COLOR = 3;
+	
 	private IFilter[] mFilterStacks;
 	private Mode mCurrentMode = Mode.Allow;
 	private Comparison mCurrentComparison = Comparison.Any;
@@ -47,6 +52,39 @@ public class FilterTube extends BaseTube
 	public IFilter getFilter(int index)
 	{
 		return mFilterStacks[index];
+	}
+	
+	@Override
+	public <T> T getProperty( int prop )
+	{
+		switch(prop)
+		{
+		case PROP_MODE:
+			return (T)mCurrentMode;
+		case PROP_COMPARISON:
+			return (T)mCurrentComparison;
+		case PROP_COLOR:
+			return (T)Integer.valueOf(mColor);
+		}
+		
+		return null;
+	}
+	
+	@Override
+	public <T> void setProperty( int prop, T value )
+	{
+		switch(prop)
+		{
+		case PROP_MODE:
+			mCurrentMode = (Mode)value;
+			break;
+		case PROP_COMPARISON:
+			mCurrentComparison = (Comparison)value;
+			break;
+		case PROP_COLOR:
+			mColor = ((Number)value).intValue();
+			break;
+		}
 	}
 	
 	public void setMode(Mode mode)

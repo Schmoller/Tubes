@@ -1,7 +1,11 @@
 package schmoller.tubes.gui;
 
+import schmoller.tubes.PullMode;
+import schmoller.tubes.api.SizeMode;
 import schmoller.tubes.api.gui.ExtContainer;
 import schmoller.tubes.api.gui.FakeSlot;
+import schmoller.tubes.api.gui.GuiColorButton;
+import schmoller.tubes.api.gui.GuiEnumButton;
 import schmoller.tubes.api.interfaces.IFilter;
 import schmoller.tubes.types.RequestingTube;
 import net.minecraft.entity.player.EntityPlayer;
@@ -26,6 +30,10 @@ public class RequestingTubeContainer extends ExtContainer
 
         for (int i = 0; i < 9; ++i)
             this.addSlotToContainer(new Slot(player.inventory, i, 8 + i * 18, 130));
+        
+        addButtonToContainer(new GuiEnumButton<PullMode>(tube, RequestingTube.PROP_MODE, PullMode.class, 153, 19, 176, 0, "gui.requestingtube.mode.%s"));
+        addButtonToContainer(new GuiEnumButton<SizeMode>(tube, RequestingTube.PROP_SIZEMODE, SizeMode.class, 153, 35, 190, 0, "gui.requestingtube.size.%s"));
+        addButtonToContainer(new GuiColorButton(tube, RequestingTube.PROP_COLOR, 153, 51));
 	}
 	
 	@Override

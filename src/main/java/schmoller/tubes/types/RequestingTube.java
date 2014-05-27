@@ -24,12 +24,13 @@ import schmoller.tubes.api.TubeItem;
 import schmoller.tubes.api.helpers.TubeHelper;
 import schmoller.tubes.api.helpers.BaseRouter.PathLocation;
 import schmoller.tubes.api.interfaces.IFilter;
+import schmoller.tubes.api.interfaces.IPropertyHolder;
 import schmoller.tubes.api.interfaces.ITubeConnectable;
 import schmoller.tubes.api.interfaces.ITubeImportDest;
 import schmoller.tubes.api.interfaces.ITubeOverflowDestination;
 import schmoller.tubes.routing.OutputRouter;
 
-public class RequestingTube extends DirectionalTube implements ITubeImportDest, IRedstonePart, ITubeOverflowDestination
+public class RequestingTube extends DirectionalTube implements ITubeImportDest, IRedstonePart, ITubeOverflowDestination, IPropertyHolder
 {
 	private IFilter[] mFilter = new IFilter[16];
 	private int mNext = 0;
@@ -45,6 +46,10 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 	public static final int CHANNEL_MODE = 3;
 	public static final int CHANNEL_POWERED = 4;
 	public static final int CHANNEL_SIZEMODE = 5;
+	
+	public static final int PROP_MODE = 1;
+	public static final int PROP_SIZEMODE = 2;
+	public static final int PROP_COLOR = 3;
 	
 	public float animTime = 0;
 	
@@ -379,6 +384,38 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 	public void setColour(short colour)
 	{
 		mColor = colour;
+	}
+	
+	@Override
+	public <T> T getProperty( int prop )
+	{
+		switch(prop)
+		{
+		case PROP_MODE:
+			return (T)mMode;
+		case PROP_SIZEMODE:
+			return (T)mSizeMode;
+		case PROP_COLOR:
+			return (T)Integer.valueOf(mColor);
+		}
+		return null;
+	}
+	
+	@Override
+	public <T> void setProperty( int prop, T value )
+	{
+		switch(prop)
+		{
+		case PROP_MODE:
+			mMode = (PullMode)value;
+			break;
+		case PROP_SIZEMODE:
+			mSizeMode = (SizeMode)value;
+			break;
+		case PROP_COLOR:
+			mColor = ((Number)value).intValue();
+			break;
+		}
 	}
 	
 	public boolean isPowered()

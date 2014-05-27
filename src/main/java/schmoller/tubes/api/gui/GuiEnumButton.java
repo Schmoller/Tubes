@@ -16,6 +16,7 @@ public class GuiEnumButton<T extends Enum<T>> extends GuiBaseButton
 	private int mSrcX;
 	private int mSrcY;
 	private String mTransKey;
+	private INameCallback<T> mCallback;
 	
 	public GuiEnumButton(IPropertyHolder holder, int property, Class<T> enumClass, int x, int y, int srcX, int srcY, String transKey)
 	{
@@ -31,6 +32,22 @@ public class GuiEnumButton<T extends Enum<T>> extends GuiBaseButton
 		mSrcX = srcX;
 		mSrcY = srcY;
 		mTransKey = transKey;
+	}
+	
+	public GuiEnumButton(IPropertyHolder holder, int property, Class<T> enumClass, int x, int y, int srcX, int srcY, INameCallback<T> nameCallback)
+	{
+		super(holder, property, x, y);
+		
+		EnumSet<T> set = EnumSet.allOf(enumClass);
+		T[] values = (T[])new Enum[set.size()];
+		for(T e : set)
+			values[e.ordinal()] = e;
+		
+		mValueSet = values;
+		
+		mSrcX = srcX;
+		mSrcY = srcY;
+		mCallback = nameCallback;
 	}
 	
 	@Override
@@ -87,7 +104,18 @@ public class GuiEnumButton<T extends Enum<T>> extends GuiBaseButton
 	public void getTooltip( List<String> tooltip )
 	{
 		T value = holder.getProperty(property);
-		tooltip.add(StatCollector.translateToLocal(String.format(mTransKey, value.name())));
+		
+		String name = null;
+		if(mCallback != null)
+			name = mCallback.getNameFor(value);
+		else
+			name = StatCollector.translateToLocal(String.format(mTransKey, value.name()));
+		
+		tooltip.add(name);
 	}
 
+	public static interface INameCallback<T extends Enum<T>>
+	{
+		public String getNameFor(T e);
+	}
 }

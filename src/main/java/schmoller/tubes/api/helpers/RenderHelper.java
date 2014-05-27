@@ -1,5 +1,7 @@
 package schmoller.tubes.api.helpers;
 
+import java.util.List;
+
 import codechicken.lib.vec.Vector3;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
@@ -136,4 +138,34 @@ public class RenderHelper
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glDisable(GL11.GL_BLEND);
     }
+	
+	public static void wrapTooltip(List<String> tooltip)
+	{
+		final int min = 18;
+		final int max = 24;
+		for(int i = 0; i < tooltip.size(); ++i)
+		{
+			String line = tooltip.get(i);
+			if(line != null && line.length() > min)
+			{
+				int end = line.indexOf(' ', min);
+				if(end == -1)
+					end = line.length();
+				
+				if(end > max)
+				{
+					end = line.lastIndexOf(' ', min);
+					if(end == -1)
+						end = max;
+				}
+				else if(line.length() < max)
+					continue;
+				
+				tooltip.set(i, line.substring(0, end).trim());
+				String remain = line.substring(end).trim();
+				if(!remain.isEmpty())
+					tooltip.add(i+1, remain);
+			}
+		}
+	}
 }

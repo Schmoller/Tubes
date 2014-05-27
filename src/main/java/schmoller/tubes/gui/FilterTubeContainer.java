@@ -2,15 +2,21 @@ package schmoller.tubes.gui;
 
 import schmoller.tubes.api.gui.ExtContainer;
 import schmoller.tubes.api.gui.FakeSlot;
+import schmoller.tubes.api.gui.GuiColorButton;
+import schmoller.tubes.api.gui.GuiEnumButton;
+import schmoller.tubes.api.gui.GuiEnumButton.INameCallback;
 import schmoller.tubes.api.interfaces.IFilter;
 import schmoller.tubes.types.FilterTube;
+import schmoller.tubes.types.FilterTube.Comparison;
+import schmoller.tubes.types.FilterTube.Mode;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 
 public class FilterTubeContainer extends ExtContainer
 {
-	public FilterTubeContainer(FilterTube tube, EntityPlayer player)
+	public FilterTubeContainer(final FilterTube tube, EntityPlayer player)
 	{
 		for(int i = 0; i < 2; ++i)
 		{
@@ -26,6 +32,30 @@ public class FilterTubeContainer extends ExtContainer
 
         for (int i = 0; i < 9; ++i)
             this.addSlotToContainer(new Slot(player.inventory, i, 8 + i * 18, 130));
+        
+        
+        INameCallback<Mode> modeName = new INameCallback<Mode>()
+		{
+        	@Override
+        	public String getNameFor( Mode e )
+        	{
+        		return StatCollector.translateToLocalFormatted("gui.filtertube.modestring", StatCollector.translateToLocal(String.format("gui.filtertube.mode.%s", e.name())));
+        	}
+		};
+		
+		INameCallback<Comparison> comparisonName = new INameCallback<Comparison>()
+		{
+        	@Override
+        	public String getNameFor( Comparison e )
+        	{
+        		Mode mode = tube.getProperty(FilterTube.PROP_MODE);
+        		return StatCollector.translateToLocalFormatted(String.format("gui.filtertube.size.%s", e.name()), StatCollector.translateToLocal(String.format("gui.filtertube.mode.%s", mode.name())));
+        	}
+		};
+        
+		addButtonToContainer(new GuiEnumButton<Mode>(tube, FilterTube.PROP_MODE, Mode.class, 153, 19, 176, 0, modeName));
+        addButtonToContainer(new GuiEnumButton<Comparison>(tube, FilterTube.PROP_COMPARISON, Comparison.class, 153, 35, 190, 0, comparisonName));
+        addButtonToContainer(new GuiColorButton(tube, FilterTube.PROP_COLOR, 153, 51));
 	}
 	
 	@Override

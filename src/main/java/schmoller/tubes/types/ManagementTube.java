@@ -32,10 +32,11 @@ import schmoller.tubes.api.interfaces.IFilter;
 import schmoller.tubes.api.interfaces.IImportSource;
 import schmoller.tubes.api.interfaces.IImportController;
 import schmoller.tubes.api.interfaces.IPayloadHandler;
+import schmoller.tubes.api.interfaces.IPropertyHolder;
 import schmoller.tubes.api.interfaces.ITubeImportDest;
 import schmoller.tubes.routing.ManagementTubeFinder;
 
-public class ManagementTube extends DirectionalTube implements ITubeImportDest, IImportSource, IImportController
+public class ManagementTube extends DirectionalTube implements ITubeImportDest, IImportSource, IImportController, IPropertyHolder
 {
 	public enum ManagementMode
 	{
@@ -56,6 +57,9 @@ public class ManagementTube extends DirectionalTube implements ITubeImportDest, 
 	protected static final int CHANNEL_COLOR = 1;
 	protected static final int CHANNEL_PRIORITY = 2;
 	protected static final int CHANNEL_MODE = 3;
+	public static final int PROP_MODE = 1;
+	public static final int PROP_COLOR = 2;
+	public static final int PROP_PRIORITY = 3;
 	
 	private IFilter[] mFilters;
 	private ManagementMode mMode;
@@ -174,6 +178,38 @@ public class ManagementTube extends DirectionalTube implements ITubeImportDest, 
 		{
 			openChannel(CHANNEL_PRIORITY).writeByte(mPriority);
 			tile().markDirty();
+		}
+	}
+	
+	@Override
+	public <T> T getProperty( int prop )
+	{
+		switch(prop)
+		{
+		case PROP_MODE:
+			return (T)mMode;
+		case PROP_COLOR:
+			return (T)Integer.valueOf(mColor);
+		case PROP_PRIORITY:
+			return (T)Integer.valueOf(mPriority);
+		}
+		return null;
+	}
+	
+	@Override
+	public <T> void setProperty( int prop, T value )
+	{
+		switch(prop)
+		{
+		case PROP_MODE:
+			mMode = (ManagementMode)value;
+			break;
+		case PROP_COLOR:
+			mColor = ((Number)value).intValue();
+			break;
+		case PROP_PRIORITY:
+			mPriority = ((Number)value).intValue();
+			break;
 		}
 	}
 	

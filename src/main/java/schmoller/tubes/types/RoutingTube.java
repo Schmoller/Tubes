@@ -23,11 +23,15 @@ import schmoller.tubes.api.helpers.BaseTube;
 import schmoller.tubes.api.helpers.TubeHelper;
 import schmoller.tubes.api.helpers.BaseRouter.PathLocation;
 import schmoller.tubes.api.interfaces.IFilter;
+import schmoller.tubes.api.interfaces.IPropertyHolder;
 import schmoller.tubes.definitions.TypeRoutingTube;
 import schmoller.tubes.routing.OutputRouter;
 
-public class RoutingTube extends BaseTube
+public class RoutingTube extends BaseTube implements IPropertyHolder
 {
+	public static final int PROP_COLORSTART = 1;
+	public static final int PROP_DIRSTART = 11;
+	
 	private IFilter[][] mFilters = new IFilter[9][4];
 	private int[] mColours = new int[9];
 	private RouteDirection[] mDir = new RouteDirection[9]; 
@@ -67,6 +71,26 @@ public class RoutingTube extends BaseTube
 	public RouteDirection getDirection(int column)
 	{
 		return mDir[column];
+	}
+	
+	@Override
+	public <T> T getProperty( int prop )
+	{
+		if(prop >= PROP_COLORSTART && prop < PROP_COLORSTART + mColours.length)
+			return (T)Integer.valueOf(mColours[prop-PROP_COLORSTART]);
+		else if(prop >= PROP_DIRSTART && prop < PROP_DIRSTART + mDir.length)
+			return (T)mDir[prop-PROP_DIRSTART];
+
+		return null;
+	}
+	
+	@Override
+	public <T> void setProperty( int prop, T value )
+	{
+		if(prop >= PROP_COLORSTART && prop < PROP_COLORSTART + mColours.length)
+			mColours[prop-PROP_COLORSTART] = ((Number)value).intValue();
+		else if(prop >= PROP_DIRSTART && prop < PROP_DIRSTART + mDir.length)
+			mDir[prop-PROP_DIRSTART] = (RouteDirection)value;
 	}
 	
 	private boolean doesItemMatchFilter(int column, TubeItem item)
