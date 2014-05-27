@@ -1,11 +1,14 @@
 package schmoller.tubes.api.gui;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
+import schmoller.tubes.ModTubes;
 import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.api.interfaces.IFilter;
+import schmoller.tubes.network.packets.ModPacketClickButton;
 
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -34,6 +37,50 @@ public abstract class GuiExtContainer extends GuiContainer
 	public int getTop()
 	{
 		return guiTop;
+	}
+	
+	@Override
+	public void initGui()
+	{
+		super.initGui();
+		
+		for(GuiBaseButton button : ((ExtContainer)inventorySlots).buttons)
+		{
+			button.displayX = button.x + guiLeft;
+			button.displayY = button.y + guiTop;
+		}
+	}
+	
+	protected boolean isMouseOverButton(GuiBaseButton button, int x, int y)
+	{
+		int left = guiLeft + button.x;
+		int top = guiTop + button.y;
+		
+		return (x >= left && x < left + 14 && y >= top && y < top + 14);
+	}
+	
+	protected GuiBaseButton getButtonAtPosition(int x, int y)
+	{
+		for(GuiBaseButton button : ((ExtContainer)inventorySlots).buttons)
+		{
+			if(isMouseOverButton(button, x, y))
+				return button;
+		}
+		
+		return null;
+	}
+	
+	@Override
+	protected void mouseClicked( int x, int y, int mouseButton )
+	{
+		GuiBaseButton button = getButtonAtPosition(x, y);
+		if(button != null)
+		{
+			ModPacketClickButton packet = new ModPacketClickButton(inventorySlots.windowId, button.buttonNumber, mouseButton, 0);
+			ModTubes.packetManager.sendPacketToServer(packet);
+		}
+		else
+			super.mouseClicked(x, y, mouseButton);
 	}
 	
 	@Override
@@ -201,5 +248,27 @@ public abstract class GuiExtContainer extends GuiContainer
             RenderHelper.enableStandardItemLighting();
             GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         }
+	}
+	
+	@Override
+	protected void drawGuiContainerBackgroundLayer( float var1, int var2, int var3 )
+	{
+		for(GuiBaseButton button : ((ExtContainer)inventorySlots).buttons)
+			button.drawButton(mc.renderEngine, fontRendererObj);
+	}
+	
+	@Override
+	protected void drawGuiContainerForegroundLayer( int x, int y )
+	{
+		GuiBaseButton button = getButtonAtPosition(x, y);
+		if(button != null)
+		{
+			ArrayList<String> tooltip = new ArrayList<String>();
+			button.getTooltip(tooltip);
+			if(!tooltip.isEmpty())
+				drawHoveringText(tooltip, x - guiLeft, y - guiTop, fontRendererObj);
+		}
+
+		super.drawGuiContainerForegroundLayer(x, y);
 	}
 }

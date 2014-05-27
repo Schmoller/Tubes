@@ -21,6 +21,8 @@ public class AdvancedExtractionTubeGui extends GuiExtContainer
 		mc.renderEngine.bindTexture(TypeAdvancedExtractionTube.gui);
 		
 		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
+		
+		super.drawGuiContainerBackgroundLayer(var1, var2, var3);
 	}
 
 }

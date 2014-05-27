@@ -1,6 +1,7 @@
 package schmoller.tubes.api.helpers;
 
 import codechicken.lib.vec.Vector3;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -96,4 +97,43 @@ public class RenderHelper
         tessellator.addVertexWithUV(x, y, 100, u, v);
         tessellator.draw();
 	}
+	
+	public static void renderPlainRect(int x1, int y1, int x2, int y2, int color)
+    {
+        int temp;
+
+        if (x1 < x2)
+        {
+            temp = x1;
+            x1 = x2;
+            x2 = temp;
+        }
+
+        if (y1 < y2)
+        {
+            temp = y1;
+            y1 = y2;
+            y2 = temp;
+        }
+
+        
+        float alpha = (color >> 24 & 255) / 255.0F;
+        float red = (color >> 16 & 255) / 255.0F;
+        float green = (color >> 8 & 255) / 255.0F;
+        float blue = (color & 255) / 255.0F;
+        
+        Tessellator tessellator = Tessellator.instance;
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+        GL11.glColor4f(red, green, blue, alpha);
+        tessellator.startDrawingQuads();
+        tessellator.addVertex(x1, y2, 0.0D);
+        tessellator.addVertex(x2, y2, 0.0D);
+        tessellator.addVertex(x2, y1, 0.0D);
+        tessellator.addVertex(x1, y1, 0.0D);
+        tessellator.draw();
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glDisable(GL11.GL_BLEND);
+    }
 }

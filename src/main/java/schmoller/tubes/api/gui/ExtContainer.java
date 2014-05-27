@@ -1,6 +1,10 @@
 package schmoller.tubes.api.gui;
 
 import java.util.ArrayList;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import schmoller.tubes.api.FilterRegistry;
 import schmoller.tubes.api.interfaces.IFilter;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,12 +20,21 @@ import net.minecraftforge.fluids.FluidStack;
 public abstract class ExtContainer extends Container
 {
 	private ArrayList<FluidStack> inventoryFluidStacks = new ArrayList<FluidStack>();
+	public ArrayList<GuiBaseButton> buttons = new ArrayList<GuiBaseButton>();
+	private ArrayList<Integer> mLastPropertyValues = new ArrayList<Integer>();
 	
 	@Override
 	protected Slot addSlotToContainer( Slot par1Slot )
 	{
 		inventoryFluidStacks.add(null);
 		return super.addSlotToContainer(par1Slot);
+	}
+	
+	protected void addButtonToContainer( GuiBaseButton button )
+	{
+		button.buttonNumber = buttons.size();
+		buttons.add(button);
+		mLastPropertyValues.add(button.getValue());
 	}
 	
 	@Override
@@ -94,6 +107,27 @@ public abstract class ExtContainer extends Container
 		return super.slotClick(slotId, mouseButton, modifier, player);
 	}
 	
+	public void buttonClick(int buttonId, int mouseButton, int modifier, EntityPlayer player)
+	{
+		if(buttonId >= 0 && buttonId < buttons.size())
+		{
+			GuiBaseButton button = buttons.get(buttonId);
+			
+			switch(mouseButton)
+			{
+			case 0: // Left
+				button.onClickLeft();
+				break;
+			case 1: // Right
+				button.onClickRight();
+				break;
+			case 2: // Middle
+				button.onReset();
+				break;
+			}
+		}
+	}
+	
 	@Override
 	public void detectAndSendChanges()
 	{
@@ -124,5 +158,35 @@ public abstract class ExtContainer extends Container
                 }
             }
         }
+		
+		for (int i = 0; i < buttons.size(); ++i)
+		{
+			GuiBaseButton button = buttons.get(i);
+			int lastValue = mLastPropertyValues.get(i);
+			
+			int value = button.getValue();
+			if(value != lastValue)
+			{
+				mLastPropertyValues.set(i, value);
+				
+				for (int j = 0; j < crafters.size(); ++j)
+                    ((ICrafting)crafters.get(j)).sendProgressBarUpdate(this, i | 0x8000, value);
+			}
+		}
+	}
+	
+	@Override
+	@SideOnly( Side.CLIENT )
+	public void updateProgressBar( int id, int value )
+	{
+		if((id & 0x8000) != 0)
+		{
+			int bId = (id & 0x7FFF);
+			if(bId >= 0 && bId <= buttons.size())
+			{
+				GuiBaseButton button = buttons.get(bId);
+				button.setValue(value);
+			}
+		}
 	}
 }

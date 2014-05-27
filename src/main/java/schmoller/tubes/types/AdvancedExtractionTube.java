@@ -20,10 +20,11 @@ import schmoller.tubes.api.TubeItem;
 import schmoller.tubes.api.helpers.BaseRouter.PathLocation;
 import schmoller.tubes.api.interfaces.IFilter;
 import schmoller.tubes.api.interfaces.IPayloadHandler;
+import schmoller.tubes.api.interfaces.IPropertyHolder;
 import schmoller.tubes.api.interfaces.ITubeOverflowDestination;
 import schmoller.tubes.routing.OutputRouter;
 
-public class AdvancedExtractionTube extends DirectionalTube implements ITubeOverflowDestination
+public class AdvancedExtractionTube extends DirectionalTube implements ITubeOverflowDestination, IPropertyHolder
 {
 	public enum PullMode
 	{
@@ -33,6 +34,11 @@ public class AdvancedExtractionTube extends DirectionalTube implements ITubeOver
 		Sequence,
 		Overflow
 	}
+	
+	public static final int PROP_PULLMODE = 1;
+	public static final int PROP_REDSTONEMODE = 2;
+	public static final int PROP_SIZEMODE = 3;
+	public static final int PROP_COLOR = 4;
 	
 	private static Random mRand = new Random();
 	private OverflowBuffer mOverflow;
@@ -49,6 +55,44 @@ public class AdvancedExtractionTube extends DirectionalTube implements ITubeOver
 		super("advancedExtraction");
 		mFilters = new IFilter[24];
 		mOverflow = new OverflowBuffer();
+	}
+	
+	@Override
+	public <T> T getProperty( int prop )
+	{
+		switch(prop)
+		{
+		case PROP_PULLMODE:
+			return (T)mMode;
+		case PROP_REDSTONEMODE:
+			return (T)mRSMode;
+		case PROP_SIZEMODE:
+			return (T)mSize;
+		case PROP_COLOR:
+			return (T)Integer.valueOf(mColor);
+		}
+		
+		return null;
+	}
+	
+	@Override
+	public <T> void setProperty( int prop, T value )
+	{
+		switch(prop)
+		{
+		case PROP_PULLMODE:
+			mMode = (PullMode)value;
+			break;
+		case PROP_REDSTONEMODE:
+			mRSMode = (RedstoneMode)value;
+			break;
+		case PROP_SIZEMODE:
+			mSize = (SizeMode)value;
+			break;
+		case PROP_COLOR:
+			mColor = ((Number)value).intValue();
+			break;
+		}
 	}
 	
 	@Override

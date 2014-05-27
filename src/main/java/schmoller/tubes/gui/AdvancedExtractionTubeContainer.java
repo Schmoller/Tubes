@@ -3,10 +3,15 @@ package schmoller.tubes.gui;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import schmoller.tubes.RedstoneMode;
+import schmoller.tubes.api.SizeMode;
 import schmoller.tubes.api.gui.ExtContainer;
 import schmoller.tubes.api.gui.FakeSlot;
+import schmoller.tubes.api.gui.GuiColorButton;
+import schmoller.tubes.api.gui.GuiEnumButton;
 import schmoller.tubes.api.interfaces.IFilter;
 import schmoller.tubes.types.AdvancedExtractionTube;
+import schmoller.tubes.types.AdvancedExtractionTube.PullMode;
 
 public class AdvancedExtractionTubeContainer extends ExtContainer
 {
@@ -30,6 +35,11 @@ public class AdvancedExtractionTubeContainer extends ExtContainer
 
         for (int i = 0; i < 9; ++i)
             this.addSlotToContainer(new Slot(player.inventory, i, 8 + i * 18, 148));
+        
+        addButtonToContainer(new GuiEnumButton<RedstoneMode>(tube, AdvancedExtractionTube.PROP_REDSTONEMODE, RedstoneMode.class, 153, 19, 176, 0, "gui.redstonemode.%s"));
+        addButtonToContainer(new GuiEnumButton<PullMode>(tube, AdvancedExtractionTube.PROP_PULLMODE, PullMode.class, 153, 35, 176, 0, "gui.pullmode.%s"));
+        addButtonToContainer(new GuiEnumButton<SizeMode>(tube, AdvancedExtractionTube.PROP_SIZEMODE, SizeMode.class, 153, 51, 190, 0, "gui.requestingtube.size.%s"));
+        addButtonToContainer(new GuiColorButton(tube, AdvancedExtractionTube.PROP_COLOR, 153, 67));
 	}
 	
 	@Override

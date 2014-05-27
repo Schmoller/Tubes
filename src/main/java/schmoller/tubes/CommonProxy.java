@@ -70,6 +70,7 @@ import schmoller.tubes.items.ItemTubeCap;
 import schmoller.tubes.network.IModPacketHandler;
 import schmoller.tubes.network.ModBlockPacket;
 import schmoller.tubes.network.ModPacket;
+import schmoller.tubes.network.packets.ModPacketClickButton;
 import schmoller.tubes.network.packets.ModPacketNEIDragDrop;
 import schmoller.tubes.network.packets.ModPacketSetColor;
 import schmoller.tubes.network.packets.ModPacketSetFilterMode;
@@ -294,6 +295,13 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 				if(slot instanceof FakeSlot)
 					((ExtContainer)player.openContainer).dropItem(drop.slot, drop.button, drop.modifiers, drop.item);
 			}
+		}
+		else if(packet instanceof ModPacketClickButton)
+		{
+			ModPacketClickButton click = (ModPacketClickButton)packet;
+			
+			if(sender.openContainer instanceof ExtContainer && sender.openContainer.windowId == click.windowId && click.buttonId >= 0 && click.buttonId < ((ExtContainer)sender.openContainer).buttons.size())
+				((ExtContainer)sender.openContainer).buttonClick(click.buttonId, click.mouseButton, click.modifiers, sender);
 		}
 		return false;
 	}
