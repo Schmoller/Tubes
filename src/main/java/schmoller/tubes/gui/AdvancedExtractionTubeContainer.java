@@ -1,6 +1,9 @@
 package schmoller.tubes.gui;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import schmoller.tubes.RedstoneMode;
@@ -16,6 +19,7 @@ import schmoller.tubes.types.AdvancedExtractionTube.PullMode;
 public class AdvancedExtractionTubeContainer extends ExtContainer
 {
 	private AdvancedExtractionTube mTube;
+	private int mLastNext = -1;
 	
 	public AdvancedExtractionTubeContainer(AdvancedExtractionTube tube, EntityPlayer player)
 	{
@@ -37,8 +41,8 @@ public class AdvancedExtractionTubeContainer extends ExtContainer
             this.addSlotToContainer(new Slot(player.inventory, i, 8 + i * 18, 148));
         
         addButtonToContainer(new GuiEnumButton<RedstoneMode>(tube, AdvancedExtractionTube.PROP_REDSTONEMODE, RedstoneMode.class, 153, 19, 176, 0, "gui.redstonemode.%s"));
-        addButtonToContainer(new GuiEnumButton<PullMode>(tube, AdvancedExtractionTube.PROP_PULLMODE, PullMode.class, 153, 35, 176, 0, "gui.pullmode.%s"));
-        addButtonToContainer(new GuiEnumButton<SizeMode>(tube, AdvancedExtractionTube.PROP_SIZEMODE, SizeMode.class, 153, 51, 190, 0, "gui.requestingtube.size.%s"));
+        addButtonToContainer(new GuiEnumButton<PullMode>(tube, AdvancedExtractionTube.PROP_PULLMODE, PullMode.class, 153, 35, 190, 0, "gui.pullmode.%s"));
+        addButtonToContainer(new GuiEnumButton<SizeMode>(tube, AdvancedExtractionTube.PROP_SIZEMODE, SizeMode.class, 153, 51, 204, 0, "gui.requestingtube.size.%s"));
         addButtonToContainer(new GuiColorButton(tube, AdvancedExtractionTube.PROP_COLOR, 153, 67));
 	}
 	
@@ -82,6 +86,32 @@ public class AdvancedExtractionTubeContainer extends ExtContainer
         }
 
         return ret;
+	}
+	
+	@Override
+	public void detectAndSendChanges()
+	{
+		super.detectAndSendChanges();
+		
+		int next = mTube.getNext();
+		if(mLastNext != next)
+		{
+			mLastNext = next;
+			for (int j = 0; j < crafters.size(); ++j)
+                ((ICrafting)crafters.get(j)).sendProgressBarUpdate(this, 0, next);
+		}
+	}
+	
+	@Override
+	@SideOnly( Side.CLIENT )
+	public void updateProgressBar( int id, int value )
+	{
+		if(id == 0)
+		{
+			mTube.setNext(value);
+		}
+		else
+			super.updateProgressBar(id, value);
 	}
 
 	private class FilterSlot extends FakeSlot

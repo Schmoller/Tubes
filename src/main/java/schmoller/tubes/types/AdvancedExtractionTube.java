@@ -134,37 +134,6 @@ public class AdvancedExtractionTube extends DirectionalTube implements ITubeOver
 		mOverflow.onDropItems(itemsToDrop);
 	}
 		
-	public PullMode getPullMode()
-	{
-		return mMode;
-	}
-	
-	public void setPullMode(PullMode mode)
-	{
-		mMode = mode;
-	}
-	
-	public RedstoneMode getRSMode()
-	{
-		return mRSMode;
-	}
-	
-	public void setRSMode(RedstoneMode mode)
-	{
-		mRSMode = mode;
-	}
-	
-	public void setColor(int color)
-	{
-		mColor = color;
-	}
-	
-	@Override
-	public int getColor()
-	{
-		return mColor;
-	}
-	
 	public IFilter getFilter(int index)
 	{
 		return mFilters[index];
@@ -173,6 +142,21 @@ public class AdvancedExtractionTube extends DirectionalTube implements ITubeOver
 	public void setFilter(int index, IFilter filter)
 	{
 		mFilters[index] = filter;
+	}
+	
+	public PullMode getMode()
+	{
+		return mMode;
+	}
+	
+	public int getNext()
+	{
+		return mNext;
+	}
+	
+	public void setNext(int next)
+	{
+		mNext = next;
 	}
 	
 	private ArrayList<IFilter> getAllFilters()
@@ -392,6 +376,7 @@ public class AdvancedExtractionTube extends DirectionalTube implements ITubeOver
 		case Sequence:
 		{
 			int start = next;
+			
 			do
 			{
 				filter = mFilters[next++];
