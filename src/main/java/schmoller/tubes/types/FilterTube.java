@@ -47,6 +47,7 @@ public class FilterTube extends BaseTube implements IPropertyHolder
 	public void setFilter(int index, IFilter filter)
 	{
 		mFilterStacks[index] = filter;
+		tile().markDirty();
 	}
 	
 	public IFilter getFilter(int index)
@@ -85,38 +86,10 @@ public class FilterTube extends BaseTube implements IPropertyHolder
 			mColor = ((Number)value).intValue();
 			break;
 		}
+		
+		tile().markDirty();
 	}
 	
-	public void setMode(Mode mode)
-	{
-		mCurrentMode = mode;
-	}
-	
-	public Mode getMode()
-	{
-		return mCurrentMode;
-	}
-	
-	public void setComparison(Comparison comp)
-	{
-		mCurrentComparison = comp;
-	}
-	
-	public Comparison getComparison()
-	{
-		return mCurrentComparison;
-	}
-	
-	public void setColour(short colour)
-	{
-		mColor = colour;
-	}
-	
-	public int getColour()
-	{
-		return mColor;
-	}
-
 	private boolean doesMatchFilter(Payload item, int index)
 	{
 		if(mFilterStacks[index] == null || !mFilterStacks[index].matches(item, SizeMode.Max))

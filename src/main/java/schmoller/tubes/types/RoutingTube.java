@@ -46,31 +46,12 @@ public class RoutingTube extends BaseTube implements IPropertyHolder
 	public void setFilter(int column, int row, IFilter item)
 	{
 		mFilters[column][row] = item;
+		tile().markDirty();
 	}
 	
 	public IFilter getFilter(int column, int row)
 	{
 		return mFilters[column][row];
-	}
-	
-	public void setColour(int column, int colour)
-	{
-		mColours[column] = colour;
-	}
-	
-	public int getColour(int column)
-	{
-		return mColours[column];
-	}
-	
-	public void setDirection(int column, RouteDirection direction)
-	{
-		mDir[column] = direction;
-	}
-	
-	public RouteDirection getDirection(int column)
-	{
-		return mDir[column];
 	}
 	
 	@Override
@@ -91,6 +72,8 @@ public class RoutingTube extends BaseTube implements IPropertyHolder
 			mColours[prop-PROP_COLORSTART] = ((Number)value).intValue();
 		else if(prop >= PROP_DIRSTART && prop < PROP_DIRSTART + mDir.length)
 			mDir[prop-PROP_DIRSTART] = (RouteDirection)value;
+		
+		tile().markDirty();
 	}
 	
 	private boolean doesItemMatchFilter(int column, TubeItem item)

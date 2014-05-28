@@ -15,12 +15,6 @@ import schmoller.tubes.items.ItemTubeBase;
 import schmoller.tubes.network.PacketManager;
 import schmoller.tubes.network.packets.ModPacketClickButton;
 import schmoller.tubes.network.packets.ModPacketNEIDragDrop;
-import schmoller.tubes.network.packets.ModPacketSetColor;
-import schmoller.tubes.network.packets.ModPacketSetFilterMode;
-import schmoller.tubes.network.packets.ModPacketSetManagementMode;
-import schmoller.tubes.network.packets.ModPacketSetPriority;
-import schmoller.tubes.network.packets.ModPacketSetRequestingModes;
-import schmoller.tubes.network.packets.ModPacketSetRoutingOptions;
 import schmoller.tubes.parts.TubeCap;
 import schmoller.tubes.routing.BlockedRouter;
 import schmoller.tubes.routing.ImportSourceFinder;
@@ -123,13 +117,7 @@ public class ModTubes extends TubesAPI
 	{
 		packetManager.initialize("tubes");
 		packetManager.registerHandler(proxy);
-		packetManager.registerPacket(ModPacketSetFilterMode.class);
-		packetManager.registerPacket(ModPacketSetRequestingModes.class);
-		packetManager.registerPacket(ModPacketSetRoutingOptions.class);
-		packetManager.registerPacket(ModPacketSetColor.class);
 		packetManager.registerPacket(ModPacketNEIDragDrop.class);
-		packetManager.registerPacket(ModPacketSetManagementMode.class);
-		packetManager.registerPacket(ModPacketSetPriority.class);
 		packetManager.registerPacket(ModPacketClickButton.class);
 
 		proxy.initialize();

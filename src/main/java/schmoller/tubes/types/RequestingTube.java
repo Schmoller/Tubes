@@ -289,7 +289,7 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 		}
 		else
 		{
-			switch(getMode())
+			switch(mMode)
 			{
 			case Constant:
 				animTime += 0.05f;
@@ -350,42 +350,9 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 	public void setFilter(int slot, IFilter filter)
 	{
 		mFilter[slot] = filter;
+		tile().markDirty();
 	}
-	
-	public PullMode getMode()
-	{
-		return mMode;
-	}
-	
-	public void setMode(PullMode mode)
-	{
-		mMode = mode;
-		if(!world().isRemote)
-			openChannel(CHANNEL_MODE).writeByte(mode.ordinal());
-	}
-	
-	public SizeMode getSizeMode()
-	{
-		return mSizeMode;
-	}
-	
-	public void setSizeMode(SizeMode mode)
-	{
-		mSizeMode = mode;
-		if(!world().isRemote)
-			openChannel(CHANNEL_SIZEMODE).writeByte(mode.ordinal());
-	}
-	
-	public short getColour()
-	{
-		return (short)mColor;
-	}
-	
-	public void setColour(short colour)
-	{
-		mColor = colour;
-	}
-	
+		
 	@Override
 	public <T> T getProperty( int prop )
 	{
@@ -416,6 +383,7 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 			mColor = ((Number)value).intValue();
 			break;
 		}
+		tile().markDirty();
 	}
 	
 	public boolean isPowered()

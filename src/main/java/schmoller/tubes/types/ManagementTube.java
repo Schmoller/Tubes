@@ -133,52 +133,15 @@ public class ManagementTube extends DirectionalTube implements ITubeImportDest, 
 		return mMode;
 	}
 	
-	public void setMode(ManagementMode mode)
-	{
-		mMode = mode;
-		
-		if(!world().isRemote)
-		{
-			openChannel(CHANNEL_MODE).writeByte(mMode.ordinal());
-			tile().markDirty();
-		}
-	}
-	
 	public int getColor()
 	{
 		return mColor;
 	}
-	
-	public void setColor(int color)
-	{
-		assert(color >= -1 && color < 16);
-		
-		mAllTubes[mColor+1].remove(this);
-		mColor = color;
-		mAllTubes[mColor+1].add(this);
-		mAllTubes[0].add(this);
-		
-		if(!world().isRemote)
-		{
-			openChannel(CHANNEL_COLOR).writeShort(mColor);
-			tile().markDirty();
-		}
-	}
+
 	
 	public int getPriority()
 	{
 		return mPriority;
-	}
-	
-	public void setPriority(int priority)
-	{
-		mPriority = priority;
-		
-		if(!world().isRemote)
-		{
-			openChannel(CHANNEL_PRIORITY).writeByte(mPriority);
-			tile().markDirty();
-		}
 	}
 	
 	@Override
@@ -211,26 +174,10 @@ public class ManagementTube extends DirectionalTube implements ITubeImportDest, 
 			mPriority = ((Number)value).intValue();
 			break;
 		}
-	}
-	
-	@Override
-	public void onWorldJoin()
-	{
-		super.onWorldJoin();
 		
-		mAllTubes[mColor+1].add(this);
-		mAllTubes[0].add(this);
+		tile().markDirty();
 	}
-	
-	@Override
-	public void onWorldSeparate()
-	{
-		super.onWorldSeparate();
-		
-		mAllTubes[mColor+1].remove(this);
-		mAllTubes[0].remove(this);
-	}
-	
+
 	private IPayloadHandler<? extends Payload> getHandler(Class<? extends Payload> payloadClass)
 	{
 		Position pos = new Position(x(), y(), z()).offset(getFacing(), 1);

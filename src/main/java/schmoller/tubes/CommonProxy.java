@@ -34,7 +34,6 @@ import schmoller.tubes.api.TubesAPI;
 import schmoller.tubes.api.gui.ExtContainer;
 import schmoller.tubes.api.gui.FakeSlot;
 import schmoller.tubes.api.helpers.CommonHelper;
-import schmoller.tubes.api.interfaces.ITube;
 import schmoller.tubes.api.interfaces.ITubeOverflowDestination;
 import schmoller.tubes.definitions.TypeAdvancedExtractionTube;
 import schmoller.tubes.definitions.TypeBufferTube;
@@ -68,16 +67,9 @@ import schmoller.tubes.items.ItemDiagnosticTool;
 import schmoller.tubes.items.ItemTubeBase;
 import schmoller.tubes.items.ItemTubeCap;
 import schmoller.tubes.network.IModPacketHandler;
-import schmoller.tubes.network.ModBlockPacket;
 import schmoller.tubes.network.ModPacket;
 import schmoller.tubes.network.packets.ModPacketClickButton;
 import schmoller.tubes.network.packets.ModPacketNEIDragDrop;
-import schmoller.tubes.network.packets.ModPacketSetColor;
-import schmoller.tubes.network.packets.ModPacketSetFilterMode;
-import schmoller.tubes.network.packets.ModPacketSetManagementMode;
-import schmoller.tubes.network.packets.ModPacketSetPriority;
-import schmoller.tubes.network.packets.ModPacketSetRequestingModes;
-import schmoller.tubes.network.packets.ModPacketSetRoutingOptions;
 import schmoller.tubes.parts.TubeCap;
 import schmoller.tubes.types.AdvancedExtractionTube;
 import schmoller.tubes.types.BufferTube;
@@ -222,69 +214,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 	@Override
 	public boolean onPacketArrive( ModPacket packet, EntityPlayer sender )
 	{
-		if(packet instanceof ModBlockPacket)
-		{
-			ITube tube = CommonHelper.getMultiPart(sender.worldObj, ((ModBlockPacket)packet).xCoord, ((ModBlockPacket)packet).yCoord, ((ModBlockPacket)packet).zCoord, ITube.class);
-			
-			if(packet instanceof ModPacketSetFilterMode && tube instanceof FilterTube)
-			{
-				ModPacketSetFilterMode mode = (ModPacketSetFilterMode)packet;
-				
-				FilterTube logic = (FilterTube)tube;
-				
-				if(mode.mode != null)
-					logic.setMode(mode.mode);
-				else
-					logic.setComparison(mode.comparison);
-				
-				//tube.updateState();
-				
-				return true;
-			}
-			else if(packet instanceof ModPacketSetRequestingModes && tube instanceof RequestingTube)
-			{
-				ModPacketSetRequestingModes mpacket = (ModPacketSetRequestingModes)packet;
-				
-				if(mpacket.mode != null)
-					((RequestingTube)tube).setMode(mpacket.mode);
-				else
-					((RequestingTube)tube).setSizeMode(mpacket.sizeMode);
-				
-				return true;
-			}
-			else if(packet instanceof ModPacketSetRoutingOptions && tube instanceof RoutingTube)
-			{
-				ModPacketSetRoutingOptions options = (ModPacketSetRoutingOptions)packet;
-				RoutingTube logic = (RoutingTube)tube;
-				
-				if(options.hasColour)
-					logic.setColour(options.column, options.colour);
-				else
-					logic.setDirection(options.column, options.direction);
-				return true;
-			}
-			else if(packet instanceof ModPacketSetColor)
-			{
-				int color = ((ModPacketSetColor)packet).color;
-				
-				if(tube instanceof RequestingTube)
-					((RequestingTube)tube).setColour((short)color);
-				else if(tube instanceof FilterTube)
-					((FilterTube)tube).setColour((short)color);
-				else if(tube instanceof ManagementTube)
-					((ManagementTube)tube).setColor(color);
-			}
-			else if(packet instanceof ModPacketSetManagementMode && tube instanceof ManagementTube)
-			{
-				ModPacketSetManagementMode options = (ModPacketSetManagementMode)packet;
-				((ManagementTube)tube).setMode(options.mode);
-			}
-			else if(packet instanceof ModPacketSetPriority && tube instanceof ManagementTube)
-			{
-				((ManagementTube)tube).setPriority(((ModPacketSetPriority)packet).priority);
-			}
-		}
-		else if(packet instanceof ModPacketNEIDragDrop)
+		if(packet instanceof ModPacketNEIDragDrop)
 		{
 			EntityPlayer player = sender;
 			ModPacketNEIDragDrop drop = (ModPacketNEIDragDrop)packet;
