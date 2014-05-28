@@ -68,7 +68,7 @@ public class GuiCounterButton extends GuiBaseButton
 	{
 		String text = String.valueOf(getValue());
 		int width = fontRenderer.getStringWidth(text) / 2;
-		fontRenderer.drawStringWithShadow(text, displayX + 7 - width, displayY, 0xFFFFFFFF);
+		fontRenderer.drawStringWithShadow(text, displayX + 7 - width, displayY + 3, 0xFFFFFFFF);
 	}
 
 	@Override

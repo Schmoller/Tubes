@@ -1,7 +1,6 @@
 package schmoller.tubes.types;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -199,29 +198,6 @@ public class ManagementTube extends DirectionalTube implements ITubeImportDest, 
 		return false;
 	}
 	
-	private List<Payload> combine(Collection<? extends Payload> payloads)
-	{
-		ArrayList<Payload> newPayloads = new ArrayList<Payload>();
-		for(Payload payload : payloads)
-		{
-			boolean merged = false;
-			for(Payload existing : newPayloads)
-			{
-				if(payload.isPayloadTypeEqual(existing))
-				{
-					existing.setSize(existing.size() + payload.size());
-					merged = true;
-					break;
-				}
-			}
-			
-			if(!merged)
-				newPayloads.add(payload.copy());
-		}
-		
-		return newPayloads;
-	}
-	
 	private int getMaxLevel(Payload payload)
 	{
 		int count = 0;
@@ -240,7 +216,7 @@ public class ManagementTube extends DirectionalTube implements ITubeImportDest, 
 	private int getCurrentLevel(Payload payload)
 	{
 		IPayloadHandler<? extends Payload> handler = getHandler(null);
-		List<Payload> contents = combine(handler.listContents(getFacing() ^ 1));
+		List<Payload> contents = CommonHelper.distinctPayloads(handler.listContents(getFacing() ^ 1));
 		
 		for(Payload item : contents)
 		{
@@ -401,7 +377,7 @@ public class ManagementTube extends DirectionalTube implements ITubeImportDest, 
 			return;
 		
 		IPayloadHandler<? extends Payload> handler = getHandler(null);
-		List<Payload> contents = combine(handler.listContents(getFacing() ^ 1));
+		List<Payload> contents = CommonHelper.distinctPayloads(handler.listContents(getFacing() ^ 1));
 		
 		if(!expelExcess(contents))
 		{
@@ -463,7 +439,7 @@ public class ManagementTube extends DirectionalTube implements ITubeImportDest, 
 		if(mMode == ManagementMode.Fill || mMode == ManagementMode.PassiveFill)
 			return false;
 		
-		List<Payload> contents = combine(specHandler.listContents(getFacing() ^ 1));
+		List<Payload> contents = CommonHelper.distinctPayloads(specHandler.listContents(getFacing() ^ 1));
 		
 		for(Payload payload : contents)
 		{

@@ -1,7 +1,12 @@
 package schmoller.tubes.api.helpers;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.lwjgl.input.Keyboard;
 
+import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.Position;
 import codechicken.multipart.TMultiPart;
 import codechicken.multipart.TileMultipart;
@@ -114,5 +119,28 @@ public class CommonHelper
 	public static boolean isCtrlPressed()
 	{
 		return Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL);
+	}
+	
+	public static List<Payload> distinctPayloads(Collection<? extends Payload> payloads)
+	{
+		ArrayList<Payload> newPayloads = new ArrayList<Payload>();
+		for(Payload payload : payloads)
+		{
+			boolean merged = false;
+			for(Payload existing : newPayloads)
+			{
+				if(payload.isPayloadTypeEqual(existing))
+				{
+					existing.setSize(existing.size() + payload.size());
+					merged = true;
+					break;
+				}
+			}
+			
+			if(!merged)
+				newPayloads.add(payload.copy());
+		}
+		
+		return newPayloads;
 	}
 }

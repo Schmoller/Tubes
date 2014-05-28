@@ -32,8 +32,8 @@ public class ManagementTubeContainer extends ExtContainer
             this.addSlotToContainer(new Slot(player.inventory, i, 8 + i * 18, 202));
         
         addButtonToContainer(new GuiEnumButton<ManagementMode>(tube, ManagementTube.PROP_MODE, ManagementMode.class, 153, 19, 176, 0, "gui.managementtube.mode.%s"));
-        addButtonToContainer(new GuiCounterButton(tube, ManagementTube.PROP_PRIORITY, 0, 10, 153, 49, "gui.managementtube.priority"));
-        addButtonToContainer(new GuiColorButton(tube, ManagementTube.PROP_COLOR, 153, 65));
+        addButtonToContainer(new GuiCounterButton(tube, ManagementTube.PROP_PRIORITY, 0, 10, 153, 35, "gui.managementtube.priority"));
+        addButtonToContainer(new GuiColorButton(tube, ManagementTube.PROP_COLOR, 153, 51));
 	}
 	
 	@Override

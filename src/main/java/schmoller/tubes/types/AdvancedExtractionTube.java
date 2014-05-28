@@ -4,19 +4,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import codechicken.lib.data.MCDataInput;
+import codechicken.multipart.IRedstonePart;
+import codechicken.multipart.RedstoneInteractions;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.common.util.ForgeDirection;
-import schmoller.tubes.CompoundFilter;
+import schmoller.tubes.AnyFilter;
 import schmoller.tubes.ModTubes;
 import schmoller.tubes.RedstoneMode;
+import schmoller.tubes.api.FilterRegistry;
 import schmoller.tubes.api.InteractionHandler;
 import schmoller.tubes.api.OverflowBuffer;
 import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.Position;
 import schmoller.tubes.api.SizeMode;
 import schmoller.tubes.api.TubeItem;
+import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.api.helpers.BaseRouter.PathLocation;
 import schmoller.tubes.api.interfaces.IFilter;
 import schmoller.tubes.api.interfaces.IPayloadHandler;
@@ -24,7 +30,7 @@ import schmoller.tubes.api.interfaces.IPropertyHolder;
 import schmoller.tubes.api.interfaces.ITubeOverflowDestination;
 import schmoller.tubes.routing.OutputRouter;
 
-public class AdvancedExtractionTube extends DirectionalTube implements ITubeOverflowDestination, IPropertyHolder
+public class AdvancedExtractionTube extends DirectionalTube implements ITubeOverflowDestination, IPropertyHolder, IRedstonePart
 {
 	public enum PullMode
 	{
@@ -40,6 +46,9 @@ public class AdvancedExtractionTube extends DirectionalTube implements ITubeOver
 	public static final int PROP_SIZEMODE = 3;
 	public static final int PROP_COLOR = 4;
 	
+	public static final int CHANNEL_PULSE = 1;
+	public static final int CHANNEL_POWERED = 2;
+	
 	private static Random mRand = new Random();
 	private OverflowBuffer mOverflow;
 	private PullMode mMode = PullMode.NormalAllow;
@@ -48,7 +57,12 @@ public class AdvancedExtractionTube extends DirectionalTube implements ITubeOver
 	private IFilter[] mFilters;
 	private int mColor = -1;
 	
+	private int mPulses = 0;
+	private boolean mIsPowered;
+	
 	private int mNext;
+	
+	public float animTime = 0;
 	
 	public AdvancedExtractionTube()
 	{
@@ -174,6 +188,140 @@ public class AdvancedExtractionTube extends DirectionalTube implements ITubeOver
 		return filters;
 	}
 	
+	private int getMaxLevel(Payload payload)
+	{
+		int count = 0;
+		for(int i = 0; i < mFilters.length; ++i)
+		{
+			IFilter filter = mFilters[i];
+			if(filter != null)
+			{
+				if(filter.matches(payload, SizeMode.Max))
+					count += filter.size();
+			}
+		}
+		return count;
+	}
+	
+	private IFilter getOverflowFilter()
+	{
+		ForgeDirection dir = ForgeDirection.getOrientation(getFacing());
+		IPayloadHandler handler = InteractionHandler.getHandler(null, world(), x() + dir.offsetX, y() + dir.offsetY, z() + dir.offsetZ);
+		List<Payload> contents = CommonHelper.distinctPayloads(handler.listContents(getFacing() ^ 1));
+		
+		for(Payload payload : contents)
+		{
+			// Remove any that dont match any filter
+			IFilter match = null;
+			for(IFilter filter : getAllFilters())
+			{
+				if(filter.matches(payload, SizeMode.Max))
+				{
+					match = filter;
+					break;
+				}
+			}
+			
+			if(match == null)
+				continue;
+			
+			int max = getMaxLevel(payload);
+			if(payload.size() > max)
+			{
+				Payload excess = payload.copy();
+				excess.setSize(payload.size() - max);
+				if(excess.size() > excess.maxSize())
+					excess.setSize(excess.maxSize());
+				
+				return FilterRegistry.getInstance().createFilter(excess);
+			}
+		}
+		return null;
+	}
+	
+	private IFilter getNormalFilter()
+	{
+		ForgeDirection dir = ForgeDirection.getOrientation(getFacing());
+		IPayloadHandler handler = InteractionHandler.getHandler(null, world(), x() + dir.offsetX, y() + dir.offsetY, z() + dir.offsetZ);
+		List<Payload> contents = CommonHelper.distinctPayloads(handler.listContents(getFacing() ^ 1));
+		
+		for(Payload payload : contents)
+		{
+			IFilter match = null;
+			List<IFilter> filters = getAllFilters();
+			if(filters.isEmpty())
+				return new AnyFilter(0);
+			
+			for(IFilter filter : filters)
+			{
+				if(filter.matches(payload, SizeMode.Max))
+					return filter;
+			}
+		}
+		
+		return null;
+	}
+	
+	private IFilter getInvertFilter()
+	{
+		ForgeDirection dir = ForgeDirection.getOrientation(getFacing());
+		IPayloadHandler handler = InteractionHandler.getHandler(null, world(), x() + dir.offsetX, y() + dir.offsetY, z() + dir.offsetZ);
+		List<Payload> contents = CommonHelper.distinctPayloads(handler.listContents(getFacing() ^ 1));
+		
+		for(Payload payload : contents)
+		{
+			IFilter match = null;
+			List<IFilter> filters = getAllFilters();
+			if(filters.isEmpty())
+				return new AnyFilter(0);
+			
+			boolean matched = false;
+			for(IFilter filter : filters)
+			{
+				if(filter.matches(payload, SizeMode.Max))
+				{
+					matched = true;
+					break;
+				}
+			}
+			
+			if(matched)
+				continue;
+			
+			Payload copy = payload.copy();
+			if(copy.size() > copy.maxSize())
+				copy.setSize(copy.maxSize());
+			return FilterRegistry.getInstance().createFilter(copy);
+		}
+		
+		return null;
+	}
+	
+	public IFilter getRandomFilter()
+	{
+		ForgeDirection dir = ForgeDirection.getOrientation(getFacing());
+		IPayloadHandler handler = InteractionHandler.getHandler(null, world(), x() + dir.offsetX, y() + dir.offsetY, z() + dir.offsetZ);
+		List<Payload> contents = CommonHelper.distinctPayloads(handler.listContents(getFacing() ^ 1));
+		
+		ArrayList<IFilter> filters = getAllFilters();
+		if(filters.isEmpty())
+			return new AnyFilter(0);
+		
+		while(filters.size() > 0)
+		{
+			int index = mRand.nextInt(filters.size());
+			IFilter filter = filters.get(index);
+			
+			handler = InteractionHandler.getHandler(filter.getPayloadType(), world(), x() + dir.offsetX, y() + dir.offsetY, z() + dir.offsetZ);
+			if(handler.extract(filter, getFacing() ^ 1, filter.size(), mSize, false) != null)
+				return filter;
+			
+			filters.remove(index);
+		}
+		
+		return null;
+	}
+	
 	@Override
 	public int getTickRate()
 	{
@@ -204,38 +352,53 @@ public class AdvancedExtractionTube extends DirectionalTube implements ITubeOver
 			return;
 		}
 		
-		// TODO: Redstone check
+		switch(mRSMode)
+		{
+		case High:
+			if(!mIsPowered)
+				return;
+			break;
+		case Low:
+			if(mIsPowered)
+				return;
+			break;
+		case Pulse:
+			if(mPulses <= 0)
+				return;
+			break;
+		default:
+			break;
+		}
 		
+		SizeMode size = mSize;
 		IFilter filter = null;
 		int next = mNext;
 		switch(mMode)
 		{
 		case NormalAllow:
-			filter = new CompoundFilter(getAllFilters(), false);
+			filter = getNormalFilter();
 			break;
 		case NormalDeny:
-			filter = new CompoundFilter(getAllFilters(), true);
+			filter = getInvertFilter();
+			size = SizeMode.Exact;
 			break;
 		case Overflow:
-			// TODO: Not done
+			filter = getOverflowFilter();
+			size = SizeMode.Exact;
 			break;
 		case Random:
-		{
-			ArrayList<IFilter> filters = getAllFilters();
-			if(!filters.isEmpty())
-				filter = filters.get(mRand.nextInt(filters.size()));
+			filter = getRandomFilter();
 			break;
-		}
 		case Sequence:
 		{
 			int start = next;
 			do
 			{
 				filter = mFilters[next++];
-				if(next > mFilters.length)
+				if(next >= mFilters.length)
 					next = 0;
 			}
-			while(filter != null && next != start);
+			while(filter == null && next != start);
 			break;
 		}
 		}
@@ -249,7 +412,7 @@ public class AdvancedExtractionTube extends DirectionalTube implements ITubeOver
 		if(handler == null)
 			return;
 		
-		Payload extracted = handler.extract(filter, getFacing() ^ 1, filter.size(), mSize, false);
+		Payload extracted = handler.extract(filter, getFacing() ^ 1, filter.size(), size, false);
 		
 		if(extracted != null)
 		{
@@ -259,12 +422,122 @@ public class AdvancedExtractionTube extends DirectionalTube implements ITubeOver
 			
 			if(new OutputRouter(world(), new Position(x(), y(), z()), item).route() != null)
 			{
-				handler.extract(filter, getFacing() ^ 1, filter.size(), mSize, true);
+				handler.extract(filter, getFacing() ^ 1, filter.size(), size, true);
 				addItem(item, true);
 				
 				if(mMode == PullMode.Sequence)
 					mNext = next;
+				
+				if(mRSMode == RedstoneMode.Pulse)
+				{
+					--mPulses;
+					if(mPulses < 0)
+						mPulses = 0;
+					
+					openChannel(CHANNEL_PULSE);
+				}
 			}
+		}
+	}
+	
+	private int getPower()
+	{
+		int current = 0;
+		for(int side = 0; side < 6; ++side)
+			current = Math.max(current, RedstoneInteractions.getPowerTo(world(), x(), y(), z(), side, 0x1f));
+		
+		return current;
+	}
+	
+	@Override
+	public void onWorldJoin()
+	{
+		mIsPowered = getPower() > 0;
+	}
+	
+	@Override
+	public void update()
+	{
+		if(!world().isRemote)
+		{
+			boolean state = getPower() > 0;
+			
+			if(state != mIsPowered)
+				openChannel(CHANNEL_POWERED).writeBoolean(state);
+			
+			if(!mIsPowered && state && mRSMode == RedstoneMode.Pulse)
+				++mPulses;
+	
+			mIsPowered = state;
+		}
+		else
+		{
+			switch(mRSMode)
+			{
+			case Ignore:
+				animTime += 0.05f;
+				
+				if(animTime > 1)
+					animTime -= 1;
+				break;
+			case High:
+				if(mIsPowered)
+				{
+					animTime += 0.05f;
+					
+					if(animTime > 1)
+						animTime -= 1;
+				}
+				else if(animTime > 0)
+				{
+					animTime += 0.05f;
+					
+					if(animTime > 1)
+						animTime = 0;
+				}
+				break;
+			case Low:
+				if(!mIsPowered)
+				{
+					animTime += 0.05f;
+					
+					if(animTime > 1)
+						animTime -= 1;
+				}
+				else if(animTime > 0)
+				{
+					animTime += 0.05f;
+					
+					if(animTime > 1)
+						animTime = 0;
+				}
+				break;
+			case Pulse:
+				if(animTime > 0)
+					animTime += 0.05f;
+				
+				if(animTime > 1)
+					animTime = 0;
+				break;
+			}
+		}
+		
+		super.update();
+	}
+	
+	@Override
+	protected void onRecieveDataClient( int channel, MCDataInput input )
+	{
+		switch(channel)
+		{
+		case CHANNEL_POWERED:
+			mIsPowered = input.readBoolean();
+			break;
+		case CHANNEL_PULSE:
+			animTime = 0.0001f;
+			break;
+		default:
+			super.onRecieveDataClient(channel, input);
 		}
 	}
 	
@@ -304,4 +577,13 @@ public class AdvancedExtractionTube extends DirectionalTube implements ITubeOver
 		
 		return true;
 	}
+	
+	@Override
+	public boolean canConnectRedstone( int side ) { return true; }
+
+	@Override
+	public int strongPowerLevel( int side ) { return 0; }
+
+	@Override
+	public int weakPowerLevel( int side ) { return 0; }
 }
