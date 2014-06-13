@@ -1,6 +1,7 @@
 package schmoller.tubes.gui;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.StatCollector;
 import schmoller.tubes.api.gui.GuiExtContainer;
 import schmoller.tubes.api.interfaces.IFilter;
 import schmoller.tubes.definitions.TypeAdvancedExtractionTube;
@@ -18,6 +19,16 @@ public class AdvancedExtractionTubeGui extends GuiExtContainer
 		
 		xSize = 176;
 		ySize = 172;
+	}
+	
+	@Override
+	protected void drawGuiContainerForegroundLayer( int x, int y )
+	{
+		String s = StatCollector.translateToLocal("tubes.advancedExtraction.name");
+		fontRendererObj.drawString(s, xSize / 2 - fontRendererObj.getStringWidth(s) / 2, 6, 0x404040);
+		fontRendererObj.drawString(StatCollector.translateToLocal("container.inventory"), 8, this.ySize - 96 + 2, 0x404040);
+		
+		super.drawGuiContainerForegroundLayer(x, y);
 	}
 	
 	@Override
