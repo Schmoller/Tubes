@@ -19,7 +19,7 @@ import net.minecraftforge.oredict.OreDictionary;
 
 public class CommonHelper
 {
-	private static final String[] dyes = { "dyeWhite", "dyeOrange", "dyeMagenta", "dyeLightBlue", "dyeYellow", "dyeLime", "dyePink", "dyeGray", "dyeLightGray", "dyeCyan", "dyePurple", "dyeBlue", "dyeBrown", "dyeGreen", "dyeRed", "dyeBlack" };
+	private static final String[] dyes = { "White", "Orange", "Magenta", "LightBlue", "Yellow", "Lime", "Pink", "Gray", "LightGray", "Cyan", "Purple", "Blue", "Brown", "Green", "Red", "Black" };
 	private static final String[] colourNames = {"item.fireworksCharge.white", "item.fireworksCharge.orange", "item.fireworksCharge.magenta", "item.fireworksCharge.lightBlue", "item.fireworksCharge.yellow", "item.fireworksCharge.lime", "item.fireworksCharge.pink", "item.fireworksCharge.gray", "item.fireworksCharge.silver", "item.fireworksCharge.cyan", "item.fireworksCharge.purple", "item.fireworksCharge.blue", "item.fireworksCharge.brown", "item.fireworksCharge.green", "item.fireworksCharge.red", "item.fireworksCharge.black"};
 	private static int[] dyeIds;
 	
