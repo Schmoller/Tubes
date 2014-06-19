@@ -203,7 +203,9 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		
 		TubesAPI.instance.registerShapedRecipe(TubesAPI.instance.createTubeForType("tank", 1), " g ", "gtg", " g ", 'g', net.minecraft.init.Blocks.glass, 't', TubesAPI.instance.createTubeForType("basic"));
 		TubesAPI.instance.registerShapedRecipe(TubesAPI.instance.createTubeForType("buffer", 1), "t", "c", "t", 't', TubesAPI.instance.createTubeForType("basic"), 'c', net.minecraft.init.Blocks.chest);
-		TubesAPI.instance.registerShapedRecipe(TubesAPI.instance.createTubeForType("roundrobin",1), "iti", "ttt", "iti", 'i', net.minecraft.init.Items.iron_ingot, 't', TubesAPI.instance.createTubeForType("basic"));
+		TubesAPI.instance.registerShapedRecipe(TubesAPI.instance.createTubeForType("roundrobin", 1), "iti", "ttt", "iti", 'i', net.minecraft.init.Items.iron_ingot, 't', TubesAPI.instance.createTubeForType("basic"));
+		TubesAPI.instance.registerShapedRecipe(TubesAPI.instance.createTubeForType("advancedExtraction", 1), " c ", "cec", " c ", 'c', Items.RedstoneCircuit.getItem(), 'e', TubesAPI.instance.createTubeForType("extraction"));
+		TubesAPI.instance.registerShapedRecipe(TubesAPI.instance.createTubeForType("management", 1), "ici", "crc", "ici", 'i', net.minecraft.init.Items.iron_ingot, 'r', TubesAPI.instance.createTubeForType("requesting"), 'c', Items.RedstoneCircuit.getItem());
 	}
 
 	public void registerOreRecipes()

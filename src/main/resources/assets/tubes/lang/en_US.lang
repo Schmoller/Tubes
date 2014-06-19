@@ -16,6 +16,7 @@ tubes.tank.name=Tank Tube
 tubes.buffer.name=Buffer Tube
 tubes.roundrobin.name=Round Robin Tube
 tubes.management.name=Management Tube
+tubes.advancedExtraction.name=Advanced Extraction Tube
 
 fluid.plastic=Plastic
 
@@ -72,3 +73,14 @@ gui.managementtube.mode.PassiveFill=Passive Fill
 gui.managementtube.priority=Priority
 
 gui.overflow.name=Overflow Contents
+
+gui.redstonemode.High=High redstone signal
+gui.redstonemode.Low=Low redstone signal
+gui.redstonemode.Ignore=Ignore redstone signal
+gui.redstonemode.Pulse=Pulse redstone signal
+
+gui.pullmode.NormalAllow=Pull any listed items
+gui.pullmode.NormalDeny=Pull any unlisted items
+gui.pullmode.Random=Pull a listed item at random
+gui.pullmode.Sequence=Pull listed items in sequence
+gui.pullmode.Overflow=Pull overflowing items
