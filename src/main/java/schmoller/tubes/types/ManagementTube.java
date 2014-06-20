@@ -495,7 +495,7 @@ public class ManagementTube extends DirectionalTube implements ITubeImportDest, 
 						Payload add = item.item.copy();
 						add.setSize(toAdd);
 						
-						remaining = handler.insert(add, getFacing(), true);
+						remaining = handler.insert(add, getFacing() ^ 1, true);
 						
 						if(toAdd != item.item.size())
 						{
