@@ -112,7 +112,7 @@ public class AdvancedExtractionTube extends DirectionalTube implements ITubeOver
 	@Override
 	protected int getConnectableSides()
 	{
-		return ~(1 << getFacing());
+		return (1 << (getFacing() ^ 1));
 	}
 	
 	@Override

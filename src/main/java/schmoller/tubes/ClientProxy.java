@@ -18,6 +18,7 @@ import schmoller.tubes.gui.ManagementTubeGui;
 import schmoller.tubes.gui.OverflowGui;
 import schmoller.tubes.gui.RequestingTubeGui;
 import schmoller.tubes.gui.RoutingTubeGui;
+import schmoller.tubes.render.AdvancedExtractionTubeRender;
 import schmoller.tubes.render.BufferTubeRender;
 import schmoller.tubes.render.ColoringTubeRender;
 import schmoller.tubes.render.CompressorTubeRender;
@@ -80,7 +81,7 @@ public class ClientProxy extends CommonProxy
 		TubeRegistry.registerRenderer("buffer", new BufferTubeRender());
 		TubeRegistry.registerRenderer("roundrobin", new RoundRobinTubeRender());
 		TubeRegistry.registerRenderer("management", new ManagementTubeRender());
-		TubeRegistry.registerRenderer("advancedExtraction", new EjectionTubeRender());
+		TubeRegistry.registerRenderer("advancedExtraction", new AdvancedExtractionTubeRender());
 		
 		PayloadRegistry.registerPayloadRenderer("item", new ItemPayloadRender());
 		PayloadRegistry.registerPayloadRenderer("fluid", new FluidPayloadRender());
