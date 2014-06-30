@@ -61,15 +61,14 @@ public class CommonHelper
 			for(int i = 0; i < 16; ++i)
 				dyeIds[i] = OreDictionary.getOreID(dyes[i]);
 		}
-		
-		int id = OreDictionary.getOreID(dye);
-		if(id == -1)
-			return -1;
-		
-		for(int i = 0; i < 16; ++i)
+
+		for(int id : OreDictionary.getOreIDs(dye))
 		{
-			if(dyeIds[i] == id)
-				return i;
+			for(int i = 0; i < 16; ++i)
+			{
+				if(dyeIds[i] == id)
+					return i;
+			}
 		}
 		
 		return -1;
