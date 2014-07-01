@@ -5,12 +5,17 @@ import java.util.List;
 import java.util.Random;
 
 import codechicken.lib.data.MCDataInput;
+import codechicken.lib.data.MCDataOutput;
+import codechicken.lib.vec.Cuboid6;
 import codechicken.multipart.IRedstonePart;
 import codechicken.multipart.RedstoneInteractions;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
 import schmoller.tubes.AnyFilter;
 import schmoller.tubes.ModTubes;
@@ -107,12 +112,35 @@ public class AdvancedExtractionTube extends DirectionalTube implements ITubeOver
 			mColor = ((Number)value).intValue();
 			break;
 		}
+		
+		tile().markDirty();
+	}
+	
+	@Override
+	public Cuboid6 getBounds()
+	{
+		switch(getFacing())
+		{
+		default:
+		case 0:
+			return new Cuboid6(0.1875f, 0.0f, 0.1875f, 0.8125f, 0.8125f, 0.8125f);
+		case 1:
+			return new Cuboid6(0.1875f, 0.1875f, 0.1875f, 0.8125f, 1.0f, 0.8125f);
+		case 2:
+			return new Cuboid6(0.1875f, 0.1875f, 0.0f, 0.8125f, 0.8125f, 0.8125f);
+		case 3:
+			return new Cuboid6(0.1875f, 0.1875f, 0.1875f, 0.8125f, 0.8125f, 1.0f);
+		case 4:
+			return new Cuboid6(0.0f, 0.1875f, 0.1875f, 0.8125f, 0.8125f, 0.8125f);
+		case 5:
+			return new Cuboid6(0.1875f, 0.1875f, 0.1875f, 1.0f, 0.8125f, 0.8125f);
+		}
 	}
 	
 	@Override
 	protected int getConnectableSides()
 	{
-		return ~(1 << getFacing());
+		return (1 << (getFacing() ^ 1));
 	}
 	
 	@Override
@@ -142,6 +170,7 @@ public class AdvancedExtractionTube extends DirectionalTube implements ITubeOver
 	public void setFilter(int index, IFilter filter)
 	{
 		mFilters[index] = filter;
+		tile().markDirty();
 	}
 	
 	public PullMode getMode()
@@ -571,4 +600,78 @@ public class AdvancedExtractionTube extends DirectionalTube implements ITubeOver
 
 	@Override
 	public int weakPowerLevel( int side ) { return 0; }
+	
+	@Override
+	public void save( NBTTagCompound root )
+	{
+		super.save(root);
+		
+		NBTTagList items = new NBTTagList();
+		for(int i = 0; i < mFilters.length; ++i)
+		{
+			if(mFilters[i] != null)
+			{
+				NBTTagCompound tag = new NBTTagCompound();
+				tag.setInteger("Slot", i);
+				FilterRegistry.getInstance().writeFilter(mFilters[i],tag);
+				items.appendTag(tag);
+			}
+		}
+		
+		root.setTag("Filters", items);
+		
+		root.setInteger("Mode", mMode.ordinal());
+		root.setInteger("RSMode", mRSMode.ordinal());
+		root.setInteger("Size", mSize.ordinal());
+		mOverflow.save(root);
+		
+		root.setShort("Color", (short)mColor);
+	}
+	
+	@Override
+	public void load( NBTTagCompound root )
+	{
+		super.load(root);
+		
+		NBTTagList filters = root.getTagList("Filters", Constants.NBT.TAG_COMPOUND);
+		for(int i = 0; i < filters.tagCount(); ++i)
+		{
+			NBTTagCompound tag = filters.getCompoundTagAt(i);
+			int slot = tag.getInteger("Slot");
+			mFilters[slot] = FilterRegistry.getInstance().readFilter(tag);
+		}
+		
+		mMode = PullMode.values()[root.getInteger("Mode")];
+		mRSMode = RedstoneMode.values()[root.getInteger("RSMode")];
+		mSize = SizeMode.values()[root.getInteger("Size")];
+		
+		mColor = root.getShort("Color");
+	}
+	
+	@Override
+	public void writeDesc( MCDataOutput output )
+	{
+		super.writeDesc(output);
+		
+		output.writeByte(mMode.ordinal());
+		output.writeByte(mRSMode.ordinal());
+		output.writeByte(mSize.ordinal());
+		output.writeShort(mColor);
+		
+		output.writeBoolean(mIsPowered);
+	}
+	
+	@Override
+	public void readDesc( MCDataInput input )
+	{
+		super.readDesc(input);
+		
+		mMode = PullMode.values()[input.readByte()];
+		mRSMode = RedstoneMode.values()[input.readByte()];
+		mSize = SizeMode.values()[input.readByte()];
+		mColor = input.readShort();
+		
+		mIsPowered = input.readBoolean();
+	}
+
 }

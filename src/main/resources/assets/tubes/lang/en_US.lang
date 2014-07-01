@@ -74,13 +74,13 @@ gui.managementtube.priority=Priority
 
 gui.overflow.name=Overflow Contents
 
-gui.redstonemode.High=High redstone signal
-gui.redstonemode.Low=Low redstone signal
-gui.redstonemode.Ignore=Ignore redstone signal
-gui.redstonemode.Pulse=Pulse redstone signal
+gui.pullmode.NormalAllow=Pull matching
+gui.pullmode.NormalDeny=Pull non-matching
+gui.pullmode.Random=Pull random
+gui.pullmode.Sequence=Pull sequence
+gui.pullmode.Overflow=Pull overflow
 
-gui.pullmode.NormalAllow=Pull any listed items
-gui.pullmode.NormalDeny=Pull any unlisted items
-gui.pullmode.Random=Pull a listed item at random
-gui.pullmode.Sequence=Pull listed items in sequence
-gui.pullmode.Overflow=Pull overflowing items
+gui.redstonemode.High=Pull with redstone signal
+gui.redstonemode.Low=Pull without redstone signal
+gui.redstonemode.Ignore=Always pull
+gui.redstonemode.Pulse=Pull once per redstone pulse
