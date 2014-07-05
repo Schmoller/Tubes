@@ -7,6 +7,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraftforge.fluids.FluidStack;
 
 import codechicken.lib.data.MCDataInput;
@@ -125,7 +126,7 @@ public class MCDInputBridge implements MCDataInput
 		
 		try
 		{
-			return CompressedStreamTools.decompress(data);
+			return CompressedStreamTools.func_152457_a(data, NBTSizeTracker.field_152451_a);
 		}
 		catch(IOException e)
 		{
