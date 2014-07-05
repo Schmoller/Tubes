@@ -14,5 +14,7 @@ Please remember to use **UTF-8** encoding on language files.
 ### Building
 Make sure you have python installed and available on the system PATH.
 
+[Download this and put the contents in a folder named "lib".](http://files.holenet.info/lib.zip)
+
 Run "gradlew build" from a terminal/command prompt. 
 The output will be in build/libs
