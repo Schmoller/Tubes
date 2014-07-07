@@ -3,12 +3,12 @@ package schmoller.tubes.network;
 import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fluids.FluidStack;
-
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.vec.BlockCoord;
 
@@ -116,16 +116,10 @@ public class MCDInputBridge implements MCDataInput
 	@Override
 	public NBTTagCompound readNBTTagCompound()
 	{
-		short length = readShort();
-		
-		if(length == -1)
-			return null;
-		
-		byte[] data = readByteArray(length);
-		
 		try
 		{
-			return CompressedStreamTools.decompress(data);
+			PacketBuffer buffer = new PacketBuffer(mBuffer);
+			return buffer.readNBTTagCompoundFromBuffer();
 		}
 		catch(IOException e)
 		{

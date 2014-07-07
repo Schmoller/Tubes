@@ -36,7 +36,7 @@ version = "2.0.3"
 group= "au.com.addstar"
 archivesBaseName = "Tubes"
 
-def forge = "1.7.2-10.12.1.1065"
+def forge = "1.7.10-10.13.0.1157"
 
 minecraft {
     version = "${forge}"
