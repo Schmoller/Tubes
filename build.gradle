@@ -26,18 +26,17 @@ repositories {
 
 dependencies {
     compile 'com.mod-buildcraft:buildcraft:5.0.5:dev'
-    // compile 'codechicken:ForgeMultipart:1.7.2-1.1.0.275:dev'
-	compile files("lib/ForgeMultipart-1.7.10-1.1.0.null-dev.jar")
-    compile 'codechicken:CodeChickenLib:1.7.10-1.1.1.93:dev'
-    compile 'codechicken:CodeChickenCore:1.7.10-1.0.1.8:dev'
-    compile 'codechicken:NotEnoughItems:1.7.10-1.0.2.15:dev'
+    compile 'codechicken:ForgeMultipart:1.7.10-1.1.0.297:dev'
+    compile 'codechicken:CodeChickenLib:1.7.10-1.1.1.95:dev'
+    compile 'codechicken:CodeChickenCore:1.7.10-1.0.2.11:dev'
+    compile 'codechicken:NotEnoughItems:1.7.10-1.0.2.30:dev'
 }
 
 version = "2.0.3"
 group= "au.com.addstar"
 archivesBaseName = "Tubes"
 
-def forge = "1.7.10-10.13.0.1160"
+def forge = "1.7.10-10.13.0.1180"
 
 minecraft {
     version = "${forge}"
