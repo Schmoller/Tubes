@@ -1,13 +1,12 @@
 package schmoller.tubes.asm;
 
-import java.util.Iterator;
-
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
@@ -17,7 +16,6 @@ import org.objectweb.asm.tree.VarInsnNode;
 
 import codechicken.lib.asm.ASMHelper;
 import codechicken.lib.asm.ObfMapping;
-
 import net.minecraft.launchwrapper.IClassTransformer;
 
 public class MinecraftTransformer implements IClassTransformer, Opcodes
@@ -81,120 +79,31 @@ public class MinecraftTransformer implements IClassTransformer, Opcodes
 	        ObfMapping addItem = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "addItem", "(Lschmoller/tubes/api/Payload;I)Z");
 	        ObfMapping updateHopper = NameHelper.getMapping("net/minecraft/tileentity/TileEntityHopper", "func_145887_i", "()Z");
 	        
-	        // updateHopper
+	        // Insert item to inventory
 	        {
-        	mv = new MethodNode(ACC_PUBLIC, updateHopper.s_name, "()Z", null, null);
-        	mv.visitCode();
-        	Label l0 = new Label();
-        	mv.visitLabel(l0);
-        	mv.visitLineNumber(252, l0);
-        	mv.visitVarInsn(ALOAD, 0);
-        	worldField.visitFieldInsn(mv, GETFIELD);
-        	Label l1 = new Label();
-        	mv.visitJumpInsn(IFNULL, l1);
-        	mv.visitVarInsn(ALOAD, 0);
-        	worldField.visitFieldInsn(mv, GETFIELD);
-        	isRemote.visitFieldInsn(mv, GETFIELD);
-        	mv.visitJumpInsn(IFNE, l1);
-        	Label l2 = new Label();
-        	mv.visitLabel(l2);
-        	mv.visitLineNumber(254, l2);
-        	mv.visitVarInsn(ALOAD, 0);
-        	isCoolingDown.visitMethodInsn(mv, INVOKEVIRTUAL);
-        	Label l3 = new Label();
-        	mv.visitJumpInsn(IFNE, l3);
-        	mv.visitVarInsn(ALOAD, 0);
-        	getBlockMetadata.visitMethodInsn(mv, INVOKEVIRTUAL);
-        	getIsBlockNotPoweredFromMetadata.visitMethodInsn(mv, INVOKESTATIC);
-        	mv.visitJumpInsn(IFEQ, l3);
-        	Label l4 = new Label();
-        	mv.visitLabel(l4);
-        	mv.visitLineNumber(256, l4);
-        	mv.visitVarInsn(ALOAD, 0);
-        	insertItemToTube.visitMethodInsn(mv, INVOKESPECIAL);
-        	mv.visitVarInsn(ISTORE, 1);
-        	Label l5 = new Label();
-        	mv.visitLabel(l5);
-        	mv.visitLineNumber(258, l5);
-        	mv.visitVarInsn(ILOAD, 1);
-        	Label l6 = new Label();
-        	mv.visitJumpInsn(IFNE, l6);
-        	Label l7 = new Label();
-        	mv.visitLabel(l7);
-        	mv.visitLineNumber(259, l7);
-        	mv.visitVarInsn(ALOAD, 0);
-        	insertItemToInventory.visitMethodInsn(mv, INVOKESPECIAL);
-        	mv.visitVarInsn(ISTORE, 1);
-        	mv.visitLabel(l6);
-        	mv.visitLineNumber(260, l6);
-        	mv.visitFrame(Opcodes.F_APPEND,1, new Object[] {Opcodes.INTEGER}, 0, null);
-        	mv.visitVarInsn(ALOAD, 0);
-        	suckItemsIntoHopper.visitMethodInsn(mv, INVOKESTATIC);
-        	Label l8 = new Label();
-        	mv.visitJumpInsn(IFNE, l8);
-        	mv.visitVarInsn(ILOAD, 1);
-        	mv.visitJumpInsn(IFNE, l8);
-        	mv.visitInsn(ICONST_0);
-        	Label l9 = new Label();
-        	mv.visitJumpInsn(GOTO, l9);
-        	mv.visitLabel(l8);
-        	mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
-        	mv.visitInsn(ICONST_1);
-        	mv.visitLabel(l9);
-        	mv.visitFrame(Opcodes.F_SAME1, 0, null, 1, new Object[] {Opcodes.INTEGER});
-        	mv.visitVarInsn(ISTORE, 1);
-        	Label l10 = new Label();
-        	mv.visitLabel(l10);
-        	mv.visitLineNumber(262, l10);
-        	mv.visitVarInsn(ILOAD, 1);
-        	mv.visitJumpInsn(IFEQ, l3);
-        	Label l11 = new Label();
-        	mv.visitLabel(l11);
-        	mv.visitLineNumber(264, l11);
-        	mv.visitVarInsn(ALOAD, 0);
-        	mv.visitIntInsn(BIPUSH, 8);
-        	setTransferCooldown.visitMethodInsn(mv, INVOKEVIRTUAL);
-        	Label l12 = new Label();
-        	mv.visitLabel(l12);
-        	mv.visitLineNumber(265, l12);
-        	mv.visitVarInsn(ALOAD, 0);
-        	onInventoryChanged.visitMethodInsn(mv, INVOKEVIRTUAL);
-        	Label l13 = new Label();
-        	mv.visitLabel(l13);
-        	mv.visitLineNumber(266, l13);
-        	mv.visitInsn(ICONST_1);
-        	mv.visitInsn(IRETURN);
-        	mv.visitLabel(l3);
-        	mv.visitLineNumber(270, l3);
-        	mv.visitFrame(Opcodes.F_CHOP,1, null, 0, null);
-        	mv.visitInsn(ICONST_0);
-        	mv.visitInsn(IRETURN);
-        	mv.visitLabel(l1);
-        	mv.visitLineNumber(274, l1);
-        	mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
-        	mv.visitInsn(ICONST_0);
-        	mv.visitInsn(IRETURN);
-        	Label l14 = new Label();
-        	mv.visitLabel(l14);
-        	mv.visitLocalVariable("this", hopperClass.s_desc, null, l0, l14, 0);
-        	mv.visitLocalVariable("flag", "Z", null, l5, l3, 1);
-        	mv.visitMaxs(2, 2);
-        	mv.visitEnd();
-        	
-        	// Remove the existing one
-        	Iterator<MethodNode> it = classNode.methods.iterator();
-        	while(it.hasNext())
-        	{
-        		MethodNode node = it.next();
-        		if(node.name.equals(updateHopper.s_name))
-        		{
-        			it.remove();
-        			break;
-        		}
-        	}
-        	
-        	classNode.methods.add(mv);
-        	}
+	        	for(MethodNode method : classNode.methods)
+	        	{
+	        		if(method.name.equals(insertItemToInventory.s_name))
+	        		{
+	        			InsnList list = new InsnList();
+	        			
+	        			// if(insertItemToTube())
+	            		//     return true;
+	        			LabelNode label = new LabelNode(new Label());
+	        			
+	        			list.add(new VarInsnNode(ALOAD, 0));
+	        			list.add(new MethodInsnNode(INVOKESPECIAL, "net/minecraft/tileentity/TileEntityHopper", "insertItemToTube", "()Z"));
+	        			list.add(new JumpInsnNode(IFEQ, label));
+	        			list.add(new InsnNode(ICONST_1));
+	        			list.add(new InsnNode(IRETURN));
+	        			list.add(label);
+
+	        			method.instructions.insertBefore(method.instructions.getFirst(), list);
+	        			
+	        			break;
+	        		}
+	        	}
+	        }
 	        
 	        // insertItemToTube method
 	        {
