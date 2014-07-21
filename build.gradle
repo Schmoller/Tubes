@@ -32,11 +32,11 @@ dependencies {
     compile 'codechicken:NotEnoughItems:1.7.2-1.0.1:dev'
 }
 
-version = "2.0.3"
+version = "2.0.4"
 group= "au.com.addstar"
 archivesBaseName = "Tubes"
 
-def forge = "1.7.2-10.12.1.1065"
+def forge = "1.7.2-10.12.2.1147"
 
 minecraft {
     version = "${forge}"
