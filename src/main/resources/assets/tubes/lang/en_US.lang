@@ -28,6 +28,7 @@ item.redstoneCircuit.name=Redstone Circuit
 item.fluidCircuit.name=Fluid Circuit
 item.tubeCap.name=Tube Cap
 item.diagnosticTool.name=Diagnostic Tool
+item.diamondineCircuit.name=Diamondine Circuit
 
 tile.blockPlastic.name=Block Of Plastic
 

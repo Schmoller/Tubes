@@ -12,7 +12,8 @@ public enum Items
 	RedstoneCircuit("redstoneCircuit"),
 	TubeCap("TubeCap"),
 	FluidCircuit("FluidCircuit"),
-	DiagnosticTool("");
+	DiagnosticTool(""),
+	DiamondineCircuit("");
 	
 	private Item mItem = null;
 	private String mConfigName;

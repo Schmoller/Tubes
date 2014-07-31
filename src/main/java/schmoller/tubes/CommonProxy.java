@@ -133,6 +133,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		Items.RedstoneCircuit.initialize(new BasicItem().setUnlocalizedName("redstoneCircuit").setCreativeTab(ModTubes.creativeTab));
 		Items.FluidCircuit.initialize(new BasicItem().setUnlocalizedName("fluidCircuit").setCreativeTab(ModTubes.creativeTab));
 		Items.DiagnosticTool.initialize(new ItemDiagnosticTool().setUnlocalizedName("diagnosticTool").setCreativeTab(ModTubes.creativeTab));
+		Items.DiamondineCircuit.initialize(new BasicItem().setUnlocalizedName("diamondineCircuit").setCreativeTab(ModTubes.creativeTab));
 		
 		ModTubes.itemTube = new ItemTubeBase();
 		Items.Tube.initialize(ModTubes.itemTube);
@@ -145,6 +146,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		GameRegistry.registerItem(Items.RedstoneCircuit.getItem(), "redstoneCircuit");
 		GameRegistry.registerItem(Items.FluidCircuit.getItem(), "fluidCircuit");
 		GameRegistry.registerItem(Items.DiagnosticTool.getItem(), "diagnosticTool");
+		GameRegistry.registerItem(Items.DiamondineCircuit.getItem(), "diamondineCircuit");
 		
 		Items.TubeCap.initialize(new ItemTubeCap().setUnlocalizedName("tubeCap").setCreativeTab(ModTubes.creativeTab));
 		GameRegistry.registerItem(Items.TubeCap.getItem(), "tubeCap");
@@ -196,6 +198,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		TubesAPI.instance.registerShapelessRecipe(ModTubes.itemTube.createForType("valve"), ModTubes.itemTube.createForType("basic"), net.minecraft.init.Items.iron_ingot, net.minecraft.init.Blocks.lever);
 		
 		GameRegistry.addShapedRecipe(new ItemStack(Items.RedstoneCircuit.getItem(), 4), "igi", "rrr", "igi", 'i', net.minecraft.init.Items.iron_ingot, 'g', net.minecraft.init.Items.gold_ingot, 'r', net.minecraft.init.Items.redstone);
+		GameRegistry.addShapedRecipe(new ItemStack(Items.DiamondineCircuit.getItem(), 2), "idi", "crc", "idi", 'i', net.minecraft.init.Items.iron_ingot, 'd', net.minecraft.init.Items.diamond, 'r', net.minecraft.init.Items.redstone, 'c', Items.RedstoneCircuit.getItem());
 		
 		TubesAPI.instance.registerShapelessRecipe(new ItemStack(Items.TubeCap.getItem(), 2, 0), TubesAPI.instance.createTubeForType("basic"), MicroblockProxy.sawStone());
 		
@@ -204,6 +207,8 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		TubesAPI.instance.registerShapedRecipe(TubesAPI.instance.createTubeForType("tank", 1), " g ", "gtg", " g ", 'g', net.minecraft.init.Blocks.glass, 't', TubesAPI.instance.createTubeForType("basic"));
 		TubesAPI.instance.registerShapedRecipe(TubesAPI.instance.createTubeForType("buffer", 1), "t", "c", "t", 't', TubesAPI.instance.createTubeForType("basic"), 'c', net.minecraft.init.Blocks.chest);
 		TubesAPI.instance.registerShapedRecipe(TubesAPI.instance.createTubeForType("roundrobin",1), "iti", "ttt", "iti", 'i', net.minecraft.init.Items.iron_ingot, 't', TubesAPI.instance.createTubeForType("basic"));
+		TubesAPI.instance.registerShapedRecipe(TubesAPI.instance.createTubeForType("management",1), "iei", "prp", "pdp", 'i', net.minecraft.init.Items.iron_ingot, 'e', TubesAPI.instance.createTubeForType("advancedExtraction"), 'p', Items.PlasticSheet.getItem(), 'r', TubesAPI.instance.createTubeForType("requesting"), 'd', Items.DiamondineCircuit.getItem());
+		TubesAPI.instance.registerShapedRecipe(TubesAPI.instance.createTubeForType("advancedExtraction",1), "ipi", "sds", "sts", 'i', net.minecraft.init.Items.iron_ingot, 'p', net.minecraft.init.Blocks.sticky_piston, 's', Items.PlasticSheet.getItem(), 't', TubesAPI.instance.createTubeForType("filter"), 'd', Items.DiamondineCircuit.getItem());
 	}
 
 	public void registerOreRecipes()
