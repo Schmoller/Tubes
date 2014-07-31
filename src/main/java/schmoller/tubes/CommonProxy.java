@@ -199,6 +199,7 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		
 		GameRegistry.addShapedRecipe(new ItemStack(Items.RedstoneCircuit.getItem(), 4), "igi", "rrr", "igi", 'i', net.minecraft.init.Items.iron_ingot, 'g', net.minecraft.init.Items.gold_ingot, 'r', net.minecraft.init.Items.redstone);
 		GameRegistry.addShapedRecipe(new ItemStack(Items.DiamondineCircuit.getItem(), 2), "idi", "crc", "idi", 'i', net.minecraft.init.Items.iron_ingot, 'd', net.minecraft.init.Items.diamond, 'r', net.minecraft.init.Items.redstone, 'c', Items.RedstoneCircuit.getItem());
+		GameRegistry.addShapedRecipe(new ItemStack(Items.DiagnosticTool.getItem(), 1), "p", "g", "r", 'p', Items.PlasticSheet.getItem(), 'g', net.minecraft.init.Blocks.glass, 'r', Items.RedstoneCircuit.getItem());
 		
 		TubesAPI.instance.registerShapelessRecipe(new ItemStack(Items.TubeCap.getItem(), 2, 0), TubesAPI.instance.createTubeForType("basic"), MicroblockProxy.sawStone());
 		
