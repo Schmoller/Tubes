@@ -10,6 +10,11 @@ import net.minecraft.world.World;
 
 public class ItemDiagnosticTool extends Item
 {
+	public ItemDiagnosticTool()
+	{
+		iconString = "tubes:diagnosticTool";
+	}
+	
 	@Override
 	public boolean onItemUseFirst( ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ )
 	{
