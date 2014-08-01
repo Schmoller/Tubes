@@ -4,7 +4,6 @@ import java.util.Arrays;
 
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -19,13 +18,14 @@ import schmoller.tubes.api.FilterRegistry;
 import schmoller.tubes.api.Position;
 import schmoller.tubes.api.SizeMode;
 import schmoller.tubes.api.TubeItem;
+import schmoller.tubes.api.TubesAPI;
 import schmoller.tubes.api.helpers.BaseTube;
 import schmoller.tubes.api.helpers.TubeHelper;
 import schmoller.tubes.api.helpers.BaseRouter.PathLocation;
 import schmoller.tubes.api.interfaces.IFilter;
 import schmoller.tubes.api.interfaces.IPropertyHolder;
 import schmoller.tubes.definitions.TypeRoutingTube;
-import schmoller.tubes.routing.OutputRouter;
+import schmoller.tubes.routing.GoalRouter;
 
 public class RoutingTube extends BaseTube implements IPropertyHolder
 {
@@ -316,9 +316,9 @@ public class RoutingTube extends BaseTube implements IPropertyHolder
 				PathLocation loc;
 				
 				if(mDir[col] == RouteDirection.Any)
-					loc = new OutputRouter(world(), new Position(x(), y(), z()), item).route();
+					loc = new GoalRouter(world(), new Position(x(), y(), z()), item, TubesAPI.goalOutput).route();
 				else
-					loc = new OutputRouter(world(), new Position(x(), y(), z()), item, mDir[col].ordinal()).route();
+					loc = new GoalRouter(world(), new Position(x(), y(), z()), item, mDir[col].ordinal(), TubesAPI.goalOutput).route();
 				
 				if(loc != null)
 				{

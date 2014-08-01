@@ -1,37 +1,37 @@
 package schmoller.tubes.routing;
 
-import schmoller.tubes.api.InteractionHandler;
-import schmoller.tubes.api.Payload;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.IBlockAccess;
 import schmoller.tubes.api.Position;
 import schmoller.tubes.api.TubeItem;
 import schmoller.tubes.api.helpers.BaseRouter;
 import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.api.helpers.TubeHelper;
-import schmoller.tubes.api.interfaces.IPayloadHandler;
 import schmoller.tubes.api.interfaces.ITubeConnectable;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.IBlockAccess;
+import schmoller.tubes.api.interfaces.IRoutingGoal;
 
-public class OutputRouter extends BaseRouter
+public class GoalRouter extends BaseRouter
 {
 	private TubeItem mItem;
 	private int mDirection = -1;
+	private IRoutingGoal mGoal;
 	
-	public OutputRouter(IBlockAccess world, Position position, TubeItem item)
+	public GoalRouter(IBlockAccess world, Position position, TubeItem item, IRoutingGoal goal)
 	{
 		mItem = item.clone();
-		mItem.state = TubeItem.NORMAL;
+		mItem.state = goal.getStateId();
+		mGoal = goal;
 		setup(world, position);
 	}
 	
-	public OutputRouter(IBlockAccess world, Position position, TubeItem item, int direction)
+	public GoalRouter(IBlockAccess world, Position position, TubeItem item, int direction, IRoutingGoal goal)
 	{
 		mItem = item.clone();
-		mItem.state = TubeItem.NORMAL;
+		mItem.state = goal.getStateId();
 		mDirection = direction;
+		mGoal = goal;
 		setup(world, position);
 	}
-	
 	
 	@Override
 	protected void getNextLocations( PathLocation current )
@@ -60,7 +60,7 @@ public class OutputRouter extends BaseRouter
 				{
 					mItem.direction = loc.dir;
 					mItem.colour = loc.color;
-					mItem.state = TubeItem.NORMAL;
+					mItem.state = mGoal.getStateId();
 					
 					if(!con.canItemEnter(mItem))
 						continue;
@@ -87,6 +87,7 @@ public class OutputRouter extends BaseRouter
 		
 		int initialColor = mItem.colour;
 		int initialDir = mItem.direction;
+		int initialState = mItem.state;
 		
 		for(int i = 0; i < 6; ++i)
 		{
@@ -97,6 +98,7 @@ public class OutputRouter extends BaseRouter
 			{
 				mItem.colour = initialColor;
 				mItem.direction = initialDir;
+				mItem.state = initialState;
 				
 				PathLocation loc = new PathLocation(position, i);
 				loc.color = mItem.colour;
@@ -108,7 +110,6 @@ public class OutputRouter extends BaseRouter
 				{
 					mItem.direction = loc.dir;
 					mItem.colour = loc.color;
-					mItem.state = TubeItem.NORMAL;
 					
 					if(!con.canItemEnter(mItem))
 						continue;
@@ -123,29 +124,13 @@ public class OutputRouter extends BaseRouter
 			}
 		}
 	}
-	
+
 	@Override
 	protected boolean isTerminator( Position current, int side )
 	{
-		TileEntity ent = CommonHelper.getTileEntity(getWorld(), current);
-		ITubeConnectable con = TubeHelper.getTubeConnectable(ent);
 		mItem.direction = side;
 		
-		if(con == null)
-		{
-			IPayloadHandler handler = InteractionHandler.getHandler(mItem.item.getClass(), getWorld(), current);
-			if(handler != null)
-			{
-				Payload remaining = handler.insert(mItem.item, side ^ 1, false);
-				
-				if(remaining == null || remaining.size() != mItem.item.size())
-					return true;
-			}
-		}
-		else if(!con.canPathThrough() && con.canItemEnter(mItem))
-			return true;
-
-		return false;
+		return mGoal.isDestination(current, getWorld(), side, mItem);
 	}
 
 }

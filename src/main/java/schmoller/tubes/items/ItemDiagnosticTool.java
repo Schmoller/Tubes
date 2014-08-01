@@ -13,6 +13,7 @@ public class ItemDiagnosticTool extends Item
 	public ItemDiagnosticTool()
 	{
 		iconString = "tubes:diagnosticTool";
+		maxStackSize = 1;
 	}
 	
 	@Override

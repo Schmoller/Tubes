@@ -122,22 +122,22 @@ public class TubeHelper
 		BaseRouter.PathLocation path = null;
 		
 		if(item.state == TubeItem.NORMAL)
-			path = TubesAPI.instance.getOutputRouter(world, new Position(x, y, z), item).route();
+			path = TubesAPI.instance.routeItem(item, world, x, y, z, TubesAPI.goalOutput);
 		else if(item.state == TubeItem.IMPORT)
 		{
-			path = TubesAPI.instance.getImportRouter(world, new Position(x, y, z), item).route();
+			path = TubesAPI.instance.routeItem(item, world, x, y, z, TubesAPI.goalInput);
 			if(path == null)
 			{
-				path = TubesAPI.instance.getOutputRouter(world, new Position(x, y, z), item).route();
+				path = TubesAPI.instance.routeItem(item, world, x, y, z, TubesAPI.goalOutput);
 				item.state = TubeItem.NORMAL;
 			}
 		}
 		else if(item.state == TubeItem.BLOCKED)
 		{
-			path = TubesAPI.instance.getOutputRouter(world, new Position(x,y,z), item).route();
+			path = TubesAPI.instance.routeItem(item, world, x, y, z, TubesAPI.goalOutput);
 			
 			if(path == null)
-				path = TubesAPI.instance.getOverflowRouter(world, new Position(x,y,z), item).route();
+				path = TubesAPI.instance.routeItem(item, world, x, y, z, TubesAPI.goalOverflow);
 			else
 				item.state = TubeItem.NORMAL;
 		}

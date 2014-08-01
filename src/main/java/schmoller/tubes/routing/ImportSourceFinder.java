@@ -6,6 +6,7 @@ import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.Position;
 import schmoller.tubes.api.SizeMode;
 import schmoller.tubes.api.TubeItem;
+import schmoller.tubes.api.TubesAPI;
 import schmoller.tubes.api.helpers.BaseRouter;
 import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.api.helpers.TubeHelper;
@@ -174,6 +175,6 @@ public class ImportSourceFinder extends BaseRouter
 		if(routePos.equals(mStartPosition))
 			return true;
 		
-		return (new InputRouter(getWorld(), routePos, tItem).route() != null);
+		return (new GoalRouter(getWorld(), routePos, tItem, TubesAPI.goalInput).route() != null);
 	}
 }

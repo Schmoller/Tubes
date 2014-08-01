@@ -9,7 +9,6 @@ import codechicken.lib.data.MCDataOutput;
 import codechicken.lib.vec.Cuboid6;
 import codechicken.multipart.IRedstonePart;
 import codechicken.multipart.RedstoneInteractions;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -27,13 +26,14 @@ import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.Position;
 import schmoller.tubes.api.SizeMode;
 import schmoller.tubes.api.TubeItem;
+import schmoller.tubes.api.TubesAPI;
 import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.api.helpers.BaseRouter.PathLocation;
 import schmoller.tubes.api.interfaces.IFilter;
 import schmoller.tubes.api.interfaces.IPayloadHandler;
 import schmoller.tubes.api.interfaces.IPropertyHolder;
 import schmoller.tubes.api.interfaces.ITubeOverflowDestination;
-import schmoller.tubes.routing.OutputRouter;
+import schmoller.tubes.routing.GoalRouter;
 
 public class AdvancedExtractionTube extends DirectionalTube implements ITubeOverflowDestination, IPropertyHolder, IRedstonePart
 {
@@ -350,7 +350,7 @@ public class AdvancedExtractionTube extends DirectionalTube implements ITubeOver
 		if(!mOverflow.isEmpty())
 		{
 			TubeItem item = mOverflow.peekNext();
-			PathLocation loc = new OutputRouter(world(), new Position(x(),y(),z()), item).route();
+			PathLocation loc = new GoalRouter(world(), new Position(x(),y(),z()), item, TubesAPI.goalOutput).route();
 			
 			if(loc != null)
 			{
@@ -434,7 +434,7 @@ public class AdvancedExtractionTube extends DirectionalTube implements ITubeOver
 			item.colour = mColor;
 			item.direction = dir.ordinal() ^ 1;
 			
-			if(new OutputRouter(world(), new Position(x(), y(), z()), item).route() != null)
+			if(new GoalRouter(world(), new Position(x(), y(), z()), item, TubesAPI.goalOutput).route() != null)
 			{
 				handler.extract(filter, getFacing() ^ 1, filter.size(), size, true);
 				addItem(item, true);

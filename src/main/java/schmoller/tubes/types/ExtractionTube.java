@@ -16,10 +16,11 @@ import schmoller.tubes.api.OverflowBuffer;
 import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.Position;
 import schmoller.tubes.api.TubeItem;
+import schmoller.tubes.api.TubesAPI;
 import schmoller.tubes.api.helpers.BaseRouter.PathLocation;
 import schmoller.tubes.api.interfaces.IPayloadHandler;
 import schmoller.tubes.api.interfaces.ITubeOverflowDestination;
-import schmoller.tubes.routing.OutputRouter;
+import schmoller.tubes.routing.GoalRouter;
 
 public class ExtractionTube extends DirectionalBasicTube implements IRedstonePart, ITubeOverflowDestination
 {
@@ -66,7 +67,7 @@ public class ExtractionTube extends DirectionalBasicTube implements IRedstonePar
 		if(!mOverflow.isEmpty())
 		{
 			TubeItem item = mOverflow.peekNext();
-			PathLocation loc = new OutputRouter(world(), new Position(x(),y(),z()), item).route();
+			PathLocation loc = new GoalRouter(world(), new Position(x(),y(),z()), item, TubesAPI.goalOutput).route();
 			
 			if(loc != null)
 			{

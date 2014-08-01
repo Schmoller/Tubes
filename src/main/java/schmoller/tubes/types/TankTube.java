@@ -19,11 +19,12 @@ import schmoller.tubes.api.FluidPayload;
 import schmoller.tubes.api.OverflowBuffer;
 import schmoller.tubes.api.Position;
 import schmoller.tubes.api.TubeItem;
+import schmoller.tubes.api.TubesAPI;
 import schmoller.tubes.api.helpers.BaseTube;
 import schmoller.tubes.api.helpers.BaseRouter.PathLocation;
 import schmoller.tubes.api.interfaces.ITubeConnectable;
 import schmoller.tubes.api.interfaces.ITubeOverflowDestination;
-import schmoller.tubes.routing.OutputRouter;
+import schmoller.tubes.routing.GoalRouter;
 
 public class TankTube extends BaseTube implements IFluidHandler, ITubeOverflowDestination
 {
@@ -222,7 +223,7 @@ public class TankTube extends BaseTube implements IFluidHandler, ITubeOverflowDe
 		if(!mOverflow.isEmpty())
 		{
 			TubeItem item = mOverflow.peekNext();
-			PathLocation loc = new OutputRouter(world(), new Position(x(),y(),z()), item).route();
+			PathLocation loc = new GoalRouter(world(), new Position(x(),y(),z()), item, TubesAPI.goalOutput).route();
 			
 			if(loc != null)
 			{

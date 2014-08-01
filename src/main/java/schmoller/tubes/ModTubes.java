@@ -5,21 +5,17 @@ import java.util.logging.Logger;
 import schmoller.tubes.api.FilterRegistry;
 import schmoller.tubes.api.Items;
 import schmoller.tubes.api.Position;
-import schmoller.tubes.api.SizeMode;
 import schmoller.tubes.api.TubeItem;
 import schmoller.tubes.api.TubeRegistry;
 import schmoller.tubes.api.TubesAPI;
-import schmoller.tubes.api.helpers.BaseRouter;
-import schmoller.tubes.api.interfaces.IFilter;
+import schmoller.tubes.api.helpers.BaseRouter.PathLocation;
+import schmoller.tubes.api.interfaces.IRoutingGoal;
 import schmoller.tubes.items.ItemTubeBase;
 import schmoller.tubes.network.PacketManager;
 import schmoller.tubes.network.packets.ModPacketClickButton;
 import schmoller.tubes.network.packets.ModPacketNEIDragDrop;
 import schmoller.tubes.parts.TubeCap;
-import schmoller.tubes.routing.BlockedRouter;
-import schmoller.tubes.routing.ImportSourceFinder;
-import schmoller.tubes.routing.InputRouter;
-import schmoller.tubes.routing.OutputRouter;
+import schmoller.tubes.routing.GoalRouter;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -30,7 +26,6 @@ import net.minecraftforge.common.config.Property;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.oredict.OreDictionary;
-
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLMissingMappingsEvent;
 import cpw.mods.fml.common.event.FMLMissingMappingsEvent.MissingMapping;
@@ -42,7 +37,6 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.Mod.EventHandler;
-
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.relauncher.Side;
@@ -197,35 +191,16 @@ public class ModTubes extends TubesAPI
 		return itemTube.getTubeType(item);
 	}
 
+	@Override
+	public PathLocation routeItem( TubeItem item, IBlockAccess world, int x, int y, int z, IRoutingGoal goal )
+	{
+		return new GoalRouter(world, new Position(x, y, z), item, goal).route();
+	}
 	
 	@Override
-	public BaseRouter getOutputRouter( IBlockAccess world, Position position, TubeItem item )
+	public PathLocation routeItem( TubeItem item, IBlockAccess world, int x, int y, int z, int direction, IRoutingGoal goal )
 	{
-		return new OutputRouter(world, position, item);
-	}
-
-	@Override
-	public BaseRouter getOutputRouter( IBlockAccess world, Position position, TubeItem item, int direction )
-	{
-		return new OutputRouter(world, position, item, direction);
-	}
-
-	@Override
-	public BaseRouter getImportRouter( IBlockAccess world, Position position, TubeItem item )
-	{
-		return new InputRouter(world, position, item);
-	}
-
-	@Override
-	public BaseRouter getImportSourceRouter( IBlockAccess world, Position position, int startDirection, IFilter filter, SizeMode mode)
-	{
-		return new ImportSourceFinder(world, position, startDirection, filter, mode);
-	}
-
-	@Override
-	public BaseRouter getOverflowRouter( IBlockAccess world, Position position, TubeItem item )
-	{
-		return new BlockedRouter(world, position, item);
+		return new GoalRouter(world, new Position(x, y, z), item, direction, goal).route();
 	}
 	
 	@Override

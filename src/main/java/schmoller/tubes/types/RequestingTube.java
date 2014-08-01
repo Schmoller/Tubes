@@ -21,6 +21,7 @@ import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.Position;
 import schmoller.tubes.api.SizeMode;
 import schmoller.tubes.api.TubeItem;
+import schmoller.tubes.api.TubesAPI;
 import schmoller.tubes.api.helpers.TubeHelper;
 import schmoller.tubes.api.helpers.BaseRouter.PathLocation;
 import schmoller.tubes.api.interfaces.IFilter;
@@ -28,7 +29,7 @@ import schmoller.tubes.api.interfaces.IPropertyHolder;
 import schmoller.tubes.api.interfaces.ITubeConnectable;
 import schmoller.tubes.api.interfaces.ITubeImportDest;
 import schmoller.tubes.api.interfaces.ITubeOverflowDestination;
-import schmoller.tubes.routing.OutputRouter;
+import schmoller.tubes.routing.GoalRouter;
 
 public class RequestingTube extends DirectionalTube implements ITubeImportDest, IRedstonePart, ITubeOverflowDestination, IPropertyHolder
 {
@@ -103,7 +104,7 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 		if(!mOverflow.isEmpty())
 		{
 			TubeItem item = mOverflow.peekNext();
-			PathLocation loc = new OutputRouter(world(), new Position(x(),y(),z()), item, getFacing() ^ 1).route();
+			PathLocation loc = new GoalRouter(world(), new Position(x(),y(),z()), item, getFacing() ^ 1, TubesAPI.goalOutput).route();
 			
 			if(loc != null)
 			{

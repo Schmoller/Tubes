@@ -8,10 +8,11 @@ import schmoller.tubes.api.OverflowBuffer;
 import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.Position;
 import schmoller.tubes.api.TubeItem;
+import schmoller.tubes.api.TubesAPI;
 import schmoller.tubes.api.helpers.BaseRouter.PathLocation;
 import schmoller.tubes.api.interfaces.ITubeOverflowDestination;
 import schmoller.tubes.inventory.BasicInvHandler;
-import schmoller.tubes.routing.OutputRouter;
+import schmoller.tubes.routing.GoalRouter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -144,7 +145,7 @@ public class BufferTube extends DirectionalTube implements ISidedInventory, ITub
 		if(!mOverflow.isEmpty())
 		{
 			TubeItem item = mOverflow.peekNext();
-			PathLocation loc = new OutputRouter(world(), new Position(x(),y(),z()), item, getFacing()).route();
+			PathLocation loc = new GoalRouter(world(), new Position(x(),y(),z()), item, getFacing(), TubesAPI.goalOutput).route();
 			
 			if(loc != null)
 			{
