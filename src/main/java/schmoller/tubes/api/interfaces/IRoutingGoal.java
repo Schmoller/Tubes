@@ -3,6 +3,7 @@ package schmoller.tubes.api.interfaces;
 import net.minecraft.world.IBlockAccess;
 import schmoller.tubes.api.Position;
 import schmoller.tubes.api.TubeItem;
+import schmoller.tubes.api.helpers.BaseRouter.PathLocation;
 
 public interface IRoutingGoal
 {
@@ -16,5 +17,7 @@ public interface IRoutingGoal
 	 */
 	public boolean isDestination(Position position, IBlockAccess world, int side, TubeItem item);
 	
-	public int getStateId();
+	public boolean hasCustomRoute();
+	
+	public PathLocation route(TubeItem item, IBlockAccess world, int x, int y, int z);
 }

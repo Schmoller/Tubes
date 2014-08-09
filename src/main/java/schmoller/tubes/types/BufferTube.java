@@ -150,7 +150,7 @@ public class BufferTube extends DirectionalTube implements ISidedInventory, ITub
 			if(loc != null)
 			{
 				mOverflow.getNext();
-				item.state = TubeItem.NORMAL;
+				item.goal = TubesAPI.goalOutput;
 				item.direction = item.lastDirection = getFacing();
 				item.updated = true;
 				item.setProgress(0.5f);
@@ -167,7 +167,7 @@ public class BufferTube extends DirectionalTube implements ISidedInventory, ITub
 			
 			TubeItem item = new TubeItem(new ItemPayload(mSlots[i]));
 			item.direction = item.lastDirection = getFacing();
-			item.state = TubeItem.NORMAL;
+			item.goal = TubesAPI.goalOutput;
 			item.updated = true;
 			item.setProgress(0.5f);
 			
@@ -191,7 +191,7 @@ public class BufferTube extends DirectionalTube implements ISidedInventory, ITub
 	public boolean canItemEnter( TubeItem item )
 	{
 		if(item.direction == (getFacing() ^ 1))
-			return (item.state == TubeItem.BLOCKED);
+			return (item.goal == TubesAPI.goalOverflow);
 		
 		return super.canItemEnter(item);
 	}
@@ -232,7 +232,7 @@ public class BufferTube extends DirectionalTube implements ISidedInventory, ITub
 			{
 				item.item.setSize(left.size());
 				item.direction = item.direction ^ 1;
-				item.state = TubeItem.BLOCKED;
+				item.goal = TubesAPI.goalOverflow;
 				return false;
 			}
 		}

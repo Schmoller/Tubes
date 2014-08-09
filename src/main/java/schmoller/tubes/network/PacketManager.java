@@ -20,6 +20,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.FMLEmbeddedChannel;
 import cpw.mods.fml.common.network.FMLOutboundHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.handshake.NetworkDispatcher;
 import cpw.mods.fml.relauncher.Side;
 
 @Sharable
@@ -86,6 +87,14 @@ public class PacketManager extends SimpleChannelInboundHandler<ModPacket>
 	{
 		server.attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.PLAYER);
 		server.attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(player);
+		server.writeAndFlush(packet);
+	}
+	
+	public void sendPacketToClientHandler(ModPacket packet, NetHandlerPlayServer handler)
+	{
+		NetworkDispatcher dispatcher = handler.netManager.channel().attr(NetworkDispatcher.FML_DISPATCHER).get();
+		server.attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.DISPATCHER);
+		server.attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(dispatcher);
 		server.writeAndFlush(packet);
 	}
 	

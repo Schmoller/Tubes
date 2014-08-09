@@ -1,7 +1,10 @@
 package schmoller.tubes.api;
 
-import schmoller.tubes.api.helpers.BaseRouter;
-import schmoller.tubes.api.interfaces.IFilter;
+import schmoller.tubes.api.helpers.BaseRouter.PathLocation;
+import schmoller.tubes.api.interfaces.IRoutingGoal;
+import schmoller.tubes.routing.goals.InputGoal;
+import schmoller.tubes.routing.goals.OutputGoal;
+import schmoller.tubes.routing.goals.OverflowGoal;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
@@ -9,6 +12,9 @@ import net.minecraft.world.IBlockAccess;
 public abstract class TubesAPI
 {
 	public static TubesAPI instance = null;
+	public static final IRoutingGoal goalOutput = new OutputGoal();
+	public static final IRoutingGoal goalInput = new InputGoal();
+	public static final IRoutingGoal goalOverflow = new OverflowGoal();
 	
 	/**
 	 * Registers an advanced shaped recipe. 
@@ -55,14 +61,30 @@ public abstract class TubesAPI
 	 */
 	public abstract String getTubeType(ItemStack item);
 	
+	/**
+	 * Finds a destination for the specified item using the specified goal
+	 * @param item The item to route
+	 * @param world The world for the location
+	 * @param x x coord
+	 * @param y y coord
+	 * @param z z coord
+	 * @param goal The goal of this routing
+	 * @return A PathLocation or null
+	 */
+	public abstract PathLocation routeItem(TubeItem item, IBlockAccess world, int x, int y, int z, IRoutingGoal goal);
 	
-	public abstract BaseRouter getOutputRouter(IBlockAccess world, Position position, TubeItem item);
-	public abstract BaseRouter getOutputRouter(IBlockAccess world, Position position, TubeItem item, int direction);
-	
-	public abstract BaseRouter getImportRouter(IBlockAccess world, Position position, TubeItem item);
-	public abstract BaseRouter getImportSourceRouter(IBlockAccess world, Position position, int startDirection, IFilter filter, SizeMode mode);
-	
-	public abstract BaseRouter getOverflowRouter(IBlockAccess world, Position position, TubeItem item);
+	/**
+	 * Finds a destination for the specified item using the specified goal starting from a specific direction
+	 * @param item The item to route
+	 * @param world The world for the location
+	 * @param x x coord
+	 * @param y y coord
+	 * @param z z coord
+	 * @param direction The starting direction
+	 * @param goal The goal of this routing
+	 * @return A PathLocation or null
+	 */
+	public abstract PathLocation routeItem(TubeItem item, IBlockAccess world, int x, int y, int z, int direction, IRoutingGoal goal);
 	
 	public abstract CreativeTabs getCreativeTab();
 }

@@ -22,6 +22,7 @@ import schmoller.tubes.api.InteractionHandler;
 import schmoller.tubes.api.ItemPayload;
 import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.TubeItem;
+import schmoller.tubes.api.TubesAPI;
 import schmoller.tubes.api.interfaces.IPayloadHandler;
 import schmoller.tubes.api.interfaces.ITube;
 import schmoller.tubes.api.interfaces.ITubeConnectable;
@@ -261,7 +262,7 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 					it.remove();
 				else
 				{
-					item.state = TubeItem.BLOCKED;
+					item.goal = TubesAPI.goalOverflow;
 					item.progress -= 1;
 					item.lastProgress -= 1;
 					item.updated = false;
@@ -344,7 +345,7 @@ public abstract class BaseTube extends BaseTubePart implements ITube
 				if(item.direction == NO_ROUTE)
 					item.direction = randDirection(lastDir);
 			}
-			item.state = TubeItem.BLOCKED;
+			item.goal = TubesAPI.goalOverflow;
 
 			if(getNumConnections() != 1)
 				addToClient(item); // Client will have deleted it

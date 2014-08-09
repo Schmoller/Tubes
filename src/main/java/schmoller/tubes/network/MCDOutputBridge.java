@@ -3,14 +3,15 @@ package schmoller.tubes.network;
 import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
-
 import codechicken.lib.data.MCDataOutput;
 import codechicken.lib.vec.BlockCoord;
+import cpw.mods.fml.common.network.ByteBufUtils;
 
 public class MCDOutputBridge implements MCDataOutput
 {
@@ -158,9 +159,7 @@ public class MCDOutputBridge implements MCDataOutput
 	@Override
 	public MCDataOutput writeString( String string )
 	{
-		mBuffer.writeShort((short)string.length());
-		for(char c : string.toCharArray())
-			mBuffer.writeChar(c);
+		ByteBufUtils.writeUTF8String(mBuffer, string);
 		
 		return this;
 	}

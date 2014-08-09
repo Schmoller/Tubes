@@ -109,7 +109,7 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 			if(loc != null)
 			{
 				mOverflow.getNext();
-				item.state = TubeItem.NORMAL;
+				item.goal = TubesAPI.goalOutput;
 				item.direction = item.lastDirection = getFacing() ^ 1;
 				item.updated = true;
 				item.setProgress(0.5f);
@@ -163,17 +163,17 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 	public void simulateEffects( TubeItem item )
 	{
 		item.colour = mColor;
-		item.state = TubeItem.NORMAL;
+		item.goal = TubesAPI.goalOutput;
 	}
 	
 	@Override
 	public int onDetermineDestination( TubeItem item )
 	{
-		if(item.state != TubeItem.IMPORT)
+		if(item.goal != TubesAPI.goalInput)
 			return item.direction ^ 1;
 		
 		item.colour = mColor;
-		item.state = TubeItem.NORMAL;
+		item.goal = TubesAPI.goalOutput;
 		
 		return getFacing() ^ 1;
 	}
@@ -181,9 +181,9 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 	@Override
 	public boolean canItemEnter( TubeItem item )
 	{
-		if(item.state == TubeItem.BLOCKED && item.direction == getFacing())
+		if(item.goal == TubesAPI.goalOverflow && item.direction == getFacing())
 			return true;
-		else if(item.state != TubeItem.IMPORT)
+		else if(item.goal != TubesAPI.goalInput)
 			return false;
 		
 		if(item.direction != (getFacing() ^ 1))
@@ -231,7 +231,7 @@ public class RequestingTube extends DirectionalTube implements ITubeImportDest, 
 	@Override
 	protected boolean onItemJunction( TubeItem item )
 	{
-		if(item.state == TubeItem.BLOCKED)
+		if(item.goal == TubesAPI.goalOverflow)
 		{
 			if(!world().isRemote)
 				mOverflow.addItem(item);

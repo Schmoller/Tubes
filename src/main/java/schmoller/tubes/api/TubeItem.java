@@ -1,17 +1,15 @@
 package schmoller.tubes.api;
 
+import schmoller.tubes.api.interfaces.IRoutingGoal;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class TubeItem implements Cloneable
 {
-	public static final int NORMAL = 0;
-	public static final int IMPORT = 1;
-	public static final int BLOCKED = 2;
-	
 	public TubeItem(Payload item)
 	{
 		this.item = item;
@@ -23,7 +21,7 @@ public class TubeItem implements Cloneable
 	public float progress = 0;
 	public float lastProgress = 0;
 	public boolean updated = false;
-	public int state = NORMAL;
+	public IRoutingGoal goal = TubesAPI.goalOutput;
 	public int colour = -1;
 	
 	public int speed = 1;
@@ -39,14 +37,14 @@ public class TubeItem implements Cloneable
 	@Override
 	public String toString()
 	{
-		return item.toString() + " " + ForgeDirection.getOrientation(direction).name() + " U:" + updated + " P:" + progress + " S:" + state;
+		return item.toString() + " " + ForgeDirection.getOrientation(direction).name() + " U:" + updated + " P:" + progress + " G:" + goal;
 	}
 	
 	public void writeToNBT(NBTTagCompound tag)
 	{
 		tag.setInteger("D", direction | (updated ? 128 : 0));
 		tag.setFloat("P", progress);
-		tag.setInteger("S", state);
+		tag.setString("G", GoalRegistry.getInstance().getName(goal));
 		tag.setShort("C", (short)colour);
 		item.write(tag);
 	}
@@ -56,7 +54,7 @@ public class TubeItem implements Cloneable
 		output.writeByte(direction | (updated ? 128 : 0));
 		output.writeFloat(progress);
 		item.write(output);
-		output.writeByte(state);
+		output.writeByte(GoalRegistry.getInstance().getId(goal));
 		output.writeShort(colour);
 	}
 	
@@ -71,7 +69,7 @@ public class TubeItem implements Cloneable
 		item.direction = direction;
 		item.updated = updated;
 		item.progress = progress;
-		item.state = input.readByte();
+		item.goal = GoalRegistry.getInstance().get(input.readByte());
 		item.colour = input.readShort();
 		item.lastProgress = progress;
 		item.lastDirection = direction;
@@ -94,7 +92,25 @@ public class TubeItem implements Cloneable
 		tItem.direction -= (tItem.direction & 128);
 		
 		tItem.lastProgress = tItem.progress = tag.getFloat("P");
-		tItem.state = tag.getInteger("S");
+		
+		if(tag.hasKey("S", Constants.NBT.TAG_INT))
+		{
+			switch(tag.getInteger("S"))
+			{
+			default:
+			case 0:
+				tItem.goal = TubesAPI.goalOutput;
+				break;
+			case 1:
+				tItem.goal = TubesAPI.goalInput;
+				break;
+			case 2:
+				tItem.goal = TubesAPI.goalOverflow;
+				break;
+			}
+		}
+		else
+			tItem.goal = GoalRegistry.getInstance().get(tag.getString("G"));
 		
 		tItem.colour = tag.getShort("C");
 		
@@ -106,7 +122,7 @@ public class TubeItem implements Cloneable
 		TubeItem item = new TubeItem(this.item.copy());
 		item.direction = direction;
 		item.lastDirection = lastDirection;
-		item.state = state;
+		item.goal = goal;
 		item.progress = progress;
 		item.lastProgress = lastProgress;
 		item.updated = updated;

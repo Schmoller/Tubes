@@ -3,9 +3,10 @@ package schmoller.tubes.types;
 import net.minecraft.nbt.NBTTagCompound;
 import schmoller.tubes.api.Position;
 import schmoller.tubes.api.TubeItem;
+import schmoller.tubes.api.TubesAPI;
 import schmoller.tubes.api.helpers.BaseRouter.PathLocation;
 import schmoller.tubes.api.helpers.BaseTube;
-import schmoller.tubes.routing.OutputRouter;
+import schmoller.tubes.routing.GoalRouter;
 
 public class RoundRobinTube extends BaseTube
 {
@@ -39,7 +40,7 @@ public class RoundRobinTube extends BaseTube
 		{
 			if((connections & (1 << i)) != 0)
 			{
-				PathLocation dest = new OutputRouter(world(), new Position(x(),y(),z()), item, i).route();
+				PathLocation dest = new GoalRouter(world(), new Position(x(),y(),z()), item, i, TubesAPI.goalOutput).route();
 				if(dest != null)
 				{
 					if(first == -1)

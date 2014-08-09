@@ -189,7 +189,7 @@ public class TankTube extends BaseTube implements IFluidHandler, ITubeOverflowDe
 	@Override
 	protected boolean onItemJunction( TubeItem item )
 	{
-		if(item.state == TubeItem.BLOCKED)
+		if(item.goal == TubesAPI.goalOverflow)
 		{
 			if(!world().isRemote)
 				mOverflow.addItem(item);
@@ -203,7 +203,7 @@ public class TankTube extends BaseTube implements IFluidHandler, ITubeOverflowDe
 	@Override
 	public boolean canItemEnter( TubeItem item )
 	{
-		return item.state == TubeItem.BLOCKED;
+		return item.goal == TubesAPI.goalOverflow;
 	}
 	
 	@Override
@@ -228,7 +228,7 @@ public class TankTube extends BaseTube implements IFluidHandler, ITubeOverflowDe
 			if(loc != null)
 			{
 				mOverflow.getNext();
-				item.state = TubeItem.NORMAL;
+				item.goal = TubesAPI.goalOutput;
 				item.direction = item.lastDirection = 6;
 				item.updated = false;
 				item.setProgress(0.5f);

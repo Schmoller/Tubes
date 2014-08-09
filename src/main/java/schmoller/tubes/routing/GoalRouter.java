@@ -19,7 +19,7 @@ public class GoalRouter extends BaseRouter
 	public GoalRouter(IBlockAccess world, Position position, TubeItem item, IRoutingGoal goal)
 	{
 		mItem = item.clone();
-		mItem.state = goal.getStateId();
+		mItem.goal = goal;
 		mGoal = goal;
 		setup(world, position);
 	}
@@ -27,7 +27,7 @@ public class GoalRouter extends BaseRouter
 	public GoalRouter(IBlockAccess world, Position position, TubeItem item, int direction, IRoutingGoal goal)
 	{
 		mItem = item.clone();
-		mItem.state = goal.getStateId();
+		mItem.goal = goal;
 		mDirection = direction;
 		mGoal = goal;
 		setup(world, position);
@@ -60,7 +60,7 @@ public class GoalRouter extends BaseRouter
 				{
 					mItem.direction = loc.dir;
 					mItem.colour = loc.color;
-					mItem.state = mGoal.getStateId();
+					mItem.goal = mGoal;
 					
 					if(!con.canItemEnter(mItem))
 						continue;
@@ -87,7 +87,6 @@ public class GoalRouter extends BaseRouter
 		
 		int initialColor = mItem.colour;
 		int initialDir = mItem.direction;
-		int initialState = mItem.state;
 		
 		for(int i = 0; i < 6; ++i)
 		{
@@ -98,7 +97,7 @@ public class GoalRouter extends BaseRouter
 			{
 				mItem.colour = initialColor;
 				mItem.direction = initialDir;
-				mItem.state = initialState;
+				mItem.goal = mGoal;
 				
 				PathLocation loc = new PathLocation(position, i);
 				loc.color = mItem.colour;

@@ -3,14 +3,15 @@ package schmoller.tubes.network;
 import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
-
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.vec.BlockCoord;
+import cpw.mods.fml.common.network.ByteBufUtils;
 
 public class MCDInputBridge implements MCDataInput
 {
@@ -148,11 +149,7 @@ public class MCDInputBridge implements MCDataInput
 	@Override
 	public String readString()
 	{
-		int size = readShort();
-		char[] chars = new char[size];
-		for(int i = 0; i < chars.length; ++i)
-			chars[i] = readChar();
-		return new String(chars);
+		return ByteBufUtils.readUTF8String(mBuffer);
 	}
 	
 	@Override

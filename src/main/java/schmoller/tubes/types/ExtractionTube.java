@@ -72,7 +72,7 @@ public class ExtractionTube extends DirectionalBasicTube implements IRedstonePar
 			if(loc != null)
 			{
 				mOverflow.getNext();
-				item.state = TubeItem.NORMAL;
+				item.goal = TubesAPI.goalOutput;
 				item.direction = item.lastDirection = getFacing() ^ 1;
 				item.updated = false;
 				item.setProgress(0);
@@ -175,7 +175,7 @@ public class ExtractionTube extends DirectionalBasicTube implements IRedstonePar
 	@Override
 	protected boolean onItemJunction( TubeItem item )
 	{
-		if(item.state == TubeItem.BLOCKED)
+		if(item.goal == TubesAPI.goalOverflow)
 		{
 			item.lastDirection = item.direction; 
 			item.direction = getFacing();
@@ -189,7 +189,7 @@ public class ExtractionTube extends DirectionalBasicTube implements IRedstonePar
 	@Override
 	protected boolean onItemLeave( TubeItem item )
 	{
-		if(item.state == TubeItem.BLOCKED && item.direction == getFacing())
+		if(item.goal == TubesAPI.goalOverflow && item.direction == getFacing())
 		{
 			if(!world().isRemote)
 				mOverflow.addItem(item);

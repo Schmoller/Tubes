@@ -9,14 +9,12 @@ import java.util.List;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import codechicken.lib.vec.Cuboid6;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.common.util.Constants;
-
 import schmoller.tubes.ModTubes;
 import schmoller.tubes.api.FilterRegistry;
 import schmoller.tubes.api.InteractionHandler;
@@ -24,6 +22,7 @@ import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.Position;
 import schmoller.tubes.api.SizeMode;
 import schmoller.tubes.api.TubeItem;
+import schmoller.tubes.api.TubesAPI;
 import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.api.helpers.TubeHelper;
 import schmoller.tubes.api.helpers.BaseRouter.PathLocation;
@@ -512,7 +511,7 @@ public class ManagementTube extends DirectionalTube implements ITubeImportDest, 
 					else
 					{
 						item.direction = item.direction ^ 1;
-						item.state = TubeItem.BLOCKED;
+						item.goal = TubesAPI.goalOverflow;
 						
 						addToClient(item);
 						return true;
@@ -523,7 +522,7 @@ public class ManagementTube extends DirectionalTube implements ITubeImportDest, 
 				{
 					item.item.setSize(remaining.size());
 					item.direction = item.direction ^ 1;
-					item.state = TubeItem.BLOCKED;
+					item.goal = TubesAPI.goalOverflow;
 					
 					addToClient(item);
 					return true;
@@ -532,7 +531,7 @@ public class ManagementTube extends DirectionalTube implements ITubeImportDest, 
 			else
 			{
 				item.direction = item.direction ^ 1;
-				item.state = TubeItem.BLOCKED;
+				item.goal = TubesAPI.goalOverflow;
 				
 				addToClient(item);
 				return true;

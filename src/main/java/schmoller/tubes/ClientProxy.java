@@ -3,6 +3,7 @@ package schmoller.tubes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
+import schmoller.tubes.api.GoalRegistry;
 import schmoller.tubes.api.Items;
 import schmoller.tubes.api.PayloadRegistry;
 import schmoller.tubes.api.TubeRegistry;
@@ -18,6 +19,8 @@ import schmoller.tubes.gui.ManagementTubeGui;
 import schmoller.tubes.gui.OverflowGui;
 import schmoller.tubes.gui.RequestingTubeGui;
 import schmoller.tubes.gui.RoutingTubeGui;
+import schmoller.tubes.network.ModPacket;
+import schmoller.tubes.network.packets.ModPacketGoalIds;
 import schmoller.tubes.render.AdvancedExtractionTubeRender;
 import schmoller.tubes.render.BufferTubeRender;
 import schmoller.tubes.render.ColoringTubeRender;
@@ -113,5 +116,17 @@ public class ClientProxy extends CommonProxy
 		}
 		
 		return null;
+	}
+	
+	@Override
+	public boolean onPacketArrive( ModPacket packet, EntityPlayer sender )
+	{
+		if(packet instanceof ModPacketGoalIds)
+		{
+			GoalRegistry.getInstance().loadFrom(((ModPacketGoalIds)packet));
+			return true;
+		}
+		else
+			return super.onPacketArrive(packet, sender);
 	}
 }

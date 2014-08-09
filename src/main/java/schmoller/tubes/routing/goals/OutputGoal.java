@@ -6,6 +6,7 @@ import schmoller.tubes.api.InteractionHandler;
 import schmoller.tubes.api.Payload;
 import schmoller.tubes.api.Position;
 import schmoller.tubes.api.TubeItem;
+import schmoller.tubes.api.helpers.BaseRouter.PathLocation;
 import schmoller.tubes.api.helpers.CommonHelper;
 import schmoller.tubes.api.helpers.TubeHelper;
 import schmoller.tubes.api.interfaces.IPayloadHandler;
@@ -36,10 +37,16 @@ public class OutputGoal implements IRoutingGoal
 		
 		return false;
 	}
-	
+
 	@Override
-	public int getStateId()
+	public boolean hasCustomRoute()
 	{
-		return 0;
+		return false;
+	}
+
+	@Override
+	public PathLocation route( TubeItem item, IBlockAccess world, int x, int y, int z )
+	{
+		return null;
 	}
 }

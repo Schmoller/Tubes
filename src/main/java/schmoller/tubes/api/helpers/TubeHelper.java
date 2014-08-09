@@ -121,26 +121,10 @@ public class TubeHelper
 	{
 		BaseRouter.PathLocation path = null;
 		
-		if(item.state == TubeItem.NORMAL)
-			path = TubesAPI.instance.routeItem(item, world, x, y, z, TubesAPI.goalOutput);
-		else if(item.state == TubeItem.IMPORT)
-		{
-			path = TubesAPI.instance.routeItem(item, world, x, y, z, TubesAPI.goalInput);
-			if(path == null)
-			{
-				path = TubesAPI.instance.routeItem(item, world, x, y, z, TubesAPI.goalOutput);
-				item.state = TubeItem.NORMAL;
-			}
-		}
-		else if(item.state == TubeItem.BLOCKED)
-		{
-			path = TubesAPI.instance.routeItem(item, world, x, y, z, TubesAPI.goalOutput);
-			
-			if(path == null)
-				path = TubesAPI.instance.routeItem(item, world, x, y, z, TubesAPI.goalOverflow);
-			else
-				item.state = TubeItem.NORMAL;
-		}
+		if(item.goal.hasCustomRoute())
+			path = item.goal.route(item, world, x, y, z);
+		else
+			path = TubesAPI.instance.routeItem(item, world, x, y, z, item.goal);
 		
 		if(path != null)
 			return path.initialDir;
@@ -197,7 +181,7 @@ public class TubeHelper
 		if(extracted != null)
 		{
 			TubeItem tItem = new TubeItem(extracted);
-			tItem.state = TubeItem.IMPORT;
+			tItem.goal = TubesAPI.goalInput;
 			tItem.direction = source.dir ^ 1;
 			tItem.colour = color;
 			

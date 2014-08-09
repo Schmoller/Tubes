@@ -360,11 +360,10 @@ public class RoutingTube extends BaseTube implements IPropertyHolder
 	@Override
 	protected boolean onItemJunction( TubeItem item )
 	{
-		if(item.state == TubeItem.BLOCKED)
+		if(item.goal == TubesAPI.goalOverflow)
 		{
 			int fromDir = item.direction;
 			item.lastDirection = item.direction;
-			item.state = TubeItem.BLOCKED;
 			item.direction = TubeHelper.findNextDirection(world(), x(), y(), z(), item);
 			if(item.direction == NO_ROUTE)
 			{

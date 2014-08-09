@@ -26,6 +26,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import schmoller.tubes.api.Blocks;
 import schmoller.tubes.api.FluidPayload;
+import schmoller.tubes.api.GoalRegistry;
 import schmoller.tubes.api.ItemPayload;
 import schmoller.tubes.api.Items;
 import schmoller.tubes.api.PayloadRegistry;
@@ -122,6 +123,10 @@ public class CommonProxy implements IModPacketHandler, IGuiHandler, IPartFactory
 		
 		PayloadRegistry.registerPayload(ItemPayload.class, "item", IInventory.class);
 		PayloadRegistry.registerPayload(FluidPayload.class, "fluid", IFluidHandler.class);
+		
+		GoalRegistry.registerGoal("output", TubesAPI.goalOutput);
+		GoalRegistry.registerGoal("input", TubesAPI.goalInput);
+		GoalRegistry.registerGoal("blocked", TubesAPI.goalOverflow);
 	}
 	
 	private void registerItems()

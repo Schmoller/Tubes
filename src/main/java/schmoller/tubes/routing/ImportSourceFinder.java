@@ -167,7 +167,6 @@ public class ImportSourceFinder extends BaseRouter
 		
 		// Run a test to make sure it can reach an import destination
 		TubeItem tItem = new TubeItem(extracted);
-		tItem.state = TubeItem.IMPORT;
 		tItem.direction = fromSide ^ 1;
 		tItem.colour = mImportColor;
 		

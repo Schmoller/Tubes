@@ -3,6 +3,7 @@ package schmoller.tubes;
 import java.util.logging.Logger;
 
 import schmoller.tubes.api.FilterRegistry;
+import schmoller.tubes.api.GoalRegistry;
 import schmoller.tubes.api.Items;
 import schmoller.tubes.api.Position;
 import schmoller.tubes.api.TubeItem;
@@ -13,11 +14,13 @@ import schmoller.tubes.api.interfaces.IRoutingGoal;
 import schmoller.tubes.items.ItemTubeBase;
 import schmoller.tubes.network.PacketManager;
 import schmoller.tubes.network.packets.ModPacketClickButton;
+import schmoller.tubes.network.packets.ModPacketGoalIds;
 import schmoller.tubes.network.packets.ModPacketNEIDragDrop;
 import schmoller.tubes.parts.TubeCap;
 import schmoller.tubes.routing.GoalRouter;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -37,6 +40,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.network.FMLNetworkEvent.ServerConnectionFromClientEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.relauncher.Side;
@@ -113,9 +117,11 @@ public class ModTubes extends TubesAPI
 		packetManager.registerHandler(proxy);
 		packetManager.registerPacket(ModPacketNEIDragDrop.class);
 		packetManager.registerPacket(ModPacketClickButton.class);
+		packetManager.registerPacket(ModPacketGoalIds.class);
 
 		proxy.initialize();
 		TubeRegistry.instance().finalizeTubes();
+		GoalRegistry.getInstance().initialize();
 	}
 	
 	@EventHandler
@@ -145,6 +151,13 @@ public class ModTubes extends TubesAPI
 			else
 				mapping.warn(); // Nothing else has been changed
 		}
+	}
+	
+	@SubscribeEvent
+	public void onServerConnection(ServerConnectionFromClientEvent event)
+	{
+		if(!event.isLocal)
+			packetManager.sendPacketToClientHandler(GoalRegistry.getInstance().getPacket(), (NetHandlerPlayServer)event.handler);
 	}
 
 	@SubscribeEvent
