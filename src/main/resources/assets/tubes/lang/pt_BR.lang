@@ -1,0 +1,87 @@
+itemGroup.tubes=Tubes
+
+tubes.basic.name=Tubo
+tubes.restriction.name=Tubo de Restrição
+tubes.injection.name=Tubo de Injeção
+tubes.ejection.name=Tubo de Ejeção
+tubes.filter.name=Tubo de Filtragem
+tubes.extraction.name=Tubo de Extração
+tubes.compressor.name=Tubo Compressor
+tubes.routing.name=Tubo de Roteamento
+tubes.requesting.name=Tubo de Solicitação
+tubes.valve.name=Tubo-Válvula
+tubes.coloring.name=Tubo de Colorimento
+tubes.fluidExtraction.name=Tubo de Extração de Fluidos
+tubes.tank.name=Tubo-Tanque
+tubes.buffer.name=Tubo de Reserva
+tubes.roundrobin.name=Tubo de Rodízio
+tubes.management.name=Tubo de Gerenciamento
+tubes.advancedExtraction.name=Tubo de Extração Avançado
+
+fluid.plastic=Plástico
+
+item.plasticPellets.name=Pastilhas de Plástico
+item.sheetPlastic.name=Plástico
+item.milkCurd.name=Coalhada
+item.bucketOfPlastic.name=Balde de Plástico
+item.redstoneCircuit.name=Circuito de Plástico
+item.fluidCircuit.name=Circuito de Fluido
+item.tubeCap.name=Capa de Tubo
+item.diagnosticTool.name=Ferramenta de Diagnóstico
+item.diamondineCircuit.name=Circuito de Diamandina
+
+tile.blockPlastic.name=Bloco de Plástico
+
+gui.compressortube.compressing=Comprimindo %1$s e, %2$d
+gui.routingtube.direction.Up=Cima
+gui.routingtube.direction.Down=Baixo
+gui.routingtube.direction.North=Norte
+gui.routingtube.direction.South=Sul
+gui.routingtube.direction.West=Oeste
+gui.routingtube.direction.East=Leste
+gui.routingtube.direction.Any=Qualquer
+gui.routingtube.direction.Closed=Fechado
+gui.colors.none=Sem Cor
+gui.colors.any=Qualquer Cor
+
+gui.requestingtube.mode.Constant=Sempre puxar
+gui.requestingtube.mode.RedstoneConstant=Puxar enquanto houver sinal de redstone
+gui.requestingtube.mode.RedstoneSingle=Puxar uma vez por pulso de redstone
+
+gui.requestingtube.size.Exact=Puxar quantia exata
+gui.requestingtube.size.GreaterEqual=Puxar pelo menos
+gui.requestingtube.size.LessEqual=Puxar até
+gui.requestingtube.size.Max=Puxar quantia máxima
+
+gui.filtertube.mode.Allow=Permitir
+gui.filtertube.mode.Deny=Negar
+gui.filtertube.modestring=%s itens especificados
+gui.filtertube.size.Any=%s stacks especificadas com any tamanho
+gui.filtertube.size.Greater=%s stacks especificadas com tamanho maior
+gui.filtertube.size.Less=%s stacks especificadas com tamanho menor
+gui.filtertube.size.Exact=%s stacks especificadas com o mesmo tamanho
+
+gui.filter.any=Qualquer
+gui.filter.item.oredict=Usando ore dictionary
+
+gui.nei.tubes.shapeless=Receita Sem Forma do Tubes
+gui.nei.tubes.shaped=Receita Exata do Tubes
+
+gui.managementtube.mode.Stock=Estocar
+gui.managementtube.mode.Fill=Encher
+gui.managementtube.mode.PassiveStock=Estocar Passivamente
+gui.managementtube.mode.PassiveFill=Encher Passivamente
+gui.managementtube.priority=Prioridade
+
+gui.overflow.name=Transbordar Conteúdos
+
+gui.pullmode.NormalAllow=Puxar correspondentes
+gui.pullmode.NormalDeny=Puxar não-correspondentes
+gui.pullmode.Random=Puxar aleatoriamente
+gui.pullmode.Sequence=Puxar sequência
+gui.pullmode.Overflow=Puxar transbordamento
+
+gui.redstonemode.High=Puxar com sinal de redstone
+gui.redstonemode.Low=Puxar sem sinal de redstone
+gui.redstonemode.Ignore=Sempre puxar
+gui.redstonemode.Pulse=Puxar uma vez por pulso de redstone
