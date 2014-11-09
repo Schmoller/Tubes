@@ -25,18 +25,18 @@ repositories {
 }
 
 dependencies {
-    compile 'com.mod-buildcraft:buildcraft:5.0.5:dev'
+    compile 'com.mod-buildcraft:buildcraft:6.1.5:dev'
     compile 'codechicken:ForgeMultipart:1.7.10-1.1.0.297:dev'
     compile 'codechicken:CodeChickenLib:1.7.10-1.1.1.95:dev'
     compile 'codechicken:CodeChickenCore:1.7.10-1.0.2.9:dev'
     compile 'codechicken:NotEnoughItems:1.7.10-1.0.2.28:dev'
 }
 
-version = "2.0.4"
+version = "2.0.5"
 group= "au.com.addstar"
 archivesBaseName = "Tubes"
 
-def forge = "1.7.10-10.13.0.1157"
+def forge = "1.7.10-10.13.2.1232"
 
 minecraft {
     version = "${forge}"
