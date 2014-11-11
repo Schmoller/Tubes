@@ -10,10 +10,13 @@ tubes.compressor.name=压缩管道
 tubes.routing.name=路由管道
 tubes.requesting.name=请求管道
 tubes.valve.name=阀门管道
-tubes.coloring.name=着色管道
+tubes.coloring.name=染色管道
 tubes.fluidExtraction.name=流体提取管道
 tubes.tank.name=储罐管道
-tubes.buffer.name=缓冲管道
+tubes.buffer.name=缓存管道
+tubes.roundrobin.name=循环管道
+tubes.management.name=控制管道
+tubes.advancedExtraction.name=高级提取管道
 
 fluid.plastic=塑料
 
@@ -24,10 +27,12 @@ item.bucketOfPlastic.name=塑料桶
 item.redstoneCircuit.name=红石元件
 item.fluidCircuit.name=流体元件
 item.tubeCap.name=管道盖
+item.diagnosticTool.name=检测工具
+item.diamondineCircuit.name=钻石元件
 
 tile.blockPlastic.name=塑料块
 
-gui.compressortube.compressing=将%1$s压缩成%2$d中…
+gui.compressortube.compressing=将%1$s压缩成%2$d
 gui.routingtube.direction.Up=上
 gui.routingtube.direction.Down=下
 gui.routingtube.direction.North=北
@@ -40,8 +45,8 @@ gui.colors.none=无颜色
 gui.colors.any=任意颜色
 
 gui.requestingtube.mode.Constant=持续
-gui.requestingtube.mode.RedstoneConstant=红石信号时激活
-gui.requestingtube.mode.RedstoneSingle=红石脉冲时激活
+gui.requestingtube.mode.RedstoneConstant=红石信号下激活
+gui.requestingtube.mode.RedstoneSingle=红石脉冲下激活
 
 gui.requestingtube.size.Exact=提取数量
 gui.requestingtube.size.GreaterEqual=提取最小阈值
@@ -51,13 +56,32 @@ gui.requestingtube.size.Max=提取最大数量
 gui.filtertube.mode.Allow=允许
 gui.filtertube.mode.Deny=禁止
 gui.filtertube.modestring=%s指定物品
-gui.filtertube.size.Any=%s堆叠任意大小指定物品
-gui.filtertube.size.Greater=%s堆叠更大数量指定物品
-gui.filtertube.size.Less=%s堆叠更小数量指定物品
-gui.filtertube.size.Exact=%s堆叠相同数量指定物品
+gui.filtertube.size.Any=任意%s组数的指定物品
+gui.filtertube.size.Greater=大于%s组的指定物品
+gui.filtertube.size.Less=小于%s组的指定物品
+gui.filtertube.size.Exact=等于%s组的指定物品
 
 gui.filter.any=任意
 gui.filter.item.oredict=使用矿物辞典
 
 gui.nei.tubes.shapeless=管道|无序合成
 gui.nei.tubes.shaped=管道|有序合成
+
+gui.managementtube.mode.Stock=积存
+gui.managementtube.mode.Fill=填充
+gui.managementtube.mode.PassiveStock=被动积存
+gui.managementtube.mode.PassiveFill=被动填充
+gui.managementtube.priority=优先级
+
+gui.overflow.name=溢出物
+
+gui.pullmode.NormalAllow=拉取匹配物
+gui.pullmode.NormalDeny=拉取非匹配物
+gui.pullmode.Random=随机拉取
+gui.pullmode.Sequence=有序拉取
+gui.pullmode.Overflow=拉取溢出物
+
+gui.redstonemode.High=有红石信号时拉取
+gui.redstonemode.Low=无红石信号时拉取
+gui.redstonemode.Ignore=总是拉取
+gui.redstonemode.Pulse=每次脉冲时拉取一次
