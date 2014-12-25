@@ -1,0 +1,85 @@
+tubes.basic.name=Rura
+tubes.restriction.name=Rura ograniczająca
+tubes.injection.name=Rura wsadzająca
+tubes.ejection.name=Rura wyrzucająca
+tubes.filter.name=Rura filtrująca
+tubes.extraction.name=Rura wyciągająca
+tubes.compressor.name=Rura kompresująca
+tubes.routing.name=Rura szlakująca
+tubes.requesting.name=Rura żądająca
+tubes.valve.name=Rura zaworowa
+tubes.coloring.name=Rura kolorująca
+tubes.fluidExtraction.name=Rura wyciągająca ciecze
+tubes.tank.name=Rura zbiornikowa
+tubes.buffer.name=Rura buforowa
+tubes.roundrobin.name=Rura okrężna
+tubes.management.name=Rura zarządzająca
+tubes.advancedExtraction.name=Zaawansowana rura wyciągająca
+
+fluid.plastic=Plastik
+
+item.plasticPellets.name=Grudki plastiku
+item.sheetPlastic.name=Plastik
+item.milkCurd.name=Zsiadłe mleko
+item.bucketOfPlastic.name=Wiadro plastiku
+item.redstoneCircuit.name=Obwód redstone'owy
+item.fluidCircuit.name=Obwód cieczy
+item.tubeCap.name=Nasadka na rurę
+item.diagnosticTool.name=Urządzenie diagnostyczne
+item.diamondineCircuit.name=Obwód diamondine'owy
+
+tile.blockPlastic.name=Blok plastiku
+
+gui.compressortube.compressing=Kompresowanie %1$s w %2$d
+gui.routingtube.direction.Up=Góra
+gui.routingtube.direction.Down=Dół
+gui.routingtube.direction.North=Północ
+gui.routingtube.direction.South=Południe
+gui.routingtube.direction.West=Zachód
+gui.routingtube.direction.East=Wschód
+gui.routingtube.direction.Any=Jakakolwiek
+gui.routingtube.direction.Closed=Zamknięta
+gui.colors.none=Brak koloru
+gui.colors.any=Jakikolwiek kolor
+
+gui.requestingtube.mode.Constant=Zawsze ciągnij
+gui.requestingtube.mode.RedstoneConstant=Ciągnij gdy redstone jest aktywny
+gui.requestingtube.mode.RedstoneSingle=Ciągnij raz na puls
+
+gui.requestingtube.size.Exact=Ciągnij wyznaczoną ilość
+gui.requestingtube.size.GreaterEqual=Ciągnij przynajmniej x
+gui.requestingtube.size.LessEqual=Ciągnij najwyżej x
+gui.requestingtube.size.Max=Ciągnij ile się da
+
+gui.filtertube.mode.Allow=Zezwól
+gui.filtertube.mode.Deny=Zabroń
+gui.filtertube.modestring=%s ustawionych przedmiotów
+gui.filtertube.size.Any=%s stosów ustawionych o jakimkolwiek rozmiarze
+gui.filtertube.size.Greater=%s stosów ustawionych z większym rozmiarem
+gui.filtertube.size.Less=%s stosów ustawionych z mniejszym rozmiarem
+gui.filtertube.size.Exact=%s stosów ustawionych z takim samym rozmiarem
+
+gui.filter.any=Jakiekolwiek
+gui.filter.item.oredict=Używając ore dictionary
+
+gui.nei.tubes.shapeless=Bezkształtna recepta Tubes
+gui.nei.tubes.shaped=Kształtna recepta Tubes
+
+gui.managementtube.mode.Stock=Zaopatrzenie
+gui.managementtube.mode.Fill=Wypełnienie
+gui.managementtube.mode.PassiveStock=Pasywne zaopatrzenie
+gui.managementtube.mode.PassiveFill=Pasywne wypełnienie
+gui.managementtube.priority=Priorytet
+
+gui.overflow.name=Nadmiarowa zawartość
+
+gui.pullmode.NormalAllow=Ciągnij pasujące
+gui.pullmode.NormalDeny=Ciągnij niepasujące
+gui.pullmode.Random=Ciągnij losowe
+gui.pullmode.Sequence=Ciągnij po kolei
+gui.pullmode.Overflow=Ciągnij nadmiar
+
+gui.redstonemode.High=Ciągnij z sygnałem redstone'owym
+gui.redstonemode.Low=Ciągnij bez sygnału redstone'owego
+gui.redstonemode.Ignore=Zawsze ciągnij
+gui.redstonemode.Pulse=Ciągnij raz na puls
