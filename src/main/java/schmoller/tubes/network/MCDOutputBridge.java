@@ -90,7 +90,7 @@ public class MCDOutputBridge implements MCDataOutput
 			writeShort(-1);
 		else
 		{
-			writeShort(fluid.fluidID);
+			writeShort(fluid.getFluidID());
 			writeInt(fluid.amount);
 			writeNBTTagCompound(fluid.tag);
 		}
