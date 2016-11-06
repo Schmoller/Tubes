@@ -5,6 +5,7 @@ import java.util.List;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MovingObjectPosition;
@@ -137,9 +138,18 @@ public class TankTube extends BaseTube implements IFluidHandler, ITubeOverflowDe
 				FluidStack drained = FluidContainerRegistry.getFluidForFilledItem(filled);
 				mTank.drain(drained.amount, true);
 				onFluidChange();
-				
-				player.inventory.mainInventory[player.inventory.currentItem] = filled;
+				if (!player.capabilities.isCreativeMode)
+				{
+					if (player.inventory.mainInventory[player.inventory.currentItem].stackSize > 1)
+					{
+						player.inventory.setInventorySlotContents(player.inventory.getFirstEmptyStack(),filled);
+						player.inventory.decrStackSize(player.inventory.currentItem,1);
+					}
+					else
+						player.inventory.mainInventory[player.inventory.currentItem] = filled;
+				}
 				player.inventory.markDirty();
+				player.inventoryContainer.detectAndSendChanges();
 				return true;
 			}
 		}
@@ -176,7 +186,9 @@ public class TankTube extends BaseTube implements IFluidHandler, ITubeOverflowDe
 		{
 			mLastUpdate = System.currentTimeMillis();
 			mHasUpdated = true;
-			openChannel(CHANNEL_FLUID).writeFluidStack(mTank.getFluid());
+			NBTTagCompound tankNBT = new NBTTagCompound();
+			mTank.writeToNBT(tankNBT);
+			openChannel(CHANNEL_FLUID).writeNBTTagCompound(tankNBT); //.writeFluidStack(mTank.getFluid());
 		}
 	}
 	
@@ -256,7 +268,6 @@ public class TankTube extends BaseTube implements IFluidHandler, ITubeOverflowDe
 			mTank.getFluid().writeToNBT(tag);
 			root.setTag("fluid", tag);
 		}
-		
 		mOverflow.save(root);
 	}
 	
@@ -267,7 +278,9 @@ public class TankTube extends BaseTube implements IFluidHandler, ITubeOverflowDe
 		
 		if(root.hasKey("fluid"))
 			mTank.setFluid(FluidStack.loadFluidStackFromNBT(root.getCompoundTag("fluid")));
-			
+		else
+			mTank.setFluid(null);
+
 		mOverflow.load(root);
 	}
 	
@@ -275,21 +288,23 @@ public class TankTube extends BaseTube implements IFluidHandler, ITubeOverflowDe
 	public void writeDesc( MCDataOutput packet )
 	{
 		super.writeDesc(packet);
-		packet.writeFluidStack(mTank.getFluid());
+		NBTTagCompound tankNBT = new NBTTagCompound();
+		mTank.writeToNBT(tankNBT);
+		packet.writeNBTTagCompound(tankNBT);
 	}
 	
 	@Override
 	public void readDesc( MCDataInput packet )
 	{
 		super.readDesc(packet);
-		mTank.setFluid(packet.readFluidStack());
+		mTank.readFromNBT(packet.readNBTTagCompound());
 	}
 	
 	@Override
 	protected void onRecieveDataClient( int channel, MCDataInput input )
 	{
 		if(channel == CHANNEL_FLUID)
-			mTank.setFluid(input.readFluidStack());
+			mTank.readFromNBT(input.readNBTTagCompound());
 		else
 			super.onRecieveDataClient(channel, input);
 	}
