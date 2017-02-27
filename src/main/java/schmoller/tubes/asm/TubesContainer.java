@@ -25,6 +25,6 @@ public class TubesContainer extends DummyModContainer
 	@Override
 	public VersionRange acceptableMinecraftVersionRange()
 	{
-		return VersionParser.parseRange("[1.7.2]");
+		return VersionParser.parseRange("[1.7.10]");
 	}
 }
